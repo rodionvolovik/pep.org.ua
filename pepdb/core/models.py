@@ -1,0 +1,209 @@
+# coding: utf-8
+from django.db import models
+from django.contrib.auth.models import User
+
+
+class Person(models.Model):
+    last_name = models.CharField(u"Прізвище", max_length=30)
+    first_name = models.CharField(u"Ім'я", max_length=30)
+    patronymic = models.CharField(u"По-батькові", max_length=30)
+    is_pep = models.BooleanField(u"Є PEPом", default=True)
+
+    photo = models.ImageField(u"Світлина", blank=True)
+    dob = models.DateField(u"Дата народження", blank=True, null=True)
+    country_of_birth = models.ForeignKey(
+        "Country", verbose_name=u"Країна народження", blank=True, null=True,
+        related_name="born_in")
+    city_of_birth = models.CharField(u"Місто", max_length=30, blank=True)
+    registration = models.TextField(
+        u"Офіційне місце реєстрації (внутрішне поле)", blank=True)
+
+    # TBA: just countries?
+    # places_of_living = models.ManyToManyField("Country")
+
+    passport_id = models.CharField(
+        u"Паспорт або інший документ (внутрішне поле)", max_length=20,
+        blank=True)
+    passport_reg = models.TextField(
+        u"Дата видачі та орган (внутрішне поле)", blank=True)
+    tax_payer_id = models.CharField(
+        u"Номер картки платника податків (внутрішне поле)", max_length=30,
+        blank=True)
+    id_number = models.CharField(
+        u"Ідентифікаційний номер (внутрішне поле)", max_length=10,
+        blank=True)
+
+    citizenship = models.ForeignKey(
+        "Country", verbose_name=u"Громадянство", blank=True, null=True,
+        related_name="citizens")
+
+    reputation_sanctions = models.TextField(
+        u"Наявність санкцій", blank=True)
+    reputation_crimes = models.TextField(
+        u"Кримінальні впровадження", blank=True)
+    reputation_manhunt = models.TextField(
+        u"Перебування у розшуку", blank=True)
+    reputation_convictions = models.TextField(
+        u"Наявність судимості", blank=True)
+
+    related_persons = models.ManyToManyField(
+        "self", through="Person2Person", symmetrical=False)
+
+    related_companies = models.ManyToManyField(
+        "Company", through="Person2Company")
+
+    wiki = models.TextField(u"Вікі-стаття", blank=True)
+    names = models.TextField(u"Варіанти написання імені", blank=True)
+
+    type_of_official = models.IntegerField(
+        u"Тип ПЕП",
+        choices=(
+            (1, "Національний публічний діяч"),
+            (2, "Іноземний публічний діяч"),
+            (u"3",
+             u"Діяч, що виконуює значні функції в міжнародній організації"),
+            (4, "Пов'язана особа"),
+            (5, "Близька особа"),
+        ),
+        max_length=1,
+        blank=True)
+
+    risk_category = models.CharField(
+        u"Рівень ризику",
+        choices=(
+            (u"high", u"Високий"),
+            (u"medium", u"Середній"),
+            (u"low", u"Низький"),
+        ),
+        max_length=6,
+        blank=True)
+
+    def __unicode__(self):
+        return u"%s %s %s" % (self.last_name, self.first_name, self.patronymic)
+
+    class Meta:
+        verbose_name = u"Фізична особа"
+        verbose_name_plural = u"Фізичні особи"
+
+
+class Person2Person(models.Model):
+    from_person = models.ForeignKey(
+        "Person", verbose_name=u"Від персони", related_name="to_persons")
+    to_person = models.ForeignKey(
+        "Person", verbose_name=u"До персони", related_name="from_persons")
+
+    relationship_type = models.CharField(
+        u"Тип зв'язку",
+        choices=((u"1", u"Тип 1"), (u"2", u"Тип 2")), max_length=30,
+        blank=True)
+
+    date_established = models.DateField(u"Коли почався зв'язок", blank=True)
+    date_finished = models.DateField(u"Коли скінчився зв'язок", blank=True)
+    proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
+
+    def __unicode__(self):
+        return u"%s (%s)" % (
+            self.to_person, self.get_relationship_type_display())
+
+    class Meta:
+        verbose_name = u"Зв'язок з іншою персоною"
+        verbose_name_plural = u"Зв'язки з іншими персонами"
+
+
+class Person2Company(models.Model):
+    from_person = models.ForeignKey("Person")
+    to_company = models.ForeignKey("Company")
+
+    date_established = models.DateField(u"Коли почався зв'язок", blank=True)
+    date_finished = models.DateField(u"Коли скінчився зв'язок", blank=True)
+    proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
+
+    relationship_type = models.CharField(
+        u"Тип зв'язку",
+        choices=((u"1", u"Тип 1"), (u"2", u"Тип 2")), max_length=30,
+        blank=True)
+
+    class Meta:
+        verbose_name = u"Зв'язок з компанією"
+        verbose_name_plural = u"Зв'язки з компаніями"
+
+
+class Company(models.Model):
+    name = models.CharField(u"Повна назва", max_length=100)
+    state_company = models.BooleanField(
+        u"Є державною установою", default=True)
+
+    edrpou = models.CharField(u"ЄДРПОУ/ідентифікаційний код", max_length=10)
+    # TBA: link to jurisdiction here
+    zip_code = models.CharField(u"Індекс", max_length=10, blank=True)
+    city = models.CharField(u"Місто", max_length=30, blank=True)
+    street = models.CharField(u"Вулиця", max_length=50, blank=True)
+    appt = models.CharField(u"№ будинку, офісу", max_length=10, blank=True)
+
+    other_founders = models.TextField(
+        u"Інши засновники",
+        help_text=u"Через кому, не PEP", blank=True)
+
+    other_recipient = models.CharField(
+        u"Бенефіціарій", help_text=u"Якщо не є PEPом", blank=True,
+        max_length=100)
+
+    other_owners = models.TextField(
+        u"Інши власники",
+        help_text=u"Через кому, не PEP", blank=True)
+
+    other_managers = models.TextField(
+        u"Інши керуючі",
+        help_text=u"Через кому, не PEP", blank=True)
+
+    bank_name = models.CharField(u"Назва банку", blank=True, max_length=100)
+
+    related_companies = models.ManyToManyField(
+        "self", through="Company2Company", symmetrical=False)
+
+    class Meta:
+        verbose_name = u"Юрідична особа"
+        verbose_name_plural = u"Юрідичні особи"
+
+
+class Company2Company(models.Model):
+    from_company = models.ForeignKey("Company", related_name="to_companies")
+    to_company = models.ForeignKey("Company", related_name="from_companies")
+    date_established = models.DateField(u"Коли почався зв'язок", blank=True)
+    date_finished = models.DateField(u"Коли скінчився зв'язок", blank=True)
+    proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
+
+    relationship_type = models.CharField(
+        u"Тип зв'язку",
+        choices=((u"1", u"Тип 1"), (u"2", u"Тип 2")), max_length=30,
+        blank=True)
+
+    class Meta:
+        verbose_name = u"Зв'язок з компанією"
+        verbose_name_plural = u"Зв'язки з компаніями"
+
+
+class Country(models.Model):
+    name = models.CharField(u"Назва", max_length=30)
+    iso2 = models.CharField(u"iso2 код", max_length=2, blank=True)
+    iso3 = models.CharField(u"iso3 код", max_length=3, blank=True)
+    is_jurisdiction = models.BooleanField(u"Не є страною", default=False)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = u"Країна/юрісдикція"
+        verbose_name_plural = u"Країни/юрісдикції"
+
+
+class Document(models.Model):
+    doc = models.FileField(u"Файл")
+    uploaded = models.DateTimeField(u"Був завантажений", auto_now=True)
+    source = models.CharField(u"Першоджерело", blank=True, max_length=255)
+    uploader = models.ForeignKey(User, verbose_name=u"Хто завантажив")
+    comments = models.TextField(u"Коментарі", blank=True)
+
+    class Meta:
+        verbose_name = u"Документ"
+        verbose_name_plural = u"Документи"
