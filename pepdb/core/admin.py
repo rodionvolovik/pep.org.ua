@@ -7,7 +7,6 @@ from core.models import Country, Person, Company, Person2Person, Document
 class Person2PersonInline(admin.StackedInline):
     model = Person2Person
     fk_name = "from_person"
-    fields = []
     extra = 1
 
 

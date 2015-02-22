@@ -1,5 +1,8 @@
 # coding: utf-8
 from django.db import models
+import select2.fields
+import select2.models
+from django.db.models import Q
 from django.contrib.auth.models import User
 
 
@@ -11,7 +14,7 @@ class Person(models.Model):
 
     photo = models.ImageField(u"Світлина", blank=True)
     dob = models.DateField(u"Дата народження", blank=True, null=True)
-    country_of_birth = models.ForeignKey(
+    country_of_birth = select2.fields.ForeignKey(
         "Country", verbose_name=u"Країна народження", blank=True, null=True,
         related_name="born_in")
     city_of_birth = models.CharField(u"Місто", max_length=30, blank=True)
@@ -46,8 +49,11 @@ class Person(models.Model):
     reputation_convictions = models.TextField(
         u"Наявність судимості", blank=True)
 
-    related_persons = models.ManyToManyField(
-        "self", through="Person2Person", symmetrical=False)
+    related_persons = select2.fields.ManyToManyField(
+        "self", through="Person2Person", symmetrical=False,
+        ajax=True,
+        search_field=(
+            lambda q: Q(last_name__icontains=q) | Q(first_name__icontains=q)))
 
     related_companies = models.ManyToManyField(
         "Company", through="Person2Company")
@@ -66,7 +72,8 @@ class Person(models.Model):
             (5, "Близька особа"),
         ),
         max_length=1,
-        blank=True)
+        blank=True,
+        null=True)
 
     risk_category = models.CharField(
         u"Рівень ризику",
@@ -97,8 +104,10 @@ class Person2Person(models.Model):
         choices=((u"1", u"Тип 1"), (u"2", u"Тип 2")), max_length=30,
         blank=True)
 
-    date_established = models.DateField(u"Коли почався зв'язок", blank=True)
-    date_finished = models.DateField(u"Коли скінчився зв'язок", blank=True)
+    date_established = models.DateField(
+        u"Коли почався зв'язок", blank=True, null=True)
+    date_finished = models.DateField(
+        u"Коли скінчився зв'язок", blank=True, null=True)
     proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
 
     def __unicode__(self):
@@ -114,8 +123,10 @@ class Person2Company(models.Model):
     from_person = models.ForeignKey("Person")
     to_company = models.ForeignKey("Company")
 
-    date_established = models.DateField(u"Коли почався зв'язок", blank=True)
-    date_finished = models.DateField(u"Коли скінчився зв'язок", blank=True)
+    date_established = models.DateField(
+        u"Коли почався зв'язок", blank=True, null=True)
+    date_finished = models.DateField(
+        u"Коли скінчився зв'язок", blank=True, null=True)
     proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
 
     relationship_type = models.CharField(
@@ -169,8 +180,10 @@ class Company(models.Model):
 class Company2Company(models.Model):
     from_company = models.ForeignKey("Company", related_name="to_companies")
     to_company = models.ForeignKey("Company", related_name="from_companies")
-    date_established = models.DateField(u"Коли почався зв'язок", blank=True)
-    date_finished = models.DateField(u"Коли скінчився зв'язок", blank=True)
+    date_established = models.DateField(
+        u"Коли почався зв'язок", blank=True, null=True)
+    date_finished = models.DateField(
+        u"Коли скінчився зв'язок", blank=True, null=True)
     proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
 
     relationship_type = models.CharField(
