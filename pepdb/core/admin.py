@@ -1,26 +1,63 @@
 # coding: utf-8
 from django.contrib import admin
 
-from core.models import Country, Person, Company, Person2Person, Document
+from core.models import (
+    Country, Person, Company, Person2Person, Document, Person2Country,
+    Person2Company)
 
 
-class Person2PersonInline(admin.StackedInline):
+class Person2PersonInline(admin.TabularInline):
     model = Person2Person
     fk_name = "from_person"
     extra = 1
+    fields = ["from_relationship_type", "to_person", "to_relationship_type",
+              "date_established", "date_finished", "proof_title", "proof"]
+
+
+class Person2PersonBackInline(admin.TabularInline):
+    verbose_name = u"Зворотній зв'язок з іншою персоною"
+    verbose_name_plural = u"Зворотній зв'язки з іншими персонами"
+    model = Person2Person
+    fk_name = "to_person"
+    extra = 1
+    fields = ["from_person", "from_relationship_type", "to_relationship_type",
+              "date_established", "date_finished", "proof_title", "proof"]
+
+
+class Person2CountryInline(admin.TabularInline):
+    model = Person2Country
+    extra = 1
+    fields = ["relationship_type", "to_country", "date_established",
+              "date_finished", "proof_title", "proof"]
+
+
+class Person2CompanyInline(admin.TabularInline):
+    model = Person2Company
+    extra = 1
+    fields = ["relationship_type", "to_company", "date_established",
+              "date_finished", "proof_title", "proof"]
+
+
+class Company2PersonInline(admin.TabularInline):
+    model = Person2Company
+    fk_name = "to_company"
+    extra = 1
+    fields = ["relationship_type", "to_company", "date_established",
+              "date_finished", "proof_title", "proof"]
 
 
 class PersonAdmin(admin.ModelAdmin):
-    inlines = (Person2PersonInline,)
+    inlines = (Person2PersonInline, Person2PersonBackInline,
+               Person2CountryInline, Person2CompanyInline)
 
     fieldsets = [
         (u"Загальна інформація", {
             'fields': ['last_name', 'first_name', 'patronymic', 'is_pep',
-                       'photo', 'dob', 'country_of_birth', 'city_of_birth',
+                       'photo', 'dob', 'city_of_birth',
                        'registration']}),
 
         (u'Додаткова інформація', {
-            'fields': ['citizenship', 'type_of_official', 'risk_category']}),
+            'fields': ['type_of_official', 'risk_category']}),
 
         (u'Ділова репутація', {
             'fields': ['reputation_sanctions', 'reputation_crimes',
@@ -31,7 +68,12 @@ class PersonAdmin(admin.ModelAdmin):
                        'id_number']}),
     ]
 
+
+class CompanyAdmin(admin.ModelAdmin):
+    inlines = (Company2PersonInline, )
+
+
 admin.site.register(Person, PersonAdmin)
-admin.site.register(Company)
+admin.site.register(Company, CompanyAdmin)
 admin.site.register(Country)
 admin.site.register(Document)

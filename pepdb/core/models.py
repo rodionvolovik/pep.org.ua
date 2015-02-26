@@ -14,15 +14,17 @@ class Person(models.Model):
 
     photo = models.ImageField(u"Світлина", blank=True)
     dob = models.DateField(u"Дата народження", blank=True, null=True)
-    country_of_birth = select2.fields.ForeignKey(
-        "Country", verbose_name=u"Країна народження", blank=True, null=True,
-        related_name="born_in")
-    city_of_birth = models.CharField(u"Місто", max_length=30, blank=True)
+    # country_of_birth = select2.fields.ForeignKey(
+    #     "Country", verbose_name=u"Країна народження", blank=True, null=True,
+    #     related_name="born_in")
+    city_of_birth = models.CharField(
+        u"Місто народження", max_length=30, blank=True)
     registration = models.TextField(
         u"Офіційне місце реєстрації (внутрішне поле)", blank=True)
 
-    # TBA: just countries?
-    # places_of_living = models.ManyToManyField("Country")
+    related_countries = models.ManyToManyField(
+        "Country", verbose_name=u"Пов'язані країни",
+        through="Person2Country", related_name="people")
 
     passport_id = models.CharField(
         u"Паспорт або інший документ (внутрішне поле)", max_length=20,
@@ -35,10 +37,6 @@ class Person(models.Model):
     id_number = models.CharField(
         u"Ідентифікаційний номер (внутрішне поле)", max_length=10,
         blank=True)
-
-    citizenship = models.ForeignKey(
-        "Country", verbose_name=u"Громадянство", blank=True, null=True,
-        related_name="citizens")
 
     reputation_sanctions = models.TextField(
         u"Наявність санкцій", blank=True)
@@ -66,7 +64,7 @@ class Person(models.Model):
         choices=(
             (1, "Національний публічний діяч"),
             (2, "Іноземний публічний діяч"),
-            (u"3",
+            (3,
              u"Діяч, що виконуює значні функції в міжнародній організації"),
             (4, "Пов'язана особа"),
             (5, "Близька особа"),
@@ -82,8 +80,7 @@ class Person(models.Model):
             (u"medium", u"Середній"),
             (u"low", u"Низький"),
         ),
-        max_length=6,
-        blank=True)
+        max_length=6, default=u"low")
 
     def __unicode__(self):
         return u"%s %s %s" % (self.last_name, self.first_name, self.patronymic)
@@ -94,25 +91,72 @@ class Person(models.Model):
 
 
 class Person2Person(models.Model):
-    from_person = models.ForeignKey(
-        "Person", verbose_name=u"Від персони", related_name="to_persons")
-    to_person = models.ForeignKey(
-        "Person", verbose_name=u"До персони", related_name="from_persons")
+    _relationships_explained = {
+        u"чоловік": [u"дружина"],
+        u"дружина": [u"чоловік"],
+        u"батько": [u"син", u"дочка"],
+        u"мати": [u"син", u"дочка"],
+        u"вітчим": [u"пасинок", u"падчерка"],
+        u"мачуха": [u"пасинок", u"падчерка"],
+        u"син": [u"батько", u"мати"],
+        u"дочка": [u"батько", u"мати"],
+        u"пасинок": [u"вітчим", u"мачуха"],
+        u"падчерка": [u"вітчим", u"мачуха"],
+        u"рідний брат": [u"рідна сестра", u"рідний брат"],
+        u"рідна сестра": [u"рідна сестра", u"рідний брат"],
+        u"дід": [u"внук", u"внучка"],
+        u"баба": [u"внук", u"внучка"],
+        u"прадід": [u"правнук", u"правнучка"],
+        u"прабаба": [u"правнук", u"правнучка"],
+        u"внук": [u"дід", u"баба"],
+        u"внучка": [u"дід", u"баба"],
+        u"правнук": [u"прадід", u"прабаба"],
+        u"правнучка": [u"прадід", u"прабаба"],
+        u"усиновлювач": [u"усиновлений"],
+        u"усиновлений": [u"усиновлювач"],
+        u"опікун чи піклувальник": [
+            u"особа, яка перебуває під опікою або піклуванням"],
+        u"особа, яка перебуває під опікою або піклуванням": [
+            u"опікун чи піклувальник"],
+        u"особи, які спільно проживають": [u"особи, які спільно проживають"],
+        u"пов'язані спільним побутом і мають взаємні права та обов'язки": [
+            u"пов'язані спільним побутом і мають взаємні права та обов'язки"],
+        u"ділові зв'язки": [u"ділові зв'язки"],
+        u"особисті зв'язки": [u"особисті зв'язки"]
+    }
 
-    relationship_type = models.CharField(
-        u"Тип зв'язку",
-        choices=((u"1", u"Тип 1"), (u"2", u"Тип 2")), max_length=30,
+    from_person = models.ForeignKey(
+        "Person", verbose_name=u"Персона 1", related_name="to_persons")
+    to_person = models.ForeignKey(
+        "Person", verbose_name=u"Персона 2", related_name="from_persons")
+
+    from_relationship_type = models.CharField(
+        u"Персона 1 є",
+        choices=(zip(_relationships_explained.keys(),
+                     _relationships_explained.keys())),
+        max_length=100,
+        blank=True)
+
+    to_relationship_type = models.CharField(
+        u"Персона 2 є",
+        choices=(zip(_relationships_explained.keys(),
+                     _relationships_explained.keys())),
+        max_length=100,
         blank=True)
 
     date_established = models.DateField(
         u"Коли почався зв'язок", blank=True, null=True)
     date_finished = models.DateField(
         u"Коли скінчився зв'язок", blank=True, null=True)
+    proof_title = models.CharField(
+        u"Назва доказу зв'язку", blank=True, max_length=100,
+        help_text=u"Наприклад: склад ВР 7-го скликання")
     proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
 
     def __unicode__(self):
-        return u"%s (%s)" % (
-            self.to_person, self.get_relationship_type_display())
+        return u"%s (%s) -> %s (%s)" % (
+            self.from_person, self.get_from_relationship_type_display(),
+            self.to_person, self.get_to_relationship_type_display())
 
     class Meta:
         verbose_name = u"Зв'язок з іншою персоною"
@@ -120,23 +164,62 @@ class Person2Person(models.Model):
 
 
 class Person2Company(models.Model):
+    _relationships_explained = [
+        u"Президент",
+        u"Прем’єр-міністр",
+        u"Міністр",
+        u"Перший заступник міністра",
+        u"Заступник міністра",
+        u"Керівник",
+        u"Перший заступник керівника",
+        u"Заступник керівника",
+        u"Народний депутат",
+        u"Голова",
+        u"Заступник Голови",
+        u"Член Правління",
+        u"Член Ради",
+        u"Суддя",
+        u"Член",
+        u"Генеральний прокурор",
+        u"Заступник Генерального прокурора",
+        u"Надзвичайний і повноважний посол",
+        u"Головнокомандувач",
+        u"Службовець першої категорії посад",
+        u"Член центрального статутного органу",
+        u"Повірений у справах",
+        u"Засновник",
+        u"Бенефіціарний власник",
+        u"Номінальний власник",
+        u"Керуючий"
+    ]
+
     from_person = models.ForeignKey("Person")
-    to_company = models.ForeignKey("Company")
+    to_company = models.ForeignKey(
+        "Company", verbose_name=u"Компанія або установа")
 
     date_established = models.DateField(
         u"Коли почався зв'язок", blank=True, null=True)
     date_finished = models.DateField(
         u"Коли скінчився зв'язок", blank=True, null=True)
+
+    proof_title = models.CharField(
+        u"Назва доказу зв'язку", blank=True, max_length=100,
+        help_text=u"Наприклад: склад ВР 7-го скликання")
     proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
 
     relationship_type = models.CharField(
         u"Тип зв'язку",
-        choices=((u"1", u"Тип 1"), (u"2", u"Тип 2")), max_length=30,
+        choices=zip(_relationships_explained, _relationships_explained),
+        max_length=60,
         blank=True)
 
+    def __unicode__(self):
+        return u"%s (%s)" % (
+            self.to_company, self.get_relationship_type_display())
+
     class Meta:
-        verbose_name = u"Зв'язок з компанією"
-        verbose_name_plural = u"Зв'язки з компаніями"
+        verbose_name = u"Зв'язок з компанією/установою"
+        verbose_name_plural = u"Зв'язки з компаніями/установами"
 
 
 class Company(models.Model):
@@ -172,6 +255,9 @@ class Company(models.Model):
     related_companies = models.ManyToManyField(
         "self", through="Company2Company", symmetrical=False)
 
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         verbose_name = u"Юрідична особа"
         verbose_name_plural = u"Юрідичні особи"
@@ -184,6 +270,10 @@ class Company2Company(models.Model):
         u"Коли почався зв'язок", blank=True, null=True)
     date_finished = models.DateField(
         u"Коли скінчився зв'язок", blank=True, null=True)
+
+    proof_title = models.CharField(
+        u"Назва доказу зв'язку", blank=True, max_length=100,
+        help_text=u"Наприклад: виписка з реєстру")
     proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
 
     relationship_type = models.CharField(
@@ -196,11 +286,45 @@ class Company2Company(models.Model):
         verbose_name_plural = u"Зв'язки з компаніями"
 
 
+class Person2Country(models.Model):
+    from_person = models.ForeignKey("Person", verbose_name=u"Персона")
+    to_country = models.ForeignKey("Country", verbose_name=u"Країна")
+    date_established = models.DateField(
+        u"Коли почався зв'язок", blank=True, null=True)
+    date_finished = models.DateField(
+        u"Коли скінчився зв'язок", blank=True, null=True)
+
+    proof_title = models.CharField(
+        u"Назва доказу зв'язку", blank=True, max_length=100,
+        help_text=u"Наприклад: офіційна відповідь")
+    proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
+
+    relationship_type = models.CharField(
+        u"Тип зв'язку",
+        choices=(
+            (u"born_in", u"Народився(-лась)"),
+            (u"registered_in", u"Зареєстрований(-а)"),
+            (u"lived_in", u"Проживав(-ла)"),
+            (u"citizenship", u"Громадянин(-ка)"),
+        ),
+
+        max_length=30,
+        blank=False)
+
+    def __unicode__(self):
+        return u"%s у %s" % (
+            self.get_relationship_type_display(), self.to_country)
+
+    class Meta:
+        verbose_name = u"Зв'язок з країною"
+        verbose_name_plural = u"Зв'язки з країнами"
+
+
 class Country(models.Model):
     name = models.CharField(u"Назва", max_length=30)
     iso2 = models.CharField(u"iso2 код", max_length=2, blank=True)
     iso3 = models.CharField(u"iso3 код", max_length=3, blank=True)
-    is_jurisdiction = models.BooleanField(u"Не є страною", default=False)
+    is_jurisdiction = models.BooleanField(u"Не є країною", default=False)
 
     def __unicode__(self):
         return self.name
@@ -212,10 +336,14 @@ class Country(models.Model):
 
 class Document(models.Model):
     doc = models.FileField(u"Файл")
+    name = models.CharField(u"Людська назва", max_length=255)
     uploaded = models.DateTimeField(u"Був завантажений", auto_now=True)
     source = models.CharField(u"Першоджерело", blank=True, max_length=255)
     uploader = models.ForeignKey(User, verbose_name=u"Хто завантажив")
     comments = models.TextField(u"Коментарі", blank=True)
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         verbose_name = u"Документ"
