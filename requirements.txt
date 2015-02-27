@@ -7,3 +7,4 @@ psycopg2==2.6
 django-select2-forms==1.1.18
 pytz==2014.10
 django-modeltranslation==0.8
+unicodecsv==0.9.4
