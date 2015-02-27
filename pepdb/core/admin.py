@@ -1,5 +1,6 @@
 # coding: utf-8
 from django.contrib import admin
+from modeltranslation.admin import TranslationAdmin
 
 from core.models import (
     Country, Person, Company, Person2Person, Document, Person2Country,
@@ -73,7 +74,10 @@ class CompanyAdmin(admin.ModelAdmin):
     inlines = (Company2PersonInline, )
 
 
+class CountryAdmin(TranslationAdmin):
+    pass
+
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Company, CompanyAdmin)
-admin.site.register(Country)
+admin.site.register(Country, CountryAdmin)
 admin.site.register(Document)

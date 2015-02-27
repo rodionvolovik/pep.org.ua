@@ -321,7 +321,7 @@ class Person2Country(models.Model):
 
 
 class Country(models.Model):
-    name = models.CharField(u"Назва", max_length=30)
+    name = models.CharField(u"Назва", max_length=100)
     iso2 = models.CharField(u"iso2 код", max_length=2, blank=True)
     iso3 = models.CharField(u"iso3 код", max_length=3, blank=True)
     is_jurisdiction = models.BooleanField(u"Не є країною", default=False)

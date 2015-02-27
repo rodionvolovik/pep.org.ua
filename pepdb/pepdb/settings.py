@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -75,6 +76,12 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
 LANGUAGE_CODE = 'uk-ua'
+
+gettext = lambda s: s
+LANGUAGES = (
+    ('ua', gettext('Ukrainian')),
+    ('en', gettext('English')),
+)
 
 TIME_ZONE = 'Europe/Kiev'
 
