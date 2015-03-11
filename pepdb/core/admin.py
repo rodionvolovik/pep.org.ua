@@ -1,10 +1,10 @@
 # coding: utf-8
 from django.contrib import admin
-from modeltranslation.admin import TranslationAdmin
+from grappelli_modeltranslation.admin import TranslationAdmin
 
 from core.models import (
     Country, Person, Company, Person2Person, Document, Person2Country,
-    Person2Company)
+    Person2Company, Company2Company, Company2Country, Ua2RuDictionary)
 
 
 class Person2PersonInline(admin.TabularInline):
@@ -17,16 +17,24 @@ class Person2PersonInline(admin.TabularInline):
 
 class Person2PersonBackInline(admin.TabularInline):
     verbose_name = u"Зворотній зв'язок з іншою персоною"
-    verbose_name_plural = u"Зворотній зв'язки з іншими персонами"
+    verbose_name_plural = u"Зворотні зв'язки з іншими персонами"
     model = Person2Person
     fk_name = "to_person"
-    extra = 1
+    extra = 0
+    max_num = 0
     fields = ["from_person", "from_relationship_type", "to_relationship_type",
               "date_established", "date_finished", "proof_title", "proof"]
 
 
 class Person2CountryInline(admin.TabularInline):
     model = Person2Country
+    extra = 1
+    fields = ["relationship_type", "to_country", "date_established",
+              "date_finished", "proof_title", "proof"]
+
+
+class Company2CountryInline(admin.TabularInline):
+    model = Company2Country
     extra = 1
     fields = ["relationship_type", "to_country", "date_established",
               "date_finished", "proof_title", "proof"]
@@ -40,7 +48,18 @@ class Person2CompanyInline(admin.TabularInline):
 
 
 class Company2PersonInline(admin.TabularInline):
+    verbose_name = u"Зв'язок з іншою персоною"
+    verbose_name_plural = u"Зв'язки з іншими персонами"
+
     model = Person2Company
+    fk_name = "to_company"
+    extra = 1
+    fields = ["relationship_type", "to_company", "date_established",
+              "date_finished", "proof_title", "proof"]
+
+
+class Company2CompanyInline(admin.TabularInline):
+    model = Company2Company
     fk_name = "to_company"
     extra = 1
     fields = ["relationship_type", "to_company", "date_established",
@@ -50,6 +69,9 @@ class Company2PersonInline(admin.TabularInline):
 class PersonAdmin(admin.ModelAdmin):
     inlines = (Person2PersonInline, Person2PersonBackInline,
                Person2CountryInline, Person2CompanyInline)
+
+    list_display = ("last_name", "first_name", "patronymic", "is_pep", "dob",
+                    "type_of_official")
 
     fieldsets = [
         (u"Загальна інформація", {
@@ -71,13 +93,24 @@ class PersonAdmin(admin.ModelAdmin):
 
 
 class CompanyAdmin(admin.ModelAdmin):
-    inlines = (Company2PersonInline, )
+    inlines = (Company2PersonInline, Company2CompanyInline,
+               Company2CountryInline)
+    list_display = ("name", "edrpou", "state_company")
+
+
+class Ua2RuDictionaryAdmin(admin.ModelAdmin):
+    list_display = ("term", "translation", "alt_translation", "comments")
 
 
 class CountryAdmin(TranslationAdmin):
+    list_display = ("name_ua", "name_en", "iso2", "iso3", "is_jurisdiction")
+
+
+class DocumentAdmin(TranslationAdmin):
     pass
 
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(Country, CountryAdmin)
-admin.site.register(Document)
+admin.site.register(Document, DocumentAdmin)
+admin.site.register(Ua2RuDictionary, Ua2RuDictionaryAdmin)

@@ -82,6 +82,8 @@ class Person(models.Model):
         ),
         max_length=6, default=u"low")
 
+    hash = models.CharField(u"Хеш", max_length=40, blank=True)
+
     def __unicode__(self):
         return u"%s %s %s" % (self.last_name, self.first_name, self.patronymic)
 
@@ -223,19 +225,20 @@ class Person2Company(models.Model):
 
 
 class Company(models.Model):
-    name = models.CharField(u"Повна назва", max_length=100)
+    name = models.CharField(u"Повна назва", max_length=255)
     state_company = models.BooleanField(
         u"Є державною установою", default=True)
 
-    edrpou = models.CharField(u"ЄДРПОУ/ідентифікаційний код", max_length=10)
-    # TBA: link to jurisdiction here
+    edrpou = models.CharField(
+        u"ЄДРПОУ/ідентифікаційний код", max_length=10, blank=True)
+
     zip_code = models.CharField(u"Індекс", max_length=10, blank=True)
     city = models.CharField(u"Місто", max_length=30, blank=True)
     street = models.CharField(u"Вулиця", max_length=50, blank=True)
     appt = models.CharField(u"№ будинку, офісу", max_length=10, blank=True)
 
     other_founders = models.TextField(
-        u"Інши засновники",
+        u"Інші засновники",
         help_text=u"Через кому, не PEP", blank=True)
 
     other_recipient = models.CharField(
@@ -243,11 +246,11 @@ class Company(models.Model):
         max_length=100)
 
     other_owners = models.TextField(
-        u"Інши власники",
+        u"Інші власники",
         help_text=u"Через кому, не PEP", blank=True)
 
     other_managers = models.TextField(
-        u"Інши керуючі",
+        u"Інші керуючі",
         help_text=u"Через кому, не PEP", blank=True)
 
     bank_name = models.CharField(u"Назва банку", blank=True, max_length=100)
@@ -264,6 +267,14 @@ class Company(models.Model):
 
 
 class Company2Company(models.Model):
+    _relationships_explained = [
+        u"Власник",
+        u"Співвласник",
+        u"Споріднена",
+        u"Кредитор (фінансовий партнер)",
+        u"Надавач професійних послуг",
+    ]
+
     from_company = models.ForeignKey("Company", related_name="to_companies")
     to_company = models.ForeignKey("Company", related_name="from_companies")
     date_established = models.DateField(
@@ -278,7 +289,8 @@ class Company2Company(models.Model):
 
     relationship_type = models.CharField(
         u"Тип зв'язку",
-        choices=((u"1", u"Тип 1"), (u"2", u"Тип 2")), max_length=30,
+        choices=zip(_relationships_explained, _relationships_explained),
+        max_length=30,
         blank=True)
 
     class Meta:
@@ -306,6 +318,37 @@ class Person2Country(models.Model):
             (u"registered_in", u"Зареєстрований(-а)"),
             (u"lived_in", u"Проживав(-ла)"),
             (u"citizenship", u"Громадянин(-ка)"),
+        ),
+
+        max_length=30,
+        blank=False)
+
+    def __unicode__(self):
+        return u"%s у %s" % (
+            self.get_relationship_type_display(), self.to_country)
+
+    class Meta:
+        verbose_name = u"Зв'язок з країною"
+        verbose_name_plural = u"Зв'язки з країнами"
+
+
+class Company2Country(models.Model):
+    from_company = models.ForeignKey("Company", verbose_name=u"Компанія")
+    to_country = models.ForeignKey("Country", verbose_name=u"Країна")
+    date_established = models.DateField(
+        u"Коли почався зв'язок", blank=True, null=True)
+    date_finished = models.DateField(
+        u"Коли скінчився зв'язок", blank=True, null=True)
+
+    proof_title = models.CharField(
+        u"Назва доказу зв'язку", blank=True, max_length=100,
+        help_text=u"Наприклад: витяг")
+    proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
+
+    relationship_type = models.CharField(
+        u"Тип зв'язку",
+        choices=(
+            (u"registered_in", u"Зареєстрована"),
         ),
 
         max_length=30,
@@ -348,3 +391,18 @@ class Document(models.Model):
     class Meta:
         verbose_name = u"Документ"
         verbose_name_plural = u"Документи"
+
+
+class Ua2RuDictionary(models.Model):
+    term = models.CharField(u"Термін", max_length=255)
+    translation = models.CharField(u"Переклад російською", max_length=255)
+    alt_translation = models.CharField(
+        u"Альтернативний переклад", max_length=255, blank=True)
+    comments = models.CharField(u"Коментарі", blank=True, max_length=100)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = u"Переклад російською"
+        verbose_name_plural = u"Переклади російською"
