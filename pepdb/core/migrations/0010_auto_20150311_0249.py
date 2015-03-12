@@ -16,12 +16,19 @@ def title(s):
 
 
 def parse_date(s):
-    return parser.parse(s, default=datetime(1970, 1, 1)).date()
+    try:
+        if s == "-" or not s:
+            return None
+
+        return parser.parse(s, default=datetime(1970, 1, 1)).date()
+    except ValueError:
+        return None
 
 
 def load_peps(apps, schema_editor):
     Company = apps.get_model("core", "Company")
     Person = apps.get_model("core", "Person")
+    Person2Company = apps.get_model("core", "Person2Company")
 
     with open("core/dicts/peps.csv", "r") as fp:
         r = DictReader(fp, errors="ignore")
@@ -65,7 +72,6 @@ def load_peps(apps, schema_editor):
 
             person_name = l.get("ПІБ", "")
             person_dob = l.get("Дата народження", "").strip()
-
             person_from = l.get("Дата призначення", "").strip()
             person_to = l.get("Дата звільнення", "").strip()
 
@@ -99,6 +105,13 @@ def load_peps(apps, schema_editor):
                     person.dob = parse_date(person_dob)
 
                 person.save()
+
+                Person2Company.objects.update_or_create(
+                    from_person=person,
+                    to_company=company,
+                    date_established=parse_date(person_from),
+                    date_finished=parse_date(person_to)
+                )
 
 
 class Migration(migrations.Migration):

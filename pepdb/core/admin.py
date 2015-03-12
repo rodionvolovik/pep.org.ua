@@ -72,6 +72,7 @@ class PersonAdmin(admin.ModelAdmin):
 
     list_display = ("last_name", "first_name", "patronymic", "is_pep", "dob",
                     "type_of_official")
+    readonly_fields = ('names',)
 
     fieldsets = [
         (u"Загальна інформація", {
@@ -80,7 +81,7 @@ class PersonAdmin(admin.ModelAdmin):
                        'registration']}),
 
         (u'Додаткова інформація', {
-            'fields': ['type_of_official', 'risk_category']}),
+            'fields': ['type_of_official', 'risk_category', 'names']}),
 
         (u'Ділова репутація', {
             'fields': ['reputation_sanctions', 'reputation_crimes',
