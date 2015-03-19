@@ -14,6 +14,11 @@ class Person2PersonInline(admin.TabularInline):
     fields = ["from_relationship_type", "to_person", "to_relationship_type",
               "date_established", "date_finished", "proof_title", "proof"]
 
+    raw_id_fields = ('to_person',)
+    autocomplete_lookup_fields = {
+        'fk': ['to_person'],
+    }
+
 
 class Person2PersonBackInline(admin.TabularInline):
     verbose_name = u"Зворотній зв'язок з іншою персоною"
@@ -60,7 +65,7 @@ class Company2PersonInline(admin.TabularInline):
 
 class Company2CompanyInline(admin.TabularInline):
     model = Company2Company
-    fk_name = "to_company"
+    fk_name = "from_company"
     extra = 1
     fields = ["relationship_type", "to_company", "date_established",
               "date_finished", "proof_title", "proof"]

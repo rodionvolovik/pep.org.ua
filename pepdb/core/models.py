@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 class Person(models.Model):
     last_name = models.CharField(u"Прізвище", max_length=30)
     first_name = models.CharField(u"Ім'я", max_length=30)
-    patronymic = models.CharField(u"По-батькові", max_length=30)
+    patronymic = models.CharField(u"По-батькові", max_length=30, blank=True)
     is_pep = models.BooleanField(u"Є PEPом", default=True)
 
     photo = models.ImageField(u"Світлина", blank=True)
@@ -83,6 +83,11 @@ class Person(models.Model):
         max_length=6, default=u"low")
 
     hash = models.CharField(u"Хеш", max_length=40, blank=True)
+
+    @staticmethod
+    def autocomplete_search_fields():
+        # TODO: indexes
+        return ("id__iexact", "last_name__icontains", "first_name__icontains")
 
     def __unicode__(self):
         return u"%s %s %s" % (self.last_name, self.first_name, self.patronymic)
@@ -318,6 +323,7 @@ class Person2Country(models.Model):
             (u"registered_in", u"Зареєстрований(-а)"),
             (u"lived_in", u"Проживав(-ла)"),
             (u"citizenship", u"Громадянин(-ка)"),
+            (u"business", u"Має зареєстрований бізнес")
         ),
 
         max_length=30,
