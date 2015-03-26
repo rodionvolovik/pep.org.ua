@@ -7,6 +7,16 @@ from core.models import (
     Person2Company, Company2Company, Company2Country, Ua2RuDictionary)
 
 
+def make_published(modeladmin, request, queryset):
+    queryset.update(publish=True)
+make_published.short_description = "Опублікувати"
+
+
+def make_unpublished(modeladmin, request, queryset):
+    queryset.update(publish=False)
+make_unpublished.short_description = "Приховати"
+
+
 class Person2PersonInline(admin.TabularInline):
     model = Person2Person
     fk_name = "from_person"
@@ -51,6 +61,11 @@ class Person2CompanyInline(admin.TabularInline):
     fields = ["relationship_type", "to_company", "date_established",
               "date_finished", "proof_title", "proof"]
 
+    raw_id_fields = ('to_company',)
+    autocomplete_lookup_fields = {
+        'fk': ['to_company'],
+    }
+
 
 class Company2PersonInline(admin.TabularInline):
     verbose_name = u"Зв'язок з іншою персоною"
@@ -59,8 +74,13 @@ class Company2PersonInline(admin.TabularInline):
     model = Person2Company
     fk_name = "to_company"
     extra = 1
-    fields = ["relationship_type", "to_company", "date_established",
+    fields = ["from_person", "relationship_type", "date_established",
               "date_finished", "proof_title", "proof"]
+
+    raw_id_fields = ('from_person',)
+    autocomplete_lookup_fields = {
+        'fk': ['from_person'],
+    }
 
 
 class Company2CompanyInline(admin.TabularInline):
@@ -70,20 +90,27 @@ class Company2CompanyInline(admin.TabularInline):
     fields = ["relationship_type", "to_company", "date_established",
               "date_finished", "proof_title", "proof"]
 
+    raw_id_fields = ('to_company',)
+    autocomplete_lookup_fields = {
+        'fk': ['to_company'],
+    }
+
 
 class PersonAdmin(admin.ModelAdmin):
     inlines = (Person2PersonInline, Person2PersonBackInline,
                Person2CountryInline, Person2CompanyInline)
 
     list_display = ("last_name", "first_name", "patronymic", "is_pep", "dob",
-                    "type_of_official")
+                    "type_of_official", "publish")
     readonly_fields = ('names',)
+    search_fields = ['last_name', "first_name", "patronymic", "names"]
+    actions = [make_published, make_unpublished]
 
     fieldsets = [
         (u"Загальна інформація", {
             'fields': ['last_name', 'first_name', 'patronymic', 'is_pep',
                        'photo', 'dob', 'city_of_birth',
-                       'registration']}),
+                       'registration', "publish"]}),
 
         (u'Додаткова інформація', {
             'fields': ['type_of_official', 'risk_category', 'names']}),
@@ -101,7 +128,9 @@ class PersonAdmin(admin.ModelAdmin):
 class CompanyAdmin(admin.ModelAdmin):
     inlines = (Company2PersonInline, Company2CompanyInline,
                Company2CountryInline)
-    list_display = ("name", "edrpou", "state_company")
+    list_display = ("name", "edrpou", "state_company", "publish")
+    search_fields = ["name", "short_name", "edrpou"]
+    actions = [make_published, make_unpublished]
 
 
 class Ua2RuDictionaryAdmin(admin.ModelAdmin):

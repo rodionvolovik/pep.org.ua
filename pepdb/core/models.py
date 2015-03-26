@@ -10,13 +10,13 @@ class Person(models.Model):
     last_name = models.CharField(u"Прізвище", max_length=30)
     first_name = models.CharField(u"Ім'я", max_length=30)
     patronymic = models.CharField(u"По-батькові", max_length=30, blank=True)
+
+    publish = models.BooleanField(u"Опублікувати", default=False)
     is_pep = models.BooleanField(u"Є PEPом", default=True)
 
     photo = models.ImageField(u"Світлина", blank=True)
     dob = models.DateField(u"Дата народження", blank=True, null=True)
-    # country_of_birth = select2.fields.ForeignKey(
-    #     "Country", verbose_name=u"Країна народження", blank=True, null=True,
-    #     related_name="born_in")
+
     city_of_birth = models.CharField(
         u"Місто народження", max_length=30, blank=True)
     registration = models.TextField(
@@ -86,7 +86,6 @@ class Person(models.Model):
 
     @staticmethod
     def autocomplete_search_fields():
-        # TODO: indexes
         return ("id__iexact", "last_name__icontains", "first_name__icontains")
 
     def __unicode__(self):
@@ -95,6 +94,10 @@ class Person(models.Model):
     class Meta:
         verbose_name = u"Фізична особа"
         verbose_name_plural = u"Фізичні особи"
+
+        index_together = [
+            ["last_name", "first_name"],
+        ]
 
 
 class Person2Person(models.Model):
@@ -231,16 +234,22 @@ class Person2Company(models.Model):
 
 class Company(models.Model):
     name = models.CharField(u"Повна назва", max_length=255)
+    short_name = models.CharField(u"Скорочена назва", max_length=50,
+                                  blank=True)
+
+    publish = models.BooleanField(u"Опублікувати", default=False)
+    founded = models.DateField(u"Дата створення", blank=True, null=True)
+
     state_company = models.BooleanField(
-        u"Є державною установою", default=True)
+        u"Є державною установою", default=False)
 
     edrpou = models.CharField(
         u"ЄДРПОУ/ідентифікаційний код", max_length=10, blank=True)
 
     zip_code = models.CharField(u"Індекс", max_length=10, blank=True)
-    city = models.CharField(u"Місто", max_length=30, blank=True)
-    street = models.CharField(u"Вулиця", max_length=50, blank=True)
-    appt = models.CharField(u"№ будинку, офісу", max_length=10, blank=True)
+    city = models.CharField(u"Місто", max_length=255, blank=True)
+    street = models.CharField(u"Вулиця", max_length=100, blank=True)
+    appt = models.CharField(u"№ будинку, офісу", max_length=50, blank=True)
 
     other_founders = models.TextField(
         u"Інші засновники",
@@ -263,8 +272,12 @@ class Company(models.Model):
     related_companies = models.ManyToManyField(
         "self", through="Company2Company", symmetrical=False)
 
+    @staticmethod
+    def autocomplete_search_fields():
+        return ("id__iexact", "short_name__icontains", "name__icontains")
+
     def __unicode__(self):
-        return self.name
+        return self.short_name or self.name
 
     class Meta:
         verbose_name = u"Юрідична особа"
@@ -278,6 +291,17 @@ class Company2Company(models.Model):
         u"Споріднена",
         u"Кредитор (фінансовий партнер)",
         u"Надавач професійних послуг",
+        u"Клієнт",
+        u"Виконавець",
+        u"Замовник",
+        u"Підрядник",
+        u"Субпідрядник",
+        u"Постачальник",
+        u"Орендар",
+        u"Орендодавець",
+        u"Контрагент",
+        u"Правонаступник",
+        u"Правовласник",
     ]
 
     from_company = models.ForeignKey("Company", related_name="to_companies")
