@@ -16,6 +16,14 @@ class Person(models.Model):
 
     photo = models.ImageField(u"Світлина", blank=True)
     dob = models.DateField(u"Дата народження", blank=True, null=True)
+    dob_details = models.IntegerField(
+        u"Дата народження: точність",
+        choices=(
+            (0, "Точна дата"),
+            (1, "Рік та місяць"),
+            (2, "Тільки рік"),
+        ),
+        default=0)
 
     city_of_birth = models.CharField(
         u"Місто народження", max_length=30, blank=True)
@@ -158,6 +166,9 @@ class Person2Person(models.Model):
         u"Коли почався зв'язок", blank=True, null=True)
     date_finished = models.DateField(
         u"Коли скінчився зв'язок", blank=True, null=True)
+    date_confirmed = models.DateField(
+        u"Дата підтвердження зв'язку", blank=True, null=True)
+
     proof_title = models.CharField(
         u"Назва доказу зв'язку", blank=True, max_length=100,
         help_text=u"Наприклад: склад ВР 7-го скликання")
@@ -211,6 +222,8 @@ class Person2Company(models.Model):
         u"Коли почався зв'язок", blank=True, null=True)
     date_finished = models.DateField(
         u"Коли скінчився зв'язок", blank=True, null=True)
+    date_confirmed = models.DateField(
+        u"Дата підтвердження зв'язку", blank=True, null=True)
 
     proof_title = models.CharField(
         u"Назва доказу зв'язку", blank=True, max_length=100,
@@ -310,6 +323,8 @@ class Company2Company(models.Model):
         u"Коли почався зв'язок", blank=True, null=True)
     date_finished = models.DateField(
         u"Коли скінчився зв'язок", blank=True, null=True)
+    date_confirmed = models.DateField(
+        u"Дата підтвердження зв'язку", blank=True, null=True)
 
     proof_title = models.CharField(
         u"Назва доказу зв'язку", blank=True, max_length=100,
@@ -321,6 +336,9 @@ class Company2Company(models.Model):
         choices=zip(_relationships_explained, _relationships_explained),
         max_length=30,
         blank=True)
+
+    equity_part = models.FloatField(
+        u"Частка власності (відсотки)", blank=True, null=True)
 
     class Meta:
         verbose_name = u"Зв'язок з компанією"
@@ -334,6 +352,8 @@ class Person2Country(models.Model):
         u"Коли почався зв'язок", blank=True, null=True)
     date_finished = models.DateField(
         u"Коли скінчився зв'язок", blank=True, null=True)
+    date_confirmed = models.DateField(
+        u"Дата підтвердження зв'язку", blank=True, null=True)
 
     proof_title = models.CharField(
         u"Назва доказу зв'язку", blank=True, max_length=100,
@@ -369,6 +389,8 @@ class Company2Country(models.Model):
         u"Коли почався зв'язок", blank=True, null=True)
     date_finished = models.DateField(
         u"Коли скінчився зв'язок", blank=True, null=True)
+    date_confirmed = models.DateField(
+        u"Дата підтвердження зв'язку", blank=True, null=True)
 
     proof_title = models.CharField(
         u"Назва доказу зв'язку", blank=True, max_length=100,
@@ -401,6 +423,10 @@ class Country(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    @staticmethod
+    def autocomplete_search_fields():
+        return ("name_en__icontains", "name_ua__icontains")
 
     class Meta:
         verbose_name = u"Країна/юрісдикція"

@@ -22,7 +22,8 @@ class Person2PersonInline(admin.TabularInline):
     fk_name = "from_person"
     extra = 1
     fields = ["from_relationship_type", "to_person", "to_relationship_type",
-              "date_established", "date_finished", "proof_title", "proof"]
+              "date_established", "date_finished", "date_confirmed",
+              "proof_title", "proof"]
 
     raw_id_fields = ('to_person',)
     autocomplete_lookup_fields = {
@@ -38,28 +39,39 @@ class Person2PersonBackInline(admin.TabularInline):
     extra = 0
     max_num = 0
     fields = ["from_person", "from_relationship_type", "to_relationship_type",
-              "date_established", "date_finished", "proof_title", "proof"]
+              "date_established", "date_finished", "date_confirmed",
+              "proof_title", "proof"]
 
 
 class Person2CountryInline(admin.TabularInline):
     model = Person2Country
     extra = 1
     fields = ["relationship_type", "to_country", "date_established",
-              "date_finished", "proof_title", "proof"]
+              "date_finished", "date_confirmed", "proof_title", "proof"]
+
+    raw_id_fields = ('to_country',)
+    autocomplete_lookup_fields = {
+        'fk': ['to_country'],
+    }
 
 
 class Company2CountryInline(admin.TabularInline):
     model = Company2Country
     extra = 1
     fields = ["relationship_type", "to_country", "date_established",
-              "date_finished", "proof_title", "proof"]
+              "date_finished", "date_confirmed", "proof_title", "proof"]
+
+    raw_id_fields = ('to_country',)
+    autocomplete_lookup_fields = {
+        'fk': ['to_country'],
+    }
 
 
 class Person2CompanyInline(admin.TabularInline):
     model = Person2Company
     extra = 1
     fields = ["relationship_type", "to_company", "date_established",
-              "date_finished", "proof_title", "proof"]
+              "date_finished", "date_confirmed", "proof_title", "proof"]
 
     raw_id_fields = ('to_company',)
     autocomplete_lookup_fields = {
@@ -75,7 +87,7 @@ class Company2PersonInline(admin.TabularInline):
     fk_name = "to_company"
     extra = 1
     fields = ["from_person", "relationship_type", "date_established",
-              "date_finished", "proof_title", "proof"]
+              "date_finished", "date_confirmed", "proof_title", "proof"]
 
     raw_id_fields = ('from_person',)
     autocomplete_lookup_fields = {
@@ -88,7 +100,8 @@ class Company2CompanyInline(admin.TabularInline):
     fk_name = "from_company"
     extra = 1
     fields = ["relationship_type", "to_company", "date_established",
-              "date_finished", "proof_title", "proof"]
+              "date_finished", "date_confirmed", "equity_part",
+              "proof_title", "proof"]
 
     raw_id_fields = ('to_company',)
     autocomplete_lookup_fields = {
@@ -109,7 +122,7 @@ class PersonAdmin(admin.ModelAdmin):
     fieldsets = [
         (u"Загальна інформація", {
             'fields': ['last_name', 'first_name', 'patronymic', 'is_pep',
-                       'photo', 'dob', 'city_of_birth',
+                       'photo', 'dob', 'dob_details', 'city_of_birth',
                        'registration', "publish"]}),
 
         (u'Додаткова інформація', {
