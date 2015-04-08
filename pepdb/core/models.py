@@ -26,7 +26,7 @@ class Person(models.Model):
         default=0)
 
     city_of_birth = models.CharField(
-        u"Місто народження", max_length=30, blank=True)
+        u"Місто народження", max_length=100, blank=True)
     registration = models.TextField(
         u"Офіційне місце реєстрації (внутрішне поле)", blank=True)
 
@@ -209,8 +209,12 @@ class Person2Company(models.Model):
         u"Член центрального статутного органу",
         u"Повірений у справах",
         u"Засновник",
+        u"Колишній засновник/учасник",
         u"Бенефіціарний власник",
         u"Номінальний власник",
+        u"Номінальний директор",
+        u"Фінансові зв'язки",
+        u"Секретар",
         u"Керуючий"
     ]
 
@@ -257,7 +261,7 @@ class Company(models.Model):
         u"Є державною установою", default=False)
 
     edrpou = models.CharField(
-        u"ЄДРПОУ/ідентифікаційний код", max_length=10, blank=True)
+        u"ЄДРПОУ/ідентифікаційний код", max_length=20, blank=True)
 
     zip_code = models.CharField(u"Індекс", max_length=10, blank=True)
     city = models.CharField(u"Місто", max_length=255, blank=True)

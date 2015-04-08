@@ -109,6 +109,16 @@ class Company2CompanyInline(admin.TabularInline):
     }
 
 
+class Company2CompanyBackInline(admin.TabularInline):
+    model = Company2Company
+    fk_name = "to_company"
+    extra = 0
+    max_num = 0
+    fields = ["relationship_type", "from_company", "date_established",
+              "date_finished", "date_confirmed", "equity_part",
+              "proof_title", "proof"]
+
+
 class PersonAdmin(admin.ModelAdmin):
     inlines = (Person2PersonInline, Person2PersonBackInline,
                Person2CountryInline, Person2CompanyInline)
@@ -140,7 +150,7 @@ class PersonAdmin(admin.ModelAdmin):
 
 class CompanyAdmin(admin.ModelAdmin):
     inlines = (Company2PersonInline, Company2CompanyInline,
-               Company2CountryInline)
+               Company2CompanyBackInline, Company2CountryInline)
     list_display = ("name", "edrpou", "state_company", "publish")
     search_fields = ["name", "short_name", "edrpou"]
     actions = [make_published, make_unpublished]
