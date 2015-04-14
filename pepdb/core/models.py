@@ -14,7 +14,7 @@ class Person(models.Model):
     publish = models.BooleanField(u"Опублікувати", default=False)
     is_pep = models.BooleanField(u"Є PEPом", default=True)
 
-    photo = models.ImageField(u"Світлина", blank=True)
+    photo = models.ImageField(u"Світлина", blank=True, upload_to="images")
     dob = models.DateField(u"Дата народження", blank=True, null=True)
     dob_details = models.IntegerField(
         u"Дата народження: точність",
@@ -169,8 +169,8 @@ class Person2Person(models.Model):
     date_confirmed = models.DateField(
         u"Дата підтвердження зв'язку", blank=True, null=True)
 
-    proof_title = models.CharField(
-        u"Назва доказу зв'язку", blank=True, max_length=100,
+    proof_title = models.TextField(
+        u"Назва доказу зв'язку", blank=True,
         help_text=u"Наприклад: склад ВР 7-го скликання")
     proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
 
@@ -208,7 +208,7 @@ class Person2Company(models.Model):
         u"Службовець першої категорії посад",
         u"Член центрального статутного органу",
         u"Повірений у справах",
-        u"Засновник",
+        u"Засновник/учасник",
         u"Колишній засновник/учасник",
         u"Бенефіціарний власник",
         u"Номінальний власник",
@@ -229,15 +229,15 @@ class Person2Company(models.Model):
     date_confirmed = models.DateField(
         u"Дата підтвердження зв'язку", blank=True, null=True)
 
-    proof_title = models.CharField(
-        u"Назва доказу зв'язку", blank=True, max_length=100,
+    proof_title = models.TextField(
+        u"Назва доказу зв'язку", blank=True,
         help_text=u"Наприклад: склад ВР 7-го скликання")
-    proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
+    proof = models.URLField(
+        u"Посилання на доказ зв'язку", blank=True, max_length=250)
 
-    relationship_type = models.CharField(
+    relationship_type = models.TextField(
         u"Тип зв'язку",
         choices=zip(_relationships_explained, _relationships_explained),
-        max_length=60,
         blank=True)
 
     def __unicode__(self):
@@ -330,8 +330,8 @@ class Company2Company(models.Model):
     date_confirmed = models.DateField(
         u"Дата підтвердження зв'язку", blank=True, null=True)
 
-    proof_title = models.CharField(
-        u"Назва доказу зв'язку", blank=True, max_length=100,
+    proof_title = models.TextField(
+        u"Назва доказу зв'язку", blank=True,
         help_text=u"Наприклад: виписка з реєстру")
     proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
 
@@ -359,8 +359,8 @@ class Person2Country(models.Model):
     date_confirmed = models.DateField(
         u"Дата підтвердження зв'язку", blank=True, null=True)
 
-    proof_title = models.CharField(
-        u"Назва доказу зв'язку", blank=True, max_length=100,
+    proof_title = models.TextField(
+        u"Назва доказу зв'язку", blank=True,
         help_text=u"Наприклад: офіційна відповідь")
     proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
 
@@ -371,7 +371,8 @@ class Person2Country(models.Model):
             (u"registered_in", u"Зареєстрований(-а)"),
             (u"lived_in", u"Проживав(-ла)"),
             (u"citizenship", u"Громадянин(-ка)"),
-            (u"business", u"Має зареєстрований бізнес")
+            (u"business", u"Має зареєстрований бізнес"),
+            (u"under_sanctions", u"Під санкціями"),
         ),
 
         max_length=30,
@@ -396,8 +397,8 @@ class Company2Country(models.Model):
     date_confirmed = models.DateField(
         u"Дата підтвердження зв'язку", blank=True, null=True)
 
-    proof_title = models.CharField(
-        u"Назва доказу зв'язку", blank=True, max_length=100,
+    proof_title = models.TextField(
+        u"Назва доказу зв'язку", blank=True,
         help_text=u"Наприклад: витяг")
     proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
 
@@ -405,6 +406,7 @@ class Company2Country(models.Model):
         u"Тип зв'язку",
         choices=(
             (u"registered_in", u"Зареєстрована"),
+            (u"under_sanctions", u"Під санкціями"),
         ),
 
         max_length=30,
@@ -438,11 +440,12 @@ class Country(models.Model):
 
 
 class Document(models.Model):
-    doc = models.FileField(u"Файл")
+    doc = models.FileField(u"Файл", upload_to="documents", max_length=1000)
     name = models.CharField(u"Людська назва", max_length=255)
     uploaded = models.DateTimeField(u"Був завантажений", auto_now=True)
     source = models.CharField(u"Першоджерело", blank=True, max_length=255)
     uploader = models.ForeignKey(User, verbose_name=u"Хто завантажив")
+    hash = models.CharField(u"Хеш", max_length=40, blank=True)
     comments = models.TextField(u"Коментарі", blank=True)
 
     def __unicode__(self):
