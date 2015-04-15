@@ -42,7 +42,9 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django_markdown',
 
+    'pipeline',
     'django_jinja',
+    'django_jinja.contrib._humanize',
 
     'core',
 )
@@ -111,7 +113,50 @@ DEFAULT_JINJA2_TEMPLATE_EXTENSION = '.jinja'
 
 STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_URL = '/media/'
+
+
+JINJA2_EXTENSIONS = ["pipeline.jinja2.ext.PipelineExtension"]
+
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'pipeline.finders.PipelineFinder',
+)
+
+PIPELINE_CSS = {
+    'css_all': {
+        'source_filenames': (
+            'css/bootstrap.min.css',
+            'css/ripples.min.css',
+            'css/animate.css',
+            'css/style.css',
+            'css/responsive.css',
+        ),
+        'output_filename': 'css/merged.css',
+        'extra_context': {
+            'media': 'screen,projection',
+        },
+    },
+}
+
+
+PIPELINE_JS = {
+    'js_all': {
+        'source_filenames': (
+            "js/jquery-1.10.2.js",
+            "js/bootstrap.min.js",
+            "js/bootstrap3-typeahead.min.js",
+            "js/ripples.min.js",
+            "js/pep.js",
+        ),
+        'output_filename': 'js/merged.js',
+    }
+}
+
+PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.uglifyjs.UglifyJSCompressor'
 
 
 try:
