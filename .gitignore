@@ -57,3 +57,5 @@ venv
 local_settings.py
 .DS_Store
 pepdb/core/dicts/peps.csv
+pepdb/core/dicts/new_peps.csv
+media

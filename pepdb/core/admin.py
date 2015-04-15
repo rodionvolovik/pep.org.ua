@@ -1,5 +1,6 @@
 # coding: utf-8
 from django.contrib import admin
+from django.conf import settings
 from grappelli_modeltranslation.admin import TranslationAdmin
 
 from core.models import (
@@ -165,7 +166,12 @@ class CountryAdmin(TranslationAdmin):
 
 
 class DocumentAdmin(TranslationAdmin):
-    pass
+    def link(self, obj):
+        return '<a href="{0}{1}" target="_blank">Лінк</a>'.format(settings.MEDIA_URL, obj.doc)
+    link.allow_tags = True
+    link.short_description = 'Завантажити'
+
+    list_display = ("name", "link", "uploader", "uploaded")
 
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Company, CompanyAdmin)
