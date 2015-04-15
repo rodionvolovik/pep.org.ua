@@ -4,6 +4,7 @@ import select2.fields
 import select2.models
 from django.db.models import Q
 from django.contrib.auth.models import User
+from django_markdown.models import MarkdownField
 
 
 class Person(models.Model):
@@ -64,7 +65,7 @@ class Person(models.Model):
     related_companies = models.ManyToManyField(
         "Company", through="Person2Company")
 
-    wiki = models.TextField(u"Вікі-стаття", blank=True)
+    wiki = MarkdownField(u"Вікі-стаття", blank=True)
     names = models.TextField(u"Варіанти написання імені", blank=True)
 
     type_of_official = models.IntegerField(
@@ -267,6 +268,8 @@ class Company(models.Model):
     city = models.CharField(u"Місто", max_length=255, blank=True)
     street = models.CharField(u"Вулиця", max_length=100, blank=True)
     appt = models.CharField(u"№ будинку, офісу", max_length=50, blank=True)
+
+    wiki = MarkdownField(u"Вікі-стаття", blank=True)
 
     other_founders = models.TextField(
         u"Інші засновники",

@@ -137,7 +137,7 @@ class PersonAdmin(admin.ModelAdmin):
                        'registration', "publish"]}),
 
         (u'Додаткова інформація', {
-            'fields': ['type_of_official', 'risk_category', 'names']}),
+            'fields': ['wiki', 'type_of_official', 'risk_category', 'names']}),
 
         (u'Ділова репутація', {
             'fields': ['reputation_sanctions', 'reputation_crimes',

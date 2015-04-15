@@ -14,3 +14,4 @@ python-dateutil==2.4.1
 requests==2.6.0
 translitua==1.1.0
 rfc6266==0.0.4
+django-markdown==0.8.4
