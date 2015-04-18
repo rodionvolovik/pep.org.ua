@@ -1,6 +1,9 @@
 # coding: utf-8
+import json
+from django import forms
 from django.contrib import admin
 from django.conf import settings
+
 from grappelli_modeltranslation.admin import TranslationAdmin
 
 from core.models import (
@@ -68,16 +71,34 @@ class Company2CountryInline(admin.TabularInline):
     }
 
 
+class Person2CompanyForm(forms.ModelForm):
+    class Meta:
+        model = Person2Company
+        widgets = {
+            'relationship_type': forms.Textarea(
+                attrs={
+                    'data-choices': json.dumps(
+                        Person2Company._relationships_explained),
+                    'class': "suggest"
+                })
+        }
+
+
 class Person2CompanyInline(admin.TabularInline):
     model = Person2Company
+    form = Person2CompanyForm
     extra = 1
     fields = ["relationship_type", "to_company", "date_established",
               "date_finished", "date_confirmed", "proof_title", "proof"]
 
     raw_id_fields = ('to_company',)
+
     autocomplete_lookup_fields = {
         'fk': ['to_company'],
     }
+
+    class Media:
+        js = ("js/init_autocompletes.js",)
 
 
 class Company2PersonInline(admin.TabularInline):

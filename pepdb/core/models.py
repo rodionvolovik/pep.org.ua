@@ -173,7 +173,7 @@ class Person2Person(models.Model):
     proof_title = models.TextField(
         u"Назва доказу зв'язку", blank=True,
         help_text=u"Наприклад: склад ВР 7-го скликання")
-    proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
+    proof = models.TextField(u"Посилання на доказ зв'язку", blank=True)
 
     def __unicode__(self):
         return u"%s (%s) -> %s (%s)" % (
@@ -233,17 +233,16 @@ class Person2Company(models.Model):
     proof_title = models.TextField(
         u"Назва доказу зв'язку", blank=True,
         help_text=u"Наприклад: склад ВР 7-го скликання")
-    proof = models.URLField(
+    proof = models.TextField(
         u"Посилання на доказ зв'язку", blank=True, max_length=250)
 
     relationship_type = models.TextField(
         u"Тип зв'язку",
-        choices=zip(_relationships_explained, _relationships_explained),
         blank=True)
 
     def __unicode__(self):
         return u"%s (%s)" % (
-            self.to_company, self.get_relationship_type_display())
+            self.to_company, self.relationship_type)
 
     class Meta:
         verbose_name = u"Зв'язок з компанією/установою"
@@ -336,7 +335,7 @@ class Company2Company(models.Model):
     proof_title = models.TextField(
         u"Назва доказу зв'язку", blank=True,
         help_text=u"Наприклад: виписка з реєстру")
-    proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
+    proof = models.TextField(u"Посилання на доказ зв'язку", blank=True)
 
     relationship_type = models.CharField(
         u"Тип зв'язку",
@@ -365,7 +364,7 @@ class Person2Country(models.Model):
     proof_title = models.TextField(
         u"Назва доказу зв'язку", blank=True,
         help_text=u"Наприклад: офіційна відповідь")
-    proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
+    proof = models.TextField(u"Посилання на доказ зв'язку", blank=True)
 
     relationship_type = models.CharField(
         u"Тип зв'язку",
@@ -403,7 +402,7 @@ class Company2Country(models.Model):
     proof_title = models.TextField(
         u"Назва доказу зв'язку", blank=True,
         help_text=u"Наприклад: витяг")
-    proof = models.URLField(u"Посилання на доказ зв'язку", blank=True)
+    proof = models.TextField(u"Посилання на доказ зв'язку", blank=True)
 
     relationship_type = models.CharField(
         u"Тип зв'язку",
