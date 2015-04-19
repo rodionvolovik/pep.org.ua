@@ -158,8 +158,20 @@ PIPELINE_JS = {
 
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.uglifyjs.UglifyJSCompressor'
 
+# Setup Elasticsearch default connection
+ELASTICSEARCH_CONNECTIONS = {
+    'default': {
+        'hosts': 'localhost',
+        'timeout': 20
+    }
+}
+
 
 try:
     from local_settings import *
 except ImportError:
     pass
+
+# Init Elasticsearch connections
+from elasticsearch_dsl import connections
+connections.connections.configure(**ELASTICSEARCH_CONNECTIONS)

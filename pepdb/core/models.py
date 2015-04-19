@@ -4,6 +4,7 @@ import select2.fields
 import select2.models
 from django.db.models import Q
 from django.contrib.auth.models import User
+from django.forms.models import model_to_dict
 from django_markdown.models import MarkdownField
 
 
@@ -100,6 +101,46 @@ class Person(models.Model):
     def __unicode__(self):
         return u"%s %s %s" % (self.last_name, self.first_name, self.patronymic)
 
+    def to_dict(self):
+        d = model_to_dict(self, fields=[
+            "id", "last_name", "first_name", "patronymic", "dob",
+            "dob_details", "city_of_birth", "is_pep", "wiki",
+            "reputation_sanctions", "reputation_convictions",
+            "reputation_crimes", "reputation_manhunt", "names",
+            "type_of_official"])
+
+        d["related_persons"] = [
+            i.to_dict()
+            for i in self.to_persons.select_related("Person")] + [
+            i.to_dict_reverse()
+            for i in self.from_persons.select_related("Person")
+        ]
+        d["related_countries"] = [
+            i.to_dict()
+            for i in self.person2country_set.select_related("Country")]
+        d["related_companies"] = [
+            i.to_company_dict()
+            for i in self.person2company_set.select_related("Company")]
+
+        d["photo"] = self.photo.url if self.photo else ""
+        d["full_name"] = u"%s %s %s" % (self.first_name, self.patronymic,
+                                        self.last_name)
+
+        d["full_name_suggest"] = {
+            "input": [
+                u" ".join([d["last_name"], d["first_name"],
+                           d["patronymic"]]),
+                u" ".join([d["first_name"],
+                           d["patronymic"],
+                           d["last_name"]]),
+                u" ".join([d["first_name"],
+                           d["last_name"]])
+            ],
+            "output": d["full_name"]
+        }
+
+        return d
+
     class Meta:
         verbose_name = u"Фізична особа"
         verbose_name_plural = u"Фізичні особи"
@@ -180,6 +221,24 @@ class Person2Person(models.Model):
             self.from_person, self.get_from_relationship_type_display(),
             self.to_person, self.get_to_relationship_type_display())
 
+    def to_dict(self):
+        return {
+            "relationship_type": self.to_relationship_type,
+            "person": u"%s %s %s" % (
+                self.to_person.first_name,
+                self.to_person.patronymic,
+                self.to_person.last_name)
+        }
+
+    def to_dict_reverse(self):
+        return {
+            "relationship_type": self.from_relationship_type,
+            "person": u"%s %s %s" % (
+                self.from_person.first_name,
+                self.from_person.patronymic,
+                self.from_person.last_name)
+        }
+
     class Meta:
         verbose_name = u"Зв'язок з іншою персоною"
         verbose_name_plural = u"Зв'язки з іншими персонами"
@@ -244,6 +303,21 @@ class Person2Company(models.Model):
         return u"%s (%s)" % (
             self.to_company, self.relationship_type)
 
+    def to_company_dict(self):
+        return {
+            "relationship_type": self.relationship_type,
+            "to_company": self.to_company.name,
+            "to_company_short": self.to_company.short_name
+        }
+
+    def to_person_dict(self):
+        return {
+            "relationship_type": self.relationship_type,
+            "name": u"%s %s %s" % (self.from_person.first_name,
+                                   self.from_person.patronymic,
+                                   self.from_person.last_name)
+        }
+
     class Meta:
         verbose_name = u"Зв'язок з компанією/установою"
         verbose_name_plural = u"Зв'язки з компаніями/установами"
@@ -298,6 +372,34 @@ class Company(models.Model):
     def __unicode__(self):
         return self.short_name or self.name
 
+    def to_dict(self):
+        d = model_to_dict(self, fields=[
+            "id", "name", "short_name", "state_company", "edrpou", "wiki",
+            "other_founders", "other_recipient", "other_owners",
+            "other_managers", "bank_name"])
+
+        d["related_persons"] = [
+            i.to_person_dict()
+            for i in self.person2company_set.select_related("Person")]
+
+        d["related_countries"] = [
+            i.to_dict()
+            for i in self.company2country_set.select_related("Country")]
+
+        d["related_companies"] = [
+            i.to_dict()
+            for i in self.to_companies.select_related("Company")] + [
+            i.to_dict_reverse()
+            for i in self.from_companies.select_related("Company")
+        ]
+
+        d["name_suggest"] = {
+            "input": filter(None, [d["name"], d["short_name"]]),
+            "output": d["name"]
+        }
+
+        return d
+
     class Meta:
         verbose_name = u"Юрідична особа"
         verbose_name_plural = u"Юрідичні особи"
@@ -346,6 +448,18 @@ class Company2Company(models.Model):
     equity_part = models.FloatField(
         u"Частка власності (відсотки)", blank=True, null=True)
 
+    def to_dict(self):
+        return {
+            "relationship_type": self.relationship_type,
+            "company": self.to_company.name
+        }
+
+    def to_dict_reverse(self):
+        return {
+            "relationship_type": self.relationship_type,
+            "company": self.from_company.name
+        }
+
     class Meta:
         verbose_name = u"Зв'язок з компанією"
         verbose_name_plural = u"Зв'язки з компаніями"
@@ -384,6 +498,12 @@ class Person2Country(models.Model):
         return u"%s у %s" % (
             self.get_relationship_type_display(), self.to_country)
 
+    def to_dict(self):
+        return {
+            "relationship_type": self.relationship_type,
+            "to_country": self.to_country.name
+        }
+
     class Meta:
         verbose_name = u"Зв'язок з країною"
         verbose_name_plural = u"Зв'язки з країнами"
@@ -413,6 +533,12 @@ class Company2Country(models.Model):
 
         max_length=30,
         blank=False)
+
+    def to_dict(self):
+        return {
+            "relationship_type": self.relationship_type,
+            "to_country": self.to_country.name
+        }
 
     def __unicode__(self):
         return u"%s у %s" % (

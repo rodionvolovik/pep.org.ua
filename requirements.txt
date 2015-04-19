@@ -16,3 +16,4 @@ translitua==1.1.0
 rfc6266==0.0.4
 django-markdown==0.8.4
 django-pipeline==1.4.7
+git+https://github.com/elastic/elasticsearch-dsl-py.git
