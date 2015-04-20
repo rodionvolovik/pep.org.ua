@@ -2,190 +2,85 @@
 
 {% block content %}
 <div class="container">
-	<div class="row">
-    
-  <div id="breadcrumbs">
-   	<ol class="breadcrumb">
-  		<li><a href="#">Головна</a></li>
-        <li><a href="#">Результати пошуку</a></li>
-		 <li class="active">Публічні діячі</li>
-	</ol> 
-   </div>
-   
-   
+    <div class="row">
+
+        <div id="breadcrumbs">
+            <ol class="breadcrumb">
+                <li><a href="#">Головна</a></li>
+                <li><a href="#">Результати пошуку</a></li>
+                <li class="active">Публічні діячі</li>
+            </ol> 
+        </div>
+
+        <section id="search-results">
+            {% if persons %}
+                <h2 class="text-center">Фізичні особи</h2>
+                {% for p in persons %}
+                <div class="small-profile fizik col-lg-4">
+                    <div class="box">
+                        <header class="profile-header">
+                            <div class="avatar"><img src="images/kluev.png" width="128" height="128" alt=""/></div>
+                            <h3 class="pep-name">{{ p.last_name }}<span class="pep-pib">{{ p.first_name }} {{ p.patronymic }}</span></h3>
+                        </header>
+
+                        <div class="descr">
+                            <p>Секретар РНБО України</p>
+                        </div>
+                    </div>
+                </div>
+                {% if loop.index is divisibleby 3 %}
+                    <div class="clearfix"></div>
+                {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            {% if companies %}
+                <h2 class="text-center">Юридичні особи</h2>
+
+                {% for c in companies %}
+                <div class="small-profile yurik col-lg-4">
+                    <div class="box">
+                        <header class="profile-header">
+                            <div class="avatar"></div>
+                            <h3 class="pep-name"><span class="pep-pib">{{ c.name }}</span></h3>
+                        </header>
+
+                        <div class="descr">
+                            <p>м.Біла Церква</p>
+                            <p><span class="small-tip">власник: </span>Клюєвський Вікстельштейн Арістархович-Перебийніс</p>
+                        </div>
+                    </div>
+                </div>
+                {% if loop.index is divisibleby 3 %}
+                    <div class="clearfix"></div>
+                {% endif %}
+                {% endfor %}
+            {% endif %}
 
 
-<section id="search-results">
+            {% if related_persons %}
+            <h2 class="text-center">Пов'язані особи</h2>
 
+                {% for p in related_persons %}
+                <div class="small-profile fizik col-lg-4">
+                    <div class="box">
+                        <header class="profile-header">
+                            <div class="avatar"><img src="images/kluev.png" width="128" height="128" alt=""/></div>
+                            <h3 class="pep-name">{{ p.last_name }}<span class="pep-pib">{{ p.first_name }} {{ p.patronymic }}</span></h3>
+                        </header>
 
-<h2 class="text-center">Фізичні особи</h2>
+                        <div class="descr">
+                            <p>Секретар РНБО України</p>
+                        </div>
+                    </div>
+                </div>
+                {% if loop.index is divisibleby 3 %}
+                    <div class="clearfix"></div>
+                {% endif %}
+                {% endfor %}
+            {% endif %}
 
-<div class="small-profile fizik col-lg-4">
-    <div class="box">
-    
-    <header class="profile-header">
-	    <div class="avatar"><img src="images/kluev.png" width="128" height="128" alt=""/></div>
-    	<h3 class="pep-name">Клюєв <span class="pep-pib">Андрій Петрович</span></h3>
-    </header>
-        
-     <div class="descr">
-        <p>Секретар РНБО України</p>
-      </div>
- </div>
-</div>
-
-<div class="small-profile fizik col-lg-4">
-    <div class="box">
-    
-    <header class="profile-header">
-	    <div class="avatar"></div>
-    	<h3 class="pep-name">Клюєв <span class="pep-pib">Андрій Петрович</span></h3>
-    </header>
-        
-     <div class="descr">
-        <p>Секретар РНБО України</p>
-      </div>
- </div>
-</div>
-
-<div class="small-profile fizik col-lg-4">
-    <div class="box">
-    
-    <header class="profile-header">
-	    <div class="avatar"></div>
-    	<h3 class="pep-name">Клюєв <span class="pep-pib">Андрій Петрович</span></h3>
-    </header>
-        
-     <div class="descr">
-        <p>Секретар РНБО України</p>
-      </div>
- </div>
-</div>
-
-<div class="small-profile fizik col-lg-4">
-    <div class="box">
-    
-    <header class="profile-header">
-	    <div class="avatar"></div>
-    	<h3 class="pep-name">Клюєв <span class="pep-pib">Андрій Петрович</span></h3>
-    </header>
-        
-     <div class="descr">
-        <p>Секретар РНБО України</p>
-      </div>
- </div>
-</div>
-
-<div class="small-profile fizik col-lg-4">
-    <div class="box">
-    
-    <header class="profile-header">
-	    <div class="avatar"></div>
-    	<h3 class="pep-name">Клюєв <span class="pep-pib">Андрій Петрович</span></h3>
-    </header>
-        
-     <div class="descr">
-        <p>Секретар РНБО України</p>
-      </div>
- </div>
-</div>
-
-
-<h2 class="text-center">Юридичні особи</h2>
-
-<div class="small-profile yurik col-lg-4">
-    <div  class="box">
-    
-    <header class="profile-header">
-	    <div class="avatar"></div>
-    	<h3 class="pep-name">ТОВ <span class="pep-pib">"Клюєв-маш"</span></h3>
-    </header>
-        
-     <div class="descr">
-        <p>м.Біла Церква</p>
-        <p><span class="small-tip">власник: </span>Клюєвський Вікстельштейн Арістархович-Перебийніс</p>
-      </div>
- </div>
-</div>
-
-<div class="small-profile yurik col-lg-4">
-    <div  class="box">
-    
-    <header class="profile-header">
-	    <div class="avatar"></div>
-    	<h3 class="pep-name">ЧП<span class="pep-pib">"Клюєв-ваш"</span></h3>
-    </header>
-        
-     <div class="descr">
-        <p>м.Скадовськ</p>
-        <p><span class="small-tip">власник: </span>Сало Іван Іванич</p>
-      </div>
- </div>
-</div>
-
-<div class="small-profile yurik col-lg-4">
-    <div  class="box">
-    
-    <header class="profile-header">
-	    <div class="avatar"></div>
-    	<h3 class="pep-name">ТОВ <span class="pep-pib">"Клюєв-маш"</span></h3>
-    </header>
-        
-     <div class="descr">
-        <p>м.Біла Церква</p>
-        <p><span class="small-tip">власник: </span>Клюєвський Вікстельштейн Арістархович-Перебийніс</p>
-      </div>
- </div>
-</div>
-   
-
-<h2 class="text-center">Пов'язані особи</h2>
-      
- 
-<div class="small-profile infinite-item linked col-lg-4">
-    <div class="box">
-    
-    <header class="profile-header">
-	    <div class="avatar"></div>
-    	<h3 class="pep-name">Клюєв <span class="pep-pib">Андрій Петрович</span></h3>
-    </header>
-        
-     <div class="descr">
-        <p>Кум свата брата Клюєва Андрія Петровича, Секретар РНБО України</p>
-      </div>
- </div>
-</div>
-
-<div class="small-profile infinite-item linked col-lg-4">
-    <div class="box">
-    
-    <header class="profile-header">
-	    <div class="avatar"></div>
-    	<h3 class="pep-name">Клюєв <span class="pep-pib">Андрій Петрович</span></h3>
-    </header>
-        
-     <div class="descr">
-        <p>Кум свата брата Клюєва Андрія Петровича, Секретар РНБО України</p>
-      </div>
- </div>
-</div>
-
-<div class="small-profile infinite-item linked col-lg-4">
-    <div class="box">
-    
-    <header class="profile-header">
-	    <div class="avatar"></div>
-    	<h3 class="pep-name">Клюєв <span class="pep-pib">Андрій Петрович</span></h3>
-    </header>
-        
-     <div class="descr">
-        <p>Кум свата брата Клюєва Андрія Петровича, Секретар РНБО України</p>
-      </div>
- </div>
-</div>
-
-
-   
-</section>
+        </section>
+    </div>
 </div>
 {% endblock %}

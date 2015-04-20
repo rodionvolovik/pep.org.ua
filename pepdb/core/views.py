@@ -57,6 +57,18 @@ def suggest(request):
 
 
 def search(request):
-    return render(request, "search.jinja", {
+    query = request.GET.get("q", "")
+    persons = ElasticPerson.search()
+    companies = ElasticCompany.search()
+    if query:
+        persons = persons.query("match", _all=query)
+        companies = companies.query("match", _all=query)
+    else:
+        persons = persons.query('match_all')
+        companies = companies.query('match_all')
 
+    return render(request, "search.jinja", {
+        "persons": persons.filter("term", is_pep=True)[:6].execute(),
+        "companies": companies[:6].execute(),
+        "related_persons": persons.filter("term", is_pep=False)[:6].execute()
     })

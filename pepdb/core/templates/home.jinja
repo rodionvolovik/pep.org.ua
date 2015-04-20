@@ -4,78 +4,70 @@
 
 {% block content %}
     <section id="searchbox" class="">
-      <div class="container">
-        <div class="row">
-        
-          <h1 class="text-center">Search for property of Ukrainian officials </h1>
-          <p class="text-center">Our project - a struggle with Ukrainian Politically Exposed Persons (PEP), who stole money and property, and then take it to Europe.</p> 
-          <p class="text-center">But we find! <a herf="#">Know more about project</a></p>
+        <div class="container">
+            <div class="row">
+                <h1 class="text-center">Search for property of Ukrainian officials </h1>
+                <p class="text-center">Our project - a struggle with Ukrainian Politically Exposed Persons (PEP), who stole money and property, and then take it to Europe.</p> 
+                <p class="text-center">But we find! <a herf="#">Know more about project</a></p>
 
-          <div class="col-lg-6 col-md-8 col-xs-12 col-lg-offset-3 col-md-offset-2">
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="Enter name here" data-provide="typeahead" id="search-form" />
-              <span class="input-group-btn">
-              <button class="btn btn-danger" type="button">Search</button>
-              </span> </div>
-            <!-- /input-group --> 
-            
-          </div>      
+                <div class="col-lg-6 col-md-8 col-xs-12 col-lg-offset-3 col-md-offset-2">
+                    <form action="{{ url("search") }}" method="GET">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Enter name here" name="q" data-provide="typeahead" id="search-form" />
+                            <span class="input-group-btn"><button class="btn btn-danger" type="button">Search</button></span>
+                        </div>
+                    </form>
+                    <!-- /input-group --> 
+                </div>
+            </div>
         </div>
-      </div>
     </section>
 
 
 
     <selection id="cards">
-      <div class="container">
-        <div class="row">
-     
-        	<div class="card square text-center col-lg-2 col-lg-offset-1">
-           		 <a class="trans" href=""><i class="fa fa-map-marker"></i> Map</a>
+        <div class="container">
+            <div class="row">
+                <div class="card square text-center col-lg-2 col-lg-offset-1">
+                    <a class="trans" href=""><i class="fa fa-map-marker"></i> Map</a>
+                </div>
+                <div class="card square text-center col-lg-2 col-lg-offset-1">
+                    <a class="trans" href=""><i class="fa fa-star"></i>Countries</a>
+                </div>
+                <div class="card square text-center col-lg-2 col-lg-offset-1">
+                    <a class="trans" href=""><i class="fa fa-users"></i>People</a>
+                </div>
+                <div class="card square text-center col-lg-2 col-lg-offset-1">
+                    <a class="trans" href=""><i class="fa fa-cubes"></i>Assets</a>
+                </div>
             </div>
-            
-            <div class="card square text-center col-lg-2 col-lg-offset-1">
-           		 <a class="trans" href=""><i class="fa fa-star"></i>Countries</a>
-            </div>
-            
-            <div class="card square text-center col-lg-2 col-lg-offset-1">
-           		 <a class="trans" href=""><i class="fa fa-users"></i>People</a>
-            </div>
-            
-             <div class="card square text-center col-lg-2 col-lg-offset-1">
-           		 <a class="trans" href=""><i class="fa fa-cubes"></i>Assets</a>
-            </div>
-      
-         </div>
-      </div>  
+        </div>
     </selection>
 
 
 
     <selection id="sponsors">
-     <div class="container">
-        <div class="row">
-        <p class="text-center">Maintainers, sponsors and so on</p>
-        
-        <div class="sponsor text-center col-lg-2 col-lg-offset-1">
-           		<img src="{{ static("images/sponsors/01.png") }}" alt="" class="img-responsive"/>
-            </div>
-            
+        <div class="container">
+            <div class="row">
+                <p class="text-center">Maintainers, sponsors and so on</p>
+
                 <div class="sponsor text-center col-lg-2 col-lg-offset-1">
-           		<img src="{{ static("images/sponsors/02.png") }}" alt="" class="img-responsive"/>
+                    <img src="{{ static("images/sponsors/01.png") }}" alt="" class="img-responsive"/>
+                </div>
+
+                <div class="sponsor text-center col-lg-2 col-lg-offset-1">
+                    <img src="{{ static("images/sponsors/02.png") }}" alt="" class="img-responsive"/>
+                </div>
+
+                <div class="sponsor text-center col-lg-2 col-lg-offset-1">
+                    <img src="{{ static("images/sponsors/03.png") }}" alt="" class="img-responsive"/>
+                </div>
+
+                <div class="sponsor text-center col-lg-2 col-lg-offset-1">
+                    <img src="{{ static("images/sponsors/04.png") }}" alt="" class="img-responsive"/>
+                </div>
             </div>
-            
-            <div class="sponsor text-center col-lg-2 col-lg-offset-1">
-           		<img src="{{ static("images/sponsors/03.png") }}" alt="" class="img-responsive"/>
-            </div>
-            
-            <div class="sponsor text-center col-lg-2 col-lg-offset-1">
-           		<img src="{{ static("images/sponsors/04.png") }}" alt="" class="img-responsive"/>
-            </div>
-        
-        
         </div>
-      </div>
     </selection>
 
     <div class="cp"></div> <!--   clear padding  -->
