@@ -54,3 +54,9 @@ def suggest(request):
         )
     else:
         return JsonResponse([], safe=False)
+
+
+def search(request):
+    return render(request, "search.jinja", {
+
+    })

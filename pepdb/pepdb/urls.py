@@ -9,6 +9,8 @@ urlpatterns = patterns(
     url(r'^$', TemplateView.as_view(template_name='home.jinja'),
         name="home"),
 
+    url(r'^search$', 'core.views.search', name='search'),
+
     url(r'^ajax/suggest$', 'core.views.suggest', name='suggest'),
     url(r'^grappelli/', include('grappelli.urls')),  # grappelli urls
     url(r'^markdown/', include('django_markdown.urls')),  # django_markdown url
