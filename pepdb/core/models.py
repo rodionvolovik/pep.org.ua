@@ -8,6 +8,16 @@ from django.forms.models import model_to_dict
 from django_markdown.models import MarkdownField
 
 
+# to_*_dict methods are used to convert two main entities that we have, Person
+# and Company into document indexable by ElasticSearch.
+# Links between Persons, Person and Company, Companies, Person and Country,
+# Company and Country is also converted to subdocuments and attached to
+# Person/Company documents. Because Person and Company needs different
+# subdocuments, Person2Company has two different methods, to_person_dict and
+# to_company_dict. For the same reason Person2Person and Company2Company has
+# to_dict/to_dict_reverse because same link provides info to both persons.
+
+
 class Person(models.Model):
     last_name = models.CharField(u"Прізвище", max_length=30)
     first_name = models.CharField(u"Ім'я", max_length=30)
@@ -102,12 +112,14 @@ class Person(models.Model):
         return u"%s %s %s" % (self.last_name, self.first_name, self.patronymic)
 
     def to_dict(self):
+        """
+        Convert Person model to an indexable presentation for ES.
+        """
         d = model_to_dict(self, fields=[
             "id", "last_name", "first_name", "patronymic", "dob",
             "dob_details", "city_of_birth", "is_pep", "wiki",
             "reputation_sanctions", "reputation_convictions",
-            "reputation_crimes", "reputation_manhunt", "names",
-            "type_of_official"])
+            "reputation_crimes", "reputation_manhunt", "names"])
 
         d["related_persons"] = [
             i.to_dict()
@@ -123,6 +135,7 @@ class Person(models.Model):
             for i in self.person2company_set.select_related("Company")]
 
         d["photo"] = self.photo.url if self.photo else ""
+        d["type_of_official"] = self.get_type_of_official_display()
         d["full_name"] = u"%s %s %s" % (self.first_name, self.patronymic,
                                         self.last_name)
 
@@ -138,6 +151,8 @@ class Person(models.Model):
             ],
             "output": d["full_name"]
         }
+
+        d["_id"] = d["id"]
 
         return d
 
@@ -222,8 +237,12 @@ class Person2Person(models.Model):
             self.to_person, self.get_to_relationship_type_display())
 
     def to_dict(self):
+        """
+        Convert link between two persons into indexable presentation
+        """
         return {
             "relationship_type": self.to_relationship_type,
+            "is_pep": self.to_person.is_pep,
             "person": u"%s %s %s" % (
                 self.to_person.first_name,
                 self.to_person.patronymic,
@@ -231,8 +250,12 @@ class Person2Person(models.Model):
         }
 
     def to_dict_reverse(self):
+        """
+        Convert back link between two persons to indexable presentation
+        """
         return {
             "relationship_type": self.from_relationship_type,
+            "is_pep": self.from_person.is_pep,
             "person": u"%s %s %s" % (
                 self.from_person.first_name,
                 self.from_person.patronymic,
@@ -306,6 +329,7 @@ class Person2Company(models.Model):
     def to_company_dict(self):
         return {
             "relationship_type": self.relationship_type,
+            "state_company": self.to_company.state_company,
             "to_company": self.to_company.name,
             "to_company_short": self.to_company.short_name
         }
@@ -313,6 +337,7 @@ class Person2Company(models.Model):
     def to_person_dict(self):
         return {
             "relationship_type": self.relationship_type,
+            "is_pep": self.from_person.is_pep,
             "name": u"%s %s %s" % (self.from_person.first_name,
                                    self.from_person.patronymic,
                                    self.from_person.last_name)
@@ -398,6 +423,8 @@ class Company(models.Model):
             "output": d["name"]
         }
 
+        d["_id"] = d["id"]
+
         return d
 
     class Meta:
@@ -451,12 +478,14 @@ class Company2Company(models.Model):
     def to_dict(self):
         return {
             "relationship_type": self.relationship_type,
+            "state_company": self.to_company.state_company,
             "company": self.to_company.name
         }
 
     def to_dict_reverse(self):
         return {
             "relationship_type": self.relationship_type,
+            "state_company": self.from_company.state_company,
             "company": self.from_company.name
         }
 

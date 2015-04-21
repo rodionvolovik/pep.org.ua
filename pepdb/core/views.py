@@ -1,6 +1,7 @@
 from django.http import JsonResponse, Http404
 from django.shortcuts import render
 from operator import itemgetter
+import json
 from core.elastic_models import (
     Person as ElasticPerson,
     Company as ElasticCompany)
@@ -61,11 +62,18 @@ def search(request):
     persons = ElasticPerson.search()
     companies = ElasticCompany.search()
     if query:
-        persons = persons.query("match", _all=query)
-        companies = companies.query("match", _all=query)
+        persons = persons.query(
+            "multi_match", query=query,
+            fields=["full_name^2", "related_persons.person", "_all"])
+        companies = companies.query(
+            "multi_match", query=query,
+            fields=["name^2", "short_name^2", "related_companies.company",
+                    "_all"])
     else:
         persons = persons.query('match_all')
         companies = companies.query('match_all')
+
+    print(json.dumps(persons.to_dict(), indent=4))
 
     return render(request, "search.jinja", {
         "persons": persons.filter("term", is_pep=True)[:6].execute(),

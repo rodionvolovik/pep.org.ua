@@ -19,12 +19,16 @@
                 <div class="small-profile fizik col-lg-4">
                     <div class="box">
                         <header class="profile-header">
-                            <div class="avatar"><img src="images/kluev.png" width="128" height="128" alt=""/></div>
+                            <div class="avatar"></div>
                             <h3 class="pep-name">{{ p.last_name }}<span class="pep-pib">{{ p.first_name }} {{ p.patronymic }}</span></h3>
                         </header>
 
                         <div class="descr">
-                            <p>Секретар РНБО України</p>
+                            {{ p.type_of_official|default("") }}
+                            {% for c in p.related_companies|sort(attribute="state_company", reverse=True) %}
+                                {{ c.to_company_short|default(c.to_company) }}:
+                                {{ c.relationship_type }}
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -37,17 +41,19 @@
             {% if companies %}
                 <h2 class="text-center">Юридичні особи</h2>
 
-                {% for c in companies %}
+                {% for company in companies %}
                 <div class="small-profile yurik col-lg-4">
                     <div class="box">
                         <header class="profile-header">
                             <div class="avatar"></div>
-                            <h3 class="pep-name"><span class="pep-pib">{{ c.name }}</span></h3>
+                            <h3 class="pep-name"><span class="pep-pib">{{ company.name }}</span></h3>
                         </header>
 
                         <div class="descr">
-                            <p>м.Біла Церква</p>
-                            <p><span class="small-tip">власник: </span>Клюєвський Вікстельштейн Арістархович-Перебийніс</p>
+                            {% for c in company.related_persons|sort(attribute="is_pep", reverse=True) %}
+                                {{ c.name }}:
+                                {{ c.relationship_type }}
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -70,7 +76,10 @@
                         </header>
 
                         <div class="descr">
-                            <p>Секретар РНБО України</p>
+                            {% for c in p.related_persons|sort(attribute="is_pep", reverse=True) %}
+                                {{ c.person }}:
+                                {{ c.relationship_type }}
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
