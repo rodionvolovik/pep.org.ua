@@ -45,7 +45,7 @@ INSTALLED_APPS = (
     'pipeline',
     'django_jinja',
     'django_jinja.contrib._humanize',
-
+    'django_jinja.contrib._easy_thumbnails',
     'core',
 )
 
@@ -106,6 +106,9 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+
+DATE_FORMAT = "d.m.Y"
+
 DEFAULT_JINJA2_TEMPLATE_EXTENSION = '.jinja'
 
 # Static files (CSS, JavaScript, Images)
@@ -132,6 +135,7 @@ PIPELINE_CSS = {
             'css/bootstrap.min.css',
             'css/ripples.min.css',
             'css/animate.css',
+            'css/timeline.css',
             'css/style.css',
             'css/responsive.css',
         ),
@@ -166,6 +170,13 @@ ELASTICSEARCH_CONNECTIONS = {
     }
 }
 
+
+THUMBNAIL_ALIASES = {
+    '': {
+        'small_avatar': {'size': (60, 60), 'crop': True},
+        'avatar': {'size': (128, 128), 'crop': True},
+    },
+}
 
 try:
     from local_settings import *

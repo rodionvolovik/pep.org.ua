@@ -19,8 +19,14 @@
                 <div class="small-profile fizik col-lg-4">
                     <div class="box">
                         <header class="profile-header">
-                            <div class="avatar"></div>
-                            <h3 class="pep-name">{{ p.last_name }}<span class="pep-pib">{{ p.first_name }} {{ p.patronymic }}</span></h3>
+                        {% if p.photo %}
+                        <div class="avatar">
+                        <img src="{{ p.photo|thumbnail_url("small_avatar") }}" alt="{{ p.last_name }} {{ p.first_name }} {{ p.patronymic }}"/>
+                        </div>
+                        {% endif %}
+                            <h3 class="pep-name">
+                                <a href="{{ url("person_details", person_id=p.id) }}">{{ p.last_name }}<span class="pep-pib">{{ p.first_name }} {{ p.patronymic }}</span></a>
+                            </h3>
                         </header>
 
                         <div class="descr">
@@ -72,7 +78,9 @@
                     <div class="box">
                         <header class="profile-header">
                             <div class="avatar"><img src="images/kluev.png" width="128" height="128" alt=""/></div>
-                            <h3 class="pep-name">{{ p.last_name }}<span class="pep-pib">{{ p.first_name }} {{ p.patronymic }}</span></h3>
+                            <h3 class="pep-name">
+                                <a href="{{ url("person_details", person_id=p.id) }}">{{ p.last_name }}<span class="pep-pib">{{ p.first_name }} {{ p.patronymic }}</span></a>
+                            </h3>
                         </header>
 
                         <div class="descr">

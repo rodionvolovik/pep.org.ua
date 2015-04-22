@@ -155,7 +155,7 @@ class PersonAdmin(admin.ModelAdmin):
         (u"Загальна інформація", {
             'fields': ['last_name', 'first_name', 'patronymic', 'is_pep',
                        'photo', 'dob', 'dob_details', 'city_of_birth',
-                       'registration', "publish"]}),
+                       "publish"]}),
 
         (u'Додаткова інформація', {
             'fields': ['wiki', 'type_of_official', 'risk_category', 'names']}),
@@ -166,7 +166,7 @@ class PersonAdmin(admin.ModelAdmin):
 
         (u'Непублічна інформація', {
             'fields': ['passport_id', 'passport_reg', 'tax_payer_id',
-                       'id_number']}),
+                       'registration', 'id_number']}),
     ]
 
 

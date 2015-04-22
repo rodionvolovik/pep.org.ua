@@ -58,13 +58,13 @@ class Person(models.Model):
         u"Ідентифікаційний номер (внутрішне поле)", max_length=10,
         blank=True)
 
-    reputation_sanctions = models.TextField(
+    reputation_sanctions = MarkdownField(
         u"Наявність санкцій", blank=True)
-    reputation_crimes = models.TextField(
+    reputation_crimes = MarkdownField(
         u"Кримінальні впровадження", blank=True)
-    reputation_manhunt = models.TextField(
+    reputation_manhunt = MarkdownField(
         u"Перебування у розшуку", blank=True)
-    reputation_convictions = models.TextField(
+    reputation_convictions = MarkdownField(
         u"Наявність судимості", blank=True)
 
     related_persons = select2.fields.ManyToManyField(
@@ -134,7 +134,7 @@ class Person(models.Model):
             i.to_company_dict()
             for i in self.person2company_set.select_related("Company")]
 
-        d["photo"] = self.photo.url if self.photo else ""
+        d["photo"] = self.photo.name if self.photo else ""
         d["type_of_official"] = self.get_type_of_official_display()
         d["full_name"] = u"%s %s %s" % (self.first_name, self.patronymic,
                                         self.last_name)

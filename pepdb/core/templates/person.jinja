@@ -1,0 +1,269 @@
+{% extends "base.jinja" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div id="breadcrumbs">
+            <ol class="breadcrumb">
+                <li><a href="#">Головна</a></li>
+                <li><a href="#">Результати пошуку</a></li>
+                <li class="active">Публічні діячі</li>
+            </ol>
+        </div>
+        <aside id="profile-nav" role="complementary" class="col-lg-2">
+            <ul id="side-profilemenu">
+                <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-male"></i> <span>Персональні дані</span></a></li>
+                <li><a href="#profile" class="btn btn-transp trans"><i class="fa fa-briefcase"></i> Досьє</a></li>
+                {% if person.reputation_sanctions or person.reputation_crimes or person.reputation_manhunt or person.reputation_convictions %}
+                <li><a href="#reputation" class="btn btn-transp trans"><i class="fa fa-bullhorn"></i>Репутація</a></li>
+                {% endif %}
+                <li><a href="#connections" class="btn btn-transp trans"><i class="fa fa-heart"></i> З’вязки</a></li>
+                <li><a href="#workbefore" class="btn btn-transp trans"><i class="fa fa-wrench"></i> Робота</a></li>
+                <li><a href="#assets" class="btn btn-transp trans"><i class="fa fa-cubes"></i> Майно</a></li>
+            </ul>
+        </aside>
+        <section id="profile" class="col-lg-8">
+            <div id="profile-wrap" class="box">
+                <header class="profile-header">
+                    {% if person.photo %}
+                    <div class="avatar">
+                    <img src="{{ person.photo|thumbnail_url("avatar") }}" alt="{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}"/>
+                    </div>
+                    {% endif %}
+                    <h1 class="pep-name">{{ person.last_name }} <span class="pep-pib">{{ person.first_name }} {{ person.patronymic }}</span></h1>
+                </header>
+                <div id="personal" class="sub">
+                    <div class="table-responsive">
+                        <table class="table table-condensed">
+                            {% if person.type_of_official %}
+                            <tr>
+                                <td>Категорія ПЕП </td>
+                                <td><strong>{{ person.get_type_of_official_display() }}</strong></td>
+                            </tr>
+                            {% endif %}
+                            {% if person.dob %}
+                            <tr>
+                                <td>Дата народження</td>
+                                <td>
+                                {%- if person.dob_details == 0 %}
+                                {{ person.dob|date }}
+                                {% elif person.dob_details == 1 %}
+                                {{ person.dob|date("m.Y") }}
+                                {% else %}
+                                {{ person.dob|date("Y") }}
+                                {% endif -%}
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% if person.city_of_birth %}
+                            <tr>
+                                <td>Місце народження</td>
+                                <td>{{ person.city_of_birth }}</td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <td>Рівень ризику</td>
+                                <td><strong>{{ person.get_risk_category_display() }}</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Остання посада ???</td>
+                                <td><strong>Голова Адміністрації Президента України</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            {% if person.wiki %}
+            <div id="profile" class="sub box">
+                <h3>Досьє:</h3>
+                <br />
+                {{ person.wiki|markdown }}
+            </div>
+            {% endif %}
+
+            {% if person.reputation_sanctions or person.reputation_crimes or person.reputation_manhunt or person.reputation_convictions %}
+            <div id="reputation" class="sub box">
+                <h3>Репутація:</h3>
+                <br />
+                {% if person.reputation_sanctions %}
+                    <h4>Санкції</h4>
+                    {{ person.reputation_sanctions|markdown }}
+                {% endif %}
+                {% if person.reputation_crimes %}
+                    <h4>Кримінальні впровадження</h4>
+                    {{ person.reputation_crimes|markdown }}
+                {% endif %}
+                {% if person.reputation_manhunt %}
+                    <h4>Перебування у розшуку</h4>
+                    {{ person.reputation_manhunt|markdown }}
+                {% endif %}
+                {% if person.reputation_convictions %}
+                    <h4>Наявність судимості</h4>
+                    {{ person.reputation_convictions|markdown }}
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <div id="connections" class="sub box">
+                <h3>З’вязки:</h3>
+                <div class="tree">
+                    <ul>
+                        <li>
+                            <span><i class="icon-calendar"></i> Клюєв</span>
+                            <ul>
+                                <li>
+                                    <span class="badge badge-success"><i class="fa fa-plus-square"></i> Близькі особи</span>
+                                    <ul class="h">
+                                        <li>
+                                            <span><i class="fa fa-heart"></i> Брат</span> &ndash; <a href="">Клюєв Сергій Петрович, 19.08.1969 р.н., Народний депутат України</a>
+                                        </li>
+                                        <li>
+                                            <span><i class="fa fa-heart"></i> Дружина</span> &ndash; <a href="">Жанна Вікторівна Клюєва, 1964 р.н. - заст.гендиректора корпорації «Укрпідшипник»а</a>
+                                        </li>
+                                        <li>
+                                            <span><i class="fa fa-heart"></i> Син</span> &ndash; <a href="">Клюєв Богдан Андрійович – 1985 р.н., менеджер з розвитку бізнесу компанії, підконтрольній Клюєву - ТОВ «Актив Солар»</a>
+                                        </li>
+                                        <li>
+                                            <span><i class="fa fa-heart"></i> Син</span> &ndash; <a href="">Клюєв Кирило Андрійович – 1995 р.н.</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <span class="badge badge-success"><i class="fa fa-plus-square"></i> Пов’язані особи</span>
+                                    <ul class="h">
+                                        <li>
+                                            <span><i class="fa fa-users"></i> Ірина Клюєва</span> &ndash; <a href="">дружина брата (Сергія Клюєва) - є членом ради директорів Компанія Slav AG</a>
+                                        </li>
+                                        <li>
+                                            <span><i class="fa fa-users"></i> Каве Ертефай</span> &ndash; <a href="">зять брата (Сергія Клюєва) - власник компанії Activ Solar GmbH, директор дочірнього підприємства Activ Solar GmbH на Кіпрі — компанії AST ACTIV SOLAR TRADING LTD</a>
+                                        </li>
+                                        <li>
+                                            <span><i class="fa fa-users"></i> Рейнхард Прокш</span> &ndash; <a href="">номінальний власник/директор компаній, підконтрольних Клюєву</a>
+                                        </li>
+                                        <li>
+                                            <span><i class="fa fa-users"></i> Черевко Михайло</span> &ndash; <a href="">Керівника ТОВ «Актив Солар»</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <span class="badge badge-warning"><i class="fa fa-plus-square"></i> Не родинні зв’язки</span>
+                                    <ul class="h">
+                                        <li>
+                                            <span><i class="fa fa-user-secret"></i> Віктор Федорович Янукович</span> &ndash; <a href="">колишній Президент України</a>
+                                        </li>
+                                        <li>
+                                            <span><i class="fa fa-user-secret"></i> Рейнхард Прокш</span> &ndash; <a href="">номінальний власник/директор компаній, підконтрольних Клюєву</a>
+                                        </li>
+                                        <li>
+                                            <span><i class="fa fa-user-secret"></i> Michael George Jeffrey</span> &ndash; <a href="">(громадянин Британії) – співробітник офшорної юридичної фірми Olsen Law Firm – номінальний власник сонячної електростанції «Перово» (АР Крим)</a>
+                                        </li>
+                                        <li>
+                                            <span><i class="fa fa-user-secret"></i> Marcus Jacobus Maria</span> &ndash; <a href="">(громадянин Нідерландів) – номінальний власник сонячних електростанцій «Охотніково» (АР Крим) та «Лиманска» (Одеська обл.)</a>
+                                        </li>
+                                        <li>
+                                            <span><i class="fa fa-user-secret"></i> Stephan Spender</span> &ndash; <a href="">(громадянин Люксембургу) – управляючий партнер, сертифікований аудитор, номінальний власник сонячних електростанцій «Дунайська» та «Старокозача» (обидві – Одеська обл.)</a>
+                                        </li>
+                                        <li>
+                                            <span><i class="fa fa-user-secret"></i> Zuidema Hendrikus</span> &ndash; <a href="">громадянин Нідерландів, номінальний директор електростанції «Приозерна» (Одеська обл.)</a>
+                                        </li>
+                                        <li>
+                                            <span><i class="fa fa-user-secret"></i> Коваленко Роман Вікторович</span> &ndash; <a href="">директор компаній Дельта Солар, Зета Солар, Альфа Солар, Бета Солар, Гамма Солар, що є власниками електростанції «Перово» (АР Крим)</a>
+                                        </li>
+                                        <li>
+                                            <span><i class="fa fa-user-secret"></i> Колобов Сергій</span> &ndash; <a href="">колишній директор компанії 'Грінтек Енержі', пов'язаної з Клюєвом, Перед тим як очолити 'Грінтек Енержі', Колобов був керівником п’яти компаній з однойменними назвами: 'Краймія Солар 1', 'Краймія Солар 2', 'Краймія Солар 3', 'Краймія Солар 4' та 'Краймія Солар 5', пов’язаних з Клюєвим. У квітні 2012 року він перейшов на посаду заступника голови Республіканського комітету Криму з палива, енергетики та інноваційної політики. З жовтня того ж року очолив цей комітет</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div id="workbefore" class="sub box">
+                <h3>Робота до парламенту:</h3>
+                <div id="element">
+                    <ul class="timeline">
+                        <li class="tl-item">
+                            <div class="tl-wrap">
+                                <span class="tl-date">1983</span>
+                                <div class="tl-content panel padder b-a">
+                                    <span class="arrow left pull-up"></span>
+                                    <div>Підземний гірничий робітник шахти ім. А. Засядька</div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="tl-item">
+                            <div class="tl-wrap">
+                                <span class="tl-date">1984</span>
+                                <div class="tl-content panel padder b-a">
+                                    <span class="arrow left pull-up"></span>
+                                    <div>Учень гірноробочого очисного забою шахти ім. М. Горького. Після інституту працював заступником начальника, начальником дільниці шахтного транспорту шахти «Білоріченська» ВО «Ворошиловградвугілля». Був аспірантом, працівником Донецького політехнічного інституту. Очолював низку підприємств вугільного машинобудування.
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="tl-item">
+                            <div class="tl-wrap">
+                                <span class="tl-date">1994</span>
+                                <div class="tl-content panel padder b-a">
+                                    <span class="arrow left pull-up"></span>
+                                    <div>Заступник голови Донецької обласної ради з виконавчої роботи</div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="tl-item">
+                            <div class="tl-wrap">
+                                <span class="tl-date">листопад 1995 - 
+квітень 1996</span>
+                                <div class="tl-content panel padder b-a">
+                                    <span class="arrow left pull-up"></span>
+                                    <div>Заступник голови з питань розвитку ринкових відносин, приватизації, реформування економіки та праці, вугільної промисловості Донецької облдержадміністрації
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="tl-item">
+                            <div class="tl-wrap">
+                                <span class="tl-date">1996</span>
+                                <div class="tl-content panel padder b-a">
+                                    <span class="arrow left pull-up"></span>
+                                    <div>
+                                        Перший заступник голови Донецького міськвиконкому</div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="tl-item">
+                            <div class="tl-wrap">
+                                <span class="tl-date">1998</span>
+                                <div class="tl-content panel padder b-a">
+                                    <span class="arrow left pull-up"></span>
+                                    <div>
+                                        Заступник голови з питань політико-правової роботи, заступник голови з питань розвитку територій та зовнішньоекономічних зв'язків, виробництва товарів народного споживання Донецької облдержадміністрації
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div id="assets" class="sub box">
+                <h3>Майно:</h3>
+                <br>
+                <br>
+                <br>
+                <br>
+            </div>            
+        </section>
+        <aside id="profile-suggest" role="complementary" class="col-lg-2">
+            <h3>Можливо ви шукали:</h3>
+            <ul>
+                <li><a href="">Клюєв Микола Іванович</a></li>
+                <li><a href="">Клюєва Наталія Олларіонівна</a></li>
+                <li><a href="">Клюєва Олена Олегівна</a></li>
+                <li><a href="">Клюєв Орест Орестович</a></li>
+            </ul>
+        </aside>
+    </div>
+</div>
+{% endblock %}

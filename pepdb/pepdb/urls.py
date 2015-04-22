@@ -10,6 +10,10 @@ urlpatterns = patterns(
         name="home"),
 
     url(r'^search$', 'core.views.search', name='search'),
+    url(r'^person/(?P<person_id>\d+)$$', 'core.views.person_details',
+        name='person_details'),
+    url(r'^company/(?P<company_id>\d+)$$', 'core.views.company_details',
+        name='company_details'),
 
     url(r'^ajax/suggest$', 'core.views.suggest', name='suggest'),
     url(r'^grappelli/', include('grappelli.urls')),  # grappelli urls
