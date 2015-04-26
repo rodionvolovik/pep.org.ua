@@ -1,15 +1,43 @@
 
 
 @media(max-width:767px){
-	
+    
+    body {font-size:14px; }
+    
+	.card.square {
+       width:150px; 
+       max-width:100%;
+	}
+    
+    #searchbox h1 {
+    font-size: 26px;
+}
+
+#searchbox {
+    padding-bottom: 60px;
+    padding-top: 30px;
+}
 
 }
 
 @media(min-width:768px){
-
-
-
+    body {font-size:16px; }
+    
+.card.square {
+       width:193px; 
+       max-width:100%;
 	}
+    
+        #searchbox h1 {
+    font-size: 32px;
+}
+
+#searchbox {
+
+    padding-top: 120px;
+    padding-bottom: 120px;
+
+}
 	
 /*iPad портрет */	
 @media only screen and (max-device-width: 992px) and (orientation: portrait)  
@@ -21,13 +49,16 @@
 	
 @media(min-width:992px){
 	
-
+    #searchbox h1 {
+    font-size: 40px;
+}
 
 }
 
 @media(min-width:1200px){
 	#side-profilemenu.affix {width:165px;}
-
+    
+   
 }
 
 
