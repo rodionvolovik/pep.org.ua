@@ -19,6 +19,12 @@ body {
 body {
     font-size: 16px;
 }
+.navbar-nav, #footer ul {
+    float: none;
+    margin: 0 auto;
+    display: table;
+    table-layout: fixed;
+}
 .card.square {
     width: 193px;
     max-width: 100%;
