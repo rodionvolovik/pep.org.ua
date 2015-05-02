@@ -30,11 +30,17 @@
                 <div class="collapse navbar-collapse navbar-ex1-collapse pull-left">
                     <ul class="nav navbar-nav">
                         <li><a href="{{ url("home") }}">Головна</a></li>
-                        <li><a href="#">Детальний пошук</a></li>
-                        <li><a href="#">Ще шось</a></li>
-                        <li><a href="#">Взігалі це меню</a></li>
-                        <li><a href="#">Donate!</a></li>
-                        <li><a class="btn btn-default trans" href="#">Login</a></li>
+                        {% set calling_page = page.url if page else "" %}
+                        {% for menuitem in menuitems %}
+                            <li class="{% if menuitem.show_dropdown %}dropdown{% endif %}{% if calling_page.startswith(menuitem.url) %} active{% endif %}">
+                                {% if menuitem.show_dropdown %}
+                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">{{ menuitem.title }} <b class="caret"></b></a>
+                                    {#% top_menu_children parent=menuitem %#}
+                                {% else %}
+                                    <a href="{{ menuitem.relative_url(request.site) }}">{{ menuitem.title }}</a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>

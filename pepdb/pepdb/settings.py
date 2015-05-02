@@ -46,6 +46,23 @@ INSTALLED_APPS = (
     'django_jinja',
     'django_jinja.contrib._humanize',
     'django_jinja.contrib._easy_thumbnails',
+
+    'compressor',
+    'taggit',
+    'modelcluster',
+
+    'wagtail.wagtailcore',
+    'wagtail.wagtailadmin',
+    'wagtail.wagtaildocs',
+    'wagtail.wagtailsnippets',
+    'wagtail.wagtailusers',
+    'wagtail.wagtailimages',
+    'wagtail.wagtailembeds',
+    'wagtail.wagtailsearch',
+    'wagtail.wagtailredirects',
+    'wagtail.wagtailforms',
+
+    'cms_pages',
     'core',
 )
 
@@ -57,6 +74,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'wagtail.wagtailcore.middleware.SiteMiddleware',
+    'wagtail.wagtailredirects.middleware.RedirectMiddleware',
 )
 
 
@@ -73,7 +93,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.static",
     "django.core.context_processors.tz",
     "django.core.context_processors.request",
-    "django.contrib.messages.context_processors.messages"
+    "django.contrib.messages.context_processors.messages",
+    "django.core.context_processors.request",
+    "cms_pages.context_processors.menu_processor"
 )
 
 GRAPPELLI_ADMIN_TITLE = u"(Секретна) база даних PEP"
@@ -126,6 +148,7 @@ STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
     'pipeline.finders.PipelineFinder',
 )
 
@@ -162,6 +185,15 @@ PIPELINE_JS = {
 
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.uglifyjs.UglifyJSCompressor'
 
+# django-compressor settings (for a fucking wagtail)
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
+
+LOGIN_URL = "/admin/login/"
+WAGTAIL_SITE_NAME = 'PEP'
+
+
 # Setup Elasticsearch default connection
 ELASTICSEARCH_CONNECTIONS = {
     'default': {
@@ -169,7 +201,6 @@ ELASTICSEARCH_CONNECTIONS = {
         'timeout': 20
     }
 }
-
 
 THUMBNAIL_ALIASES = {
     '': {

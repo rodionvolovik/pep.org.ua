@@ -145,6 +145,11 @@ i {
     color: #333333;
     text-transform: uppercase;
 }
+
+#navbar li.active a {
+    background-color: #e7e7e7;
+}
+
 #navbar .btn {
     color: #333;
     border: #333 1ps solid;

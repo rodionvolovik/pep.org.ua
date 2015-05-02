@@ -4,6 +4,11 @@ from django.conf.urls.static import static
 from django.views.generic import TemplateView
 from django.contrib import admin
 
+from wagtail.wagtailcore import urls as wagtail_urls
+from wagtail.wagtailadmin import urls as wagtailadmin_urls
+from wagtail.wagtailsearch import urls as wagtailsearch_urls
+
+
 urlpatterns = patterns(
     '',
     url(r'^$', TemplateView.as_view(template_name='home.jinja'),
@@ -19,4 +24,9 @@ urlpatterns = patterns(
     url(r'^grappelli/', include('grappelli.urls')),  # grappelli urls
     url(r'^markdown/', include('django_markdown.urls')),  # django_markdown url
     url(r'^admin/', include(admin.site.urls)),
+
+    url(r'^cms/', include(wagtailadmin_urls)),
+    url(r'^wg_search/', include(wagtailsearch_urls)),
+
+    url(r'', include(wagtail_urls)),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

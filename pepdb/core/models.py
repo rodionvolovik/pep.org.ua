@@ -601,7 +601,8 @@ class Document(models.Model):
     name = models.CharField(u"Людська назва", max_length=255)
     uploaded = models.DateTimeField(u"Був завантажений", auto_now=True)
     source = models.CharField(u"Першоджерело", blank=True, max_length=255)
-    uploader = models.ForeignKey(User, verbose_name=u"Хто завантажив")
+    uploader = models.ForeignKey(User, verbose_name=u"Хто завантажив",
+                                 related_name="pep_document")
     hash = models.CharField(u"Хеш", max_length=40, blank=True)
     comments = models.TextField(u"Коментарі", blank=True)
 
