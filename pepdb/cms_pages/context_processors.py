@@ -9,11 +9,20 @@ def has_menu_children(page):
 
 
 def menu_processor(request):
-    menuitems = get_site_root(request).get_children().live().in_menu()
+    root_page = get_site_root(request)
 
-    for menuitem in menuitems:
-        menuitem.show_dropdown = has_menu_children(menuitem)
+    top_menu = root_page.homepage.top_menu_links.select_related(
+        "link_page").all()
+
+    bottom_menu = root_page.homepage.bottom_menu_links.select_related(
+        "link_page").all()
+
+    banners = root_page.homepage.banner_items.select_related(
+        "link_page").all()
 
     return {
-        'menuitems': menuitems,
+        'global_title': root_page.title,
+        'top_menu': top_menu,
+        'bottom_menu': bottom_menu,
+        'banners': banners
     }
