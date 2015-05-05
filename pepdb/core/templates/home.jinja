@@ -2,6 +2,15 @@
 
 {% block body_class %}front{% endblock %}
 
+{% block extra_menu %}
+    {% if request.user.is_superuser %}
+        <li>
+            <a class="btn btn-default trans" href="{{ url('wagtailadmin_pages_edit', root_page.id) }}" target="_blank">Редагувати</a>
+        </li>
+    {% endif %}
+{% endblock %}
+
+
 {% block content %}
     <section id="searchbox" class="">
         <div class="container">

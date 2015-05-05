@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>{{ global_title }}</title>
+    <title>{{ root_page.title }}</title>
 
     {% stylesheet 'css_all' %}
     <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,300,700,100&subset=latin,cyrillic-ext,cyrillic' rel='stylesheet' type='text/css'>
@@ -36,6 +36,8 @@
                                 <a href="{{ menuitem.link }}">{{ menuitem.caption }}</a>
                             </li>
                         {% endfor %}
+                        {% block extra_menu %}
+                        {% endblock %}
                     </ul>
                 </div>
             </div>

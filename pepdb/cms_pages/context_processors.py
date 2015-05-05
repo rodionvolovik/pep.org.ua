@@ -21,7 +21,7 @@ def menu_processor(request):
         "link_page").all()
 
     return {
-        'global_title': root_page.title,
+        'root_page': root_page,
         'top_menu': top_menu,
         'bottom_menu': bottom_menu,
         'banners': banners
