@@ -58,6 +58,9 @@ class Person(models.Model):
         u"Ідентифікаційний номер (внутрішне поле)", max_length=10,
         blank=True)
 
+    reputation_assets = MarkdownField(
+        u"Майно", blank=True)
+
     reputation_sanctions = MarkdownField(
         u"Наявність санкцій", blank=True)
     reputation_crimes = MarkdownField(
@@ -220,11 +223,11 @@ class Person2Person(models.Model):
         blank=True)
 
     date_established = models.DateField(
-        u"Коли почався зв'язок", blank=True, null=True)
+        u"Зв'язок почався", blank=True, null=True)
     date_finished = models.DateField(
-        u"Коли скінчився зв'язок", blank=True, null=True)
+        u"Зв'язок скінчився", blank=True, null=True)
     date_confirmed = models.DateField(
-        u"Дата підтвердження зв'язку", blank=True, null=True)
+        u"Підтверджено", blank=True, null=True)
 
     proof_title = models.TextField(
         u"Назва доказу зв'язку", blank=True,
@@ -306,11 +309,11 @@ class Person2Company(models.Model):
         "Company", verbose_name=u"Компанія або установа")
 
     date_established = models.DateField(
-        u"Коли почався зв'язок", blank=True, null=True)
+        u"Зв'язок почався", blank=True, null=True)
     date_finished = models.DateField(
-        u"Коли скінчився зв'язок", blank=True, null=True)
+        u"Зв'язок скінчився", blank=True, null=True)
     date_confirmed = models.DateField(
-        u"Дата підтвердження зв'язку", blank=True, null=True)
+        u"Підтверджено", blank=True, null=True)
 
     proof_title = models.TextField(
         u"Назва доказу зв'язку", blank=True,
@@ -321,6 +324,11 @@ class Person2Company(models.Model):
     relationship_type = models.TextField(
         u"Тип зв'язку",
         blank=True)
+
+    is_employee = models.BooleanField(
+        u"Працює(-вав)",
+        default=False
+    )
 
     def __unicode__(self):
         return u"%s (%s)" % (
@@ -455,11 +463,11 @@ class Company2Company(models.Model):
     from_company = models.ForeignKey("Company", related_name="to_companies")
     to_company = models.ForeignKey("Company", related_name="from_companies")
     date_established = models.DateField(
-        u"Коли почався зв'язок", blank=True, null=True)
+        u"Зв'язок почався", blank=True, null=True)
     date_finished = models.DateField(
-        u"Коли скінчився зв'язок", blank=True, null=True)
+        u"Зв'язок скінчився", blank=True, null=True)
     date_confirmed = models.DateField(
-        u"Дата підтвердження зв'язку", blank=True, null=True)
+        u"Підтверджено", blank=True, null=True)
 
     proof_title = models.TextField(
         u"Назва доказу зв'язку", blank=True,
@@ -498,11 +506,11 @@ class Person2Country(models.Model):
     from_person = models.ForeignKey("Person", verbose_name=u"Персона")
     to_country = models.ForeignKey("Country", verbose_name=u"Країна")
     date_established = models.DateField(
-        u"Коли почався зв'язок", blank=True, null=True)
+        u"Зв'язок почався", blank=True, null=True)
     date_finished = models.DateField(
-        u"Коли скінчився зв'язок", blank=True, null=True)
+        u"Зв'язок скінчився", blank=True, null=True)
     date_confirmed = models.DateField(
-        u"Дата підтвердження зв'язку", blank=True, null=True)
+        u"Підтверджено", blank=True, null=True)
 
     proof_title = models.TextField(
         u"Назва доказу зв'язку", blank=True,
@@ -542,11 +550,11 @@ class Company2Country(models.Model):
     from_company = models.ForeignKey("Company", verbose_name=u"Компанія")
     to_country = models.ForeignKey("Country", verbose_name=u"Країна")
     date_established = models.DateField(
-        u"Коли почався зв'язок", blank=True, null=True)
+        u"Зв'язок почався", blank=True, null=True)
     date_finished = models.DateField(
-        u"Коли скінчився зв'язок", blank=True, null=True)
+        u"Зв'язок скінчився", blank=True, null=True)
     date_confirmed = models.DateField(
-        u"Дата підтвердження зв'язку", blank=True, null=True)
+        u"Підтверджено", blank=True, null=True)
 
     proof_title = models.TextField(
         u"Назва доказу зв'язку", blank=True,

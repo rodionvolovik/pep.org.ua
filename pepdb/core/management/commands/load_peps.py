@@ -139,9 +139,10 @@ class Command(BaseCommand):
                                     doc_san_name, ContentFile(doc_content))
                                 doc_instance.save()
 
-                    link, _ = Person2Company.objects.update_or_create(
+                    link, created = Person2Company.objects.update_or_create(
                         from_person=person,
                         to_company=company,
+                        is_employee=True,
                         date_established=parse_date(person_from),
                         date_finished=parse_date(person_to)
                     )

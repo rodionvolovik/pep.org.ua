@@ -88,8 +88,9 @@ class Person2CompanyInline(admin.TabularInline):
     model = Person2Company
     form = Person2CompanyForm
     extra = 1
-    fields = ["relationship_type", "to_company", "date_established",
-              "date_finished", "date_confirmed", "proof_title", "proof"]
+    fields = ["relationship_type", "is_employee", "to_company",
+              "date_established", "date_finished", "date_confirmed",
+              "proof_title", "proof"]
 
     raw_id_fields = ('to_company',)
 
@@ -98,6 +99,9 @@ class Person2CompanyInline(admin.TabularInline):
     }
 
     class Media:
+        css = {
+            "all": ("css/narrow.css",)
+        }
         js = ("js/init_autocompletes.js",)
 
 
@@ -158,7 +162,8 @@ class PersonAdmin(admin.ModelAdmin):
                        "publish"]}),
 
         (u'Додаткова інформація', {
-            'fields': ['wiki', 'type_of_official', 'risk_category', 'names']}),
+            'fields': ['wiki', 'reputation_assets', 'type_of_official',
+                       'risk_category', 'names']}),
 
         (u'Ділова репутація', {
             'fields': ['reputation_sanctions', 'reputation_crimes',

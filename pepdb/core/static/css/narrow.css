@@ -1,0 +1,9 @@
+.grp-tabular .grp-table .grp-th,
+.grp-tabular .grp-table .grp-td {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.grp-tools-container .grp-tools {
+	right: -5px;
+}
