@@ -39,6 +39,9 @@ class Command(BaseCommand):
 
                 if not company_ipn and not company_name:
                     continue
+		
+		if len(company_name) > 250:
+                    continue
 
                 # Search by IPN first (if it's present)
                 if company_ipn:
@@ -80,9 +83,12 @@ class Command(BaseCommand):
 
                 if person_name:
                     chunks = person_name.split(" ")
+
                     if len(chunks) == 2:
                         last_name = title(chunks[0])
                         first_name = title(chunks[1])
+                    elif len(chunks) == 1:
+			continue
                     else:
                         last_name = title(" ".join(chunks[:-2]))
                         first_name = title(chunks[-2])
