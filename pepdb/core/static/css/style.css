@@ -329,19 +329,24 @@ h1 {
     padding-top: 0;
 }
 .small-profile .box {
-    padding: 15px;
+    padding: 20px;
     background: #fff url(../images/plashka.png) no-repeat 0 -55px;
     min-height: 140px;
 }
 .small-profile img {
-    height: 60px;
+    height: 120px;
     width: auto;
 }
 .small-profile .avatar {
-    margin-right: 30px;
+    margin-right: 20px;
     display: block;
-    height: 60px;
-    width: 60px;
+    height: 100px;
+    width: 100px;
+    float: left;
+    background-size:cover;
+    background-color: #e9e9e9;
+    background-repeat: repeat;
+    
 }
 .small-profile h3 {
     font-family: 'arsenalregular';
@@ -354,10 +359,14 @@ h1 {
     text-transform: capitalize;
 }
 .small-profile .descr {
-    margin-left: 90px;
+    margin-left: 120px;
 }
 .small-profile .descr p {
-    margin-bottom: 0;
+    margin-bottom: 10px;
+    font-size:14px;
+}
+.small-profile .descr span {
+    font-weight: bold;
 }
 .small-profile .descr span.small-tip {
     font-size: 12px;
@@ -365,19 +374,19 @@ h1 {
     color: #7B7B7B;
 }
 .small-profile.fizik .avatar {
-    background: url(../images/short-avatar.png) no-repeat left;
+    background-image: url(../images/short-avatar.png);
 }
 .small-profile.yurik .box {
     background: #fff url(../images/fplashka.png)no-repeat 0 -55px;
 }
 .small-profile.yurik .avatar {
-    background: url(../images/short-avatar.png) no-repeat -60px 0px;
+    background-image: url(../images/short-avatar-yurik.png);
 }
 .small-profile.linked .box {
     background: #fff url(../images/lplashka.png)no-repeat 0 -55px;
 }
 .small-profile.linked .avatar {
-    background: url(../images/short-avatar.png) no-repeat -120px 0px;
+    background-image: url(../images/short-avatar-linked.png);
 }
 .timeline .tl-date {
     font-family: 'arsenalbold';
