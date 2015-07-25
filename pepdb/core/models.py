@@ -125,16 +125,16 @@ class Person(models.Model):
 
         d["related_persons"] = [
             i.to_dict()
-            for i in self.to_persons.select_related("Person")] + [
+            for i in self.to_persons.select_related("to_person")] + [
             i.to_dict_reverse()
-            for i in self.from_persons.select_related("Person")
+            for i in self.from_persons.select_related("from_person")
         ]
         d["related_countries"] = [
             i.to_dict()
-            for i in self.person2country_set.select_related("Country")]
+            for i in self.person2country_set.select_related("to_country")]
         d["related_companies"] = [
             i.to_company_dict()
-            for i in self.person2company_set.select_related("Company")]
+            for i in self.person2company_set.select_related("to_company")]
 
         d["photo"] = self.photo.name if self.photo else ""
         d["type_of_official"] = self.get_type_of_official_display()
@@ -412,17 +412,17 @@ class Company(models.Model):
 
         d["related_persons"] = [
             i.to_person_dict()
-            for i in self.person2company_set.select_related("Person")]
+            for i in self.person2company_set.select_related("from_person")]
 
         d["related_countries"] = [
             i.to_dict()
-            for i in self.company2country_set.select_related("Country")]
+            for i in self.company2country_set.select_related("to_country")]
 
         d["related_companies"] = [
             i.to_dict()
-            for i in self.to_companies.select_related("Company")] + [
+            for i in self.to_companies.select_related("to_company")] + [
             i.to_dict_reverse()
-            for i in self.from_companies.select_related("Company")
+            for i in self.from_companies.select_related("from_company")
         ]
 
         d["name_suggest"] = {

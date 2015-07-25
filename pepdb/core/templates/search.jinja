@@ -1,4 +1,5 @@
 {% extends "base.jinja" %}
+{% from "macros/_pagination.jinja" import render_pagination with context %}
 
 {% block content %}
 <div class="container">
@@ -16,7 +17,7 @@
             {% if persons %}
                 <h2 class="text-center">Фізичні особи</h2>
                 {% for p in persons %}
-                <div class="small-profile fizik col-sm-6">
+                <div class="small-profile {% if p.is_pep %}fizik{% else %}linked{% endif %} col-sm-6">
                     <div class="box">
                         <header class="profile-header">
 
@@ -44,19 +45,13 @@
                 {% endif %}
                 {% endfor %}
                 
+                {% if persons.paginator.num_pages > 1 %}
                 <div class="text-center">
                     <nav>
-                          <ul class="pagination">
-                            <li><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
-                            <li><a href="#">1</a></li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#">4</a></li>
-                            <li><a href="#">5</a></li>
-                            <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
-                          </ul>
+                    {{ render_pagination(persons, url("search_person")) }}
                     </nav>
                 </div>
+                {% endif %}
             {% endif %}
 
 
@@ -64,7 +59,7 @@
             <h2 class="text-center">Пов'язані особи</h2>
 
                 {% for p in related_persons %}
-                <div class="small-profile linked col-sm-6">
+                <div class="small-profile {% if p.is_pep %}fizik{% else %}linked{% endif %} col-sm-6">
                     <div class="box">
                         <header class="profile-header">
                             <div class="avatar">
@@ -88,19 +83,13 @@
                 {% endif %}
                 {% endfor %}
                 
+                {% if related_persons.paginator.num_pages > 1 %}
                 <div class="text-center">
                     <nav>
-                          <ul class="pagination">
-                            <li><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
-                            <li><a href="#">1</a></li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#">4</a></li>
-                            <li><a href="#">5</a></li>
-                            <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
-                          </ul>
+                    {{ render_pagination(related_persons, url("search_related")) }}
                     </nav>
                 </div>
+                {% endif %}
             {% endif %}
 
         </section>

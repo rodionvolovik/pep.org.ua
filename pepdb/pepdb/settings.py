@@ -240,6 +240,8 @@ THUMBNAIL_ALIASES = {
     },
 }
 
+CATALOG_PER_PAGE = 6
+
 try:
     from local_settings import *
 except ImportError:

@@ -3,7 +3,8 @@ from operator import itemgetter
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 
-from core.models import Person, Company
+from core.models import Person
+from core.paginator import paginated_search
 from core.elastic_models import (
     Person as ElasticPerson,
     Company as ElasticCompany)
@@ -59,27 +60,52 @@ def suggest(request):
         return JsonResponse([], safe=False)
 
 
-def search(request):
+def search(request, sources=["persons", "related"]):
+    params = {}
+
+    if "persons" in sources:
+        params["persons"] = _search_person(request)
+
+    if "related" in sources:
+        params["related_persons"] = _search_related(request)
+
+    return render(request, "search.jinja", params)
+
+
+def _search_person(request):
     query = request.GET.get("q", "")
+    is_exact = request.GET.get("is_exact", "") == "on"
+
     persons = ElasticPerson.search()
-    companies = ElasticCompany.search()
+
     if query:
         persons = persons.query(
             "multi_match", query=query,
             fields=["full_name^2", "related_persons.person", "_all"])
-        companies = companies.query(
-            "multi_match", query=query,
-            fields=["name^2", "short_name^2", "related_companies.company",
-                    "_all"])
+
+        persons = persons.filter("term", is_pep=True)
     else:
         persons = persons.query('match_all')
-        companies = companies.query('match_all')
+        persons = persons.filter("term", is_pep=True)
 
-    return render(request, "search.jinja", {
-        "persons": persons.filter("term", is_pep=True)[:6].execute(),
-        "companies": companies[:6].execute(),
-        "related_persons": persons.filter("term", is_pep=False)[:6].execute()
-    })
+    return paginated_search(request, persons)
+
+
+def _search_related(request):
+    query = request.GET.get("q", "")
+    is_exact = request.GET.get("is_exact", "") == "on"
+
+    related_persons = ElasticPerson.search()
+
+    if query:
+        related_persons = related_persons.query(
+            "multi_match", query=query,
+            fields=["full_name^2", "related_persons.person", "_all"])
+    else:
+        related_persons = related_persons.query('match_all')
+        related_persons = related_persons.filter("term", is_pep=False)
+
+    return paginated_search(request, related_persons)
 
 
 def person_details(request, person_id):

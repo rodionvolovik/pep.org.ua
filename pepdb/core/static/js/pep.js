@@ -29,6 +29,13 @@ $(function() {
         matcher: function() {
             // Big guys are playing here
             return true;
+        },
+        afterSelect: function(item) {
+            var form = $("#search-form").closest("form");
+            console.log(form);
+            form.find("input[name=is_exact]").val("on");
+
+            form.submit();
         }
     });
 
