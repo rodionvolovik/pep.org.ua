@@ -92,7 +92,6 @@ class Person(models.Model):
             (4, "Пов'язана особа"),
             (5, "Близька особа"),
         ),
-        max_length=1,
         blank=True,
         null=True)
 

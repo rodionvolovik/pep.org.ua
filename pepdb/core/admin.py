@@ -74,6 +74,8 @@ class Company2CountryInline(admin.TabularInline):
 class Person2CompanyForm(forms.ModelForm):
     class Meta:
         model = Person2Company
+        fields = '__all__'
+
         widgets = {
             'relationship_type': forms.Textarea(
                 attrs={
