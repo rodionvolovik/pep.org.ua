@@ -16,57 +16,47 @@
             {% if persons %}
                 <h2 class="text-center">Фізичні особи</h2>
                 {% for p in persons %}
-                <div class="small-profile fizik col-lg-4">
+                <div class="small-profile fizik col-sm-6">
                     <div class="box">
                         <header class="profile-header">
-                        {% if p.photo %}
+
                         <div class="avatar">
-                        <img src="{{ p.photo|thumbnail_url("small_avatar") }}" alt="{{ p.last_name }} {{ p.first_name }} {{ p.patronymic }}"/>
-                        </div>
+                        {% if p.photo %}
+                            <img src="{{ p.photo|thumbnail_url("small_avatar") }}"/>
                         {% endif %}
+                        </div>
+
                             <h3 class="pep-name">
                                 <a href="{{ url("person_details", person_id=p.id) }}">{{ p.last_name }}<span class="pep-pib">{{ p.first_name }} {{ p.patronymic }}</span></a>
                             </h3>
                         </header>
 
                         <div class="descr">
-                            {{ p.type_of_official|default("") }}
-                            {% for c in p.related_companies|sort(attribute="state_company", reverse=True) %}
-                                {{ c.to_company_short|default(c.to_company) }}:
-                                {{ c.relationship_type }}
-                            {% endfor %}
+                            <p><span>Дата рождения:</span> 10.05.1981</p>
+                            <p><span>Последнее место работы:</span> Секретар РНБО України</p>
+                            <p><span>Рівень ризику:</span>  пиздец</p>
+                            <p><span>Место работы:</span> РайкопГоспромСельхоз производственное управление</p>
                         </div>
                     </div>
                 </div>
-                {% if loop.index is divisibleby 3 %}
+                {% if loop.index is divisibleby 2 %}
                     <div class="clearfix"></div>
                 {% endif %}
                 {% endfor %}
-            {% endif %}
-
-            {% if companies %}
-                <h2 class="text-center">Юридичні особи</h2>
-
-                {% for company in companies %}
-                <div class="small-profile yurik col-lg-4">
-                    <div class="box">
-                        <header class="profile-header">
-                            <div class="avatar"></div>
-                            <h3 class="pep-name"><span class="pep-pib">{{ company.name }}</span></h3>
-                        </header>
-
-                        <div class="descr">
-                            {% for c in company.related_persons|sort(attribute="is_pep", reverse=True) %}
-                                {{ c.name }}:
-                                {{ c.relationship_type }}
-                            {% endfor %}
-                        </div>
-                    </div>
+                
+                <div class="text-center">
+                    <nav>
+                          <ul class="pagination">
+                            <li><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                            <li><a href="#">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#">4</a></li>
+                            <li><a href="#">5</a></li>
+                            <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                          </ul>
+                    </nav>
                 </div>
-                {% if loop.index is divisibleby 3 %}
-                    <div class="clearfix"></div>
-                {% endif %}
-                {% endfor %}
             {% endif %}
 
 
@@ -74,7 +64,7 @@
             <h2 class="text-center">Пов'язані особи</h2>
 
                 {% for p in related_persons %}
-                <div class="small-profile linked col-lg-4">
+                <div class="small-profile linked col-sm-6">
                     <div class="box">
                         <header class="profile-header">
                             <div class="avatar">
@@ -85,17 +75,32 @@
                         </header>
 
                         <div class="descr">
-                            {% for c in p.related_persons|sort(attribute="is_pep", reverse=True) %}
-                                {{ c.person }}:
-                                {{ c.relationship_type }}
-                            {% endfor %}
+                            <p><span>Дата рождения:</span> 10.05.1981</p>
+                            <p><span>Последнее место работы:</span> Секретар РНБО України</p>
+                            <p><span>Рівень ризик</span>у:  пиздец</p>
+                            <p><span>Место работы:</span> РайкопГоспромСельхоз производственное управление</p>
+                            <P><span>Связь:</span> Супруга, Сергей Клюев.</p>
                         </div>
                     </div>
                 </div>
-                {% if loop.index is divisibleby 3 %}
+                {% if loop.index is divisibleby 2 %}
                     <div class="clearfix"></div>
                 {% endif %}
                 {% endfor %}
+                
+                <div class="text-center">
+                    <nav>
+                          <ul class="pagination">
+                            <li><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                            <li><a href="#">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#">4</a></li>
+                            <li><a href="#">5</a></li>
+                            <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                          </ul>
+                    </nav>
+                </div>
             {% endif %}
 
         </section>
