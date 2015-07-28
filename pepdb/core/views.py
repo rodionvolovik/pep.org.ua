@@ -81,7 +81,7 @@ def _search_person(request):
     if query:
         persons = persons.query(
             "multi_match", query=query,
-            fields=["full_name^2", "related_persons.person", "_all"])
+            fields=["full_name", "names"])
 
         persons = persons.filter("term", is_pep=True)
     else:

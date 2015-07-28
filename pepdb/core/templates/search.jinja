@@ -33,10 +33,15 @@
                         </header>
 
                         <div class="descr">
-                            <p><span>Дата рождения:</span> 10.05.1981</p>
-                            <p><span>Последнее место работы:</span> Секретар РНБО України</p>
-                            <p><span>Рівень ризику:</span>  пиздец</p>
-                            <p><span>Место работы:</span> РайкопГоспромСельхоз производственное управление</p>
+                            {% if p.date_of_birth %}
+                            <p><span>Дата рождения:</span> {{ p.date_of_birth }}</p>
+                            {% endif %}
+                            {% if p.last_workplace %}
+                            <p><span>Последнее место работы:</span> {{ p.last_workplace }}</p>
+                            {% endif %}
+                            {% if p.risk_category %}
+                            <p><span>Рівень ризику:</span> {{ p.risk_category }}</p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

@@ -1,10 +1,14 @@
 # coding: utf-8
 from django.db import models
-import select2.fields
-import select2.models
+
 from django.db.models import Q
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
+from django.utils import formats
+
+import select2.fields
+import select2.models
 from django_markdown.models import MarkdownField
 
 
@@ -113,6 +117,38 @@ class Person(models.Model):
     def __unicode__(self):
         return u"%s %s %s" % (self.last_name, self.first_name, self.patronymic)
 
+    @property
+    def date_of_birth(self):
+        if not self.dob:
+            return ""
+
+        if self.dob_details == 0:
+            return formats.date_format(self.dob, "DATE_FORMAT")
+        elif self.dob_details == 1:
+            return formats.date_format(
+                self.dob, "MONTH_YEAR_DATE_FORMAT")
+        elif self.dob_details == 2:
+            return formats.date_format(self.dob, "YEAR_DATE_FORMAT")
+
+    @property
+    def last_workplace(self):
+        qs = self.person2company_set.filter(
+            is_employee=True, date_finished__exact=None)
+
+        if not qs:
+            qs = self.person2company_set.filter(
+                is_employee=True).order_by("-date_finished")
+        if not qs:
+            qs = self.person2company_set.filter(
+                is_employee=False, date_finished__exact=None)
+        if not qs:
+            qs = self.person2company_set.filter(
+                is_employee=False).order_by("-date_finished")
+
+        if qs:
+            l = qs[0]
+            return u"%s, %s" % (l.to_company, l.relationship_type)
+
     def to_dict(self):
         """
         Convert Person model to an indexable presentation for ES.
@@ -137,9 +173,12 @@ class Person(models.Model):
             for i in self.person2company_set.select_related("to_company")]
 
         d["photo"] = self.photo.name if self.photo else ""
+        d["date_of_birth"] = self.date_of_birth
+        d["last_workplace"] = self.last_workplace
         d["type_of_official"] = self.get_type_of_official_display()
-        d["full_name"] = u"%s %s %s" % (self.first_name, self.patronymic,
-                                        self.last_name)
+        d["risk_category"] = self.get_risk_category_display()
+        d["full_name"] = (u"%s %s %s" % (self.first_name, self.patronymic,
+                                         self.last_name)).replace("  ", " ")
 
         d["full_name_suggest"] = {
             "input": [
