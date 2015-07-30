@@ -19,3 +19,5 @@ django-pipeline==1.5.0
 easy-thumbnails==2.2
 wagtail==1.0
 elasticsearch-dsl==0.0.4
+oauth2client==1.4.12
+pyOpenSSL==0.15.1
