@@ -18,6 +18,7 @@
                 <h2 class="text-center">Фізичні особи</h2>
                 {% for p in persons %}
                 <div class="small-profile {% if p.is_pep %}fizik{% else %}linked{% endif %} col-sm-6">
+                <a href="{{ url("person_details", person_id=p.id) }}">
                     <div class="box">
                         <header class="profile-header">
 
@@ -28,7 +29,7 @@
                         </div>
 
                             <h3 class="pep-name">
-                                <a href="{{ url("person_details", person_id=p.id) }}">{{ p.last_name }}<span class="pep-pib">{{ p.first_name }} {{ p.patronymic }}</span></a>
+                                {{ p.last_name }}<span class="pep-pib">{{ p.first_name }} {{ p.patronymic }}</span>
                             </h3>
                         </header>
 
@@ -40,10 +41,11 @@
                             <p><span>Последнее место работы:</span> {{ p.last_workplace }}</p>
                             {% endif %}
                             {% if p.risk_category %}
-                            <p><span>Рівень ризику:</span> {{ p.risk_category }}</p>
+                            <p><span>Рівень ризику:</span> <span class="riskLevel">{{ p.risk_category }}</span><span class="riskLevel tip"> Какой-то пояснительный текст что-это означает и чтобы всем вообще было понятно</span></p>
                             {% endif %}
                         </div>
                     </div>
+                </a>
                 </div>
                 {% if loop.index is divisibleby 2 %}
                     <div class="clearfix"></div>
@@ -65,23 +67,25 @@
 
                 {% for p in related_persons %}
                 <div class="small-profile {% if p.is_pep %}fizik{% else %}linked{% endif %} col-sm-6">
-                    <div class="box">
-                        <header class="profile-header">
-                            <div class="avatar">
+                    <a href="{{ url("person_details", person_id=p.id) }}">
+                        <div class="box">
+                            <header class="profile-header">
+                                <div class="avatar">
+                                </div>
+                                <h3 class="pep-name">
+                                    {{ p.last_name }}<span class="pep-pib">{{ p.first_name }} {{ p.patronymic }}</span>
+                                </h3>
+                            </header>
+    
+                            <div class="descr">
+                                <p><span>Дата рождения:</span> 10.05.1981</p>
+                                <p><span>Последнее место работы:</span> Секретар РНБО України</p>
+                                <p><span>Рівень ризику:</span>  <span class="riskLevel">пиздец</span><span class="riskLevel tip"> Какой-то пояснительный текст что-это означает и чтобы всем вообще было понятно</span></p>
+                                <p><span>Место работы:</span> РайкопГоспромСельхоз производственное управление</p>
+                                <P><span>Связь:</span> Супруга, Сергей Клюев.</p>
                             </div>
-                            <h3 class="pep-name">
-                                <a href="{{ url("person_details", person_id=p.id) }}">{{ p.last_name }}<span class="pep-pib">{{ p.first_name }} {{ p.patronymic }}</span></a>
-                            </h3>
-                        </header>
-
-                        <div class="descr">
-                            <p><span>Дата рождения:</span> 10.05.1981</p>
-                            <p><span>Последнее место работы:</span> Секретар РНБО України</p>
-                            <p><span>Рівень ризик</span>у:  пиздец</p>
-                            <p><span>Место работы:</span> РайкопГоспромСельхоз производственное управление</p>
-                            <P><span>Связь:</span> Супруга, Сергей Клюев.</p>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 {% if loop.index is divisibleby 2 %}
                     <div class="clearfix"></div>

@@ -152,7 +152,7 @@ i {
 
 #navbar .btn {
     color: #333;
-    border: #333 1ps solid;
+    border: #333 1px solid;
     padding: 10px 30px;
     margin-top: 5px;
     font-size: 18px;
@@ -207,6 +207,22 @@ h1 {
 }
 #searchbox .btn {
     font-size: 20px;
+}
+.regularSearch {
+    margin-top: 5px;
+}
+.regularSearch input,
+.regularSearch .btn {
+    height: 40px;
+}
+#navbar .regularSearch .btn {
+    margin-top: 0;
+    padding: 0 10px;
+    background: #4285f4;
+    border: #4285f4 1px solid;
+}
+#navbar .regularSearch .btn i {
+    color: white;
 }
 .square {
     max-width: 100%;
@@ -333,6 +349,16 @@ h1 {
     background: #fff url(../images/plashka.png) no-repeat 0 -48px;
     min-height: 140px;
 }
+.small-profile a { 
+    color:#333;
+}
+.small-profile a:hover {
+    text-decoration: none;
+}
+.small-profile a:hover .box {
+    box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.23),inset 0 3px 10px rgba(0, 0, 0, 0.16);
+    
+}
 .small-profile img {
     height: 100px;
     width: auto;
@@ -372,6 +398,24 @@ h1 {
     font-size: 12px;
     margin-left: -45px;
     color: #7B7B7B;
+}
+.small-profile .descr span.riskLevel {
+    font-weight: normal;
+}
+.small-profile .descr .riskLevel.tip {
+    display: none;
+}
+.small-profile a:hover .descr .riskLevel.tip {
+    display: block; 
+    position: absolute; 
+    background: white; 
+    margin-right: 60px; 
+    padding: 5px 10px;
+    margin-top: -5px;
+    color: #DF4500;
+    font-family: 'arsenalitalic';
+    line-height: 14px;
+    
 }
 .small-profile.fizik .avatar {
     background-image: url(../images/short-avatar.png);
