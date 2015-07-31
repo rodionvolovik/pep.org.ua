@@ -40,6 +40,16 @@
                         {% endblock %}
                     </ul>
                 </div>
+                {% if request.path != "/" %}
+                <div class="col-sm-3 col-md-3 pull-right regularSearch">
+                    <form action="{{ url("search") }}" method="GET">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Enter name here" name="q" data-provide="typeahead" id="search-form" autocomplete="off" />
+                            <span class="input-group-btn"><button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-search"></i></button></span>
+                        </div>
+                    </form>
+                </div>
+                {% endif %}
             </div>
         </nav>
 
