@@ -64,7 +64,7 @@ def parse_date(s):
 
 
 class Client(object):
-    def __init__(self, auth_key=settings.GAUTH_CREDENTIALS):
+    def __init__(self, auth_key=getattr(settings, "GAUTH_CREDENTIALS", None)):
         super(Client, self).__init__()
         self.auth_key = auth_key
 
