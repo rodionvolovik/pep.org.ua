@@ -1,7 +1,9 @@
 from operator import itemgetter
 
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.core.urlresolvers import reverse
+from elasticsearch_dsl.query import Q
 
 from core.models import Person
 from core.paginator import paginated_search
@@ -63,6 +65,24 @@ def suggest(request):
 def search(request, sources=["persons", "related"]):
     params = {}
 
+    query = request.GET.get("q", "")
+    is_exact = request.GET.get("is_exact", "") == "on"
+
+    if is_exact:
+        persons = ElasticPerson.search().query(
+            "multi_match", query=query,
+            operator="and",
+            fields=["full_name", "names"])
+
+        # Special case when we were looking for one exact person and found it.
+        if persons.count() == 1:
+            person = persons.execute()[0]
+
+            return redirect(
+                reverse("person_details",
+                        kwargs={"person_id": person.id})
+            )
+
     if "persons" in sources:
         params["persons"] = _search_person(request)
 
@@ -74,36 +94,46 @@ def search(request, sources=["persons", "related"]):
 
 def _search_person(request):
     query = request.GET.get("q", "")
-    is_exact = request.GET.get("is_exact", "") == "on"
-
-    persons = ElasticPerson.search()
 
     if query:
-        persons = persons.query(
+        persons = ElasticPerson.search().query(
             "multi_match", query=query,
+            operator="and",
             fields=["full_name", "names"])
 
         persons = persons.filter("term", is_pep=True)
+
+        if persons.count() == 0:
+            # PLAN B, PLAN B
+            persons = ElasticPerson.search().query(
+                "multi_match", query=query,
+                operator="or",
+                minimum_should_match="2",
+                fields=["full_name", "names"])
+
+            persons = persons.filter("term", is_pep=True)
+
+        return paginated_search(request, persons)
     else:
-        persons = persons.query('match_all')
+        persons = ElasticPerson.search().query('match_all')
         persons = persons.filter("term", is_pep=True)
 
-    return paginated_search(request, persons)
+        return paginated_search(request, persons)
 
 
 def _search_related(request):
     query = request.GET.get("q", "")
-    is_exact = request.GET.get("is_exact", "") == "on"
-
-    related_persons = ElasticPerson.search()
 
     if query:
-        related_persons = related_persons.query(
+        related_persons = ElasticPerson.search().query(
             "multi_match", query=query,
-            fields=["full_name^2", "related_persons.person", "_all"])
+            operator="and",
+            fields=["related_persons.person", "_all"])
     else:
-        related_persons = related_persons.query('match_all')
-        related_persons = related_persons.filter("term", is_pep=False)
+        related_persons = ElasticPerson.search().query(
+            'match_all').filter("term", is_pep=False)
+
+    related_persons = related_persons.filter("term", is_pep=False)
 
     return paginated_search(request, related_persons)
 

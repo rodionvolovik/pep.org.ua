@@ -20,7 +20,7 @@ urlpatterns = patterns(
     url(r'^search_related$', 'core.views.search', name='search_related',
         kwargs={"sources": ["related"]}),
 
-    url(r'^person/(?P<person_id>\d+)$$', 'core.views.person_details',
+    url(r'^person/(?P<person_id>\d+)$', 'core.views.person_details',
         name='person_details'),
 
     # url(r'^company/(?P<company_id>\d+)$$', 'core.views.company_details',
