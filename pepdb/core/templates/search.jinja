@@ -78,11 +78,20 @@
                             </header>
     
                             <div class="descr">
-                                <p><span>Дата рождения:</span> 10.05.1981</p>
-                                <p><span>Последнее место работы:</span> Секретар РНБО України</p>
-                                <p><span>Рівень ризику:</span>  <span class="riskLevel">пиздец</span><span class="riskLevel tip"> Какой-то пояснительный текст что-это означает и чтобы всем вообще было понятно</span></p>
-                                <p><span>Место работы:</span> РайкопГоспромСельхоз производственное управление</p>
-                                <P><span>Связь:</span> Супруга, Сергей Клюев.</p>
+                                {% if p.date_of_birth %}
+                                <p><span>Дата рождения:</span> {{ p.date_of_birth }}</p>
+                                {% endif %}
+                                {% if p.last_workplace %}
+                                <p><span>Последнее место работы:</span> {{ p.last_workplace }}</p>
+                                {% endif %}
+                                {% if p.risk_category %}
+                                <p><span>Рівень ризику:</span> <span class="riskLevel">{{ p.risk_category }}</span><span class="riskLevel tip"> Какой-то пояснительный текст что-это означает и чтобы всем вообще было понятно</span></p>
+                                {% endif %}
+                                <p>
+                                    {% for rel in p.relevant_related_persons()[:4] %}
+                                        <span>Связь:</span> {% if rel.relationship_type %}{{ rel.relationship_type }}, {% endif %}{{ rel.person }}<br />
+                                    {% endfor %}
+                                </p>
                             </div>
                         </div>
                     </a>

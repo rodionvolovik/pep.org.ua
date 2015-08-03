@@ -156,7 +156,14 @@ def _search_related(request):
         related_persons = ElasticPerson.search().query(
             'match_all').filter("term", is_pep=False)
 
-    return paginated_search(request, related_persons)
+    return paginated_search(
+        request,
+        # We are using highlight here to find which exact related person
+        # caused the match to show it in the person's card on the top of the
+        # list. Check Person.relevant_related_persons method for details
+        related_persons.highlight(
+            'related_persons.person',
+            order="score", pre_tags=[""], post_tags=[""]))
 
 
 def person_details(request, person_id):
