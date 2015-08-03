@@ -76,8 +76,8 @@ class Client(object):
         credentials.refresh(httplib2.Http())
         return credentials.token_response["access_token"]
 
-    def download(self, spreadsheet=settings.SPREADSHEET_ID, gid=0,
-                 format="csv"):
+    def download(self, spreadsheet=getattr(settings, "SPREADSHEET_ID", None),
+                 gid=0, format="csv"):
         url_format = ("https://spreadsheets.google.com/feeds/download/"
                       "spreadsheets/Export?key=%s&exportFormat=%s&gid=%i")
         headers = {
