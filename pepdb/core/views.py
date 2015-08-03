@@ -112,28 +112,49 @@ def _search_person(request):
                 fields=["full_name", "names"])
 
             persons = persons.filter("term", is_pep=True)
-
-        return paginated_search(request, persons)
     else:
         persons = ElasticPerson.search().query('match_all')
         persons = persons.filter("term", is_pep=True)
 
-        return paginated_search(request, persons)
+    return paginated_search(request, persons)
 
 
 def _search_related(request):
     query = request.GET.get("q", "")
 
     if query:
-        related_persons = ElasticPerson.search().query(
+        all_related = Q(
             "multi_match", query=query,
             operator="and",
-            fields=["related_persons.person", "_all"])
+            fields=["related_persons.person"])
+
+        non_peps = Q(
+            "multi_match", query=query,
+            operator="and",
+            fields=["full_name", "names"]) & Q("match", is_pep=False)
+
+        related_persons = ElasticPerson.search().query(all_related | non_peps)
+
+        if related_persons.count() == 0:
+            # PLAN B, PLAN B
+            all_related = Q(
+                "multi_match", query=query,
+                operator="or",
+                minimum_should_match="2",
+                fields=["related_persons.person"])
+
+            non_peps = Q(
+                "multi_match", query=query,
+                operator="or",
+                minimum_should_match="2",
+                fields=["full_name", "names"]) & Q("match", is_pep=False)
+
+            related_persons = ElasticPerson.search().query(
+                all_related | non_peps)
+
     else:
         related_persons = ElasticPerson.search().query(
             'match_all').filter("term", is_pep=False)
-
-    related_persons = related_persons.filter("term", is_pep=False)
 
     return paginated_search(request, related_persons)
 
