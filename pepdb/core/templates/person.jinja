@@ -8,27 +8,45 @@
     {% endif %}
 {% endblock %}
 
+{% macro render_related_person(person, type) %}
+    <li>
+        <a href="{{ person.get_absolute_url() }}">
+            <span>
+                <i class="fa {% if type == "family" %}fa-heart{% elif type == "personal" %}fa-user-secret{% else %}fa-users{% endif %}"></i>
+                {{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}
+            </span> &ndash;
+            {% if person.rtype %}{{ _(person.rtype) }},{% endif %}
+            {% if person.dob %} {{ person.date_of_birth }} {{ _('р.н.')}},{% endif%}
+            {{ person.last_workplace }}
+        </a>
+    </li>
+{% endmacro %}
+
 
 {% block content %}
+{% set related_persons = person.all_related_persons %}
 <div class="container">
     <div class="row">
         <div id="breadcrumbs">
             <ol class="breadcrumb">
-                <li><a href="{{ url("home") }}">Головна</a></li>
-                <li><a href="#">Результати пошуку</a></li>
-                <li class="active">Публічні діячі</li>
+                <li><a href="{{ url("home") }}">{{ _("Головна") }}</a></li>
+                <li><a href="#">{{ _("Результати пошуку") }}</a></li>
+                <li class="active">{{ _("Публічні діячі") }}</li>
             </ol>
         </div>
         <aside id="profile-nav" role="complementary" class="col-lg-2">
             <ul id="side-profilemenu">
-                <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-male"></i> <span>Персональні дані</span></a></li>
-                <li><a href="#profile" class="btn btn-transp trans"><i class="fa fa-briefcase"></i> Досьє</a></li>
+                <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-male"></i> <span>{{ _("Персональні дані") }}</span></a></li>
+                <li><a href="#profile" class="btn btn-transp trans"><i class="fa fa-briefcase"></i> {{ _("Досьє") }}</a></li>
                 {% if person.reputation_sanctions or person.reputation_crimes or person.reputation_manhunt or person.reputation_convictions %}
-                <li><a href="#reputation" class="btn btn-transp trans"><i class="fa fa-bullhorn"></i>Репутація</a></li>
+                <li><a href="#reputation" class="btn btn-transp trans"><i class="fa fa-bullhorn"></i>{{ _("Репутація") }}</a></li>
                 {% endif %}
-                <li><a href="#connections" class="btn btn-transp trans"><i class="fa fa-heart"></i> З’вязки</a></li>
-                <li><a href="#workbefore" class="btn btn-transp trans"><i class="fa fa-wrench"></i> Робота</a></li>
-                <li><a href="#assets" class="btn btn-transp trans"><i class="fa fa-cubes"></i> Майно</a></li>
+
+                {% if related_persons.all %}
+                <li><a href="#connections" class="btn btn-transp trans"><i class="fa fa-heart"></i> {{ _("З'вязки") }}</a></li>
+                {% endif %}
+                <li><a href="#workbefore" class="btn btn-transp trans"><i class="fa fa-wrench"></i> {{ _("Робота") }}</a></li>
+                <li><a href="#assets" class="btn btn-transp trans"><i class="fa fa-cubes"></i> {{ _("Майно") }}</a></li>
             </ul>
         </aside>
         <section id="profile" class="col-lg-8">
@@ -46,13 +64,13 @@
                         <table class="table table-condensed">
                             {% if person.type_of_official %}
                             <tr>
-                                <td>Категорія ПЕП </td>
+                                <td>{{ _("Категорія ПЕП") }} </td>
                                 <td><strong>{{ person.get_type_of_official_display() }}</strong></td>
                             </tr>
                             {% endif %}
                             {% if person.dob %}
                             <tr>
-                                <td>Дата народження</td>
+                                <td>{{ _("Дата народження") }}</td>
                                 <td>
                                 {%- if person.dob_details == 0 %}
                                 {{ person.dob|date }}
@@ -66,17 +84,17 @@
                             {% endif %}
                             {% if person.city_of_birth %}
                             <tr>
-                                <td>Місце народження</td>
+                                <td>{{ _("Місце народження") }}</td>
                                 <td>{{ person.city_of_birth }}</td>
                             </tr>
                             {% endif %}
                             <tr>
-                                <td>Рівень ризику</td>
+                                <td>{{ _("Рівень ризику") }}</td>
                                 <td><strong>{{ person.get_risk_category_display() }}</strong></td>
                             </tr>
                             <tr>
-                                <td>Остання посада ???</td>
-                                <td><strong>Голова Адміністрації Президента України</strong></td>
+                                <td>{{ _("Остання посада") }}</td>
+                                <td><strong>{{ person.last_workplace }}</strong></td>
                             </tr>
                         </table>
                     </div>
@@ -85,7 +103,7 @@
 
             {% if person.wiki %}
             <div id="profile" class="sub box">
-                <h3>Досьє:</h3>
+                <h3>{{ _("Досьє:") }}</h3>
                 <br />
                 {{ person.wiki|markdown }}
             </div>
@@ -93,102 +111,71 @@
 
             {% if person.reputation_sanctions or person.reputation_crimes or person.reputation_manhunt or person.reputation_convictions %}
             <div id="reputation" class="sub box">
-                <h3>Репутація:</h3>
+                <h3>{{ _("Репутація:") }}</h3>
                 <br />
                 {% if person.reputation_sanctions %}
-                    <h4>Санкції</h4>
+                    <h4>{{ _("Санкції") }}</h4>
                     {{ person.reputation_sanctions|markdown }}
                 {% endif %}
                 {% if person.reputation_crimes %}
-                    <h4>Кримінальні впровадження</h4>
+                    <h4>{{ _("Кримінальні впровадження") }}</h4>
                     {{ person.reputation_crimes|markdown }}
                 {% endif %}
                 {% if person.reputation_manhunt %}
-                    <h4>Перебування у розшуку</h4>
+                    <h4>{{ _("Перебування у розшуку") }}</h4>
                     {{ person.reputation_manhunt|markdown }}
                 {% endif %}
                 {% if person.reputation_convictions %}
-                    <h4>Наявність судимості</h4>
+                    <h4>{{ _("Наявність судимості") }}</h4>
                     {{ person.reputation_convictions|markdown }}
                 {% endif %}
             </div>
             {% endif %}
 
+            {% if related_persons.all %}
             <div id="connections" class="sub box">
-                <h3>З’вязки:</h3>
+                <h3>{{ _("Зв'язки:") }}</h3>
                 <div class="tree">
                     <ul>
                         <li>
-                            <span><i class="icon-calendar"></i> Клюєв</span>
+                            <span><i class="icon-calendar">{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}</i></span>
                             <ul>
+                                {% if related_persons.family %}
                                 <li>
-                                    <span class="badge badge-success"><i class="fa fa-plus-square"></i> Близькі особи</span>
+                                    <span class="badge badge-success"><i class="fa fa-plus-square"></i> {{ _("Родина та близькі особи") }}</span>
                                     <ul class="h">
-                                        <li>
-                                            <span><i class="fa fa-heart"></i> Брат</span> &ndash; <a href="">Клюєв Сергій Петрович, 19.08.1969 р.н., Народний депутат України</a>
-                                        </li>
-                                        <li>
-                                            <span><i class="fa fa-heart"></i> Дружина</span> &ndash; <a href="">Жанна Вікторівна Клюєва, 1964 р.н. - заст.гендиректора корпорації «Укрпідшипник»а</a>
-                                        </li>
-                                        <li>
-                                            <span><i class="fa fa-heart"></i> Син</span> &ndash; <a href="">Клюєв Богдан Андрійович – 1985 р.н., менеджер з розвитку бізнесу компанії, підконтрольній Клюєву - ТОВ «Актив Солар»</a>
-                                        </li>
-                                        <li>
-                                            <span><i class="fa fa-heart"></i> Син</span> &ndash; <a href="">Клюєв Кирило Андрійович – 1995 р.н.</a>
-                                        </li>
+                                        {% for rp in related_persons.family %}
+                                            {{ render_related_person(rp, "family") }}
+                                        {% endfor %}
                                     </ul>
                                 </li>
+                                {% endif %}
+                                {% if related_persons.personal %}
                                 <li>
-                                    <span class="badge badge-success"><i class="fa fa-plus-square"></i> Пов’язані особи</span>
+                                    <span class="badge badge-success"><i class="fa fa-plus-square"></i> {{ _("Персональні зв'язки") }}</span>
                                     <ul class="h">
-                                        <li>
-                                            <span><i class="fa fa-users"></i> Ірина Клюєва</span> &ndash; <a href="">дружина брата (Сергія Клюєва) - є членом ради директорів Компанія Slav AG</a>
-                                        </li>
-                                        <li>
-                                            <span><i class="fa fa-users"></i> Каве Ертефай</span> &ndash; <a href="">зять брата (Сергія Клюєва) - власник компанії Activ Solar GmbH, директор дочірнього підприємства Activ Solar GmbH на Кіпрі — компанії AST ACTIV SOLAR TRADING LTD</a>
-                                        </li>
-                                        <li>
-                                            <span><i class="fa fa-users"></i> Рейнхард Прокш</span> &ndash; <a href="">номінальний власник/директор компаній, підконтрольних Клюєву</a>
-                                        </li>
-                                        <li>
-                                            <span><i class="fa fa-users"></i> Черевко Михайло</span> &ndash; <a href="">Керівника ТОВ «Актив Солар»</a>
-                                        </li>
+                                        {% for rp in related_persons.personal %}
+                                            {{ render_related_person(rp, "personal") }}
+                                        {% endfor %}
                                     </ul>
                                 </li>
+                                {% endif %}
+                                {% if related_persons.business %}
                                 <li>
-                                    <span class="badge badge-warning"><i class="fa fa-plus-square"></i> Не родинні зв’язки</span>
+                                    <span class="badge badge-success"><i class="fa fa-plus-square"></i> {{ _("Ділові зв'язки") }}</span>
                                     <ul class="h">
-                                        <li>
-                                            <span><i class="fa fa-user-secret"></i> Віктор Федорович Янукович</span> &ndash; <a href="">колишній Президент України</a>
-                                        </li>
-                                        <li>
-                                            <span><i class="fa fa-user-secret"></i> Рейнхард Прокш</span> &ndash; <a href="">номінальний власник/директор компаній, підконтрольних Клюєву</a>
-                                        </li>
-                                        <li>
-                                            <span><i class="fa fa-user-secret"></i> Michael George Jeffrey</span> &ndash; <a href="">(громадянин Британії) – співробітник офшорної юридичної фірми Olsen Law Firm – номінальний власник сонячної електростанції «Перово» (АР Крим)</a>
-                                        </li>
-                                        <li>
-                                            <span><i class="fa fa-user-secret"></i> Marcus Jacobus Maria</span> &ndash; <a href="">(громадянин Нідерландів) – номінальний власник сонячних електростанцій «Охотніково» (АР Крим) та «Лиманска» (Одеська обл.)</a>
-                                        </li>
-                                        <li>
-                                            <span><i class="fa fa-user-secret"></i> Stephan Spender</span> &ndash; <a href="">(громадянин Люксембургу) – управляючий партнер, сертифікований аудитор, номінальний власник сонячних електростанцій «Дунайська» та «Старокозача» (обидві – Одеська обл.)</a>
-                                        </li>
-                                        <li>
-                                            <span><i class="fa fa-user-secret"></i> Zuidema Hendrikus</span> &ndash; <a href="">громадянин Нідерландів, номінальний директор електростанції «Приозерна» (Одеська обл.)</a>
-                                        </li>
-                                        <li>
-                                            <span><i class="fa fa-user-secret"></i> Коваленко Роман Вікторович</span> &ndash; <a href="">директор компаній Дельта Солар, Зета Солар, Альфа Солар, Бета Солар, Гамма Солар, що є власниками електростанції «Перово» (АР Крим)</a>
-                                        </li>
-                                        <li>
-                                            <span><i class="fa fa-user-secret"></i> Колобов Сергій</span> &ndash; <a href="">колишній директор компанії 'Грінтек Енержі', пов'язаної з Клюєвом, Перед тим як очолити 'Грінтек Енержі', Колобов був керівником п’яти компаній з однойменними назвами: 'Краймія Солар 1', 'Краймія Солар 2', 'Краймія Солар 3', 'Краймія Солар 4' та 'Краймія Солар 5', пов’язаних з Клюєвим. У квітні 2012 року він перейшов на посаду заступника голови Республіканського комітету Криму з палива, енергетики та інноваційної політики. З жовтня того ж року очолив цей комітет</a>
-                                        </li>
+                                        {% for rp in related_persons.business %}
+                                            {{ render_related_person(rp, "business") }}
+                                        {% endfor %}
                                     </ul>
                                 </li>
+                                {% endif %}
                             </ul>
                         </li>
                     </ul>
                 </div>
             </div>
+            {% endif %}
             <div id="workbefore" class="sub box">
                 <h3>Робота до парламенту:</h3>
                 <div id="element">
@@ -257,7 +244,7 @@
                 </div>
             </div>
             <div id="assets" class="sub box">
-                <h3>Майно:</h3>
+                <h3>{{ _("Майно:") }}</h3>
                 <br>
                 <br>
                 <br>
@@ -265,7 +252,7 @@
             </div>            
         </section>
         <aside id="profile-suggest" role="complementary" class="col-lg-2">
-            <h3>Можливо ви шукали:</h3>
+            <h3>{{ _("Можливо ви шукали:") }}</h3>
             <ul>
                 <li><a href="">Клюєв Микола Іванович</a></li>
                 <li><a href="">Клюєва Наталія Олларіонівна</a></li>

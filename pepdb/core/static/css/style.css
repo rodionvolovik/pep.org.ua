@@ -345,6 +345,9 @@ h1 {
     font-weight: bold;
     color: #ff5a5f;
 }
+#profile .sub h4 {
+    font-weight: bold;
+}
 #profile td {
     vertical-align: middle;
 }
