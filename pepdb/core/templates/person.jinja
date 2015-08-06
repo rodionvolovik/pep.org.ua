@@ -3,7 +3,7 @@
 {% block extra_menu %}
     {% if request.user.is_superuser %}
         <li>
-            <a class="btn btn-default trans" href="{{ url('admin:core_person_change', person.id) }}" target="_blank">Редагувати</a>
+            <a class="btn btn-default trans" href="{{ url('admin:core_person_change', person.id) }}" target="_blank">{{ _("Редагувати") }}</a>
         </li>
     {% endif %}
 {% endblock %}
@@ -11,12 +11,12 @@
 {% macro render_related_person(person, type) %}
     <li>
         <a href="{{ person.get_absolute_url() }}">
-            <span>
+            <span {% if person.is_pep %}class="is_pep"{% endif %}>
                 <i class="fa {% if type == "family" %}fa-heart{% elif type == "personal" %}fa-user-secret{% else %}fa-users{% endif %}"></i>
                 {{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}
             </span> &ndash;
             {% if person.rtype %}{{ _(person.rtype) }},{% endif %}
-            {% if person.dob %} {{ person.date_of_birth }} {{ _('р.н.')}},{% endif%}
+            {% if person.dob %} {{ person.date_of_birth }},{% endif%}
             {{ person.last_workplace }}
         </a>
     </li>
@@ -46,7 +46,9 @@
                 <li><a href="#connections" class="btn btn-transp trans"><i class="fa fa-heart"></i> {{ _("З'вязки") }}</a></li>
                 {% endif %}
                 <li><a href="#workbefore" class="btn btn-transp trans"><i class="fa fa-wrench"></i> {{ _("Робота") }}</a></li>
+                {% if person.assets or person.reputation_assets %}
                 <li><a href="#assets" class="btn btn-transp trans"><i class="fa fa-cubes"></i> {{ _("Майно") }}</a></li>
+                {% endif %}
             </ul>
         </aside>
         <section id="profile" class="col-lg-8">
@@ -177,88 +179,63 @@
             </div>
             {% endif %}
             <div id="workbefore" class="sub box">
-                <h3>Робота до парламенту:</h3>
+                <h3>{{ _("Робота:") }}</h3>
                 <div id="element">
                     <ul class="timeline">
+                        {% for date_tag, type, connection in person.workplaces %}
                         <li class="tl-item">
                             <div class="tl-wrap">
-                                <span class="tl-date">1983</span>
+                                <span class="tl-date">
+                                    {% if date_tag %}
+                                        {% if type == "from" %}
+                                            {{ _("з") }}
+                                        {% elif type == "to" %}
+                                            {{ _("по") }}
+                                        {% endif %}
+                                        {{ date_tag }}
+                                    {% endif %}
+                                </span>
                                 <div class="tl-content panel padder b-a">
                                     <span class="arrow left pull-up"></span>
-                                    <div>Підземний гірничий робітник шахти ім. А. Засядька</div>
+                                    <div>{{ connection.to_company }}, {{ connection.relationship_type }}</div>
                                 </div>
                             </div>
                         </li>
-                        <li class="tl-item">
-                            <div class="tl-wrap">
-                                <span class="tl-date">1984</span>
-                                <div class="tl-content panel padder b-a">
-                                    <span class="arrow left pull-up"></span>
-                                    <div>Учень гірноробочого очисного забою шахти ім. М. Горького. Після інституту працював заступником начальника, начальником дільниці шахтного транспорту шахти «Білоріченська» ВО «Ворошиловградвугілля». Був аспірантом, працівником Донецького політехнічного інституту. Очолював низку підприємств вугільного машинобудування.
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="tl-item">
-                            <div class="tl-wrap">
-                                <span class="tl-date">1994</span>
-                                <div class="tl-content panel padder b-a">
-                                    <span class="arrow left pull-up"></span>
-                                    <div>Заступник голови Донецької обласної ради з виконавчої роботи</div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="tl-item">
-                            <div class="tl-wrap">
-                                <span class="tl-date">листопад 1995 - 
-квітень 1996</span>
-                                <div class="tl-content panel padder b-a">
-                                    <span class="arrow left pull-up"></span>
-                                    <div>Заступник голови з питань розвитку ринкових відносин, приватизації, реформування економіки та праці, вугільної промисловості Донецької облдержадміністрації
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="tl-item">
-                            <div class="tl-wrap">
-                                <span class="tl-date">1996</span>
-                                <div class="tl-content panel padder b-a">
-                                    <span class="arrow left pull-up"></span>
-                                    <div>
-                                        Перший заступник голови Донецького міськвиконкому</div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="tl-item">
-                            <div class="tl-wrap">
-                                <span class="tl-date">1998</span>
-                                <div class="tl-content panel padder b-a">
-                                    <span class="arrow left pull-up"></span>
-                                    <div>
-                                        Заступник голови з питань політико-правової роботи, заступник голови з питань розвитку територій та зовнішньоекономічних зв'язків, виробництва товарів народного споживання Донецької облдержадміністрації
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
+                        {% endfor %}
                     </ul>
                 </div>
             </div>
+            {% if person.assets or person.reputation_assets %}
             <div id="assets" class="sub box">
                 <h3>{{ _("Майно:") }}</h3>
-                <br>
-                <br>
-                <br>
-                <br>
-            </div>            
+                {% for asset in person.assets %}
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            {{ asset.to_company }}
+                            {% if asset.to_company.edrpou %}
+                            , {{ _("ЄДРПОУ") }}{{ asset.to_company.edrpou }}
+                            {% endif%}
+                        </div>
+                        <div class="panel-footer">
+                            {{ asset.relationship_type }}
+                        </div>
+                    </div>
+                {% endfor %}
+                {% if person.reputation_assets %}
+                    {{ person.reputation_assets|markdown }}
+                {% endif %}
+            </div>
+            {% endif %}
         </section>
         <aside id="profile-suggest" role="complementary" class="col-lg-2">
+            {% if person.parsed_names %}
             <h3>{{ _("Можливо ви шукали:") }}</h3>
             <ul>
-                <li><a href="">Клюєв Микола Іванович</a></li>
-                <li><a href="">Клюєва Наталія Олларіонівна</a></li>
-                <li><a href="">Клюєва Олена Олегівна</a></li>
-                <li><a href="">Клюєв Орест Орестович</a></li>
+                {% for name_alt in person.parsed_names %}
+                <li>{{ name_alt}}</li>
+                {% endfor %}
             </ul>
+            {% endif %}
         </aside>
     </div>
 </div>

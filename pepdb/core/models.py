@@ -153,6 +153,34 @@ class Person(models.Model):
         return ""
 
     @property
+    def workplaces(self):
+        timeline = []
+
+        for p2c in self.person2company_set.select_related("to_company").filter(
+                is_employee=True):
+            if p2c.date_established:
+                timeline.append((p2c.date_established, "from", p2c))
+            if p2c.date_finished:
+                timeline.append((p2c.date_finished, "to", p2c))
+            if p2c.date_established is None and p2c.date_finished is None:
+                timeline.append(None, None, p2c)
+
+        timeline.sort(key=lambda x: 1000000.
+                      if x[0] is None else x[0].toordinal() +
+                      (0.5 if x[1] == "to" else 0.0))
+
+        return timeline
+
+    @property
+    def assets(self):
+        return self.person2company_set.select_related("to_company").filter(
+            is_employee=False,
+            relationship_type__in=["Засновник/учасник",
+                                   "Колишній засновник/учасник",
+                                   "Бенефіціарний власник",
+                                   "Номінальний власник",])
+
+    @property
     def all_related_persons(self):
         related_persons = [
             (i.to_relationship_type, i.to_person)
@@ -181,6 +209,10 @@ class Person(models.Model):
             res["all"].append(p)
 
         return res
+
+    @property
+    def parsed_names(self):
+        return filter(None, self.names.split("\n"))
 
     def to_dict(self):
         """
