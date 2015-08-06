@@ -3,7 +3,7 @@
 {% block extra_menu %}
     {% if request.user.is_superuser %}
         <li>
-            <a class="btn btn-default trans" href="{{ url('wagtailadmin_pages_edit', page.id) }}" target="_blank">Редагувати</a>
+            <a href="{{ url('wagtailadmin_pages_edit', page.id) }}" target="_blank">[{{ _("Редагувати") }}]</a>
         </li>
     {% endif %}
 {% endblock %}
