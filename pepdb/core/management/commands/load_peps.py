@@ -107,6 +107,7 @@ class Command(BaseCommand):
                     )
 
                 person.is_pep = True
+                person.imported = True
                 person.type_of_official = 1
                 if person_dob:
                     person.dob = parse_date(person_dob)

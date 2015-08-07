@@ -30,6 +30,8 @@ class Person(models.Model):
 
     publish = models.BooleanField("Опублікувати", default=False)
     is_pep = models.BooleanField("Є PEPом", default=True)
+    imported = models.BooleanField("Був імпортований з гугл-таблиці",
+                                   default=False)
 
     photo = models.ImageField("Світлина", blank=True, upload_to="images")
     dob = models.DateField("Дата народження", blank=True, null=True)
