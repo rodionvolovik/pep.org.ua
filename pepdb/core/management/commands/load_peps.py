@@ -96,7 +96,7 @@ class Command(BaseCommand):
                 person_name = re.sub("\s+", " ",
                                      person_name.replace(".", ". "))
 
-                chunks = person_name.split(" ")
+                chunks = person_name.strip().split(" ")
 
                 if len(chunks) == 2:
                     last_name = title(chunks[0])
