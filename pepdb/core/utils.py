@@ -1,18 +1,18 @@
 import re
+import json
 import os.path
 import requests
 import urllib2
 import httplib2
-import json
-from oauth2client.client import SignedJwtAssertionCredentials
-
 from string import capwords
 from datetime import datetime
 
+from django.conf import settings
+
+from oauth2client.client import SignedJwtAssertionCredentials
 from dateutil import parser
 from rfc6266 import parse_requests_response
-
-from django.conf import settings
+import gspread
 
 
 def expand_gdrive_download_url(url):
@@ -55,6 +55,7 @@ def title(s):
 
 def parse_date(s):
     try:
+        s = unicode(s).strip()
         if s == "-" or not s:
             return None
 
@@ -63,9 +64,13 @@ def parse_date(s):
         return None
 
 
-class Client(object):
+class CSVDownloadClient(object):
+    """
+    Class to quickly export google spreadsheet into CSV and download it
+    Currently not in use
+    """
     def __init__(self, auth_key=getattr(settings, "GAUTH_CREDENTIALS", None)):
-        super(Client, self).__init__()
+        super(CSVDownloadClient, self).__init__()
         self.auth_key = auth_key
 
     def get_auth_token(self):
@@ -87,3 +92,19 @@ class Client(object):
                               headers=headers)
 
         return urllib2.urlopen(req)
+
+
+def get_spreadsheet(auth_key=getattr(settings, "GAUTH_CREDENTIALS", None),
+                    spreadsheet=getattr(settings, "SPREADSHEET_ID", None)):
+    """
+    Helper to authenticate on google drive and obtain spreadsheet object
+    """
+
+    credentials = SignedJwtAssertionCredentials(
+        auth_key['client_email'], auth_key['private_key'],
+        ['https://spreadsheets.google.com/feeds'])
+
+    credentials.refresh(httplib2.Http())
+
+    gc = gspread.authorize(credentials)
+    return gc.open_by_key(spreadsheet)

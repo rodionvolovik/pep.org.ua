@@ -42,12 +42,14 @@
                 <p class="text-center">Maintainers, sponsors and so on</p>
 
                 {% for banner in banners %}
+                    {% if banner.image %}
                     <div class="sponsor text-center col-md-3 col-xs-6">
                         <a href="{{ banner.link }}" target="_blank">
                         <img src="{{ banner.image.get_rendition("original").url }}" alt="{{ banner.caption }}" class="img-responsive mc"
                         title="{{ banner.caption }}"/>
                         </a>
                     </div>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>

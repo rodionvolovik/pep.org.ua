@@ -566,6 +566,9 @@ class Company2Company(models.Model):
         "Контрагент",
         "Правонаступник",
         "Правовласник",
+        "Материнська компанія",
+        "Дочірня компанія",
+        "Член наглядового органу"
     ]
 
     from_company = models.ForeignKey("Company", related_name="to_companies")
