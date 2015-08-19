@@ -58,7 +58,7 @@ class Command(BaseCommand):
         wks = get_spreadsheet().sheet1
 
         for i, l in enumerate(wks.get_all_records()):
-            if i % 1000 and i:
+            if i % 2000 == 0 and i:
                 wks = get_spreadsheet().sheet1
 
             self.stdout.write(
