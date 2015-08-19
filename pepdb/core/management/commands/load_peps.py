@@ -58,6 +58,9 @@ class Command(BaseCommand):
         wks = get_spreadsheet().sheet1
 
         for i, l in enumerate(wks.get_all_records()):
+            if i % 1000 and i:
+                wks = get_spreadsheet().sheet1
+
             self.stdout.write(
                 'Processing line #{}'.format(i))
 
