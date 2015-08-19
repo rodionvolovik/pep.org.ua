@@ -165,7 +165,7 @@ class Person(models.Model):
             if p2c.date_finished:
                 timeline.append((p2c.date_finished, "to", p2c))
             if p2c.date_established is None and p2c.date_finished is None:
-                timeline.append(None, None, p2c)
+                timeline.append([None, None, p2c])
 
         timeline.sort(key=lambda x: 1000000.
                       if x[0] is None else x[0].toordinal() +
