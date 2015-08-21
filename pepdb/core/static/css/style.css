@@ -229,6 +229,17 @@ h1 {
 .regularSearch .btn {
     height: 40px;
 }
+#navbar .regularSearch ul {
+    right: 0;
+    left: auto;
+}
+.not-front #navbar .regularSearch li a {
+    color: black;
+}
+#navbar .regularSearch ul li.active a {
+    background: #355383;
+    color: white;
+}
 #navbar .regularSearch .btn {
     margin-top: 0;
     padding: 0 10px;
@@ -491,7 +502,6 @@ h1 {
 }
 #side-profilemenu.affix {
     top: 50px;
-    width: 100%;
 }
 .tree {
     min-height: 20px;
