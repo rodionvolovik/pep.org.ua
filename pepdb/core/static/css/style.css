@@ -379,20 +379,23 @@ h1 {
 #search-results h2:first-child {
     padding-top: 0;
 }
+.small-profile {
+    padding-bottom: 30px;
+}
 .small-profile .box {
-    padding: 20px;
+    padding: 20px 20px 5px 20px;
     background: #fff url(../images/plashka.png) no-repeat 0 -48px;
     min-height: 140px;
+    height: 100%;
 }
 .small-profile a { 
     color:#333;
 }
-.small-profile a:hover {
-    text-decoration: none;
+.small-profile .box {
+    cursor: pointer;
 }
-.small-profile a:hover .box {
-    box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.23),inset 0 3px 10px rgba(0, 0, 0, 0.16);
-    
+.small-profile .box:hover {
+    box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.23),inset 0 3px 10px rgba(0, 0, 0, 0.16); 
 }
 .small-profile img {
     height: 100px;
