@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import re
-import json
 import os.path
 import requests
 import urllib2
@@ -108,3 +109,32 @@ def get_spreadsheet(auth_key=getattr(settings, "GAUTH_CREDENTIALS", None),
 
     gc = gspread.authorize(credentials)
     return gc.open_by_key(spreadsheet)
+
+
+def is_cyr(name):
+    return re.search("[а-яіїєґ]+", name.lower(), re.UNICODE) is not None
+
+
+def is_ukr(name):
+    return re.search("['іїєґ]+", name.lower(), re.UNICODE) is not None
+
+
+def parse_fullname(person_name):
+    # Extra care for initials (especialy those without space)
+    person_name = re.sub("\s+", " ", person_name.replace(".", ". "))
+
+    chunks = person_name.strip().split(" ")
+
+    last_name = ""
+    first_name = ""
+    patronymic = ""
+
+    if len(chunks) == 2:
+        last_name = title(chunks[0])
+        first_name = title(chunks[1])
+    elif len(chunks) > 2:
+        last_name = title(" ".join(chunks[:-2]))
+        first_name = title(chunks[-2])
+        patronymic = title(chunks[-1])
+
+    return last_name, first_name, patronymic

@@ -1,7 +1,8 @@
 # coding: utf-8
 from __future__ import unicode_literals
-from django.db import models
+from itertools import chain
 
+from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
@@ -11,6 +12,8 @@ from django.core.urlresolvers import reverse
 import select2.fields
 import select2.models
 from django_markdown.models import MarkdownField
+
+from core.utils import parse_fullname
 
 
 # to_*_dict methods are used to convert two main entities that we have, Person
@@ -180,7 +183,7 @@ class Person(models.Model):
             relationship_type__in=["Засновник/учасник",
                                    "Колишній засновник/учасник",
                                    "Бенефіціарний власник",
-                                   "Номінальний власник",])
+                                   "Номінальний власник", ])
 
     @property
     def all_related_persons(self):
@@ -247,16 +250,26 @@ class Person(models.Model):
         d["full_name"] = ("%s %s %s" % (self.first_name, self.patronymic,
                                         self.last_name)).replace("  ", " ")
 
+        def generate_suggestions(last_name, first_name, patronymic):
+            if not last_name:
+                return []
+
+            return [
+                " ".join([last_name, first_name, patronymic]),
+                " ".join([first_name, patronymic, last_name]),
+                " ".join([first_name, last_name])
+            ]
+
+        input_variants = [generate_suggestions(
+            d["last_name"], d["first_name"], d["patronymic"])]
+
+        input_variants += list(map(
+            lambda x: generate_suggestions(*parse_fullname(x)),
+            self.parsed_names
+        ))
+
         d["full_name_suggest"] = {
-            "input": [
-                " ".join([d["last_name"], d["first_name"],
-                          d["patronymic"]]),
-                " ".join([d["first_name"],
-                          d["patronymic"],
-                          d["last_name"]]),
-                " ".join([d["first_name"],
-                          d["last_name"]])
-            ],
+            "input": list(chain.from_iterable(input_variants)),
             "output": d["full_name"]
         }
 

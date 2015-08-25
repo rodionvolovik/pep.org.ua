@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import re
 from django.core.management.base import BaseCommand, CommandError
 from core.models import Person, Ua2RuDictionary
-from core.utils import title
+from core.utils import title, is_cyr
 from unicodecsv import writer
-
-
-def is_cyr(name):
-    return re.search("[а-яіїєґ]+", name.lower(), re.UNICODE) is not None
 
 
 class Command(BaseCommand):
@@ -31,13 +26,16 @@ class Command(BaseCommand):
         not_translated_last_names = []
         not_translated_patronymics = []
         for p in Person.objects.all():
-            if p.first_name.lower() not in ru_translations and is_cyr(p.first_name):
+            if (p.first_name.lower() not in ru_translations and
+                    is_cyr(p.first_name)):
                 not_translated_first_names.append(title(p.first_name))
 
-            if p.last_name.lower() not in ru_translations and is_cyr(p.last_name):
+            if (p.last_name.lower() not in ru_translations and
+                    is_cyr(p.last_name)):
                 not_translated_last_names.append(title(p.last_name))
 
-            if p.patronymic.lower() not in ru_translations and is_cyr(p.patronymic):
+            if (p.patronymic.lower() not in ru_translations and
+                    is_cyr(p.patronymic)):
                 not_translated_patronymics.append(title(p.patronymic))
 
         with open(file_path, "w") as fp:

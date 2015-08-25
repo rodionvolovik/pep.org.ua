@@ -12,7 +12,7 @@ from translitua import translitua
 
 from core.utils import (
     expand_gdrive_download_url, download, title, parse_date,
-    get_spreadsheet)
+    get_spreadsheet, parse_fullname)
 from core.models import Company, Person, Person2Company, Document
 
 
@@ -95,21 +95,10 @@ class Command(BaseCommand):
 
             # Now let's search for the person
             if person_name:
-                # Extra care for initials (especialy those without space)
-                person_name = re.sub("\s+", " ",
-                                     person_name.replace(".", ". "))
+                last_name, first_name, patronymic = parse_fullname(person_name)
 
-                chunks = person_name.strip().split(" ")
-
-                if len(chunks) == 2:
-                    last_name = title(chunks[0])
-                    first_name = title(chunks[1])
-                elif len(chunks) == 1:
+                if not last_name:
                     continue
-                else:
-                    last_name = title(" ".join(chunks[:-2]))
-                    first_name = title(chunks[-2])
-                    patronymic = title(chunks[-1])
 
                 # First we search by person_id (if it's present)
                 if person_id:

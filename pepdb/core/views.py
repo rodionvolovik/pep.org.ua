@@ -21,7 +21,7 @@ def suggest(request):
             request.GET.get('q', ''),
             completion={
                 'field': 'full_name_suggest',
-                'size': 7,
+                'size': 10,
                 'fuzzy': {
                     'fuzziness': 3,
                     'unicode_aware': 1
@@ -33,23 +33,23 @@ def suggest(request):
     if res.success:
         results += res.suggest['name'][0]['options']
 
-    search = ElasticCompany.search()\
-        .suggest(
-            'name',
-            request.GET.get('q', ''),
-            completion={
-                'field': 'name_suggest',
-                'size': 3,
-                'fuzzy': {
-                    'fuzziness': 3,
-                    'unicode_aware': 1
-                }
-            }
-    )
+    # search = ElasticCompany.search()\
+    #     .suggest(
+    #         'name',
+    #         request.GET.get('q', ''),
+    #         completion={
+    #             'field': 'name_suggest',
+    #             'size': 3,
+    #             'fuzzy': {
+    #                 'fuzziness': 3,
+    #                 'unicode_aware': 1
+    #             }
+    #         }
+    # )
 
-    res = search.execute()
-    if res.success:
-        results += res.suggest['name'][0]['options']
+    # res = search.execute()
+    # if res.success:
+    #     results += res.suggest['name'][0]['options']
 
     results = sorted(results, key=itemgetter("score"), reverse=True)
 
