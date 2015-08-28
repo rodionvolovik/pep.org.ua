@@ -1,0 +1,24 @@
+.icon-underline:before {
+	content: "\f0cd";
+	font-family: FontAwesome!important;
+}
+
+.icon-strikethrough:before {
+	content: "\f0cc";
+	font-family: FontAwesome!important;
+}
+
+.icon-align-left:before {
+	content: "\f036";
+	font-family: FontAwesome!important;
+}
+
+.icon-align-center:before {
+	content: "\f037";
+	font-family: FontAwesome!important;
+}
+
+.icon-align-right:before {
+	content: "\f038";
+	font-family: FontAwesome!important;
+}

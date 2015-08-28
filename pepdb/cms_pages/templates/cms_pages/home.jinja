@@ -5,7 +5,7 @@
 {% block extra_menu %}
     {% if request.user.is_superuser %}
         <li>
-            <a href="{{ url('wagtailadmin_pages_edit', root_page.id) }}" target="_blank">[{{ _("Редагувати") }}]</a>
+            <a href="{{ url('wagtailadmin_pages_edit', page.id) }}" target="_blank">[{{ _("Редагувати") }}]</a>
         </li>
     {% endif %}
 {% endblock %}
@@ -17,16 +17,15 @@
     <section id="searchbox" class="">
         <div class="container">
             <div class="row">
-                <h1 class="text-center">Search for property of Ukrainian officials </h1>
-                <p class="text-center">Our project - a struggle with Ukrainian Politically Exposed Persons (PEP), who stole money and property, and then take it to Europe.</p> 
-                <p class="text-center">But we find! <a herf="#">Know more about project</a></p>
+                <h1 class="text-center">{{ page.title }}</h1>
+                <p class="text-center">{{ page.body|richtext }}</p>
 
                 <div class="col-lg-6 col-md-8 col-xs-12 col-lg-offset-3 col-md-offset-2">
                     <form action="{{ url("search") }}" method="GET">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Enter name here" name="q" data-provide="typeahead" id="search-form" autocomplete="off" />
+                            <input type="text" class="form-control" placeholder="{{ _("Введіть ім'я") }}" name="q" data-provide="typeahead" id="search-form" autocomplete="off" />
                             <input type="hidden" name="is_exact" value="" />
-                            <span class="input-group-btn"><button class="btn btn-danger" type="submit">Search</button></span>
+                            <span class="input-group-btn"><button class="btn btn-danger" type="submit">{{ _("Перевірити") }}</button></span>
                         </div>
                     </form>
                     <!-- /input-group --> 
@@ -36,11 +35,10 @@
     </section>
     
 
+    {% if banners %}
     <selection id="sponsors">
         <div class="container">
             <div class="row">
-                <p class="text-center">Maintainers, sponsors and so on</p>
-
                 {% for banner in banners %}
                     {% if banner.image %}
                     <div class="sponsor text-center col-md-3 col-xs-6">
@@ -54,6 +52,7 @@
             </div>
         </div>
     </selection>
+    {% endif %}
 
     <div class="cp"></div> <!--   clear padding  -->
 {% endblock %}

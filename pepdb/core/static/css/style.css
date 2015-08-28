@@ -567,3 +567,11 @@ h1 {
 .is_pep {
     font-weight: bold;
 }
+
+.antac-logo {
+    width: 163px;
+    height: 51px;
+    margin-top: 15px;
+    float: right;
+    background: url(../images/antac-logo.png) no-repeat center center;   
+}

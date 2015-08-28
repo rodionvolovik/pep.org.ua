@@ -11,8 +11,6 @@ from wagtail.wagtailsearch import urls as wagtailsearch_urls
 
 urlpatterns = patterns(
     '',
-    url(r'^$', TemplateView.as_view(template_name='home.jinja'),
-        name="home"),
 
     url(r'^search$', 'core.views.search', name='search'),
     url(r'^search_person$', 'core.views.search', name='search_person',
