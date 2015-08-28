@@ -580,3 +580,10 @@ h1 {
 .is_pep {
     font-weight: bold;
 }
+.modalConnectionShow .info-gray {
+    color:rgba(0, 0, 0, 0.65);
+}
+.modal-header {
+    background: #fff url(../images/plashka.png) no-repeat top;
+    color: white;
+}
