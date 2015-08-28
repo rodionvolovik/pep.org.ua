@@ -12,7 +12,6 @@
     <li>
         <a href="{{ person.get_absolute_url() }}">
             <span {% if person.is_pep %}class="is_pep"{% endif %}>
-                <i class="fa {% if type == "family" %}fa-heart{% elif type == "personal" %}fa-user-secret{% else %}fa-users{% endif %}"></i>
                 {{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}
             </span> &ndash;
             {% if person.rtype %}{{ _(person.rtype) }},{% endif %}
@@ -51,7 +50,7 @@
                 {% endif %}
             </ul>
         </aside>
-        <section id="profile" class="col-lg-8">
+        <section id="profile" class="{%- if person.parsed_names %}col-lg-8{% else %}col-lg-10{% endif -%}">
             <div id="profile-wrap" class="box">
                 <header class="profile-header">
                     {% if person.photo %}
@@ -144,7 +143,7 @@
                             <ul>
                                 {% if related_persons.family %}
                                 <li>
-                                    <span class="badge badge-success"><i class="fa fa-plus-square"></i> {{ _("Родина та близькі особи") }}</span>
+                                    <span class="badge badge-success"><i class="fa fa-plus-square"></i> {{ _("Родина та близькі особи") }} <i class="fa fa-heart"></i></span>
                                     <ul class="h">
                                         {% for rp in related_persons.family %}
                                             {{ render_related_person(rp, "family") }}
@@ -154,7 +153,7 @@
                                 {% endif %}
                                 {% if related_persons.personal %}
                                 <li>
-                                    <span class="badge badge-success"><i class="fa fa-plus-square"></i> {{ _("Персональні зв'язки") }}</span>
+                                    <span class="badge badge-success"><i class="fa fa-plus-square"></i> {{ _("Персональні зв'язки") }} <i class="fa fa-user-secret"></i></span>
                                     <ul class="h">
                                         {% for rp in related_persons.personal %}
                                             {{ render_related_person(rp, "personal") }}
@@ -164,7 +163,7 @@
                                 {% endif %}
                                 {% if related_persons.business %}
                                 <li>
-                                    <span class="badge badge-success"><i class="fa fa-plus-square"></i> {{ _("Ділові зв'язки") }}</span>
+                                    <span class="badge badge-success"><i class="fa fa-plus-square"></i> {{ _("Ділові зв'язки") }} <i class="fa fa-users"></i></span>
                                     <ul class="h">
                                         {% for rp in related_persons.business %}
                                             {{ render_related_person(rp, "business") }}
@@ -227,16 +226,17 @@
             </div>
             {% endif %}
         </section>
+        {% if person.parsed_names %}
         <aside id="profile-suggest" role="complementary" class="col-lg-2">
-            {% if person.parsed_names %}
+            
             <h3>{{ _("Можливо ви шукали:") }}</h3>
             <ul>
                 {% for name_alt in person.parsed_names %}
                 <li>{{ name_alt}}</li>
                 {% endfor %}
             </ul>
-            {% endif %}
         </aside>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

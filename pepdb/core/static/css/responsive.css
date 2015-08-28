@@ -40,13 +40,20 @@ body {
 /*iPad портрет */	
 @media only screen and (max-device-width: 992px) and (orientation: portrait) {
 }
- @media(min-width:992px) {
- #searchbox h1 {
- font-size: 40px;
+@media(min-width:992px) {
+    #searchbox h1 {
+        font-size: 40px;
+    }
 }
+@media(min-width:1200px) {
+    #side-profilemenu.affix {
+    
+    }
 }
- @media(min-width:1200px) {
- #side-profilemenu.affix {
-width:165px;
-}
+
+@media print {
+    #profile-nav,
+    #navbar {
+        display: none;
+    }
 }
