@@ -34,6 +34,7 @@
                         </header>
 
                         <div class="descr">
+
                             {% if p.date_of_birth %}
                             <p><span>Дата рождения:</span> {{ p.date_of_birth }}</p>
                             {% endif %}
@@ -66,9 +67,8 @@
             <h2 class="text-center">Пов'язані особи</h2>
 
                 {% for p in related_persons %}
-                <div class="small-profile {% if p.is_pep %}fizik{% else %}linked{% endif %} col-sm-6">
-                    <a href="{{ url("person_details", person_id=p.id) }}">
-                        <div class="box">
+                <div class="small-profile {% if p.is_pep %}fizik{% else %}linked{% endif %} col-sm-6"> 
+                        <div class="box"  onclick="location.href='{{ url("person_details", person_id=p.id) }}';">
                             <header class="profile-header">
                                 <div class="avatar">
                                 </div>
@@ -85,7 +85,7 @@
                                 <p><span>Последнее место работы:</span> {{ p.last_workplace }}</p>
                                 {% endif %}
                                 {% if p.risk_category %}
-                                <p><span>Рівень ризику:</span> <span class="riskLevel">{{ p.risk_category }}</span><span class="riskLevel tip"> Какой-то пояснительный текст что-это означает и чтобы всем вообще было понятно</span></p>
+                                <p><a href="#"  data-toggle="tooltip" data-placement="top" title="Какой-то пояснительный текст что-это означает и чтобы всем вообще было понятно :)"><span>Рівень ризику:</span> <span class="riskLevel">{{ p.risk_category }}</a></p>
                                 {% endif %}
                                 <p>
                                     {% for rel in p.relevant_related_persons()[:4] %}
@@ -94,7 +94,6 @@
                                 </p>
                             </div>
                         </div>
-                    </a>
                 </div>
                 {% if loop.index is divisibleby 2 %}
                     <div class="clearfix"></div>

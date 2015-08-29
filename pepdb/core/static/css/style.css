@@ -581,6 +581,7 @@ h1 {
 .is_pep {
     font-weight: bold;
 }
+<<<<<<< HEAD
 
 .antac-logo {
     width: 163px;
@@ -601,4 +602,13 @@ h1 {
 
 #hp-columns h3 {
     text-align: center;
+}
+
+.modalConnectionShow .info-gray {
+    color:rgba(0, 0, 0, 0.65);
+}
+
+.modal-header {
+    background: #fff url(../images/plashka.png) no-repeat top;
+    color: white;
 }

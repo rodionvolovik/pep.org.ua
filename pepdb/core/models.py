@@ -472,6 +472,12 @@ class Person2Company(models.Model):
                                   self.from_person.last_name)
         }
 
+    @property
+    def has_additional_info(self):
+        return any([
+            self.date_confirmed, self.date_established, self.date_finished,
+            self.proof, self.proof_title])
+
     class Meta:
         verbose_name = "Зв'язок з компанією/установою"
         verbose_name_plural = "Зв'язки з компаніями/установами"
