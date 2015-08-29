@@ -235,7 +235,7 @@
                         </div>
                     </div>                
                     
-                    {{ render_connection(connection, "modalAsset-{}".format(loop.index)) }}
+                    {{ render_connection(asset, "modalAsset-{}".format(loop.index)) }}
                 {% endfor %}
                 {% if person.reputation_assets %}
                     {{ person.reputation_assets|markdown }}
