@@ -11,6 +11,7 @@
 {% endblock %}
 
 {% block mini_search %}
+    <div class="antac-logo"></div>
 {% endblock %}
 
 {% block content %}
@@ -18,7 +19,9 @@
         <div class="container">
             <div class="row">
                 <h1 class="text-center">{{ page.title }}</h1>
-                <p class="text-center">{{ page.body|richtext }}</p>
+                <div class="description">
+                    {{ page.body|richtext }}
+                </div>
 
                 <div class="col-lg-6 col-md-8 col-xs-12 col-lg-offset-3 col-md-offset-2">
                     <form action="{{ url("search") }}" method="GET">
@@ -33,13 +36,27 @@
             </div>
         </div>
     </section>
-    
 
-    {% if banners %}
+    {% if page.columns %}
+    <selection id="hp-columns">
+        <div class="container">
+            <div class="row">
+                {% for column in page.columns.all()[:3] %}
+                <div class="col-md-4">
+                    <h3>{{ column.title }}</h3>
+                    {{ column.body|richtext }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </selection>
+    {% endif %}    
+
+    {% if page.banners %}
     <selection id="sponsors">
         <div class="container">
             <div class="row">
-                {% for banner in banners %}
+                {% for banner in page.banners %}
                     {% if banner.image %}
                     <div class="sponsor text-center col-md-3 col-xs-6">
                         <a href="{{ banner.link }}" target="_blank">

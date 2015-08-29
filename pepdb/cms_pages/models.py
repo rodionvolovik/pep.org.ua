@@ -78,12 +78,13 @@ StaticPage.content_panels = [
 class LinkFields(models.Model):
     caption = models.CharField(max_length=255, blank=True)
 
-    link_external = models.URLField("External link", blank=True)
+    link_external = models.URLField("Зовнішнє посилання", blank=True)
     link_page = models.ForeignKey(
         'wagtailcore.Page',
         null=True,
         blank=True,
-        related_name='+'
+        related_name='+',
+        verbose_name="Або посилання на існуючу сторінку"
     )
 
     @property
@@ -109,7 +110,8 @@ class BannerItem(LinkFields):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='+'
+        related_name='+',
+        verbose_name="Зображення"
     )
 
     panels = [
@@ -122,7 +124,8 @@ class BannerItem(LinkFields):
 
 
 class ColumnFields(models.Model):
-    title = models.CharField(max_length=255, blank=True)
+    title = models.CharField(
+        max_length=255, blank=True, verbose_name="Заголовок")
     body = RichTextField(verbose_name="Текст колонки")
 
     panels = [
@@ -161,6 +164,7 @@ HomePage.content_panels = [
     FieldPanel('title', classname="full title"),
     FieldPanel('body', classname="full"),
     InlinePanel(HomePage, 'top_menu_links', label="Меню зверху"),
+    InlinePanel(HomePage, 'columns', label="Колонки під пошуком"),
     InlinePanel(HomePage, 'banner_items', label="Банери спонсорів"),
     InlinePanel(HomePage, 'bottom_menu_links', label="Меню знизу"),
 ]

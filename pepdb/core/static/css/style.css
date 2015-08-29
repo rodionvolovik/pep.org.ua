@@ -197,7 +197,7 @@ h1 {
 }
 #searchbox {
     background: #355383 url(../images/baner.png) no-repeat center center;
-    margin-bottom: 80px;
+    margin-bottom: 40px;
 }
 #searchbox h1 {
     color: #FFF;
@@ -221,6 +221,7 @@ h1 {
 }
 #searchbox .btn {
     font-size: 20px;
+    height: 42px;
 }
 .regularSearch {
     margin-top: 20px;
@@ -587,4 +588,17 @@ h1 {
     margin-top: 15px;
     float: right;
     background: url(../images/antac-logo.png) no-repeat center center;   
+}
+
+.description {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.description p {
+    margin: 10px 0;
+}
+
+#hp-columns h3 {
+    text-align: center;
 }
