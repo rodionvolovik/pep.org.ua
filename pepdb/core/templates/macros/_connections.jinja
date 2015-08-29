@@ -1,0 +1,43 @@
+{% macro render_connection(connection, id) %}
+    {% if connection.has_additional_info %}
+        <div class="modal fade" id="{{ id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">{{ _("Підтвердження зв'язку") }}</h4>
+                    </div>
+                    <div class="modal-body">
+                        {% if connection.date_established %}
+                            <p><b>{{ _("Зв'язок почався: ") }}</b>{{ connection.date_established }}</p>
+                        {% endif %}
+                                            
+                        {% if connection.date_finished %}
+                            <p><b>{{ _("Зв'язок скінчився: ") }}</b>{{ connection.date_finished }}</p>
+                        {% endif %}
+                                            
+                        {% if connection.date_cofirmed %}
+                            <p><b>{{ _("Підтверджено: ") }}</b>{{ connection.date_confirmed }}</p>
+                        {% endif %}
+                                      
+                        {% if connection.proof_title or connection.proof %}
+                            <p>
+                                <b>{{ _("Доказ зв'язку: ") }}</b>
+                                {% if connection.proof %}
+                                    <a href="{{ connection.proof }}" target="_blank">
+                                {% endif %}
+                                {{ connection.proof_title|default(_("Посилання")) }}
+                                {% if connection.proof %}
+                                    </a>
+                                {% endif %}
+                            </p>
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">{{ _("Закрити") }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+   {% endif %}
+{% endmacro %}
