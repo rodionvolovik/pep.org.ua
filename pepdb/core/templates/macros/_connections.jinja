@@ -26,7 +26,7 @@
                                 {% if connection.proof %}
                                     <a href="{{ connection.proof }}" target="_blank">
                                 {% endif %}
-                                {{ connection.proof_title|default(_("Посилання")) }}
+                                {{ connection.proof_title|default(_("Посилання"), true) }}
                                 {% if connection.proof %}
                                     </a>
                                 {% endif %}
