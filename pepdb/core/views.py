@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from elasticsearch_dsl.query import Q
 
 from core.models import Person
+from core.api import hybrid_response
 from core.paginator import paginated_search
 from core.elastic_models import (
     Person as ElasticPerson,
@@ -62,6 +63,7 @@ def suggest(request):
         return JsonResponse([], safe=False)
 
 
+@hybrid_response("search.jinja")
 def search(request, sources=["persons", "related"]):
     params = {}
 
@@ -89,7 +91,7 @@ def search(request, sources=["persons", "related"]):
     if "related" in sources:
         params["related_persons"] = _search_related(request)
 
-    return render(request, "search.jinja", params)
+    return params
 
 
 def _search_person(request):
