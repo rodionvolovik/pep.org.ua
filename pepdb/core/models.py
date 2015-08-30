@@ -153,7 +153,7 @@ class Person(models.Model):
 
         if qs:
             l = qs[0]
-            return "%s, %s" % (l.to_company, l.relationship_type)
+            return [l.to_company, l.relationship_type]
 
         return ""
 
@@ -188,9 +188,9 @@ class Person(models.Model):
     @property
     def all_related_persons(self):
         related_persons = [
-            (i.to_relationship_type, i.to_person)
+            (i.to_relationship_type, i.to_person, i)
             for i in self.to_persons.select_related("to_person")] + [
-            (i.from_relationship_type, i.from_person)
+            (i.from_relationship_type, i.from_person, i)
             for i in self.from_persons.select_related("from_person")
         ]
 
@@ -201,8 +201,9 @@ class Person(models.Model):
             "all": []
         }
 
-        for rtp, p in related_persons:
+        for rtp, p, rel in related_persons:
             p.rtype = rtp
+            p.connection = rel
 
             if rtp in ["особисті зв'язки"]:
                 res["personal"].append(p)
@@ -244,7 +245,11 @@ class Person(models.Model):
 
         d["photo"] = self.photo.name if self.photo else ""
         d["date_of_birth"] = self.date_of_birth
-        d["last_workplace"] = self.last_workplace
+
+        last_workplace = self.last_workplace
+        if last_workplace:
+            d["last_workplace"], d["last_job_title"] = last_workplace
+
         d["type_of_official"] = self.get_type_of_official_display()
         d["risk_category"] = self.get_risk_category_display()
         d["full_name"] = ("%s %s %s" % (self.first_name, self.patronymic,
@@ -289,7 +294,30 @@ class Person(models.Model):
         ]
 
 
-class Person2Person(models.Model):
+class AbstractRelationship(models.Model):
+    date_established = models.DateField(
+        "Зв'язок почався", blank=True, null=True)
+    date_finished = models.DateField(
+        "Зв'язок скінчився", blank=True, null=True)
+    date_confirmed = models.DateField(
+        "Підтверджено", blank=True, null=True)
+
+    proof_title = models.TextField(
+        "Назва доказу зв'язку", blank=True,
+        help_text="Наприклад: склад ВР 7-го скликання")
+    proof = models.TextField("Посилання на доказ зв'язку", blank=True)
+
+    @property
+    def has_additional_info(self):
+        return any([
+            self.date_confirmed, self.date_established, self.date_finished,
+            self.proof, self.proof_title])
+
+    class Meta:
+        abstract = True
+
+
+class Person2Person(AbstractRelationship):
     _relationships_explained = {
         "чоловік": ["дружина"],
         "дружина": ["чоловік"],
@@ -343,18 +371,6 @@ class Person2Person(models.Model):
         max_length=100,
         blank=True)
 
-    date_established = models.DateField(
-        "Зв'язок почався", blank=True, null=True)
-    date_finished = models.DateField(
-        "Зв'язок скінчився", blank=True, null=True)
-    date_confirmed = models.DateField(
-        "Підтверджено", blank=True, null=True)
-
-    proof_title = models.TextField(
-        "Назва доказу зв'язку", blank=True,
-        help_text="Наприклад: склад ВР 7-го скликання")
-    proof = models.TextField("Посилання на доказ зв'язку", blank=True)
-
     def __unicode__(self):
         return "%s (%s) -> %s (%s)" % (
             self.from_person, self.get_from_relationship_type_display(),
@@ -391,7 +407,7 @@ class Person2Person(models.Model):
         verbose_name_plural = "Зв'язки з іншими персонами"
 
 
-class Person2Company(models.Model):
+class Person2Company(AbstractRelationship):
     _relationships_explained = [
         "Президент",
         "Прем’єр-міністр",
@@ -429,19 +445,6 @@ class Person2Company(models.Model):
     to_company = models.ForeignKey(
         "Company", verbose_name="Компанія або установа")
 
-    date_established = models.DateField(
-        "Зв'язок почався", blank=True, null=True)
-    date_finished = models.DateField(
-        "Зв'язок скінчився", blank=True, null=True)
-    date_confirmed = models.DateField(
-        "Підтверджено", blank=True, null=True)
-
-    proof_title = models.TextField(
-        "Назва доказу зв'язку", blank=True,
-        help_text="Наприклад: склад ВР 7-го скликання")
-    proof = models.TextField(
-        "Посилання на доказ зв'язку", blank=True, max_length=250)
-
     relationship_type = models.TextField(
         "Тип зв'язку",
         blank=True)
@@ -471,12 +474,6 @@ class Person2Company(models.Model):
                                   self.from_person.patronymic,
                                   self.from_person.last_name)
         }
-
-    @property
-    def has_additional_info(self):
-        return any([
-            self.date_confirmed, self.date_established, self.date_finished,
-            self.proof, self.proof_title])
 
     class Meta:
         verbose_name = "Зв'язок з компанією/установою"
@@ -567,7 +564,7 @@ class Company(models.Model):
         verbose_name_plural = "Юрідичні особи"
 
 
-class Company2Company(models.Model):
+class Company2Company(AbstractRelationship):
     _relationships_explained = [
         "Власник",
         "Співвласник",
@@ -592,17 +589,6 @@ class Company2Company(models.Model):
 
     from_company = models.ForeignKey("Company", related_name="to_companies")
     to_company = models.ForeignKey("Company", related_name="from_companies")
-    date_established = models.DateField(
-        "Зв'язок почався", blank=True, null=True)
-    date_finished = models.DateField(
-        "Зв'язок скінчився", blank=True, null=True)
-    date_confirmed = models.DateField(
-        "Підтверджено", blank=True, null=True)
-
-    proof_title = models.TextField(
-        "Назва доказу зв'язку", blank=True,
-        help_text="Наприклад: виписка з реєстру")
-    proof = models.TextField("Посилання на доказ зв'язку", blank=True)
 
     relationship_type = models.CharField(
         "Тип зв'язку",
@@ -632,20 +618,9 @@ class Company2Company(models.Model):
         verbose_name_plural = "Зв'язки з компаніями"
 
 
-class Person2Country(models.Model):
+class Person2Country(AbstractRelationship):
     from_person = models.ForeignKey("Person", verbose_name="Персона")
     to_country = models.ForeignKey("Country", verbose_name="Країна")
-    date_established = models.DateField(
-        "Зв'язок почався", blank=True, null=True)
-    date_finished = models.DateField(
-        "Зв'язок скінчився", blank=True, null=True)
-    date_confirmed = models.DateField(
-        "Підтверджено", blank=True, null=True)
-
-    proof_title = models.TextField(
-        "Назва доказу зв'язку", blank=True,
-        help_text="Наприклад: офіційна відповідь")
-    proof = models.TextField("Посилання на доказ зв'язку", blank=True)
 
     relationship_type = models.CharField(
         "Тип зв'язку",
@@ -676,20 +651,9 @@ class Person2Country(models.Model):
         verbose_name_plural = "Зв'язки з країнами"
 
 
-class Company2Country(models.Model):
+class Company2Country(AbstractRelationship):
     from_company = models.ForeignKey("Company", verbose_name="Компанія")
     to_country = models.ForeignKey("Country", verbose_name="Країна")
-    date_established = models.DateField(
-        "Зв'язок почався", blank=True, null=True)
-    date_finished = models.DateField(
-        "Зв'язок скінчився", blank=True, null=True)
-    date_confirmed = models.DateField(
-        "Підтверджено", blank=True, null=True)
-
-    proof_title = models.TextField(
-        "Назва доказу зв'язку", blank=True,
-        help_text="Наприклад: витяг")
-    proof = models.TextField("Посилання на доказ зв'язку", blank=True)
 
     relationship_type = models.CharField(
         "Тип зв'язку",

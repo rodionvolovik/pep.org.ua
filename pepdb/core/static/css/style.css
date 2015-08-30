@@ -612,3 +612,7 @@ h1 {
     background: #fff url(../images/plashka.png) no-repeat top;
     color: white;
 }
+
+.fa-pencil-square-o {
+    color: red;
+}

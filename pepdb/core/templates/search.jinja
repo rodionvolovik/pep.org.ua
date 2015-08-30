@@ -17,32 +17,35 @@
             {% if persons %}
                 <h2 class="text-center">Фізичні особи</h2>
                 {% for p in persons %}
-                <div class="small-profile {% if p.is_pep %}fizik{% else %}linked{% endif %} col-sm-6">
-               
+                <div class="small-profile {% if p.is_pep %}fizik{% else %}linked{% endif %} col-sm-6" itemscope itemtype="http://schema.org/Person">
+                    <meta itemprop="url" content="{{ url("person_details", person_id=p.id) }}"/>
                     <div class="box" onclick="location.href='{{ url("person_details", person_id=p.id) }}';">
                         <header class="profile-header">
+                            <div class="avatar">
+                            {% if p.photo %}
+                                <img src="{{ p.photo|thumbnail_url("small_avatar") }}" itemprop="image" />
+                            {% endif %}
+                            </div>
 
-                        <div class="avatar">
-                        {% if p.photo %}
-                            <img src="{{ p.photo|thumbnail_url("small_avatar") }}"/>
-                        {% endif %}
-                        </div>
-
-                            <h3 class="pep-name">
-                                {{ p.last_name }}<span class="pep-pib">{{ p.first_name }} {{ p.patronymic }}</span>
+                            <h3 class="pep-name" itemprop="name">
+                                <span itemprop="familyName">{{ p.last_name }}</span> <span class="pep-pib"><span itemprop="givenName">{{ p.first_name }}</span> <span itemprop="additionalName">{{ p.patronymic }}</span>
                             </h3>
                         </header>
 
                         <div class="descr">
-
                             {% if p.date_of_birth %}
+                            <meta itemprop="birthDate" content="{{ p.dob }} "/>
                             <p><span>Дата рождения:</span> {{ p.date_of_birth }}</p>
                             {% endif %}
                             {% if p.last_workplace %}
-                            <p><span>Последнее место работы:</span> {{ p.last_workplace }}</p>
+                            <p>
+                                <span>Последнее место работы:</span>
+                                <span itemprop="worksFor" itemscope itemtype="http://schema.org/Organization">{{ p.last_workplace }}</span>, 
+                                <span itemprop="jobTitle">{{ p.last_job_title }}</span>
+                            </p>
                             {% endif %}
                             {% if p.risk_category %}
-                            <p><a href="#"  data-toggle="tooltip" data-placement="top" title="Какой-то пояснительный текст что-это означает и чтобы всем вообще было понятно :)"><span>Рівень ризику:</span> <span class="riskLevel">{{ p.risk_category }}</a></p>
+                            <p><a href="#" data-toggle="tooltip" data-placement="top" title="Какой-то пояснительный текст что-это означает и чтобы всем вообще было понятно :)"><span>Рівень ризику:</span> <span class="riskLevel">{{ p.risk_category }}</a></p>
                             {% endif %}
                         </div>
                     </div>
@@ -68,7 +71,7 @@
 
                 {% for p in related_persons %}
                 <div class="small-profile {% if p.is_pep %}fizik{% else %}linked{% endif %} col-sm-6"> 
-                        <div class="box"  onclick="location.href='{{ url("person_details", person_id=p.id) }}';">
+                        <div class="box" onclick="location.href='{{ url("person_details", person_id=p.id) }}';">
                             <header class="profile-header">
                                 <div class="avatar">
                                 </div>

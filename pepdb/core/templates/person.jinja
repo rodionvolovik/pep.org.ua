@@ -1,37 +1,52 @@
 {% extends "base.jinja" %}
 {% from "macros/_connections.jinja" import render_connection %}
 
+{% block page_title %}{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}, {{ person.last_workplace[0] }}, {{ person.last_workplace[1] }}{% endblock %}
+
 {% block extra_menu %}
     {% if request.user.is_superuser %}
         <li>
-            <a href="{{ url('admin:core_person_change', person.id) }}" target="_blank">[{{ _("Редагувати") }}]</a>
+            <a href="{{ url('admin:core_person_change', person.id) }}" target="_blank"><i class="fa fa-pencil-square-o"></i></a>
         </li>
     {% endif %}
 {% endblock %}
 
 {% macro render_related_person(person, type) %}
-    <li>
-        <a href="{{ person.get_absolute_url() }}">
-            <span {% if person.is_pep %}class="is_pep"{% endif %}>
-                {{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}
+    <li itemprop="{% if type == "family" %}relatedTo{% else %}knows{% endif %}" itemscope itemtype="http://schema.org/Person">
+        <a href="{{ person.get_absolute_url() }}" itemprop="url">
+            <span {% if person.is_pep %}class="is_pep"{% endif %} itemprop="name">
+                <span itemprop="familyName">{{ person.last_name }}</span> <span itemprop="givenName">{{ person.first_name }}</span> <span itemprop="additionalName">{{ person.patronymic }}</span>
             </span> &ndash;
             {% if person.rtype %}{{ _(person.rtype) }},{% endif %}
-            {% if person.dob %} {{ person.date_of_birth }},{% endif%}
-            {{ person.last_workplace }}
+            {% if person.dob %} <meta itemprop="birthDate" content="{{ person.dob }} "/> {{ person.date_of_birth }},{% endif %}
+
+            {% set last_workplace = person.last_workplace %}
+            {% if last_workplace %}
+            <span itemscope itemtype="http://schema.org/Organization" itemprop="worksFor">{{ person.last_workplace[0] }}</span>,
+            <span itemprop="jobTitle">{{ person.last_workplace[1] }}</span>
+            {% endif %}
         </a>
+
+        {% if person.connection.has_additional_info %}
+            <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalPerson-{{ person.pk }}">
+               <i class="fa fa-info-circle info-gray"></i>
+            </a>
+        {% endif %}
+        {{ render_connection(person.connection, "modalPerson-{}".format(person.pk)) }}
     </li>
 {% endmacro %}
 
 
 {% block content %}
 {% set related_persons = person.all_related_persons %}
+{% set workplaces = person.workplaces %}
 <div class="container">
     <div class="row">
         <div id="breadcrumbs">
             <ol class="breadcrumb">
                 <li><a href="{{ url("wagtail_serve", "") }}">{{ _("Головна") }}</a></li>
-                <li><a href="#">{{ _("Результати пошуку") }}</a></li>
                 <li class="active">{{ _("Публічні діячі") }}</li>
+                <li class="active">{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}</li>
             </ol>
         </div>
         <aside id="profile-nav" role="complementary" class="col-lg-2">
@@ -41,25 +56,27 @@
                 {% if person.reputation_sanctions or person.reputation_crimes or person.reputation_manhunt or person.reputation_convictions %}
                 <li><a href="#reputation" class="btn btn-transp trans"><i class="fa fa-bullhorn"></i>{{ _("Репутація") }}</a></li>
                 {% endif %}
-
+                {% if workplaces %}
+                <li><a href="#workbefore" class="btn btn-transp trans"><i class="fa fa-wrench"></i> {{ _("Кар'єра") }}</a></li>
+                {% endif %}
                 {% if related_persons.all %}
                 <li><a href="#connections" class="btn btn-transp trans"><i class="fa fa-heart"></i> {{ _("З'вязки") }}</a></li>
                 {% endif %}
-                <li><a href="#workbefore" class="btn btn-transp trans"><i class="fa fa-wrench"></i> {{ _("Робота") }}</a></li>
                 {% if person.assets or person.reputation_assets %}
-                <li><a href="#assets" class="btn btn-transp trans"><i class="fa fa-cubes"></i> {{ _("Майно") }}</a></li>
+                <li><a href="#assets" class="btn btn-transp trans"><i class="fa fa-cubes"></i> {{ _("Статки") }}</a></li>
                 {% endif %}
             </ul>
         </aside>
-        <section id="profile" class="{%- if person.parsed_names %}col-lg-8{% else %}col-lg-10{% endif -%}">
+        <section id="profile" class="{%- if person.parsed_names %}col-lg-8{% else %}col-lg-10{% endif -%}" itemscope itemtype="http://schema.org/Person">
+            <meta itemprop="url" content="{{ person.get_absolute_url() }}"/>
             <div id="profile-wrap" class="box">
                 <header class="profile-header">
                     {% if person.photo %}
                     <div class="avatar">
-                    <img src="{{ person.photo|thumbnail_url("avatar") }}" alt="{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}"/>
+                    <img src="{{ person.photo|thumbnail_url("avatar") }}" itemprop="image" alt="{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}"/>
                     </div>
                     {% endif %}
-                    <h1 class="pep-name">{{ person.last_name }} <span class="pep-pib">{{ person.first_name }} {{ person.patronymic }}</span></h1>
+                    <h1 class="pep-name" itemprop="name"><span itemprop="familyName">{{ person.last_name }}</span> <span class="pep-pib"><span itemprop="givenName">{{ person.first_name }}</span> <span itemprop="additionalName">{{ person.patronymic }}</span></h1>
                 </header>
                 <div id="personal" class="sub">
                     <div class="table-responsive">
@@ -74,6 +91,7 @@
                             <tr>
                                 <td>{{ _("Дата народження") }}</td>
                                 <td>
+                                <meta itemprop="birthDate" content="{{ person.dob }} "/>
                                 {%- if person.dob_details == 0 %}
                                 {{ person.dob|date }}
                                 {% elif person.dob_details == 1 %}
@@ -87,16 +105,21 @@
                             {% if person.city_of_birth %}
                             <tr>
                                 <td>{{ _("Місце народження") }}</td>
-                                <td>{{ person.city_of_birth }}</td>
+                                <td itemprop="birthPlace">{{ person.city_of_birth }}</td>
                             </tr>
                             {% endif %}
                             <tr>
-                                <td>{{ _("Рівень ризику") }}</td>
-                                <td><strong>{{ person.get_risk_category_display() }}</strong></td>
+                                <td>{{ _("Остання посада") }}</td>
+                                <td>
+                                    <strong>
+                                        <span itemprop="worksFor" itemscope itemtype="http://schema.org/Organization">{{ person.last_workplace[0] }}</span>, 
+                                        <span itemprop="jobTitle">{{ person.last_workplace[1] }}</span>
+                                    </strong>
+                                </td>
                             </tr>
                             <tr>
-                                <td>{{ _("Остання посада") }}</td>
-                                <td><strong>{{ person.last_workplace }}</strong></td>
+                                <td>{{ _("Рівень ризику") }}</td>
+                                <td><strong>{{ person.get_risk_category_display() }}</strong></td>
                             </tr>
                         </table>
                     </div>
@@ -104,7 +127,7 @@
             </div>
 
             {% if person.wiki %}
-            <div id="profile" class="sub box">
+            <div id="profile" class="sub box" itemprop="description">
                 <h3>{{ _("Досьє:") }}</h3>
                 <br />
                 {{ person.wiki|markdown }}
@@ -134,6 +157,43 @@
             </div>
             {% endif %}
 
+            {% if workplaces %}
+            <div id="workbefore" class="sub box">
+                <h3>{{ _("Кар'єра:") }}</h3>
+                <div id="element">
+                    <ul class="timeline">
+                        {% for date_tag, type, connection in person.workplaces %}
+                        <li class="tl-item">
+                            <div class="tl-wrap">
+                                <span class="tl-date">
+                                    {% if date_tag %}
+                                        {% if type == "from" %}
+                                            {{ _("з") }}
+                                        {% elif type == "to" %}
+                                            {{ _("по") }}
+                                        {% endif %}
+                                        {{ date_tag }}
+                                    {% endif %}
+                                </span>
+                                <div class="tl-content panel padder b-a">
+                                    <span class="arrow left pull-up"></span>
+                                    <div>
+                                        <span itemscope itemtype="http://schema.org/Organization" itemprop="worksFor">{{ connection.to_company }}</span>, {{ connection.relationship_type }}
+                                        {% if connection.has_additional_info %}
+                                            <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalWork-{{ loop.index }}">
+                                               <i class="fa fa-info-circle info-gray"></i>
+                                            </a>
+                                        {% endif %}
+                                    </div>   
+                                </div>
+                            </div>
+                            {{ render_connection(connection, "modalWork-{}".format(loop.index)) }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
             {% if related_persons.all %}
             <div id="connections" class="sub box">
                 <h3>{{ _("Зв'язки:") }}</h3>
@@ -178,47 +238,12 @@
                 </div>
             </div>
             {% endif %}
-            <div id="workbefore" class="sub box">
-                <h3>{{ _("Робота:") }}</h3>
-                <div id="element">
-                    <ul class="timeline">
-                        {% for date_tag, type, connection in person.workplaces %}
-                        <li class="tl-item">
-                            <div class="tl-wrap">
-                                <span class="tl-date">
-                                    {% if date_tag %}
-                                        {% if type == "from" %}
-                                            {{ _("з") }}
-                                        {% elif type == "to" %}
-                                            {{ _("по") }}
-                                        {% endif %}
-                                        {{ date_tag }}
-                                    {% endif %}
-                                </span>
-                                <div class="tl-content panel padder b-a">
-                                    <span class="arrow left pull-up"></span>
-                                    <div>
-                                        {{ connection.to_company }}, {{ connection.relationship_type }}
-                                        {% if connection.has_additional_info %}
-                                            <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalWork-{{ loop.index }}">
-                                               <i class="fa fa-info-circle info-gray"></i>
-                                            </a>
-                                        {% endif %}
-                                    </div>   
-                                </div>
-                            </div>
-                            {{ render_connection(connection, "modalWork-{}".format(loop.index)) }}
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
             {% if person.assets or person.reputation_assets %}
             <div id="assets" class="sub box">
-                <h3>{{ _("Майно:") }}</h3>
+                <h3>{{ _("Статки:") }}</h3>
                 {% for asset in person.assets %}
                     <div class="panel panel-default">
-                        <div class="panel-body">
+                        <div class="panel-body" itemscope itemtype="http://schema.org/Organization" itemprop="affiliation">
                             {{ asset.to_company }}
                             {% if asset.to_company.edrpou %}
                             , {{ _("ЄДРПОУ") }} {{ asset.to_company.edrpou }}
@@ -249,7 +274,7 @@
             <h3>{{ _("Можливо ви шукали:") }}</h3>
             <ul>
                 {% for name_alt in person.parsed_names %}
-                <li>{{ name_alt}}</li>
+                <li itemprop="alternateName">{{ name_alt }}</li>
                 {% endfor %}
             </ul>
         </aside>
