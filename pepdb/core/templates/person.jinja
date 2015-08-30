@@ -23,7 +23,7 @@
 
         {% set last_workplace = person.last_workplace %}
         {% if last_workplace %}
-        <span itemscope itemtype="http://schema.org/Organization" itemprop="worksFor">{{ person.last_workplace[0] }}</span>,
+        <span itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ person.last_workplace[0] }}</span></span>,
         <span itemprop="jobTitle">{{ person.last_workplace[1] }}</span>
         {% endif %}
         
@@ -107,7 +107,7 @@
                                 <td>{{ _("Остання посада") }}</td>
                                 <td>
                                     <strong>
-                                        <span itemprop="worksFor" itemscope itemtype="http://schema.org/Organization">{{ person.last_workplace[0] }}</span>, 
+                                        <span itemprop="worksFor" itemscope itemtype="http://schema.org/Organization"><span itemprop="name">{{ person.last_workplace[0] }}</span></span>, 
                                         <span itemprop="jobTitle">{{ person.last_workplace[1] }}</span>
                                     </strong>
                                 </td>
@@ -173,7 +173,7 @@
                                 <div class="tl-content panel padder b-a">
                                     <span class="arrow left pull-up"></span>
                                     <div>
-                                        <span itemscope itemtype="http://schema.org/Organization" itemprop="worksFor">{{ connection.to_company }}</span>, {{ connection.relationship_type }}
+                                        <span itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ connection.to_company }}</span></span>, {{ connection.relationship_type }}
                                         {% if connection.has_additional_info %}
                                             <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalWork-{{ loop.index }}">
                                                <i class="fa fa-info-circle info-gray"></i>
@@ -239,9 +239,9 @@
                 {% for asset in person.assets %}
                     <div class="panel panel-default">
                         <div class="panel-body" itemscope itemtype="http://schema.org/Organization" itemprop="affiliation">
-                            {{ asset.to_company }}
+                            <span itemprop="name">{{ asset.to_company }}</span>
                             {% if asset.to_company.edrpou %}
-                            , {{ _("ЄДРПОУ") }} {{ asset.to_company.edrpou }}
+                            , {{ _("ЄДРПОУ") }} <span itemprop="taxID">{{ asset.to_company.edrpou }}</span>
                             {% endif%}
                         </div>
                         <div class="panel-footer">
