@@ -230,16 +230,43 @@ h1 {
 .regularSearch .btn {
     height: 40px;
 }
-#navbar .regularSearch ul {
-    right: 0;
-    left: auto;
+#pep-search .typeahead.dropdown-menu li {
+    border-bottom: #F1F1F1 1px solid;
+    width: 100%;
 }
-.not-front #navbar .regularSearch li a {
+#pep-search .typeahead.dropdown-menu li:last-child {
+    border-bottom: none;
+}
+#pep-search .typeahead.dropdown-menu li a {
     color: black;
+    padding: 10px 20px;
+    text-transform: uppercase;
 }
-#navbar .regularSearch ul li.active a {
+#pep-search .typeahead.dropdown-menu li a strong {
+    font-weight: normal;
+    font-family: 'arsenalbold';
+    color: #ff5a5f;
+}
+#pep-search .typeahead.dropdown-menu li.active a {
     background: #355383;
     color: white;
+}
+#navbar .regularSearch ul {
+    right: 0;
+    left: auto !important; 
+}
+#navbar .regularSearch ul li {
+    float: left; 
+    position: relative;
+    padding: 0;
+    margin-left: 0;
+    margin-right: 0;
+}
+#navbar .regularSearch ul li a {
+    display: inline-block;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
 }
 #navbar .regularSearch .btn {
     margin-top: 0;
@@ -411,7 +438,6 @@ h1 {
     background-size:cover;
     background-color: #e9e9e9;
     background-repeat: repeat;
-    
 }
 .small-profile h3 {
     font-family: 'arsenalregular';
@@ -549,14 +575,21 @@ h1 {
     width: 25px
 }
 
-.tree li .name-pill {
+.tree li span {
+    display: inline-block;
+    padding: 3px 8px;
+    text-decoration: none
+}
+
+.tree li span:first-child {
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border: 1px solid #999;
     border-radius: 5px;
-    display: inline-block;
-    padding: 3px 8px;
-    text-decoration: none
+}
+
+.tree li span:first-child span {
+    border: none;
 }
 
 .tree li.parent_li > span {
@@ -585,7 +618,6 @@ h1 {
 .is_pep {
     font-weight: bold;
 }
-<<<<<<< HEAD
 
 .antac-logo {
     width: 163px;

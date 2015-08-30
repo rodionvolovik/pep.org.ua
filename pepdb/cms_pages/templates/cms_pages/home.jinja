@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="col-lg-6 col-md-8 col-xs-12 col-lg-offset-3 col-md-offset-2">
-                    <form action="{{ url("search") }}" method="GET">
+                    <form id="pep-search" action="{{ url("search") }}" method="GET">
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="{{ _("Введіть ім'я") }}" name="q" data-provide="typeahead" id="search-form" autocomplete="off" />
                             <input type="hidden" name="is_exact" value="" />
