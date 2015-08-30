@@ -232,7 +232,26 @@ h1 {
 }
 #navbar .regularSearch ul {
     right: 0;
-    left: auto;
+    left: auto !important;
+    
+}
+#navbar .regularSearch ul li {
+    float: left; 
+    position: relative;
+    padding: 0;
+    margin-left: 0;
+    margin-right: 0;
+    border-bottom: #F1F1F1 1px solid;
+    width: 100%;
+}
+#navbar .regularSearch ul li a {
+    display: inline-block;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+}
+#navbar .regularSearch ul li:last-child {
+    border-bottom: none;
 }
 .not-front #navbar .regularSearch li a {
     color: black;
@@ -549,13 +568,18 @@ h1 {
     width: 25px
 }
 .tree li span {
+    display: inline-block;
+    padding: 3px 8px;
+    text-decoration: none
+}
+.tree li span:first-child {
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border: 1px solid #999;
     border-radius: 5px;
-    display: inline-block;
-    padding: 3px 8px;
-    text-decoration: none
+}
+.tree li span:first-child span {
+    border: none;
 }
 .tree li.parent_li>span {
     cursor: pointer
