@@ -91,14 +91,8 @@
                             <tr>
                                 <td>{{ _("Дата народження") }}</td>
                                 <td>
-                                <meta itemprop="birthDate" content="{{ person.dob }} "/>
-                                {%- if person.dob_details == 0 %}
-                                {{ person.dob|date }}
-                                {% elif person.dob_details == 1 %}
-                                {{ person.dob|date("m.Y") }}
-                                {% else %}
-                                {{ person.dob|date("Y") }}
-                                {% endif -%}
+                                    <meta itemprop="birthDate" content="{{ person.dob }} "/>
+                                    {{ person.date_of_birth }}
                                 </td>
                             </tr>
                             {% endif %}
