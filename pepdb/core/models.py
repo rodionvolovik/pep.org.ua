@@ -248,7 +248,8 @@ class Person(models.Model):
 
         last_workplace = self.last_workplace
         if last_workplace:
-            d["last_workplace"], d["last_job_title"] = last_workplace
+            d["last_workplace"] = unicode(last_workplace[0])
+            d["last_job_title"] = last_workplace[1]
 
         d["type_of_official"] = self.get_type_of_official_display()
         d["risk_category"] = self.get_risk_category_display()

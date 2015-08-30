@@ -40,7 +40,7 @@
 {% block content %}
 {% set related_persons = person.all_related_persons %}
 {% set workplaces = person.workplaces %}
-<div class="container">
+<div class="container" itemscope itemtype="http://schema.org/Person">
     <div class="row">
         <div id="breadcrumbs">
             <ol class="breadcrumb">
@@ -67,8 +67,8 @@
                 {% endif %}
             </ul>
         </aside>
-        <section id="profile" class="{%- if person.parsed_names %}col-lg-8{% else %}col-lg-10{% endif -%}" itemscope itemtype="http://schema.org/Person">
-            <meta itemprop="url" content="{{ person.get_absolute_url() }}"/>
+        <section id="profile" class="{%- if person.parsed_names %}col-lg-8{% else %}col-lg-10{% endif -%}">
+            <link itemprop="url" href="{{ person.get_absolute_url() }}" />
             <div id="profile-wrap" class="box">
                 <header class="profile-header">
                     {% if person.photo %}
