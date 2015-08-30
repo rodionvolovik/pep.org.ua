@@ -43,7 +43,7 @@ $(function() {
     
     square_height();
     
-    $('[data-toggle="tooltip"]').tooltip();
+    $('.tooltip-anchor').tooltip();
 
     $(window).resize(function() {
         square_height();
@@ -106,6 +106,11 @@ $(function() {
         }
     });
 
+    $("body").on("click", ".active-box", function(e) {
+        var el = $(this);
+        location.href = el.data("url");
+    });
+
     /* smooth scrolling sections */
     $('a[href*=#]:not([href=#])').click(function() {
         if (location.pathname.replace(/^\//, '') ==
@@ -114,7 +119,7 @@ $(function() {
 
             target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
             if (target.length) {
-                $('html,body').animate({
+                $('html, body').animate({
                     scrollTop: target.offset().top - 50
                 }, 1000);
                 return false;

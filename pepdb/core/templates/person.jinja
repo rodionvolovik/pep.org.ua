@@ -14,7 +14,7 @@
 {% macro render_related_person(person, type) %}
     <li itemprop="{% if type == "family" %}relatedTo{% else %}knows{% endif %}" itemscope itemtype="http://schema.org/Person">
         <a href="{{ person.get_absolute_url() }}" itemprop="url">
-            <span {% if person.is_pep %}class="is_pep"{% endif %} itemprop="name">
+            <span class="{% if person.is_pep %}is_pep {% endif %}name-pill" itemprop="name">
                 <span itemprop="familyName">{{ person.last_name }}</span> <span itemprop="givenName">{{ person.first_name }}</span> <span itemprop="additionalName">{{ person.patronymic }}</span>
             </span> &ndash;
             {% if person.rtype %}{{ _(person.rtype) }},{% endif %}
@@ -117,7 +117,7 @@
                                     </strong>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="tooltip-anchor" data-toggle="tooltip" data-placement="bottom" title="Какой-то пояснительный текст что-это означает и чтобы всем вообще было понятно :)">
                                 <td>{{ _("Рівень ризику") }}</td>
                                 <td><strong>{{ person.get_risk_category_display() }}</strong></td>
                             </tr>
@@ -200,7 +200,7 @@
                 <div class="tree">
                     <ul>
                         <li>
-                            <span><i class="icon-calendar">{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}</i></span>
+                            <span><i class="fa"></i> {{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}</span>
                             <ul>
                                 {% if related_persons.family %}
                                 <li>
