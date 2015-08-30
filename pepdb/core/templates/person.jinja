@@ -16,16 +16,17 @@
         <a href="{{ person.get_absolute_url() }}" itemprop="url">
             <span class="{% if person.is_pep %}is_pep {% endif %}name-pill" itemprop="name">
                 <span itemprop="familyName">{{ person.last_name }}</span> <span itemprop="givenName">{{ person.first_name }}</span> <span itemprop="additionalName">{{ person.patronymic }}</span>
-            </span> &ndash;
-            {% if person.rtype %}{{ _(person.rtype) }},{% endif %}
-            {% if person.dob %} <meta itemprop="birthDate" content="{{ person.dob }} "/> {{ person.date_of_birth }},{% endif %}
+            </span>
+        </a> &ndash;
+        {% if person.rtype %}{{ _(person.rtype) }},{% endif %}
+        {% if person.dob %} <meta itemprop="birthDate" content="{{ person.dob }} "/> {{ person.date_of_birth }},{% endif %}
 
-            {% set last_workplace = person.last_workplace %}
-            {% if last_workplace %}
-            <span itemscope itemtype="http://schema.org/Organization" itemprop="worksFor">{{ person.last_workplace[0] }}</span>,
-            <span itemprop="jobTitle">{{ person.last_workplace[1] }}</span>
-            {% endif %}
-        </a>
+        {% set last_workplace = person.last_workplace %}
+        {% if last_workplace %}
+        <span itemscope itemtype="http://schema.org/Organization" itemprop="worksFor">{{ person.last_workplace[0] }}</span>,
+        <span itemprop="jobTitle">{{ person.last_workplace[1] }}</span>
+        {% endif %}
+        
 
         {% if person.connection.has_additional_info %}
             <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalPerson-{{ person.pk }}">
