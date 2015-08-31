@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 from django.utils import formats
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext as _
 
 import select2.fields
 import select2.models
@@ -95,12 +96,12 @@ class Person(models.Model):
     type_of_official = models.IntegerField(
         "Тип ПЕП",
         choices=(
-            (1, "Національний публічний діяч"),
-            (2, "Іноземний публічний діяч"),
+            (1, _("Національний публічний діяч")),
+            (2, _("Іноземний публічний діяч")),
             (3,
-             "Діяч, що виконуює значні функції в міжнародній організації"),
-            (4, "Пов'язана особа"),
-            (5, "Близька особа"),
+             _("Діяч, що виконуює значні функції в міжнародній організації")),
+            (4, _("Пов'язана особа")),
+            (5, _("Близька особа")),
         ),
         blank=True,
         null=True)
@@ -108,9 +109,9 @@ class Person(models.Model):
     risk_category = models.CharField(
         "Рівень ризику",
         choices=(
-            ("high", "Високий"),
-            ("medium", "Середній"),
-            ("low", "Низький"),
+            ("high", _("Високий")),
+            ("medium", _("Середній")),
+            ("low", _("Низький")),
         ),
         max_length=6, default="low")
 
@@ -361,14 +362,14 @@ class Person2Person(AbstractRelationship):
     from_relationship_type = models.CharField(
         "Персона 1 є",
         choices=(zip(_relationships_explained.keys(),
-                     _relationships_explained.keys())),
+                     map(_, _relationships_explained.keys()))),
         max_length=100,
         blank=True)
 
     to_relationship_type = models.CharField(
         "Персона 2 є",
         choices=(zip(_relationships_explained.keys(),
-                     _relationships_explained.keys())),
+                     map(_, _relationships_explained.keys()))),
         max_length=100,
         blank=True)
 
@@ -593,7 +594,8 @@ class Company2Company(AbstractRelationship):
 
     relationship_type = models.CharField(
         "Тип зв'язку",
-        choices=zip(_relationships_explained, _relationships_explained),
+        choices=zip(_relationships_explained,
+                    map(_, _relationships_explained)),
         max_length=30,
         blank=True)
 
@@ -626,12 +628,12 @@ class Person2Country(AbstractRelationship):
     relationship_type = models.CharField(
         "Тип зв'язку",
         choices=(
-            ("born_in", "Народився(-лась)"),
-            ("registered_in", "Зареєстрований(-а)"),
-            ("lived_in", "Проживав(-ла)"),
-            ("citizenship", "Громадянин(-ка)"),
-            ("business", "Має зареєстрований бізнес"),
-            ("under_sanctions", "Під санкціями"),
+            ("born_in", _("Народився(-лась)")),
+            ("registered_in", _("Зареєстрований(-а)")),
+            ("lived_in", _("Проживав(-ла)")),
+            ("citizenship", _("Громадянин(-ка)")),
+            ("business", _("Має зареєстрований бізнес")),
+            ("under_sanctions", _("Під санкціями")),
         ),
 
         max_length=30,
@@ -659,8 +661,8 @@ class Company2Country(AbstractRelationship):
     relationship_type = models.CharField(
         "Тип зв'язку",
         choices=(
-            ("registered_in", "Зареєстрована"),
-            ("under_sanctions", "Під санкціями"),
+            ("registered_in", _("Зареєстрована")),
+            ("under_sanctions", _("Під санкціями")),
         ),
 
         max_length=30,
