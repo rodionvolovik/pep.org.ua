@@ -74,7 +74,7 @@
                 <header class="profile-header">
                     {% if person.photo %}
                     <div class="avatar">
-                    <img src="http://5.9.98.146:8080/media/images/KlyevAP.jpg.128x128_q85_crop.jpg" itemprop="image" alt="{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}"/>
+                    <img src="{{ person.photo|thumbnail_url("avatar") }}" itemprop="image" alt="{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}"/>
                     </div>
                     {% endif %}
                     <h1 class="pep-name" itemprop="name"><span itemprop="familyName">{{ person.last_name }}</span> <span class="pep-pib"><span itemprop="givenName">{{ person.first_name }}</span> <span itemprop="additionalName">{{ person.patronymic }}</span></h1>
