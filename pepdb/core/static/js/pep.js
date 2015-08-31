@@ -86,14 +86,14 @@ $(function() {
             children.hide('fast');
             $(this)
                 .attr('title', 'Expand this branch')
-                .find(' > i')
+                .find(' > i.faicon')
                 .addClass('fa-plus-square')
                 .removeClass('fa-minus-square');
         } else {
             children.show('fast');
             $(this)
                 .attr('title', 'Collapse this branch')
-                .find(' > i')
+                .find(' > i.faicon')
                 .addClass('fa-minus-square')
                 .removeClass('fa-plus-square');
         }
