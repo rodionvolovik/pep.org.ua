@@ -137,6 +137,16 @@ i {
     padding-top: 0;
     padding-bottom: 0;
 }
+.navbar-inverse .navbar-collapse, 
+.navbar-inverse .navbar-form {
+    border: none;
+}
+.not-front .navbar-inverse .navbar-toggle {
+    border-color: white;
+}
+.not-front .navbar-inverse .navbar-toggle .icon-bar {
+    background-color: white;
+}
 #navbar li {
     margin-right: 20px;
     text-transform: uppercase;
@@ -336,8 +346,6 @@ h1 {
     float: left;
     padding-top: 5px;
     padding-bottom: 10px;
-}
-#profile-nav li {
 }
 .box {
     background: none repeat scroll 0 0 #fff;
@@ -623,11 +631,9 @@ h1 {
 }
 
 .antac-logo {
-    width: 163px;
-    height: 51px;
     margin-top: 15px;
     float: right;
-    background: url(../images/antac-logo.png) no-repeat center center;   
+    height:auto;
 }
 
 .description {
