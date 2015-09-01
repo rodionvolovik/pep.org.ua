@@ -1,0 +1,65 @@
+#profile-nav, 
+#navbar,
+#breadcrumbs,
+button.close,
+.modal-footer button,
+.modalConnectionShow .info-gray,
+.modalConnectionBox,
+.tree .fa-plus-square,
+.tree > ul > li > span {
+    display: none !important;
+}
+
+@page {
+  size: A4 portrait;
+  margin: 3cm 3cm 3cm 4cm;
+}
+
+h1 {
+  /*page-break-before: always;*/
+  font-size: 36px;
+  border-bottom: black 2px solid;
+}
+
+h1.pep-name {
+    font-size: 42px;
+}
+
+h1, h2, h3, h4, h5 {
+  page-break-after: avoid;
+}
+
+table, figure {
+  page-break-inside: avoid;
+}
+
+td {
+    padding: 10px 20px;
+}
+
+@page:right{
+  @bottom-right {
+    content: counter(page);
+  }
+}
+
+body {
+    font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+}
+
+
+/* PROFILE PAGE */
+#profile  #profile-wiki p,
+#profile  #reputation p {
+    text-align: justify;
+}
+
+#profile h2,
+#profile h3 {
+    margin-top: 60px;
+}
+
+#profile #assets .panel {
+    margin-bottom: 10px;
+}
