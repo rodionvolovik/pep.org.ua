@@ -6,7 +6,8 @@ button.close,
 .modalConnectionShow .info-gray,
 .modalConnectionBox,
 .tree .fa-plus-square,
-.tree > ul > li > span {
+.tree > ul > li > span,
+.pagination {
     display: none !important;
 }
 
@@ -22,7 +23,7 @@ h1 {
 }
 
 h1.pep-name {
-    font-size: 42px;
+  font-size: 42px;
 }
 
 h1, h2, h3, h4, h5 {
@@ -108,3 +109,37 @@ body {
     display: table-cell;
     vertical-align: middle;
 }
+
+#footer li a {
+    text-decoration: none;
+    color: black;
+}
+
+/* SEARCH-RESUT */
+#search-results h2 {
+    border-bottom: black 2px solid;
+    font-size: 36px;
+    margin-top:40px;
+    margin-bottom: 20px;
+}
+
+#search-results p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#search-results h3.pep-name {
+    margin-bottom: 5px;
+}
+
+#search-results .small-profile {
+    margin-bottom: 20px;
+    border-bottom: #D3D3D3 1px dotted;
+    height: auto !important;
+}
+
+#search-results .small-profile:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+}
+    

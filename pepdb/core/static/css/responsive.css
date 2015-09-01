@@ -41,11 +41,30 @@
         clear: left;
     }
     
+    h1.pep-name {
+        font-size: 18px;
+        margin-top: 10px;
+    }
+    
     #profile-wrap .avatar {
-        padding-right: 25px;
+        padding-right: 15px;
         margin-right: 0;
     }
     
+    .small-profile .avatar {
+        height: 70px;
+        width: 70px;
+    }
+    
+    .small-profile img {
+        height: 70px;
+    }
+    
+    .small-profile .descr {
+        margin-left: 0;
+        margin-top: 40px;
+    }
+
     #profile .profile-header {
         margin-bottom: 50px;
     }
@@ -61,6 +80,28 @@
     #profile-wrap .avatar img {
         width: 100px;
         height: auto;
+    }
+    
+    .tree {
+        padding: 5px;
+    }
+    
+    .tree > ul {
+       padding: 0;
+    }
+    
+    .tree ul ul {
+        padding-left: 25px;
+    }
+    
+    .tree li span:first-child {
+        font-size: 14px;
+    }
+    
+    #navbar .regularSearch ul {
+        left: 0 !important;
+        right: auto;
+        font-size: 13px;
     }
 }
 @media(min-width:768px) {
