@@ -1,0 +1,145 @@
+#profile-nav, 
+#navbar,
+#breadcrumbs,
+button.close,
+.modal-footer button,
+.modalConnectionShow .info-gray,
+.modalConnectionBox,
+.tree .fa-plus-square,
+.tree > ul > li > span,
+.pagination {
+    display: none !important;
+}
+
+@page {
+  size: A4 portrait;
+  margin: 2cm 2cm 2cm 3cm;
+}
+
+h1 {
+  /*page-break-before: always;*/
+  font-size: 36px;
+  border-bottom: black 2px solid;
+}
+
+h1.pep-name {
+  font-size: 42px;
+}
+
+h1, h2, h3, h4, h5 {
+  page-break-after: avoid;
+}
+
+table, figure {
+  page-break-inside: avoid;
+}
+
+td {
+    padding: 10px 20px;
+}
+
+@page:right{
+  @bottom-right {
+    content: counter(page);
+  }
+}
+
+body {
+    font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+}
+
+
+/* PROFILE PAGE */
+#profile  #profile-wiki p,
+#profile  #reputation p {
+    text-align: justify;
+}
+
+#profile h2,
+#profile h3 {
+    margin-top: 60px;
+}
+
+#profile #assets {
+    font-size: 14px;
+    display: table;
+}
+
+#profile #assets .panel {
+    width: 45%;
+    margin: 0 2.5% 10px 2.5%;
+    float: left;
+    display: table-cell;
+}
+    
+
+#profile #assets .panel .panel-footer {
+    font-size: 13px;
+}
+
+.tree > ul > li {
+    list-style: none;
+}
+
+.tree > ul {
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.tree li.parent_li > span {
+    padding-top: 40px;
+    padding-bottom: 20px;
+    font-weight: bold;
+    font-size: 18px;
+    display: block;
+}
+
+#footer ul {
+    display: table;
+    border-top: #5C5C5C 1px solid;
+    margin-top: 100px;
+    width: 100%;
+}
+
+#footer li {
+    list-style: none;
+    float: left;
+    padding: 20px;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#footer li a {
+    text-decoration: none;
+    color: black;
+}
+
+/* SEARCH-RESUT */
+#search-results h2 {
+    border-bottom: black 2px solid;
+    font-size: 36px;
+    margin-top:40px;
+    margin-bottom: 20px;
+}
+
+#search-results p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#search-results h3.pep-name {
+    margin-bottom: 5px;
+}
+
+#search-results .small-profile {
+    margin-bottom: 20px;
+    border-bottom: #D3D3D3 1px dotted;
+    height: auto !important;
+}
+
+#search-results .small-profile:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+}
+    
