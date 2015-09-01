@@ -12,7 +12,7 @@ button.close,
 
 @page {
   size: A4 portrait;
-  margin: 3cm 3cm 3cm 4cm;
+  margin: 2cm 2cm 2cm 3cm;
 }
 
 h1 {
@@ -60,6 +60,51 @@ body {
     margin-top: 60px;
 }
 
+#profile #assets {
+    font-size: 14px;
+    display: table;
+}
+
 #profile #assets .panel {
-    margin-bottom: 10px;
+    width: 45%;
+    margin: 0 2.5% 10px 2.5%;
+    float: left;
+    display: table-cell;
+}
+    
+
+#profile #assets .panel .panel-footer {
+    font-size: 13px;
+}
+
+.tree > ul > li {
+    list-style: none;
+}
+
+.tree > ul {
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.tree li.parent_li > span {
+    padding-top: 40px;
+    padding-bottom: 20px;
+    font-weight: bold;
+    font-size: 18px;
+    display: block;
+}
+
+#footer ul {
+    display: table;
+    border-top: #5C5C5C 1px solid;
+    margin-top: 100px;
+    width: 100%;
+}
+
+#footer li {
+    list-style: none;
+    float: left;
+    padding: 20px;
+    display: table-cell;
+    vertical-align: middle;
 }

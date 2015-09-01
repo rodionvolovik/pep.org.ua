@@ -67,6 +67,9 @@
                         <li class="{% if calling_page.startswith(menuitem.link) %} active{% endif %}">
                             <a href="{{ menuitem.link }}">{{ menuitem.caption }}</a>
                         </li>
+                        <li>
+                            <img id="cs100" src="{{ static("images/sc-logo-print.png") }}" />
+                        </li>
                     {% endfor %}
                     <!-- <li><a href="#"><i class="fa fa-rss"></i> Updates</a></li> -->
                     <li>Copyright 2015</li>
