@@ -65,10 +65,6 @@ body.front {
     position: relative;
 }
 
-#page {
-    padding-bottom: 80px; /* Height of the footer*/
-}
-
 .cp {
     display: block;
     padding-bottom: 30px;
@@ -115,7 +111,6 @@ a.trans {
 
 #footer {
     width: 100%;
-    height: 80px;
     position: absolute;
     bottom: 0;
     left: 0;
@@ -123,8 +118,20 @@ a.trans {
     padding-top: 30px;
 }
 
+#footer td {
+    padding: 0 40px 0 0;
+    vertical-align: top;
+}
+
+#footer p {
+    color: #cacaca;
+}
+
+.not-front #footer p {
+    color: #747171;
+}
+
 #footer li {
-    float: left;
     color: #cacaca;
     text-transform: uppercase;
     list-style: none;
@@ -133,18 +140,12 @@ a.trans {
 #footer li a {
     color: #cacaca;
     text-transform: uppercase;
-    margin-right: 20px;
-    padding-right: 20px;
-    border-right: #cacaca 1px solid;
+    white-space: nowrap;
 }
 
 #footer li a:hover {
     color: #4285f4;
     text-decoration: underline;
-}
-
-#footer li:last-child a {
-    border: none;
 }
 
 i {
@@ -491,9 +492,14 @@ h1 {
     padding-right: 60px;
 }
 
+#personal table tr:first-child td {
+    border: none;
+}
+    
 #personal td:nth-child(1) {
-    font-size: 12px;
+    font-size: 14px;
     color: #6a6a6a;
+    min-width: 140px;
 }
 
 #search-results h2 {

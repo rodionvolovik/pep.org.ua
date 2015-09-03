@@ -62,18 +62,24 @@
 
         <footer id="footer">
             <div class="container">
-                <ul>
-                    {% for menuitem in bottom_menu %}
-                        <li class="{% if calling_page.startswith(menuitem.link) %} active{% endif %}">
-                            <a href="{{ menuitem.link }}">{{ menuitem.caption }}</a>
-                        </li>
-                        <li>
-                            <img id="cs100" src="{{ static("images/sc-logo-print.png") }}" />
-                        </li>
-                    {% endfor %}
-                    <!-- <li><a href="#"><i class="fa fa-rss"></i> Updates</a></li> -->
-                    <li>Copyright 2015</li>
-                </ul>
+            <table width="100%">
+                <tr>
+                    <td>
+                        <ul>
+                        {% for menuitem in bottom_menu %}
+                            <li class="{% if calling_page.startswith(menuitem.link) %} active{% endif %}">
+                                <a href="{{ menuitem.link }}">{{ menuitem.caption }}</a>
+                            </li>
+                            {% endfor %}
+                            <!-- <li><a href="#"><i class="fa fa-rss"></i> Updates</a></li> -->
+                            <li>Copyright 2015</li>
+                        </ul>
+                    </td>
+                    <td>
+                        <p id="footerInfo" class="hidden-xs text-justify">Широкі повноваження та влада, якими наділені публічні діячі для виконання функцій держави, є джерелом корупційних ризиків та ризиків відмивання корупційних коштів. До публічних діячів мають бути застосовані особливі правила контролю фінансових операцій, що дозволить своєчасно виявляти випадки легалізації коштів, набутих публічними діячами в результаті корупційних діянь, зокрема отримання хабарів, розкрадання, неправомірного привласнення або нецільового використання майна, зловживання службовим становищем тощо.</p>
+                    </td>
+                </tr>
+            </table>
             </div>
         </footer>
     </div>

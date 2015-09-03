@@ -103,13 +103,21 @@
         right: auto;
         font-size: 13px;
     }
+    
+    #page {
+        padding-bottom: 80px; /* Height of the footer*/
+    }
+    
+    #footer {
+        height: 80px;
+    }
 }
 @media(min-width:768px) {
     body {
         font-size: 16px;
     }
     
-    .navbar-nav,  #footer ul {
+    .navbar-nav {
         float: none;
         margin: 0 auto;
         display: table;
@@ -137,6 +145,14 @@
         padding-left: 0;
     }
     
+    #page {
+        padding-bottom: 260px; /* Height of the footer*/
+    }
+    
+    #footer {
+        height: 260px;
+    }
+    
 }
  @media(max-width:991px) {
     .antac-logo img {
@@ -154,6 +170,7 @@
         margin-bottom: 20px;
         padding-left: 0;
     }
+    
 }
 
 @media only screen and (max-device-width: 992px) and (orientation: portrait) {
@@ -178,6 +195,14 @@
         margin-top: 20px;
         margin-bottom: 0;
         float: right !important;
+    }
+    
+    #page {
+        padding-bottom: 180px; /* Height of the footer*/
+    }
+    
+    #footer {
+        height: 180px;
     }
 }
 @media(min-width:1200px) {

@@ -7,13 +7,14 @@ button.close,
 .modalConnectionBox,
 .tree .fa-plus-square,
 .tree > ul > li > span,
-.pagination {
+.pagination,
+#footer p {
     display: none !important;
 }
 
 @page {
   size: A4 portrait;
-  margin: 2cm 2cm 2cm 3cm;
+  margin: 1cm 1cm 1cm 1.5cm;
 }
 
 h1 {
@@ -58,7 +59,7 @@ body {
 
 #profile h2,
 #profile h3 {
-    margin-top: 60px;
+    margin-top: 40px;
 }
 
 #profile #assets {
@@ -98,7 +99,7 @@ body {
 #footer ul {
     display: table;
     border-top: #5C5C5C 1px solid;
-    margin-top: 100px;
+    margin-top: 60px;
     width: 100%;
 }
 
