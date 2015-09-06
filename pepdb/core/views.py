@@ -14,53 +14,67 @@ from core.elastic_models import (
 
 
 def suggest(request):
-    results = []
+    def assume(q, fuzziness):
+        results = []
 
-    search = ElasticPerson.search()\
-        .suggest(
-            'name',
-            request.GET.get('q', ''),
-            completion={
-                'field': 'full_name_suggest',
-                'size': 10,
-                'fuzzy': {
-                    'fuzziness': 3,
-                    'unicode_aware': 1
+        search = ElasticPerson.search()\
+            .suggest(
+                'name',
+                q,
+                completion={
+                    'field': 'full_name_suggest',
+                    'size': 10,
+                    'fuzzy': {
+                        'fuzziness': fuzziness,
+                        'unicode_aware': 1
+                    }
                 }
-            }
-    )
-
-    res = search.execute()
-    if res.success:
-        results += res.suggest['name'][0]['options']
-
-    # search = ElasticCompany.search()\
-    #     .suggest(
-    #         'name',
-    #         request.GET.get('q', ''),
-    #         completion={
-    #             'field': 'name_suggest',
-    #             'size': 3,
-    #             'fuzzy': {
-    #                 'fuzziness': 3,
-    #                 'unicode_aware': 1
-    #             }
-    #         }
-    # )
-
-    # res = search.execute()
-    # if res.success:
-    #     results += res.suggest['name'][0]['options']
-
-    results = sorted(results, key=itemgetter("score"), reverse=True)
-
-    if results:
-        return JsonResponse(
-            [val['text'] for val in results],
-            safe=False
         )
-    else:
-        return JsonResponse([], safe=False)
+
+        res = search.execute()
+        if res.success:
+            results += res.suggest['name'][0]['options']
+
+        # search = ElasticCompany.search()\
+        #     .suggest(
+        #         'name',
+        #         q,
+        #         completion={
+        #             'field': 'name_suggest',
+        #             'size': 3,
+        #             'fuzzy': {
+        #                 'fuzziness': 3,
+        #                 'unicode_aware': 1
+        #             }
+        #         }
+        # )
+
+        # res = search.execute()
+        # if res.success:
+        #     results += res.suggest['name'][0]['options']
+
+        results = sorted(results, key=itemgetter("score"), reverse=True)
+
+        if results:
+            return [val['text'] for val in results]
+        else:
+            []
+
+    q = request.GET.get('q', '').strip()
+
+    # It seems, that for some reason 'AUTO' setting doesn't work properly
+    # for unicode strings
+    fuzziness = 0
+
+    if len(q) > 2:
+        fuzziness = 1
+
+    suggestions = assume(q, fuzziness)
+
+    if not suggestions:
+        suggestions = assume(q, fuzziness + 1)
+
+    return JsonResponse(suggestions, safe=False)
 
 
 @hybrid_response("search.jinja")
