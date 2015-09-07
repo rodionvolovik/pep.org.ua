@@ -7,11 +7,14 @@
     <meta name="author" content="">
     <title>PEP: {% block page_title %}{{ root_page.title }}{% endblock %}</title>
 
+    {% if not disable_css %}
     {% stylesheet 'css_all' %}
-    <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,300,700,100&subset=latin,cyrillic-ext,cyrillic' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic,700italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" media="print" href="{{ static("css/print.css")}}" />
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,300,700,100&subset=latin,cyrillic-ext,cyrillic' rel='stylesheet' type='text/css' />
+    <link href='http://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic,700italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css' />
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel='stylesheet' type='text/css' />
+    {% endif %}
+
+    {% stylesheet 'css_print' %}
 </head>
 
 {% set calling_page = page.url if page else "" %}

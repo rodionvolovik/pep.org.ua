@@ -1,9 +1,12 @@
 from operator import itemgetter
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.urlresolvers import reverse
+
 from elasticsearch_dsl.query import Q
+import weasyprint
 
 from core.models import Person
 from core.api import hybrid_response
@@ -188,6 +191,28 @@ def person_details(request, person_id):
     return render(request, "person.jinja", {
         "person": person
     })
+
+
+# TODO: decorator?
+# TODO: caching?
+def person_pdf_details(request, person_id):
+    person = get_object_or_404(Person, pk=person_id)
+
+    html = render(request, "person.jinja", {
+        "person": person,
+        "disable_css": True
+    }).content
+
+    base_url = request.build_absolute_uri("/")
+    pdf = weasyprint.HTML(string=html, base_url=base_url).write_pdf()
+
+    response = HttpResponse(content=pdf,
+                            content_type='application/pdf')
+
+    response['Content-Disposition'] = 'attachment; filename=%s.pdf' \
+        % person.pk
+
+    return response
 
 
 def company_details(request, company_id):

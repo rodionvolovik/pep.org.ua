@@ -201,6 +201,16 @@ PIPELINE_CSS = {
             'media': 'screen,projection',
         },
     },
+
+    'css_print': {
+        'source_filenames': (
+            'css/print.css',
+        ),
+        'output_filename': 'css/merged_print.css',
+        'extra_context': {
+            'media': 'print',
+        },
+    },
 }
 
 

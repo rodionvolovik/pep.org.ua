@@ -28,6 +28,9 @@ urlpatterns = patterns(
     url(r'^person/(?P<person_id>\d+)$', 'core.views.person_details',
         name='person_details'),
 
+    url(r'^pdf/(?P<person_id>\d+)$', 'core.views.person_pdf_details',
+        name='person_pdf_details'),
+
     # url(r'^company/(?P<company_id>\d+)$$', 'core.views.company_details',
     #     name='company_details'),
 
