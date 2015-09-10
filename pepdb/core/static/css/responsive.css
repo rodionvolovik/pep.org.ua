@@ -64,6 +64,10 @@
         margin-left: 0;
         margin-top: 40px;
     }
+    
+    #profile .profileActions {
+        display: none;
+    }
 
     #profile .profile-header {
         margin-bottom: 50px;

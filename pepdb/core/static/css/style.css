@@ -456,6 +456,35 @@ h1 {
     text-transform: none;
 }
 
+#profile .profileActions {
+    position: absolute;
+    margin-top: -15px;
+    left: auto;
+    right: 0;
+    margin-right: 30px;
+}
+
+#profile .profileActions li {
+    list-style: none; 
+    float: left;
+    margin-left: 10px;
+}
+
+#profile .profileActions li a {
+    color: white;
+    font-size: 18px;
+    padding: 2px 5px; 
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    
+}
+
+#profile .profileActions li a:hover {
+    background: white;
+    color: #428bca;
+}
+
 #profile .profile-header {
     margin-bottom: 40px;
 }
