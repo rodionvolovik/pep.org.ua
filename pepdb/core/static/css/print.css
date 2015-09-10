@@ -8,7 +8,8 @@ button.close,
 .tree .fa-plus-square,
 .tree > ul > li > span,
 .pagination,
-#footer p {
+#footer p,
+#profile .profileActions {
     display: none !important;
 }
 
@@ -52,9 +53,98 @@ body {
 
 
 /* PROFILE PAGE */
+#profile .avatar {
+    float: left; 
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+#profile td {
+    padding: 5px 10px;
+}
+
+.printWrap {
+    padding: 20px;
+    border: #C4C4C4 2px solid;
+    overflow: auto;
+}
+
+#profile #profile-wrap {
+    padding: 5px;
+    border: none;
+}
+
+#profile .box h3,
+#profile-suggest h3 {
+    border: #C4C4C4 2px solid;
+    border-bottom: none;   
+    -moz-border-radius-topleft: 15px;
+    -moz-border-radius-topright: 15px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    -webkit-border-top-left-radius: 0px; /* because of chrome bug */
+    -webkit-border-top-right-radius: 0px;
+    padding: 10px 20px;
+    margin-bottom: 0;
+    display: inline-block;
+    min-width: 200px;
+    text-align: center;
+
+}
+#profile .tree .parent_li {
+    list-style: none;
+}
+
+#profile .tree .badge {
+    display: inline-block;
+    border-bottom: black 1px solid;
+    padding-bottom: 0;
+    padding-top: 0;
+}
+
+#profile .tree ul.h {
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+#profile .tree .badge .fa {
+    float: left;
+    margin-right: 10px;
+}
+
+#profile #personal {
+    clear: both;
+}
+
+#profile #personal td:nth-child(1) {
+    font-weight: bold;
+    padding-left: 0;
+}
+
+#profile #personal td:nth-child(2),
+#profile #personal td:nth-child(2) strong {
+    font-weight: normal;
+}
+
 #profile  #profile-wiki p,
 #profile  #reputation p {
     text-align: justify;
+}
+
+#profile h1 {
+    margin-left: 152px;
+}
+
+#profile #workbefore li {
+    list-style: none;
+}
+
+#profile #workbefore .tl-date {
+    font-weight: bold;
+}
+
+#profile #workbefore .tl-item {
+    margin-bottom: 20px;
 }
 
 #profile h2,
@@ -67,7 +157,8 @@ body {
     display: table;
 }
 
-#profile #assets .panel {
+#profile #assets .panel,
+#profile-suggest li {
     width: 45%;
     margin: 0 2.5% 10px 2.5%;
     float: left;
