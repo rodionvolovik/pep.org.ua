@@ -111,6 +111,11 @@ $(function() {
         location.href = el.data("url");
     });
 
+    $("body").on("click", ".print-me", function(e) {
+        e.preventDefault();
+        window.print();
+    });
+
     /* smooth scrolling sections */
     $('a[href*=#]:not([href=#])').click(function() {
         if (location.pathname.replace(/^\//, '') ==

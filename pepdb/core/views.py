@@ -1,15 +1,18 @@
+from __future__ import unicode_literals
 from operator import itemgetter
 
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 
 from elasticsearch_dsl.query import Q
-import weasyprint
+from translitua import translit
 
 from core.models import Person
 from core.api import hybrid_response
+from core.pdf import pdf_response
+from core.utils import is_cyr
 from core.paginator import paginated_search
 from core.elastic_models import (
     Person as ElasticPerson,
@@ -185,34 +188,20 @@ def _search_related(request):
             order="score", pre_tags=[""], post_tags=[""]))
 
 
+@pdf_response("person.jinja")
 def person_details(request, person_id):
     person = get_object_or_404(Person, pk=person_id)
-
-    return render(request, "person.jinja", {
+    context = {
         "person": person
-    })
+    }
 
+    full_name = unicode(person)
+    if is_cyr(full_name):
+        context["filename"] = translit(full_name.lower().replace(" ", "_"))
+    else:
+        context["filename"] = person.pk
 
-# TODO: decorator?
-# TODO: caching?
-def person_pdf_details(request, person_id):
-    person = get_object_or_404(Person, pk=person_id)
-
-    html = render(request, "person.jinja", {
-        "person": person,
-        "disable_css": True
-    }).content
-
-    base_url = request.build_absolute_uri("/")
-    pdf = weasyprint.HTML(string=html, base_url=base_url).write_pdf()
-
-    response = HttpResponse(content=pdf,
-                            content_type='application/pdf')
-
-    response['Content-Disposition'] = 'attachment; filename=%s.pdf' \
-        % person.pk
-
-    return response
+    return context
 
 
 def company_details(request, company_id):

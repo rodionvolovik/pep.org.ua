@@ -72,8 +72,8 @@
             <link itemprop="url" href="{{ person.get_absolute_url() }}" />
             <div id="profile-wrap" class="box">
                 <ul class="profileActions">
-                    <li><a href="#" class="tooltip-anchor" data-toggle="tooltip" data-placement="top" title="Скачать PDF"><i class="fa fa-file-pdf-o"></i></a></li>
-                    <li><a href="#"  class="tooltip-anchor" data-toggle="tooltip" data-placement="top" title="Распечатать профайл"><i class="fa fa-print"></i></a></li>
+                    <li><a href="?format=pdf" class="tooltip-anchor" data-toggle="tooltip" data-placement="top" title="{{ _("Скачати PDF") }}" target="_blank"><i class="fa fa-file-pdf-o"></i></a></li>
+                    <li><a href="#" class="tooltip-anchor print-me" data-toggle="tooltip" data-placement="top" title="{{ _("Роздрукувати профайл") }}"><i class="fa fa-print"></i></a></li>
                 </ul>
                 <header class="profile-header">
                     {% if person.photo %}
