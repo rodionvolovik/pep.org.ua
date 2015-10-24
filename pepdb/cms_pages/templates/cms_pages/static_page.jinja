@@ -3,12 +3,12 @@
 {% block extra_menu %}
     {% if request.user.is_superuser %}
         <li>
-            <a href="{{ url('wagtailadmin_pages_edit', page.id) }}" target="_blank"><i class="fa fa-pencil-square-o"></i></a>
+            <a href="{{ url('wagtailadmin_pages:edit', page.id) }}" target="_blank"><i class="fa fa-pencil-square-o"></i></a>
         </li>
     {% endif %}
 {% endblock %}
 
-{% block page_title %}{{ page.title }}{% endblock %}
+{% block page_title %}{{ page.translated_title }}{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -16,13 +16,13 @@
         <div id="breadcrumbs">
             <ol class="breadcrumb">
                 <li><a href="{{ url("wagtail_serve", "") }}">{{ _("Головна") }}</a></li>
-                <li class="active">{{ page.title }}</li>
+                <li class="active">{{ page.translated_title }}</li>
             </ol>
         </div>
         <section id="profile" class="col-lg-8">
-            <h1>{{ page.title }}</h1>
+            <h1>{{ page.translated_title }}</h1>
             <div>
-                {{ page.body|richtext }}
+                {{ page.translated_body|richtext }}
             </div>
         </section>
     </div>

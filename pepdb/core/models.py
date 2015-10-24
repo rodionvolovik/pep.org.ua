@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 from django.utils import formats
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 import select2.fields
 import select2.models

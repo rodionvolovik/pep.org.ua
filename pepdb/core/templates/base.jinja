@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>PEP: {% block page_title %}{{ root_page.title }}{% endblock %}</title>
+    <title>PEP: {% block page_title %}{{ root_page.translated_title }}{% endblock %}</title>
 
     {% stylesheet 'css_all' %}
     <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,300,700,100&subset=latin,cyrillic-ext,cyrillic' rel='stylesheet' type='text/css'>
@@ -33,7 +33,7 @@
                     <ul class="nav navbar-nav">
                         {% for menuitem in top_menu %}
                             <li class="{% if calling_page.startswith(menuitem.link) %} active{% endif %}">
-                                <a href="{{ menuitem.link }}">{{ menuitem.caption }}</a>
+                                <a href="{{ menuitem.link }}">{{ menuitem.translated_caption }}</a>
                             </li>
                         {% endfor %}
                         {% block extra_menu %}
@@ -64,7 +64,7 @@
                 <ul>
                     {% for menuitem in bottom_menu %}
                         <li class="{% if calling_page.startswith(menuitem.link) %} active{% endif %}">
-                            <a href="{{ menuitem.link }}">{{ menuitem.caption }}</a>
+                            <a href="{{ menuitem.link }}">{{ menuitem.translated_caption }}</a>
                         </li>
                     {% endfor %}
                     <!-- <li><a href="#"><i class="fa fa-rss"></i> Updates</a></li> -->
