@@ -50,7 +50,7 @@
                 <li class="active">{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}</li>
             </ol>
         </div>
-        <aside id="profile-nav" role="complementary" class="col-lg-2">
+        <aside id="profile-nav" role="complementary" class="col-sm-2 hidden-xs">
             <ul id="side-profilemenu">
                 <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-male"></i> <span>{{ _("Персональні дані") }}</span></a></li>
                 <li><a href="#profile" class="btn btn-transp trans"><i class="fa fa-briefcase"></i> {{ _("Досьє") }}</a></li>
@@ -68,9 +68,13 @@
                 {% endif %}
             </ul>
         </aside>
-        <section id="profile" class="{%- if person.parsed_names %}col-lg-8{% else %}col-lg-10{% endif -%}">
+        <section id="profile" class="{%- if person.parsed_names %}col-sm-8{% else %}col-sm-10{% endif -%}">
             <link itemprop="url" href="{{ person.get_absolute_url() }}" />
             <div id="profile-wrap" class="box">
+                <ul class="profileActions">
+                    <li><a href="?format=pdf" class="tooltip-anchor" data-toggle="tooltip" data-placement="top" title="{{ _("Скачати PDF") }}" target="_blank"><i class="fa fa-file-pdf-o"></i></a></li>
+                    <li><a href="#" class="tooltip-anchor print-me" data-toggle="tooltip" data-placement="top" title="{{ _("Роздрукувати профайл") }}"><i class="fa fa-print"></i></a></li>
+                </ul>
                 <header class="profile-header">
                     {% if person.photo %}
                     <div class="avatar">
@@ -122,156 +126,165 @@
             </div>
 
             {% if person.wiki %}
-            <div id="profile" class="sub box" itemprop="description">
+            <div id="profile-wiki" class="sub box" itemprop="description">
                 <h3>{{ _("Досьє:") }}</h3>
-                <br />
-                {{ person.wiki|markdown }}
+                <div class="printWrap">
+                    {{ person.wiki|markdown }}
+                </div>
             </div>
             {% endif %}
 
             {% if person.reputation_sanctions or person.reputation_crimes or person.reputation_manhunt or person.reputation_convictions %}
             <div id="reputation" class="sub box">
                 <h3>{{ _("Репутація:") }}</h3>
-                <br />
-                {% if person.reputation_sanctions %}
-                    <h4>{{ _("Санкції") }}</h4>
-                    {{ person.reputation_sanctions|markdown }}
-                {% endif %}
-                {% if person.reputation_crimes %}
-                    <h4>{{ _("Кримінальні впровадження") }}</h4>
-                    {{ person.reputation_crimes|markdown }}
-                {% endif %}
-                {% if person.reputation_manhunt %}
-                    <h4>{{ _("Перебування у розшуку") }}</h4>
-                    {{ person.reputation_manhunt|markdown }}
-                {% endif %}
-                {% if person.reputation_convictions %}
-                    <h4>{{ _("Наявність судимості") }}</h4>
-                    {{ person.reputation_convictions|markdown }}
-                {% endif %}
+                <div class="printWrap">
+                    {% if person.reputation_sanctions %}
+                        <h4>{{ _("Санкції") }}</h4>
+                        {{ person.reputation_sanctions|markdown }}
+                    {% endif %}
+                    {% if person.reputation_crimes %}
+                        <h4>{{ _("Кримінальні впровадження") }}</h4>
+                        {{ person.reputation_crimes|markdown }}
+                    {% endif %}
+                    {% if person.reputation_manhunt %}
+                        <h4>{{ _("Перебування у розшуку") }}</h4>
+                        {{ person.reputation_manhunt|markdown }}
+                    {% endif %}
+                    {% if person.reputation_convictions %}
+                        <h4>{{ _("Наявність судимості") }}</h4>
+                        {{ person.reputation_convictions|markdown }}
+                    {% endif %}
+                </div>
             </div>
             {% endif %}
 
             {% if workplaces %}
             <div id="workbefore" class="sub box">
                 <h3>{{ _("Кар'єра:") }}</h3>
-                <div id="element">
-                    <ul class="timeline">
-                        {% for date_tag, type, connection in person.workplaces %}
-                        <li class="tl-item">
-                            <div class="tl-wrap">
-                                <span class="tl-date">
-                                    {% if date_tag %}
-                                        {% if type == "from" %}
-                                            {{ _("з") }}
-                                        {% elif type == "to" %}
-                                            {{ _("по") }}
+                <div class="printWrap">
+                    <div id="element">
+                        <ul class="timeline">
+                            {% for date_tag, type, connection in person.workplaces %}
+                            <li class="tl-item">
+                                <div class="tl-wrap">
+                                    <span class="tl-date">
+                                        {% if date_tag %}
+                                            {% if type == "from" %}
+                                                {{ _("з") }}
+                                            {% elif type == "to" %}
+                                                {{ _("по") }}
+                                            {% endif %}
+                                            {{ date_tag }}
                                         {% endif %}
-                                        {{ date_tag }}
-                                    {% endif %}
-                                </span>
-                                <div class="tl-content panel padder b-a">
-                                    <span class="arrow left pull-up"></span>
-                                    <div>
-                                        <span itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ connection.to_company }}</span></span>, {{ connection.relationship_type }}
-                                        {% if connection.has_additional_info %}
-                                            <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalWork-{{ loop.index }}">
-                                               <i class="fa fa-info-circle info-gray"></i>
-                                            </a>
-                                        {% endif %}
-                                    </div>   
+                                    </span>
+                                    <div class="tl-content panel padder b-a">
+                                        <span class="arrow left pull-up"></span>
+                                        <div>
+                                            <span itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ connection.to_company }}</span></span>, {{ connection.relationship_type }}
+                                            {% if connection.has_additional_info %}
+                                                <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalWork-{{ loop.index }}">
+                                                   <i class="fa fa-info-circle info-gray"></i>
+                                                </a>
+                                            {% endif %}
+                                        </div>   
+                                    </div>
                                 </div>
-                            </div>
-                            {{ render_connection(connection, "modalWork-{}".format(loop.index)) }}
-                        </li>
-                        {% endfor %}
-                    </ul>
+                                {{ render_connection(connection, "modalWork-{}".format(loop.index)) }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
             </div>
             {% endif %}
             {% if related_persons.all %}
             <div id="connections" class="sub box">
                 <h3>{{ _("Зв'язки:") }}</h3>
-                <div class="tree">
-                    <ul>
-                        <li>
-                            <span><i class="fa"></i> {{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}</span>
-                            <ul>
-                                {% if related_persons.family %}
-                                <li>
-                                    <span class="badge badge-success"><i class="fa fa-plus-square"></i> {{ _("Родина та близькі особи") }} <i class="fa fa-heart"></i></span>
-                                    <ul class="h">
-                                        {% for rp in related_persons.family %}
-                                            {{ render_related_person(rp, "family") }}
-                                        {% endfor %}
-                                    </ul>
-                                </li>
-                                {% endif %}
-                                {% if related_persons.personal %}
-                                <li>
-                                    <span class="badge badge-success"><i class="fa fa-plus-square"></i> {{ _("Персональні зв'язки") }} <i class="fa fa-user-secret"></i></span>
-                                    <ul class="h">
-                                        {% for rp in related_persons.personal %}
-                                            {{ render_related_person(rp, "personal") }}
-                                        {% endfor %}
-                                    </ul>
-                                </li>
-                                {% endif %}
-                                {% if related_persons.business %}
-                                <li>
-                                    <span class="badge badge-success"><i class="fa fa-plus-square"></i> {{ _("Ділові зв'язки") }} <i class="fa fa-users"></i></span>
-                                    <ul class="h">
-                                        {% for rp in related_persons.business %}
-                                            {{ render_related_person(rp, "business") }}
-                                        {% endfor %}
-                                    </ul>
-                                </li>
-                                {% endif %}
-                            </ul>
-                        </li>
-                    </ul>
+                <div class="printWrap">
+                    <div class="tree">
+                        <ul>
+                            <li>
+                                <span><i class="fa"></i> {{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}</span>
+                                <ul>
+                                    {% if related_persons.family %}
+                                    <li>
+                                        <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Родина та близькі особи") }} <i class="fa fa-heart"></i></span>
+                                        <ul class="h">
+                                            {% for rp in related_persons.family %}
+                                                {{ render_related_person(rp, "family") }}
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                    {% endif %}
+                                    {% if related_persons.personal %}
+                                    <li>
+                                        <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Персональні зв'язки") }} <i class="fa fa-user-secret"></i></span>
+                                        <ul class="h">
+                                            {% for rp in related_persons.personal %}
+                                                {{ render_related_person(rp, "personal") }}
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                    {% endif %}
+                                    {% if related_persons.business %}
+                                    <li>
+                                        <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Ділові зв'язки") }} <i class="fa fa-users"></i></span>
+                                        <ul class="h">
+                                            {% for rp in related_persons.business %}
+                                                {{ render_related_person(rp, "business") }}
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             {% endif %}
             {% if person.assets or person.reputation_assets %}
             <div id="assets" class="sub box">
                 <h3>{{ _("Статки:") }}</h3>
-                {% for asset in person.assets %}
-                    <div class="panel panel-default">
-                        <div class="panel-body" itemscope itemtype="http://schema.org/Organization" itemprop="affiliation">
-                            <span itemprop="name">{{ asset.to_company }}</span>
-                            {% if asset.to_company.edrpou %}
-                            , {{ _("ЄДРПОУ") }} <span itemprop="taxID">{{ asset.to_company.edrpou }}</span>
-                            {% endif%}
-                        </div>
-                        <div class="panel-footer">
-                            {{ asset.relationship_type }}
-
-                            {% if asset.has_additional_info %}
-                            <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalAsset-{{ loop.index }}">
-                                <i class="fa fa-info-circle info-gray"></i>
-                            </a>
-                            {% endif %}
-                        </div>
-                    </div>                
-                    
-                    {{ render_connection(asset, "modalAsset-{}".format(loop.index)) }}
-                {% endfor %}
-                {% if person.reputation_assets %}
-                    {{ person.reputation_assets|markdown }}
-                {% endif %}
+                <div class="printWrap">
+                    {% for asset in person.assets %}
+                        <div class="panel panel-default">
+                            <div class="panel-body" itemscope itemtype="http://schema.org/Organization" itemprop="affiliation">
+                                <span itemprop="name">{{ asset.to_company }}</span>
+                                {% if asset.to_company.edrpou %}
+                                , {{ _("ЄДРПОУ") }} <span itemprop="taxID">{{ asset.to_company.edrpou }}</span>
+                                {% endif%}
+                            </div>
+                            <div class="panel-footer">
+                                {{ asset.relationship_type }}
+    
+                                {% if asset.has_additional_info %}
+                                <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalAsset-{{ loop.index }}">
+                                    <i class="fa fa-info-circle info-gray"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>                
+                        
+                        {{ render_connection(asset, "modalAsset-{}".format(loop.index)) }}
+                    {% endfor %}
+                    {% if person.reputation_assets %}
+                        {{ person.reputation_assets|markdown }}
+                    {% endif %}
+                </div>
             </div>
             {% endif %}
         </section>
         {% if person.parsed_names %}
         <aside id="profile-suggest" role="complementary" class="col-lg-2">
-            
             <h3>{{ _("Можливо ви шукали:") }}</h3>
-            <ul>
-                {% for name_alt in person.parsed_names %}
-                <li itemprop="alternateName">{{ name_alt }}</li>
-                {% endfor %}
-            </ul>
+            <div class="printWrap">
+                <ul>
+                    {% for name_alt in person.parsed_names %}
+                    <li itemprop="alternateName">{{ name_alt }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
         </aside>
         {% endif %}
     </div>

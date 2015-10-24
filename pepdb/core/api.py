@@ -1,6 +1,7 @@
 from functools import wraps
 
 from django.http import JsonResponse
+from django.http.response import HttpResponseBase
 from django.shortcuts import render
 
 from elasticsearch_dsl.result import Response
@@ -46,6 +47,9 @@ def hybrid_response(template_name):
         @wraps(func)
         def func_wrapper(request, *args, **kwargs):
             context = func(request, *args, **kwargs)
+            if isinstance(context, HttpResponseBase):
+                return context
+
             if request.GET.get('format', 'html') == 'json':
                 return JsonResponse(serialize_for_api(context), safe=False)
             else:

@@ -13,7 +13,7 @@ from wagtail.wagtailcore.fields import RichTextField
 from wagtail.wagtailcore.models import Page, Orderable
 from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 from wagtail.wagtailcore.whitelist import (
-    attribute_rule, check_url, allow_without_attributes)
+    attribute_rule, allow_without_attributes)
 from wagtail.wagtailadmin.edit_handlers import (
     InlinePanel, FieldPanel, PageChooserPanel, MultiFieldPanel)
 
@@ -22,6 +22,14 @@ from wagtail.wagtailadmin.edit_handlers import (
 def whitelister_element_rules():
     return {
         'u': allow_without_attributes,
+        'table': attribute_rule({'cellspacing': True, 'cellpadding': True,
+                                 'border': True}),
+        'td': attribute_rule({'valign': True, 'style': True}),
+        'tr': allow_without_attributes,
+        'th': allow_without_attributes,
+        'tbody': allow_without_attributes,
+        'tfoot': allow_without_attributes,
+        'thead': allow_without_attributes,
         'p': attribute_rule({'align': True}),
     }
 

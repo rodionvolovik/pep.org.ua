@@ -2,75 +2,212 @@
     body {
         font-size: 14px;
     }
-
+    
     .card.square {
         width: 150px;
         max-width: 100%;
     }
-
+    
     #searchbox h1 {
         font-size: 26px;
     }
-
+    
     #searchbox {
         padding-bottom: 60px;
         padding-top: 30px;
     }
-
+    
     .antac-logo {
         display: none;
     }
-
+    
     #navbar li a, #navbar .navbar-brand {
         padding-top: 15px;
         padding-bottom: 15px;
     }
-}
+    
+    .regularSearch {
+        float: left !important;
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+    
+    .nav > li {
+        margin-left: 15px;
+    }
+    
+    .pull-right.regularSearch {
+        float: left;
+        clear: left;
+    }
+    
+    h1.pep-name {
+        font-size: 18px;
+        margin-top: 10px;
+    }
+    
+    #profile-wrap .avatar {
+        padding-right: 15px;
+        margin-right: 0;
+    }
+    
+    .small-profile .avatar {
+        height: 70px;
+        width: 70px;
+    }
+    
+    .small-profile img {
+        height: 70px;
+    }
+    
+    .small-profile .descr {
+        margin-left: 0;
+        margin-top: 40px;
+    }
+    
+    #profile .profileActions {
+        display: none;
+    }
 
+    #profile .profile-header {
+        margin-bottom: 50px;
+    }
+    
+    #personal {
+        padding: 0;
+    }
+    
+    #personal .table-responsive > .table > thead > tr > th,  #personal .table-responsive > .table > tbody > tr > th,  #personal .table-responsive > .table > tfoot > tr > th,  #personal .table-responsive > .table > thead > tr > td,  #personal .table-responsive > .table > tbody > tr > td,  #personal .table-responsive > .table > tfoot > tr > td {
+        white-space: normal;
+    }
+    
+    #profile-wrap .avatar img {
+        width: 100px;
+        height: auto;
+    }
+    
+    .tree {
+        padding: 5px;
+    }
+    
+    .tree > ul {
+       padding: 0;
+    }
+    
+    .tree ul ul {
+        padding-left: 25px;
+    }
+    
+    .tree li span:first-child {
+        font-size: 14px;
+    }
+    
+    #navbar .regularSearch ul {
+        left: 0 !important;
+        right: auto;
+        font-size: 13px;
+    }
+    
+    #page {
+        padding-bottom: 80px; /* Height of the footer*/
+    }
+    
+    #footer {
+        height: 80px;
+    }
+}
 @media(min-width:768px) {
     body {
         font-size: 16px;
     }
-
-    .navbar-nav,
-    #footer ul {
+    
+    .navbar-nav {
         float: none;
         margin: 0 auto;
         display: table;
         table-layout: fixed;
     }
-
+    
     .card.square {
         width: 193px;
         max-width: 100%;
     }
-
+    
     #searchbox h1 {
         font-size: 32px;
     }
-
+    
     #searchbox {
         padding-top: 120px;
         padding-bottom: 120px;
     }
-
-    /*iPad портрет */
-    @media only screen and (max-device-width: 992px) and (orientation: portrait) {}
-
-    @media(min-width:992px) {
-        #searchbox h1 {
-            font-size: 40px;
-        }
+    
+    .regularSearch {
+        float: left !important;
+        margin-top: 0;
+        margin-bottom: 20px;
+        padding-left: 0;
     }
-
-    @media(min-width:1200px) {
-        #side-profilemenu.affix {}
+    
+    #page {
+        padding-bottom: 260px; /* Height of the footer*/
     }
-
-    @media print {
-        #profile-nav,
-        #navbar {
-            display: none;
-        }
+    
+    #footer {
+        height: 260px;
     }
+    
+}
+ @media(max-width:991px) {
+    .antac-logo img {
+        width: 140px;
+    }
+    
+    .nav > li > a {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    
+    .regularSearch {
+        float: left !important;
+        margin-top: 0;
+        margin-bottom: 20px;
+        padding-left: 0;
+    }
+    
+}
+
+@media only screen and (max-device-width: 992px) and (orientation: portrait) {
+    .regularSearch {
+        float: left !important;
+        margin-top: 0;
+        margin-bottom: 20px;
+        padding-left: 0;
+    }
+    
+}
+@media(min-width:992px) {
+    #searchbox h1 {
+        font-size: 40px;
+    }
+    
+    .antac-logo img {
+        width: 163px;
+    }
+    
+    .regularSearch {
+        margin-top: 20px;
+        margin-bottom: 0;
+        float: right !important;
+    }
+    
+    #page {
+        padding-bottom: 180px; /* Height of the footer*/
+    }
+    
+    #footer {
+        height: 180px;
+    }
+}
+@media(min-width:1200px) {
 }

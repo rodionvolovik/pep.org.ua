@@ -7,10 +7,14 @@
     <meta name="author" content="">
     <title>PEP: {% block page_title %}{{ root_page.translated_title }}{% endblock %}</title>
 
+    {% if not disable_css %}
     {% stylesheet 'css_all' %}
-    <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,300,700,100&subset=latin,cyrillic-ext,cyrillic' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic,700italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,300,700,100&subset=latin,cyrillic-ext,cyrillic' rel='stylesheet' type='text/css' />
+    <link href='http://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic,700italic&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css' />
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel='stylesheet' type='text/css' />
+    {% endif %}
+
+    {% stylesheet 'css_print' %}
 </head>
 
 {% set calling_page = page.url if page else "" %}
@@ -41,7 +45,7 @@
                     </ul>
                 </div>
                 {% block mini_search %}
-                <div class="col-sm-3 col-md-3 pull-right regularSearch">
+                <div class="col-xs-6 col-sm-6 col-md-3 pull-right regularSearch">
                     <form id="pep-search" action="{{ url("search") }}" method="GET">
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="" name="q" data-provide="typeahead" id="search-form" autocomplete="off" />
@@ -61,15 +65,24 @@
 
         <footer id="footer">
             <div class="container">
-                <ul>
-                    {% for menuitem in bottom_menu %}
-                        <li class="{% if calling_page.startswith(menuitem.link) %} active{% endif %}">
-                            <a href="{{ menuitem.link }}">{{ menuitem.translated_caption }}</a>
-                        </li>
-                    {% endfor %}
-                    <!-- <li><a href="#"><i class="fa fa-rss"></i> Updates</a></li> -->
-                    <li>Copyright 2015</li>
-                </ul>
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <ul>
+                                {% for menuitem in bottom_menu %}
+                                    <li class="{% if calling_page.startswith(menuitem.link) %} active{% endif %}">
+                                        <a href="{{ menuitem.link }}">{{ menuitem.translated_caption }}</a>
+                                    </li>
+                                {% endfor %}
+                                <!-- <li><a href="#"><i class="fa fa-rss"></i> Updates</a></li> -->
+                                <li>Copyright 2015</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <p id="footerInfo" class="hidden-xs text-justify">Широкі повноваження та влада, якими наділені публічні діячі для виконання функцій держави, є джерелом корупційних ризиків та ризиків відмивання корупційних коштів. До публічних діячів мають бути застосовані особливі правила контролю фінансових операцій, що дозволить своєчасно виявляти випадки легалізації коштів, набутих публічними діячами в результаті корупційних діянь, зокрема отримання хабарів, розкрадання, неправомірного привласнення або нецільового використання майна, зловживання службовим становищем тощо.</p>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </footer>
     </div>

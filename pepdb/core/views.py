@@ -1,12 +1,18 @@
+from __future__ import unicode_literals
 from operator import itemgetter
 
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404, redirect
+
+from django.shortcuts import get_object_or_404, redirect
 from django.core.urlresolvers import reverse
+
 from elasticsearch_dsl.query import Q
+from translitua import translit
 
 from core.models import Person
 from core.api import hybrid_response
+from core.pdf import pdf_response
+from core.utils import is_cyr
 from core.paginator import paginated_search
 from core.elastic_models import (
     Person as ElasticPerson,
@@ -14,53 +20,67 @@ from core.elastic_models import (
 
 
 def suggest(request):
-    results = []
+    def assume(q, fuzziness):
+        results = []
 
-    search = ElasticPerson.search()\
-        .suggest(
-            'name',
-            request.GET.get('q', ''),
-            completion={
-                'field': 'full_name_suggest',
-                'size': 10,
-                'fuzzy': {
-                    'fuzziness': 3,
-                    'unicode_aware': 1
+        search = ElasticPerson.search()\
+            .suggest(
+                'name',
+                q,
+                completion={
+                    'field': 'full_name_suggest',
+                    'size': 10,
+                    'fuzzy': {
+                        'fuzziness': fuzziness,
+                        'unicode_aware': 1
+                    }
                 }
-            }
-    )
-
-    res = search.execute()
-    if res.success:
-        results += res.suggest['name'][0]['options']
-
-    # search = ElasticCompany.search()\
-    #     .suggest(
-    #         'name',
-    #         request.GET.get('q', ''),
-    #         completion={
-    #             'field': 'name_suggest',
-    #             'size': 3,
-    #             'fuzzy': {
-    #                 'fuzziness': 3,
-    #                 'unicode_aware': 1
-    #             }
-    #         }
-    # )
-
-    # res = search.execute()
-    # if res.success:
-    #     results += res.suggest['name'][0]['options']
-
-    results = sorted(results, key=itemgetter("score"), reverse=True)
-
-    if results:
-        return JsonResponse(
-            [val['text'] for val in results],
-            safe=False
         )
-    else:
-        return JsonResponse([], safe=False)
+
+        res = search.execute()
+        if res.success:
+            results += res.suggest['name'][0]['options']
+
+        # search = ElasticCompany.search()\
+        #     .suggest(
+        #         'name',
+        #         q,
+        #         completion={
+        #             'field': 'name_suggest',
+        #             'size': 3,
+        #             'fuzzy': {
+        #                 'fuzziness': 3,
+        #                 'unicode_aware': 1
+        #             }
+        #         }
+        # )
+
+        # res = search.execute()
+        # if res.success:
+        #     results += res.suggest['name'][0]['options']
+
+        results = sorted(results, key=itemgetter("score"), reverse=True)
+
+        if results:
+            return [val['text'] for val in results]
+        else:
+            []
+
+    q = request.GET.get('q', '').strip()
+
+    # It seems, that for some reason 'AUTO' setting doesn't work properly
+    # for unicode strings
+    fuzziness = 0
+
+    if len(q) > 2:
+        fuzziness = 1
+
+    suggestions = assume(q, fuzziness)
+
+    if not suggestions:
+        suggestions = assume(q, fuzziness + 1)
+
+    return JsonResponse(suggestions, safe=False)
 
 
 @hybrid_response("search.jinja")
@@ -168,12 +188,20 @@ def _search_related(request):
             order="score", pre_tags=[""], post_tags=[""]))
 
 
+@pdf_response("person.jinja")
 def person_details(request, person_id):
     person = get_object_or_404(Person, pk=person_id)
-
-    return render(request, "person.jinja", {
+    context = {
         "person": person
-    })
+    }
+
+    full_name = unicode(person)
+    if is_cyr(full_name):
+        context["filename"] = translit(full_name.lower().replace(" ", "_"))
+    else:
+        context["filename"] = person.pk
+
+    return context
 
 
 def company_details(request, company_id):

@@ -1,0 +1,237 @@
+#profile-nav, 
+#navbar,
+#breadcrumbs,
+button.close,
+.modal-footer button,
+.modalConnectionShow .info-gray,
+.modalConnectionBox,
+.tree .fa-plus-square,
+.tree > ul > li > span,
+.pagination,
+#footer p,
+#profile .profileActions {
+    display: none !important;
+}
+
+@page {
+  size: A4 portrait;
+  margin: 1cm 1cm 1cm 1.5cm;
+}
+
+h1 {
+  /*page-break-before: always;*/
+  font-size: 36px;
+  border-bottom: black 2px solid;
+}
+
+h1.pep-name {
+  font-size: 42px;
+}
+
+h1, h2, h3, h4, h5 {
+  page-break-after: avoid;
+}
+
+table, figure {
+  page-break-inside: avoid;
+}
+
+td {
+    padding: 10px 20px;
+}
+
+@page:right{
+  @bottom-right {
+    content: counter(page);
+  }
+}
+
+body {
+    font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+}
+
+
+/* PROFILE PAGE */
+#profile .avatar {
+    float: left; 
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+#profile td {
+    padding: 5px 10px;
+}
+
+.printWrap {
+    padding: 20px;
+    border: #C4C4C4 2px solid;
+    overflow: auto;
+}
+
+#profile #profile-wrap {
+    padding: 5px;
+    border: none;
+}
+
+#profile .box h3,
+#profile-suggest h3 {
+    border: #C4C4C4 2px solid;
+    border-bottom: none;   
+    -moz-border-radius-topleft: 15px;
+    -moz-border-radius-topright: 15px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    -webkit-border-top-left-radius: 0px; /* because of chrome bug */
+    -webkit-border-top-right-radius: 0px;
+    padding: 10px 20px;
+    margin-bottom: 0;
+    display: inline-block;
+    min-width: 200px;
+    text-align: center;
+
+}
+#profile .tree .parent_li {
+    list-style: none;
+}
+
+#profile .tree .badge {
+    display: inline-block;
+    border-bottom: black 1px solid;
+    padding-bottom: 0;
+    padding-top: 0;
+}
+
+#profile .tree ul.h {
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+#profile .tree .badge .fa {
+    float: left;
+    margin-right: 10px;
+}
+
+#profile #personal {
+    clear: both;
+}
+
+#profile #personal td:nth-child(1) {
+    font-weight: bold;
+    padding-left: 0;
+}
+
+#profile #personal td:nth-child(2),
+#profile #personal td:nth-child(2) strong {
+    font-weight: normal;
+}
+
+#profile  #profile-wiki p,
+#profile  #reputation p {
+    text-align: justify;
+}
+
+#profile h1 {
+    margin-left: 152px;
+}
+
+#profile #workbefore li {
+    list-style: none;
+}
+
+#profile #workbefore .tl-date {
+    font-weight: bold;
+}
+
+#profile #workbefore .tl-item {
+    margin-bottom: 20px;
+}
+
+#profile h2,
+#profile h3 {
+    margin-top: 40px;
+}
+
+#profile #assets {
+    font-size: 14px;
+    display: table;
+}
+
+#profile #assets .panel,
+#profile-suggest li {
+    width: 45%;
+    margin: 0 2.5% 10px 2.5%;
+    float: left;
+    display: table-cell;
+}
+    
+
+#profile #assets .panel .panel-footer {
+    font-size: 13px;
+}
+
+.tree > ul > li {
+    list-style: none;
+}
+
+.tree > ul {
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.tree li.parent_li > span {
+    padding-top: 40px;
+    padding-bottom: 20px;
+    font-weight: bold;
+    font-size: 18px;
+    display: block;
+}
+
+#footer ul {
+    display: table;
+    border-top: #5C5C5C 1px solid;
+    margin-top: 60px;
+    width: 100%;
+}
+
+#footer li {
+    list-style: none;
+    float: left;
+    padding: 20px;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#footer li a {
+    text-decoration: none;
+    color: black;
+}
+
+/* SEARCH-RESUT */
+#search-results h2 {
+    border-bottom: black 2px solid;
+    font-size: 36px;
+    margin-top:40px;
+    margin-bottom: 20px;
+}
+
+#search-results p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#search-results h3.pep-name {
+    margin-bottom: 5px;
+}
+
+#search-results .small-profile {
+    margin-bottom: 20px;
+    border-bottom: #D3D3D3 1px dotted;
+    height: auto !important;
+}
+
+#search-results .small-profile:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+}
+    
