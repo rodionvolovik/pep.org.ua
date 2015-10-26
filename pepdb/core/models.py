@@ -8,6 +8,8 @@ from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 from django.utils import formats
 from django.core.urlresolvers import reverse
+# from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_noop as _
 
 import select2.fields
 import select2.models
@@ -27,9 +29,9 @@ from core.utils import parse_fullname
 
 
 class Person(models.Model):
-    last_name = models.CharField("Прізвище", max_length=30)
-    first_name = models.CharField("Ім'я", max_length=30)
-    patronymic = models.CharField("По-батькові", max_length=30, blank=True)
+    last_name = models.CharField("Прізвище", max_length=40)
+    first_name = models.CharField("Ім'я", max_length=40)
+    patronymic = models.CharField("По-батькові", max_length=40, blank=True)
 
     publish = models.BooleanField("Опублікувати", default=False)
     is_pep = models.BooleanField("Є PEPом", default=True)
@@ -95,12 +97,12 @@ class Person(models.Model):
     type_of_official = models.IntegerField(
         "Тип ПЕП",
         choices=(
-            (1, "Національний публічний діяч"),
-            (2, "Іноземний публічний діяч"),
+            (1, _("Національний публічний діяч")),
+            (2, _("Іноземний публічний діяч")),
             (3,
-             "Діяч, що виконуює значні функції в міжнародній організації"),
-            (4, "Пов'язана особа"),
-            (5, "Близька особа"),
+             _("Діяч, що виконуює значні функції в міжнародній організації")),
+            (4, _("Пов'язана особа")),
+            (5, _("Близька особа")),
         ),
         blank=True,
         null=True)
@@ -108,9 +110,9 @@ class Person(models.Model):
     risk_category = models.CharField(
         "Рівень ризику",
         choices=(
-            ("high", "Високий"),
-            ("medium", "Середній"),
-            ("low", "Низький"),
+            ("high", _("Високий")),
+            ("medium", _("Середній")),
+            ("low", _("Низький")),
         ),
         max_length=6, default="low")
 
@@ -136,8 +138,7 @@ class Person(models.Model):
         elif self.dob_details == 2:
             return formats.date_format(self.dob, "YEAR_DATE_FORMAT")
 
-    @property
-    def last_workplace(self):
+    def _last_workplace(self):
         qs = self.person2company_set.filter(
             is_employee=True, date_finished__exact=None)
 
@@ -151,9 +152,26 @@ class Person(models.Model):
             qs = self.person2company_set.filter(
                 is_employee=False).order_by("-date_finished")
 
+        return qs
+
+    @property
+    def last_workplace(self):
+        qs = self._last_workplace()
         if qs:
             l = qs[0]
-            return [l.to_company, l.relationship_type]
+            return [l.to_company.short_name or l.to_company.name,
+                    l.relationship_type]
+
+        return ""
+
+    # Fuuugly hack
+    @property
+    def last_workplace_en(self):
+        qs = self._last_workplace()
+        if qs:
+            l = qs[0]
+            return [l.to_company.short_name_en or l.to_company.name_en,
+                    l.relationship_type_en]
 
         return ""
 
@@ -226,6 +244,7 @@ class Person(models.Model):
         """
         d = model_to_dict(self, fields=[
             "id", "last_name", "first_name", "patronymic", "dob",
+            "last_name_en", "first_name_en", "patronymic_en",
             "dob_details", "city_of_birth", "is_pep", "wiki",
             "reputation_sanctions", "reputation_convictions",
             "reputation_crimes", "reputation_manhunt", "names"])
@@ -248,13 +267,20 @@ class Person(models.Model):
 
         last_workplace = self.last_workplace
         if last_workplace:
-            d["last_workplace"] = unicode(last_workplace[0])
+            d["last_workplace"] = last_workplace[0]
             d["last_job_title"] = last_workplace[1]
+
+            (d["last_workplace_en"],
+             d["last_job_title_en"]) = self.last_workplace_en
 
         d["type_of_official"] = self.get_type_of_official_display()
         d["risk_category"] = self.get_risk_category_display()
         d["full_name"] = ("%s %s %s" % (self.first_name, self.patronymic,
                                         self.last_name)).replace("  ", " ")
+
+        d["full_name_en"] = ("%s %s %s" % (
+            self.first_name_en, self.patronymic_en,
+            self.last_name_en)).replace("  ", " ")
 
         def generate_suggestions(last_name, first_name, patronymic):
             if not last_name:
@@ -277,6 +303,11 @@ class Person(models.Model):
         d["full_name_suggest"] = {
             "input": list(chain.from_iterable(input_variants)),
             "output": d["full_name"]
+        }
+
+        d["full_name_suggest_en"] = {
+            "input": list(chain.from_iterable(input_variants)),
+            "output": d["full_name_en"]
         }
 
         d["_id"] = d["id"]
@@ -320,37 +351,38 @@ class AbstractRelationship(models.Model):
 
 class Person2Person(AbstractRelationship):
     _relationships_explained = {
-        "чоловік": ["дружина"],
-        "дружина": ["чоловік"],
-        "батько": ["син", "дочка"],
-        "мати": ["син", "дочка"],
-        "вітчим": ["пасинок", "падчерка"],
-        "мачуха": ["пасинок", "падчерка"],
-        "син": ["батько", "мати"],
-        "дочка": ["батько", "мати"],
-        "пасинок": ["вітчим", "мачуха"],
-        "падчерка": ["вітчим", "мачуха"],
-        "рідний брат": ["рідна сестра", "рідний брат"],
-        "рідна сестра": ["рідна сестра", "рідний брат"],
-        "дід": ["внук", "внучка"],
-        "баба": ["внук", "внучка"],
-        "прадід": ["правнук", "правнучка"],
-        "прабаба": ["правнук", "правнучка"],
-        "внук": ["дід", "баба"],
-        "внучка": ["дід", "баба"],
-        "правнук": ["прадід", "прабаба"],
-        "правнучка": ["прадід", "прабаба"],
-        "усиновлювач": ["усиновлений"],
-        "усиновлений": ["усиновлювач"],
-        "опікун чи піклувальник": [
-            "особа, яка перебуває під опікою або піклуванням"],
-        "особа, яка перебуває під опікою або піклуванням": [
-            "опікун чи піклувальник"],
-        "особи, які спільно проживають": ["особи, які спільно проживають"],
-        "пов'язані спільним побутом і мають взаємні права та обов'язки": [
-            "пов'язані спільним побутом і мають взаємні права та обов'язки"],
-        "ділові зв'язки": ["ділові зв'язки"],
-        "особисті зв'язки": ["особисті зв'язки"]
+        _("чоловік"): [_("дружина")],
+        _("дружина"): [_("чоловік")],
+        _("батько"): [_("син"), _("дочка")],
+        _("мати"): [_("син"), _("дочка")],
+        _("вітчим"): [_("пасинок"), _("падчерка")],
+        _("мачуха"): [_("пасинок"), _("падчерка")],
+        _("син"): [_("батько"), _("мати")],
+        _("дочка"): [_("батько"), _("мати")],
+        _("пасинок"): [_("вітчим"), _("мачуха")],
+        _("падчерка"): [_("вітчим"), _("мачуха")],
+        _("рідний брат"): [_("рідна сестра"), _("рідний брат")],
+        _("рідна сестра"): [_("рідна сестра"), _("рідний брат")],
+        _("дід"): [_("внук"), _("внучка")],
+        _("баба"): [_("внук"), _("внучка")],
+        _("прадід"): [_("правнук"), _("правнучка")],
+        _("прабаба"): [_("правнук"), _("правнучка")],
+        _("внук"): [_("дід"), _("баба")],
+        _("внучка"): [_("дід"), _("баба")],
+        _("правнук"): [_("прадід"), _("прабаба")],
+        _("правнучка"): [_("прадід"), _("прабаба")],
+        _("усиновлювач"): [_("усиновлений")],
+        _("усиновлений"): [_("усиновлювач")],
+        _("опікун чи піклувальник"): [
+            _("особа, яка перебуває під опікою або піклуванням")],
+        _("особа, яка перебуває під опікою або піклуванням"): [
+            _("опікун чи піклувальник")],
+        _("особи, які спільно проживають"): [
+            _("особи, які спільно проживають")],
+        _("пов'язані спільним побутом і мають взаємні права та обов'язки"): [
+            _("пов'язані спільним побутом і мають взаємні права та обов'язки")],
+        _("ділові зв'язки"): [_("ділові зв'язки")],
+        _("особисті зв'язки"): [_("особисті зв'язки")]
     }
 
     from_person = models.ForeignKey(
@@ -361,14 +393,14 @@ class Person2Person(AbstractRelationship):
     from_relationship_type = models.CharField(
         "Персона 1 є",
         choices=(zip(_relationships_explained.keys(),
-                     _relationships_explained.keys())),
+                     map(_, _relationships_explained.keys()))),
         max_length=100,
         blank=True)
 
     to_relationship_type = models.CharField(
         "Персона 2 є",
         choices=(zip(_relationships_explained.keys(),
-                     _relationships_explained.keys())),
+                     map(_, _relationships_explained.keys()))),
         max_length=100,
         blank=True)
 
@@ -532,7 +564,8 @@ class Company(models.Model):
 
     def to_dict(self):
         d = model_to_dict(self, fields=[
-            "id", "name", "short_name", "state_company", "edrpo", "wiki",
+            "id", "name", "short_name", "name_en", "short_name_en",
+            "state_company", "edrpo", "wiki",
             "other_founders", "other_recipient", "other_owners",
             "other_managers", "bank_name"])
 
@@ -567,25 +600,25 @@ class Company(models.Model):
 
 class Company2Company(AbstractRelationship):
     _relationships_explained = [
-        "Власник",
-        "Співвласник",
-        "Споріднена",
-        "Кредитор (фінансовий партнер)",
-        "Надавач професійних послуг",
-        "Клієнт",
-        "Виконавець",
-        "Замовник",
-        "Підрядник",
-        "Субпідрядник",
-        "Постачальник",
-        "Орендар",
-        "Орендодавець",
-        "Контрагент",
-        "Правонаступник",
-        "Правовласник",
-        "Материнська компанія",
-        "Дочірня компанія",
-        "Член наглядового органу"
+        _("Власник"),
+        _("Співвласник"),
+        _("Споріднена"),
+        _("Кредитор (фінансовий партнер)"),
+        _("Надавач професійних послуг"),
+        _("Клієнт"),
+        _("Виконавець"),
+        _("Замовник"),
+        _("Підрядник"),
+        _("Субпідрядник"),
+        _("Постачальник"),
+        _("Орендар"),
+        _("Орендодавець"),
+        _("Контрагент"),
+        _("Правонаступник"),
+        _("Правовласник"),
+        _("Материнська компанія"),
+        _("Дочірня компанія"),
+        _("Член наглядового органу)")
     ]
 
     from_company = models.ForeignKey("Company", related_name="to_companies")
@@ -593,7 +626,8 @@ class Company2Company(AbstractRelationship):
 
     relationship_type = models.CharField(
         "Тип зв'язку",
-        choices=zip(_relationships_explained, _relationships_explained),
+        choices=zip(_relationships_explained,
+                    map(_, _relationships_explained)),
         max_length=30,
         blank=True)
 
@@ -626,12 +660,12 @@ class Person2Country(AbstractRelationship):
     relationship_type = models.CharField(
         "Тип зв'язку",
         choices=(
-            ("born_in", "Народився(-лась)"),
-            ("registered_in", "Зареєстрований(-а)"),
-            ("lived_in", "Проживав(-ла)"),
-            ("citizenship", "Громадянин(-ка)"),
-            ("business", "Має зареєстрований бізнес"),
-            ("under_sanctions", "Під санкціями"),
+            ("born_in", _("Народився(-лась)")),
+            ("registered_in", _("Зареєстрований(-а)")),
+            ("lived_in", _("Проживав(-ла)")),
+            ("citizenship", _("Громадянин(-ка)")),
+            ("business", _("Має зареєстрований бізнес")),
+            ("under_sanctions", _("Під санкціями")),
         ),
 
         max_length=30,
@@ -659,8 +693,8 @@ class Company2Country(AbstractRelationship):
     relationship_type = models.CharField(
         "Тип зв'язку",
         choices=(
-            ("registered_in", "Зареєстрована"),
-            ("under_sanctions", "Під санкціями"),
+            ("registered_in", _("Зареєстрована")),
+            ("under_sanctions", _("Під санкціями")),
         ),
 
         max_length=30,
@@ -730,3 +764,18 @@ class Ua2RuDictionary(models.Model):
     class Meta:
         verbose_name = "Переклад російською"
         verbose_name_plural = "Переклади російською"
+
+
+class Ua2EnDictionary(models.Model):
+    term = models.CharField("Термін", max_length=512)
+    translation = models.CharField("Переклад англійською", max_length=512)
+    alt_translation = models.CharField(
+        "Альтернативний переклад", max_length=512, blank=True)
+    comments = models.CharField("Коментарі", blank=True, max_length=100)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Переклад англійською"
+        verbose_name_plural = "Переклади англійською"

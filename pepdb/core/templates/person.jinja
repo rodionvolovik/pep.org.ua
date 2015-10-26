@@ -89,7 +89,7 @@
                             {% if person.type_of_official %}
                             <tr>
                                 <td>{{ _("Категорія ПЕП") }} </td>
-                                <td><strong>{{ person.get_type_of_official_display() }}</strong></td>
+                                <td><strong>{{ _(person.get_type_of_official_display()) }}</strong></td>
                             </tr>
                             {% endif %}
                             {% if person.dob %}
@@ -116,9 +116,9 @@
                                     </strong>
                                 </td>
                             </tr>
-                            <tr class="tooltip-anchor" data-toggle="tooltip" data-placement="bottom" title="Какой-то пояснительный текст что-это означает и чтобы всем вообще было понятно :)">
+                            <tr class="tooltip-anchor" data-toggle="tooltip" data-placement="bottom" title="{{ _("Відповідно до методології, національним публічним діячам присвоюється такі ступені ризику відмивання коштів: неприйнятно високий; високий; середній; низький") }}">
                                 <td>{{ _("Рівень ризику") }}</td>
-                                <td><strong>{{ person.get_risk_category_display() }}</strong></td>
+                                <td><strong>{{ _(person.get_risk_category_display()) }}</strong></td>
                             </tr>
                         </table>
                     </div>

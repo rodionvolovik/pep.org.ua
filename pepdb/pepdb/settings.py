@@ -66,6 +66,7 @@ INSTALLED_APPS = (
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -154,12 +155,31 @@ LANGUAGES = (
     ('en', gettext('English')),
 )
 
+EXTRA_LANG_INFO = {
+    'ua': {
+        'bidi': False,  # right-to-left
+        'code': 'ua',
+        'name': 'Ukrainian',
+        'name_local': u'Українська',  # unicode codepoints here
+    },
+}
+
+import django.conf.locale
+LANG_INFO = dict(
+    django.conf.locale.LANG_INFO.items() + EXTRA_LANG_INFO.items())
+django.conf.locale.LANG_INFO = LANG_INFO
+
+
 TIME_ZONE = 'Europe/Kiev'
 
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, "locale"),
+)
 
 DATE_FORMAT = "d.m.Y"
 MONTH_YEAR_DATE_FORMAT = "m.Y"

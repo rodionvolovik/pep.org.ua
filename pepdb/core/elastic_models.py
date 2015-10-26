@@ -1,9 +1,20 @@
 from elasticsearch_dsl import DocType, Completion
+from core.utils import TranslatedField
 
 
 class Person(DocType):
     """Person document."""
     full_name_suggest = Completion(preserve_separators=False)
+    full_name_suggest_en = Completion(preserve_separators=False)
+
+    translated_first_name = TranslatedField("first_name", "first_name_en")
+    translated_last_name = TranslatedField("last_name", "last_name_en")
+    translated_patronymic = TranslatedField("patronymic", "patronymic_en")
+
+    translated_last_workplace = TranslatedField(
+        "last_workplace", "last_workplace_en")
+    translated_last_job_title = TranslatedField(
+        "last_job_title", "last_job_title_en")
 
     def relevant_related_persons(self):
         hl = getattr(
