@@ -13,7 +13,7 @@
                 </div>
 
                 <h3 class="pep-name" itemprop="name">
-                    <span itemprop="familyName">{{ p.last_name }}</span> <span class="pep-pib"><span itemprop="givenName">{{ p.first_name }}</span> <span itemprop="additionalName">{{ p.patronymic }}</span>
+                    <span itemprop="familyName">{{ p.translated_last_name }}</span> <span class="pep-pib"><span itemprop="givenName">{{ p.translated_first_name }}</span> <span itemprop="additionalName">{{ p.translated_patronymic }}</span>
                 </h3>
             </header>
 
@@ -25,15 +25,15 @@
                 {% if p.last_workplace %}
                 <p>
                     <span>{{ _("Остання посада") }}:</span>
-                    <span itemprop="worksFor" itemscope itemtype="http://schema.org/Organization"><span itemprop="name">{{ p.last_workplace }}</span></span>, 
-                    <span itemprop="jobTitle">{{ p.last_job_title }}</span>
+                    <span itemprop="worksFor" itemscope itemtype="http://schema.org/Organization"><span itemprop="name">{{ p.translated_last_workplace }}</span></span>, 
+                    <span itemprop="jobTitle">{{ p.translated_last_job_title }}</span>
                 </p>
                 {% endif %}
                 {% if p.risk_category %}
                 <p>
-                    <span class="tooltip-anchor" data-toggle="tooltip" data-placement="bottom" title="Какой-то пояснительный текст что-это означает и чтобы всем вообще было понятно :)">
+                    <span class="tooltip-anchor" data-toggle="tooltip" data-placement="bottom" title="{{ _("Відповідно до методології, національним публічним діячам присвоюється такі ступені ризику відмивання коштів: неприйнятно високий; високий; середній; низький") }}">
                         <span>{{ _("Рівень ризику") }}:</span>
-                        <span class="riskLevel">{{ p.risk_category }}</span>
+                        <span class="riskLevel">{{ _(p.risk_category) }}</span>
                     </span>
                 </p>
                 {% endif %}

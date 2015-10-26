@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 from django.db import models
 from django.conf import settings
 from django.utils.html import mark_safe
-from django.utils import translation
 
 from modelcluster.fields import ParentalKey
 
@@ -16,6 +15,7 @@ from wagtail.wagtailcore.whitelist import (
     attribute_rule, allow_without_attributes)
 from wagtail.wagtailadmin.edit_handlers import (
     InlinePanel, FieldPanel, PageChooserPanel, MultiFieldPanel)
+from core.utils import TranslatedField
 
 
 @hooks.register('construct_whitelister_element_rules')
@@ -32,18 +32,6 @@ def whitelister_element_rules():
         'thead': allow_without_attributes,
         'p': attribute_rule({'align': True}),
     }
-
-
-class TranslatedField(object):
-    def __init__(self, ua_field, en_field):
-        self.ua_field = ua_field
-        self.en_field = en_field
-
-    def __get__(self, instance, owner):
-        if translation.get_language() == 'en':
-            return getattr(instance, self.en_field)
-        else:
-            return getattr(instance, self.ua_field)
 
 
 class AbstractJinjaPage(object):

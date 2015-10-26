@@ -155,6 +155,21 @@ LANGUAGES = (
     ('en', gettext('English')),
 )
 
+EXTRA_LANG_INFO = {
+    'ua': {
+        'bidi': False,  # right-to-left
+        'code': 'ua',
+        'name': 'Ukrainian',
+        'name_local': u'Українська',  # unicode codepoints here
+    },
+}
+
+import django.conf.locale
+LANG_INFO = dict(
+    django.conf.locale.LANG_INFO.items() + EXTRA_LANG_INFO.items())
+django.conf.locale.LANG_INFO = LANG_INFO
+
+
 TIME_ZONE = 'Europe/Kiev'
 
 USE_I18N = True

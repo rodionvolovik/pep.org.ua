@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import re
 from hashlib import sha1
 
 from django.core.files.base import ContentFile
@@ -11,7 +10,7 @@ from django.db.models import Q
 from translitua import translitua
 
 from core.utils import (
-    expand_gdrive_download_url, download, title, parse_date,
+    expand_gdrive_download_url, download, parse_date,
     get_spreadsheet, parse_fullname)
 from core.models import Company, Person, Person2Company, Document
 
@@ -111,9 +110,9 @@ class Command(BaseCommand):
                 if not person:
                     try:
                         person = Person.objects.get(
-                            first_name__iexact=first_name,
-                            last_name__iexact=last_name,
-                            patronymic__iexact=patronymic
+                            first_name_ua__iexact=first_name,
+                            last_name_ua__iexact=last_name,
+                            patronymic_ua__iexact=patronymic
                         )
                     except Person.MultipleObjectsReturned:
                         self.stderr.write(
@@ -123,13 +122,17 @@ class Command(BaseCommand):
 
                 # If nothing is found, let's create a record for that person
                 if not person:
-                    person = Person(
-                        first_name=first_name,
-                        last_name=last_name,
-                        patronymic=patronymic
-                    )
+                    person = Person()
                     self.stderr.write(
                         "Created new person {}".format(person_name))
+
+                person.first_name_ua = first_name
+                person.last_name_ua = last_name
+                person.patronymic_ua = patronymic
+
+                person.first_name_en = translitua(first_name)
+                person.last_name_en = translitua(last_name)
+                person.patronymic_en = translitua(patronymic)
 
                 person.is_pep = True
                 person.imported = True

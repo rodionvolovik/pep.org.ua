@@ -4,11 +4,13 @@ from django import forms
 from django.contrib import admin
 from django.conf import settings
 
-from grappelli_modeltranslation.admin import TranslationAdmin
+from grappelli_modeltranslation.admin import (
+    TranslationAdmin, TranslationTabularInline)
 
 from core.models import (
     Country, Person, Company, Person2Person, Document, Person2Country,
-    Person2Company, Company2Company, Company2Country, Ua2RuDictionary)
+    Person2Company, Company2Company, Company2Country, Ua2RuDictionary,
+    Ua2EnDictionary)
 
 
 def make_published(modeladmin, request, queryset):
@@ -86,7 +88,7 @@ class Person2CompanyForm(forms.ModelForm):
         }
 
 
-class Person2CompanyInline(admin.TabularInline):
+class Person2CompanyInline(TranslationTabularInline):
     model = Person2Company
     form = Person2CompanyForm
     extra = 1
@@ -147,14 +149,14 @@ class Company2CompanyBackInline(admin.TabularInline):
               "proof_title", "proof"]
 
 
-class PersonAdmin(admin.ModelAdmin):
+class PersonAdmin(TranslationAdmin):
     inlines = (Person2PersonInline, Person2PersonBackInline,
                Person2CountryInline, Person2CompanyInline)
 
-    list_display = ("last_name", "first_name", "patronymic", "is_pep", "dob",
-                    "type_of_official", "publish")
+    list_display = ("last_name_ua", "first_name_ua", "patronymic_ua",
+                    "is_pep", "dob", "type_of_official", "publish")
     readonly_fields = ('names',)
-    search_fields = ['last_name', "first_name", "patronymic", "names"]
+    search_fields = ['last_name_ua', "first_name_ua", "patronymic_ua", "names"]
     actions = [make_published, make_unpublished]
 
     fieldsets = [
@@ -177,15 +179,19 @@ class PersonAdmin(admin.ModelAdmin):
     ]
 
 
-class CompanyAdmin(admin.ModelAdmin):
+class CompanyAdmin(TranslationAdmin):
     inlines = (Company2PersonInline, Company2CompanyInline,
                Company2CompanyBackInline, Company2CountryInline)
-    list_display = ("name", "edrpou", "state_company", "publish")
-    search_fields = ["name", "short_name", "edrpou"]
+    list_display = ("name_ua", "edrpou", "state_company", "publish")
+    search_fields = ["name_ua", "short_name_ua", "edrpou"]
     actions = [make_published, make_unpublished]
 
 
 class Ua2RuDictionaryAdmin(admin.ModelAdmin):
+    list_display = ("term", "translation", "alt_translation", "comments")
+
+
+class Ua2EnDictionaryAdmin(admin.ModelAdmin):
     list_display = ("term", "translation", "alt_translation", "comments")
 
 
@@ -195,7 +201,8 @@ class CountryAdmin(TranslationAdmin):
 
 class DocumentAdmin(TranslationAdmin):
     def link(self, obj):
-        return '<a href="{0}{1}" target="_blank">Лінк</a>'.format(settings.MEDIA_URL, obj.doc)
+        return '<a href="{0}{1}" target="_blank">Лінк</a>'.format(
+            settings.MEDIA_URL, obj.doc)
     link.allow_tags = True
     link.short_description = 'Завантажити'
 
@@ -206,3 +213,4 @@ admin.site.register(Company, CompanyAdmin)
 admin.site.register(Country, CountryAdmin)
 admin.site.register(Document, DocumentAdmin)
 admin.site.register(Ua2RuDictionary, Ua2RuDictionaryAdmin)
+admin.site.register(Ua2EnDictionary, Ua2EnDictionaryAdmin)

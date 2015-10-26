@@ -13,6 +13,7 @@ from django.conf import settings
 from oauth2client.client import SignedJwtAssertionCredentials
 from dateutil import parser
 from rfc6266 import parse_requests_response
+from django.utils import translation
 import gspread
 
 
@@ -121,7 +122,8 @@ def is_ukr(name):
 
 def parse_fullname(person_name):
     # Extra care for initials (especialy those without space)
-    person_name = re.sub("\s+", " ", person_name.replace(".", ". "))
+    person_name = re.sub("\s+", " ",
+                         person_name.replace(".", ". ").replace('\xa0', " "))
 
     chunks = person_name.strip().split(" ")
 
@@ -138,3 +140,15 @@ def parse_fullname(person_name):
         patronymic = title(chunks[-1])
 
     return last_name, first_name, patronymic
+
+
+class TranslatedField(object):
+    def __init__(self, ua_field, en_field):
+        self.ua_field = ua_field
+        self.en_field = en_field
+
+    def __get__(self, instance, owner):
+        if translation.get_language() == 'en':
+            return getattr(instance, self.en_field)
+        else:
+            return getattr(instance, self.ua_field)
