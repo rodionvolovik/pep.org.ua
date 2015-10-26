@@ -198,10 +198,10 @@ class Person(models.Model):
     def assets(self):
         return self.person2company_set.select_related("to_company").filter(
             is_employee=False,
-            relationship_type__in=["Засновник/учасник",
-                                   "Колишній засновник/учасник",
-                                   "Бенефіціарний власник",
-                                   "Номінальний власник", ])
+            relationship_type_ua__in=["Засновник/учасник",
+                                      "Колишній засновник/учасник",
+                                      "Бенефіціарний власник",
+                                      "Номінальний власник", ])
 
     @property
     def all_related_persons(self):

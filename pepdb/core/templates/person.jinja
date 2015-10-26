@@ -53,9 +53,24 @@
         <aside id="profile-nav" role="complementary" class="col-sm-2 hidden-xs">
             <ul id="side-profilemenu">
                 <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-male"></i> <span>{{ _("Персональні дані") }}</span></a></li>
-                <li><a href="#profile" class="btn btn-transp trans"><i class="fa fa-briefcase"></i> {{ _("Досьє") }}</a></li>
-                {% if person.reputation_sanctions or person.reputation_crimes or person.reputation_manhunt or person.reputation_convictions %}
-                <li><a href="#reputation" class="btn btn-transp trans"><i class="fa fa-bullhorn"></i>{{ _("Репутація") }}</a></li>
+                {% if LANGUAGE_CODE =="en" %}
+                    {% if person.wiki_en %}
+                        <li><a href="#profile" class="btn btn-transp trans"><i class="fa fa-briefcase"></i> {{ _("Досьє") }}</a></li>
+                    {% endif %}
+                {% else %}
+                    {% if person.wiki %}
+                        <li><a href="#profile" class="btn btn-transp trans"><i class="fa fa-briefcase"></i> {{ _("Досьє") }}</a></li>
+                    {% endif %}
+                {% endif %}
+
+                {% if LANGUAGE_CODE =="en" %}
+                    {% if person.reputation_sanctions_en or person.reputation_crimes_en or person.reputation_manhunt_en or person.reputation_convictions_en %}
+                    <li><a href="#reputation" class="btn btn-transp trans"><i class="fa fa-bullhorn"></i>{{ _("Репутація") }}</a></li>
+                    {% endif %}
+                {% else %}
+                    {% if person.reputation_sanctions_ua or person.reputation_crimes_ua or person.reputation_manhunt_ua or person.reputation_convictions_ua %}
+                    <li><a href="#reputation" class="btn btn-transp trans"><i class="fa fa-bullhorn"></i>{{ _("Репутація") }}</a></li>
+                    {% endif %}
                 {% endif %}
                 {% if workplaces %}
                 <li><a href="#workbefore" class="btn btn-transp trans"><i class="fa fa-wrench"></i> {{ _("Кар'єра") }}</a></li>
@@ -63,8 +78,14 @@
                 {% if related_persons.all %}
                 <li><a href="#connections" class="btn btn-transp trans"><i class="fa fa-heart"></i> {{ _("З'вязки") }}</a></li>
                 {% endif %}
-                {% if person.assets or person.reputation_assets %}
-                <li><a href="#assets" class="btn btn-transp trans"><i class="fa fa-cubes"></i> {{ _("Статки") }}</a></li>
+                {% if LANGUAGE_CODE =="en" %}
+                    {% if person.assets or person.reputation_assets_en %}
+                        <li><a href="#assets" class="btn btn-transp trans"><i class="fa fa-cubes"></i> {{ _("Статки") }}</a></li>
+                    {% endif %}
+                {% else %}
+                    {% if person.assets or person.reputation_assets %}
+                        <li><a href="#assets" class="btn btn-transp trans"><i class="fa fa-cubes"></i> {{ _("Статки") }}</a></li>
+                    {% endif %}
                 {% endif %}
             </ul>
         </aside>
@@ -125,37 +146,75 @@
                 </div>
             </div>
 
-            {% if person.wiki %}
-            <div id="profile-wiki" class="sub box" itemprop="description">
-                <h3>{{ _("Досьє:") }}</h3>
-                <div class="printWrap">
-                    {{ person.wiki|markdown }}
+
+            {% if LANGUAGE_CODE =="en" %}
+                {% if person.wiki_en %}
+                <div id="profile-wiki" class="sub box" itemprop="description">
+                    <h3>{{ _("Досьє:") }}</h3>
+                    <div class="printWrap">
+                        {{ person.wiki_en|markdown }}
+                    </div>
                 </div>
-            </div>
+                {% endif %}
+            {% else %}
+                {% if person.wiki %}
+                <div id="profile-wiki" class="sub box" itemprop="description">
+                    <h3>{{ _("Досьє:") }}</h3>
+                    <div class="printWrap">
+                        {{ person.wiki|markdown }}
+                    </div>
+                </div>
+                {% endif %}
             {% endif %}
 
-            {% if person.reputation_sanctions or person.reputation_crimes or person.reputation_manhunt or person.reputation_convictions %}
-            <div id="reputation" class="sub box">
-                <h3>{{ _("Репутація:") }}</h3>
-                <div class="printWrap">
-                    {% if person.reputation_sanctions %}
-                        <h4>{{ _("Санкції") }}</h4>
-                        {{ person.reputation_sanctions|markdown }}
-                    {% endif %}
-                    {% if person.reputation_crimes %}
-                        <h4>{{ _("Кримінальні впровадження") }}</h4>
-                        {{ person.reputation_crimes|markdown }}
-                    {% endif %}
-                    {% if person.reputation_manhunt %}
-                        <h4>{{ _("Перебування у розшуку") }}</h4>
-                        {{ person.reputation_manhunt|markdown }}
-                    {% endif %}
-                    {% if person.reputation_convictions %}
-                        <h4>{{ _("Наявність судимості") }}</h4>
-                        {{ person.reputation_convictions|markdown }}
-                    {% endif %}
+            {% if LANGUAGE_CODE =="en" %}
+                {% if person.reputation_sanctions_en or person.reputation_crimes_en or person.reputation_manhunt_en or person.reputation_convictions_en %}
+                <div id="reputation" class="sub box">
+                    <h3>{{ _("Репутація:") }}</h3>
+                    <div class="printWrap">
+                        {% if person.reputation_sanctions_en %}
+                            <h4>{{ _("Санкції") }}</h4>
+                            {{ person.reputation_sanctions_en|markdown }}
+                        {% endif %}
+                        {% if person.reputation_crimes_en %}
+                            <h4>{{ _("Кримінальні впровадження") }}</h4>
+                            {{ person.reputation_crimes_en|markdown }}
+                        {% endif %}
+                        {% if person.reputation_manhunt_en %}
+                            <h4>{{ _("Перебування у розшуку") }}</h4>
+                            {{ person.reputation_manhunt_en|markdown }}
+                        {% endif %}
+                        {% if person.reputation_convictions_en %}
+                            <h4>{{ _("Наявність судимості") }}</h4>
+                            {{ person.reputation_convictions_en|markdown }}
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
+                {% endif %}
+            {% else %}
+                {% if person.reputation_sanctions_ua or person.reputation_crimes_ua or person.reputation_manhunt_ua or person.reputation_convictions_ua %}
+                <div id="reputation" class="sub box">
+                    <h3>{{ _("Репутація:") }}</h3>
+                    <div class="printWrap">
+                        {% if person.reputation_sanctions_ua %}
+                            <h4>{{ _("Санкції") }}</h4>
+                            {{ person.reputation_sanctions_ua|markdown }}
+                        {% endif %}
+                        {% if person.reputation_crimes_ua %}
+                            <h4>{{ _("Кримінальні впровадження") }}</h4>
+                            {{ person.reputation_crimes_ua|markdown }}
+                        {% endif %}
+                        {% if person.reputation_manhunt_ua %}
+                            <h4>{{ _("Перебування у розшуку") }}</h4>
+                            {{ person.reputation_manhunt_ua|markdown }}
+                        {% endif %}
+                        {% if person.reputation_convictions_ua %}
+                            <h4>{{ _("Наявність судимості") }}</h4>
+                            {{ person.reputation_convictions_ua|markdown }}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
             {% endif %}
 
             {% if workplaces %}
@@ -243,36 +302,71 @@
                 </div>
             </div>
             {% endif %}
-            {% if person.assets or person.reputation_assets %}
-            <div id="assets" class="sub box">
-                <h3>{{ _("Статки:") }}</h3>
-                <div class="printWrap">
-                    {% for asset in person.assets %}
-                        <div class="panel panel-default">
-                            <div class="panel-body" itemscope itemtype="http://schema.org/Organization" itemprop="affiliation">
-                                <span itemprop="name">{{ asset.to_company }}</span>
-                                {% if asset.to_company.edrpou %}
-                                , {{ _("ЄДРПОУ") }} <span itemprop="taxID">{{ asset.to_company.edrpou }}</span>
-                                {% endif%}
-                            </div>
-                            <div class="panel-footer">
-                                {{ asset.relationship_type }}
-    
-                                {% if asset.has_additional_info %}
-                                <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalAsset-{{ loop.index }}">
-                                    <i class="fa fa-info-circle info-gray"></i>
-                                </a>
-                                {% endif %}
-                            </div>
-                        </div>                
-                        
-                        {{ render_connection(asset, "modalAsset-{}".format(loop.index)) }}
-                    {% endfor %}
-                    {% if person.reputation_assets %}
-                        {{ person.reputation_assets|markdown }}
-                    {% endif %}
-                </div>
-            </div>
+
+            {% if LANGUAGE_CODE =="en" %}
+                {% if person.assets or person.reputation_assets_en %}
+                    <div id="assets" class="sub box">
+                        <h3>{{ _("Статки:") }}</h3>
+                        <div class="printWrap">
+                            {% for asset in person.assets %}
+                                <div class="panel panel-default">
+                                    <div class="panel-body" itemscope itemtype="http://schema.org/Organization" itemprop="affiliation">
+                                        <span itemprop="name">{{ asset.to_company }}</span>
+                                        {% if asset.to_company.edrpou %}
+                                        , {{ _("ЄДРПОУ") }} <span itemprop="taxID">{{ asset.to_company.edrpou }}</span>
+                                        {% endif%}
+                                    </div>
+                                    <div class="panel-footer">
+                                        {{ asset.relationship_type }}
+            
+                                        {% if asset.has_additional_info %}
+                                        <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalAsset-{{ loop.index }}">
+                                            <i class="fa fa-info-circle info-gray"></i>
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>                
+                                
+                                {{ render_connection(asset, "modalAsset-{}".format(loop.index)) }}
+                            {% endfor %}
+                            {% if person.reputation_assets %}
+                                {{ person.reputation_assets|markdown }}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                {% if person.assets or person.reputation_assets_ua %}
+                    <div id="assets" class="sub box">
+                        <h3>{{ _("Статки:") }}</h3>
+                        <div class="printWrap">
+                            {% for asset in person.assets %}
+                                <div class="panel panel-default">
+                                    <div class="panel-body" itemscope itemtype="http://schema.org/Organization" itemprop="affiliation">
+                                        <span itemprop="name">{{ asset.to_company }}</span>
+                                        {% if asset.to_company.edrpou %}
+                                        , {{ _("ЄДРПОУ") }} <span itemprop="taxID">{{ asset.to_company.edrpou }}</span>
+                                        {% endif%}
+                                    </div>
+                                    <div class="panel-footer">
+                                        {{ asset.relationship_type }}
+            
+                                        {% if asset.has_additional_info %}
+                                        <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalAsset-{{ loop.index }}">
+                                            <i class="fa fa-info-circle info-gray"></i>
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>                
+                                
+                                {{ render_connection(asset, "modalAsset-{}".format(loop.index)) }}
+                            {% endfor %}
+                            {% if person.reputation_assets_ua %}
+                                {{ person.reputation_assets_ua|markdown }}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
             {% endif %}
         </section>
         {% if person.parsed_names %}
