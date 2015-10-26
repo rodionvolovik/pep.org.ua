@@ -26,6 +26,7 @@ urlpatterns = i18n_patterns(
         kwargs={"sources": ["persons"]}),
     url(r'^search_related$', 'core.views.search', name='search_related',
         kwargs={"sources": ["related"]}),
+    url(r'^ajax/suggest$', 'core.views.suggest', name='suggest'),
 
     url(r'^person/(?P<person_id>\d+)$', 'core.views.person_details',
         name='person_details'),
@@ -45,7 +46,6 @@ urlpatterns += [
     url(r'^sitemap.xml$', 'django.contrib.sitemaps.views.index',
         {'sitemaps': sitemaps}),
 
-    url(r'^ajax/suggest$', 'core.views.suggest', name='suggest'),
     url(r'^grappelli/', include('grappelli.urls')),  # grappelli urls
     url(r'^markdown/', include('django_markdown.urls')),  # django_markdown url
     url(r'^admin/', include(admin.site.urls)),

@@ -514,7 +514,7 @@ class Person2Company(AbstractRelationship):
 
 
 class Company(models.Model):
-    name = models.CharField("Повна назва", max_length=255)
+    name = models.CharField("Повна назва", max_length=512)
     short_name = models.CharField("Скорочена назва", max_length=50,
                                   blank=True)
 

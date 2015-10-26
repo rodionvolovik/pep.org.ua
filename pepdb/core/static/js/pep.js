@@ -54,7 +54,7 @@ $(function() {
         minLength: 2,
         autoSelect: false,
         source: function(query, process) {
-            $.get('/ajax/suggest', {
+            $.get($("#search-form").data("endpoint"), {
                     "q": query
                 })
                 .success(function(data) {

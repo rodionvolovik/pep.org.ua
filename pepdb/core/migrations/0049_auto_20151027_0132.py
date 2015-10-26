@@ -12,13 +12,14 @@ def import_csv(model, fname, comment):
         for l in r:
             model.objects.update_or_create(
                 term=l[0],
-                translation=l[1],
+                translation=l[5],
                 comments=comment
             )
 
 
 def load_dicts(apps, schema_editor):
     dct = apps.get_model("core", "Ua2EnDictionary")
+    dct.objects.all().delete()
     import_csv(dct, "core/dicts/companies.csv", "Компанії")
     import_csv(dct, "core/dicts/positions.csv", "Посади")
 
@@ -26,9 +27,10 @@ def load_dicts(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0040_auto_20151026_0217'),
+        ('core', '0048_auto_20151026_1541'),
     ]
 
     operations = [
-        migrations.RunPython(load_dicts),
+        migrations.RunPython(
+            load_dicts, reverse_code=migrations.RunPython.noop),
     ]
