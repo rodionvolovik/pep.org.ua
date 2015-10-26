@@ -14,12 +14,19 @@ from core.api import hybrid_response
 from core.pdf import pdf_response
 from core.utils import is_cyr
 from core.paginator import paginated_search
+from django.utils import translation
+
 from core.elastic_models import (
     Person as ElasticPerson,
     Company as ElasticCompany)
 
 
 def suggest(request):
+    if translation.get_language() == "en":
+        field = 'full_name_suggest_en'
+    else:
+        field = 'full_name_suggest'
+
     def assume(q, fuzziness):
         results = []
 
@@ -28,7 +35,7 @@ def suggest(request):
                 'name',
                 q,
                 completion={
-                    'field': 'full_name_suggest',
+                    'field': field,
                     'size': 10,
                     'fuzzy': {
                         'fuzziness': fuzziness,
