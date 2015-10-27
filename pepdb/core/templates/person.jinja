@@ -19,7 +19,7 @@
             </span>
         </a> &ndash;
         {% if person.rtype %}{{ _(person.rtype) }},{% endif %}
-        {% if person.dob %} <meta itemprop="birthDate" content="{{ person.dob }} "/> {{ person.date_of_birth }},{% endif %}
+        {% if person.dob %}<meta itemprop="birthDate" content="{{ person.dob }} "/>{% endif %}
 
         {% set last_workplace = person.last_workplace %}
         {% if last_workplace %}
