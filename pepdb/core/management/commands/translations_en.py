@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 from django.core.management.base import BaseCommand, CommandError
 from core.models import Company, Person2Company
-from core.utils import title, is_cyr
 from unicodecsv import writer
+from django.db.models import Q
 
 
 class Command(BaseCommand):
@@ -18,11 +18,14 @@ class Command(BaseCommand):
         positions = set()
         companies = set()
 
-        for c in Company.objects.filter(name_en=""):
+        for c in Company.objects.filter(
+                Q(name_en__isnull=True) | Q(name_en="")):
             if c.name_ua:
                 companies.add(c.name_ua)
 
-        for p2c in Person2Company.objects.filter(relationship_type_en=""):
+        for p2c in Person2Company.objects.filter(
+                Q(relationship_type_en__isnull=True) |
+                Q(relationship_type_en="")):
             if p2c.relationship_type_ua:
                 positions.add(p2c.relationship_type_ua)
 
