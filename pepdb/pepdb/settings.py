@@ -66,6 +66,7 @@ INSTALLED_APPS = (
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'core.dirty_locale_hack.LocaleHackMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -157,6 +158,8 @@ LANGUAGES = (
     ('en', gettext('English')),
 )
 
+# Cost of a stupid error at the beginning of development is tech debt and
+# ugly hacks
 EXTRA_LANG_INFO = {
     'ua': {
         'bidi': False,  # right-to-left
