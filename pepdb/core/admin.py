@@ -153,10 +153,10 @@ class PersonAdmin(TranslationAdmin):
     inlines = (Person2PersonInline, Person2PersonBackInline,
                Person2CountryInline, Person2CompanyInline)
 
-    list_display = ("last_name_ua", "first_name_ua", "patronymic_ua",
+    list_display = ("last_name_uk", "first_name_uk", "patronymic_uk",
                     "is_pep", "dob", "type_of_official", "publish")
     readonly_fields = ('names',)
-    search_fields = ['last_name_ua', "first_name_ua", "patronymic_ua", "names"]
+    search_fields = ['last_name_uk', "first_name_uk", "patronymic_uk", "names"]
     actions = [make_published, make_unpublished]
 
     fieldsets = [
@@ -182,8 +182,8 @@ class PersonAdmin(TranslationAdmin):
 class CompanyAdmin(TranslationAdmin):
     inlines = (Company2PersonInline, Company2CompanyInline,
                Company2CompanyBackInline, Company2CountryInline)
-    list_display = ("name_ua", "edrpou", "state_company", "publish")
-    search_fields = ["name_ua", "short_name_ua", "edrpou"]
+    list_display = ("name_uk", "edrpou", "state_company", "publish")
+    search_fields = ["name_uk", "short_name_uk", "edrpou"]
     actions = [make_published, make_unpublished]
 
 
@@ -196,7 +196,7 @@ class Ua2EnDictionaryAdmin(admin.ModelAdmin):
 
 
 class CountryAdmin(TranslationAdmin):
-    list_display = ("name_ua", "name_en", "iso2", "iso3", "is_jurisdiction")
+    list_display = ("name_uk", "name_en", "iso2", "iso3", "is_jurisdiction")
 
 
 class DocumentAdmin(TranslationAdmin):

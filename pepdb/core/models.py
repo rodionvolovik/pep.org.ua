@@ -198,7 +198,7 @@ class Person(models.Model):
     def assets(self):
         return self.person2company_set.select_related("to_company").filter(
             is_employee=False,
-            relationship_type_ua__in=["Засновник/учасник",
+            relationship_type_uk__in=["Засновник/учасник",
                                       "Колишній засновник/учасник",
                                       "Бенефіціарний власник",
                                       "Номінальний власник", ])
@@ -726,7 +726,7 @@ class Country(models.Model):
 
     @staticmethod
     def autocomplete_search_fields():
-        return ("name_en__icontains", "name_ua__icontains")
+        return ("name_en__icontains", "name_uk__icontains")
 
     class Meta:
         verbose_name = "Країна/юрісдикція"

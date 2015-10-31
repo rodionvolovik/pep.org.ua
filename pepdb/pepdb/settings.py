@@ -66,7 +66,6 @@ INSTALLED_APPS = (
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'core.dirty_locale_hack.LocaleHackMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -154,7 +153,7 @@ LANGUAGE_CODE = 'uk-ua'
 
 gettext = lambda s: s
 LANGUAGES = (
-    ('ua', gettext('Ukrainian')),
+    ('uk', gettext('Ukrainian')),
     ('en', gettext('English')),
 )
 

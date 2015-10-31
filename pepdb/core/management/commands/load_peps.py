@@ -110,9 +110,9 @@ class Command(BaseCommand):
                 if not person:
                     try:
                         person = Person.objects.get(
-                            first_name_ua__iexact=first_name,
-                            last_name_ua__iexact=last_name,
-                            patronymic_ua__iexact=patronymic
+                            first_name_uk__iexact=first_name,
+                            last_name_uk__iexact=last_name,
+                            patronymic_uk__iexact=patronymic
                         )
                     except Person.MultipleObjectsReturned:
                         self.stderr.write(
@@ -126,9 +126,9 @@ class Command(BaseCommand):
                     self.stderr.write(
                         "Created new person {}".format(person_name))
 
-                person.first_name_ua = first_name
-                person.last_name_ua = last_name
-                person.patronymic_ua = patronymic
+                person.first_name_uk = first_name
+                person.last_name_uk = last_name
+                person.patronymic_uk = patronymic
 
                 person.first_name_en = translitua(first_name)
                 person.last_name_en = translitua(last_name)
@@ -170,7 +170,7 @@ class Command(BaseCommand):
 
                         if doc_name:
                             doc_instance = Document(
-                                name_ua=doc_name,
+                                name_uk=doc_name,
                                 uploader=peklun,
                                 hash=doc_hash
                             )
