@@ -44,6 +44,7 @@
                         {% endblock %}
                     </ul>
                 </div>
+
                 {% block mini_search %}
                 <div class="col-xs-6 col-sm-6 col-md-3 pull-right regularSearch">
                     <form id="pep-search" action="{{ url("search") }}" method="GET">
@@ -54,16 +55,29 @@
                         </div>
                     </form>
                 </div>
+                {% endblock %}
+
                 <div id="languageSelect" class="dropdown asSelect">
                     <button class="dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        <span class="btn-text"><img src="{{ static("images/en.png") }}" /></span>
+                        <span class="btn-text"><img src="{{ static("images/" + LANGUAGE_CODE + ".png") }}" /></span>                        
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                        <li><a href="/en"><img src="{{ static("images/en.png") }}" /></a></li>
-                        <li><a href="/ua"><img src="{{ static("images/ua.png") }}" /></a></li>
+                        {% for lang in LANGUAGES %}
+                        <li>
+                            <form action="{{ url("set_language") }}" method="POST">
+                                {% csrf_token %}
+                                {% if request.path.startswith("/" + LANGUAGE_CODE + "/") %}
+                                    <input type="hidden" name="next" value="{{ request.path.replace("/" + LANGUAGE_CODE + "/", "/" + lang.0 + "/", 1) }}" />
+                                {% else %}
+                                    <input type="hidden" name="next" value="/" />
+                                {% endif %}
+                                <input type="hidden" name="language" value="{{ lang.0 }}" />
+                                <button><img src="{{ static("images/" + lang[0] + ".png") }}" /></button>
+                            </form>
+                        </li>
+                        {% endfor %}
                     </ul>
                 </div>
-                {% endblock %}
             </div>
         </nav>
 
@@ -85,10 +99,6 @@
                                 {% endfor %}
                                 <!-- <li><a href="#"><i class="fa fa-rss"></i> Updates</a></li> -->
                                 <li>Copyright 2015</li>
-                            </ul>
-                            <ul class="languageMenu">
-                                <li><a href="/en"><img src="{{ static("images/en.png") }}" /></a></li>
-                                <li><a href="/ua"><img src="{{ static("images/ua.png") }}" /></a></li>
                             </ul>
                         </td>
                         <td>

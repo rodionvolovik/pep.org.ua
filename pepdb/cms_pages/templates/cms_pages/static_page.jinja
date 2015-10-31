@@ -2,7 +2,7 @@
 
 {% block extra_menu %}
     {% if request.user.is_superuser %}
-        <li>
+        <li class="edit-page">
             <a href="{{ url('wagtailadmin_pages:edit', page.id) }}" target="_blank"><i class="fa fa-pencil-square-o"></i></a>
         </li>
     {% endif %}
