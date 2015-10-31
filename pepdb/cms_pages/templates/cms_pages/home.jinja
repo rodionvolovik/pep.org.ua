@@ -15,6 +15,15 @@
         <img src="{{ static("images/antac-logo.png") }}" />
     </div>
     
+    <div id="languageSelect" class="dropdown asSelect">
+        <button class="dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <span class="btn-text"><img src="{{ static("images/en.png") }}" /></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+            <li><a href="/en"><img src="{{ static("images/en.png") }}" /></a></li>
+            <li><a href="/ua"><img src="{{ static("images/ua.png") }}" /></a></li>
+        </ul>
+    </div>  
 {% endblock %}
 
 {% block content %}
