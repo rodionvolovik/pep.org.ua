@@ -16,6 +16,7 @@ from wagtail.wagtailcore.whitelist import (
 from wagtail.wagtailadmin.edit_handlers import (
     InlinePanel, FieldPanel, PageChooserPanel, MultiFieldPanel)
 from core.utils import TranslatedField
+from django.utils import translation
 
 
 @hooks.register('construct_whitelister_element_rules')
@@ -68,6 +69,12 @@ class AbstractJinjaPage(object):
             'page': self,
             'request': request,
         }
+
+    def localized_url(self, locale):
+        translation.activate(locale)
+        url = self.url
+        translation.deactivate()
+        return url
 
 
 class StaticPage(AbstractJinjaPage, Page):

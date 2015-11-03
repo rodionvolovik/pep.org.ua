@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,6 +44,7 @@
                         {% endblock %}
                     </ul>
                 </div>
+
                 {% block mini_search %}
                 <div class="col-xs-6 col-sm-6 col-md-3 pull-right regularSearch">
                     <form id="pep-search" action="{{ url("search") }}" method="GET">
@@ -55,6 +56,28 @@
                     </form>
                 </div>
                 {% endblock %}
+
+                <div id="languageSelect" class="dropdown asSelect">
+                    <button class="dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <span class="btn-text"><img src="{{ static("images/" + LANGUAGE_CODE + ".png") }}" /></span>                        
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+                        {% for lang in LANGUAGES %}
+                        <li>
+                            <form action="{{ url("set_language") }}" method="POST">
+                                {% csrf_token %}
+                                {% if request.path.startswith("/" + LANGUAGE_CODE + "/") %}
+                                    <input type="hidden" name="next" value="{{ request.path.replace("/" + LANGUAGE_CODE + "/", "/" + lang.0 + "/", 1) }}" />
+                                {% else %}
+                                    <input type="hidden" name="next" value="/" />
+                                {% endif %}
+                                <input type="hidden" name="language" value="{{ lang.0 }}" />
+                                <button><img src="{{ static("images/" + lang[0] + ".png") }}" /></button>
+                            </form>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
         </nav>
 

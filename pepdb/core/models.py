@@ -14,6 +14,7 @@ from django.utils.translation import ugettext_noop as _
 import select2.fields
 import select2.models
 from django_markdown.models import MarkdownField
+from django.utils import translation
 
 from core.utils import parse_fullname
 
@@ -198,7 +199,7 @@ class Person(models.Model):
     def assets(self):
         return self.person2company_set.select_related("to_company").filter(
             is_employee=False,
-            relationship_type_ua__in=["Засновник/учасник",
+            relationship_type_uk__in=["Засновник/учасник",
                                       "Колишній засновник/учасник",
                                       "Бенефіціарний власник",
                                       "Номінальний власник", ])
@@ -316,6 +317,12 @@ class Person(models.Model):
 
     def get_absolute_url(self):
         return reverse("person_details", kwargs={"person_id": self.pk})
+
+    def localized_url(self, locale):
+        translation.activate(locale)
+        url = self.get_absolute_url()
+        translation.deactivate()
+        return url
 
     class Meta:
         verbose_name = "Фізична особа"
@@ -726,7 +733,7 @@ class Country(models.Model):
 
     @staticmethod
     def autocomplete_search_fields():
-        return ("name_en__icontains", "name_ua__icontains")
+        return ("name_en__icontains", "name_uk__icontains")
 
     class Meta:
         verbose_name = "Країна/юрісдикція"

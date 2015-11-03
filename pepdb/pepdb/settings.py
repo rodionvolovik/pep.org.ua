@@ -61,12 +61,12 @@ INSTALLED_APPS = (
     'wagtail.wagtailforms',
 
     'cms_pages',
+    'qartez',
     'core',
 )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'core.dirty_locale_hack.LocaleHackMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -154,25 +154,9 @@ LANGUAGE_CODE = 'uk-ua'
 
 gettext = lambda s: s
 LANGUAGES = (
-    ('ua', gettext('Ukrainian')),
+    ('uk', gettext('Ukrainian')),
     ('en', gettext('English')),
 )
-
-# Cost of a stupid error at the beginning of development is tech debt and
-# ugly hacks
-EXTRA_LANG_INFO = {
-    'ua': {
-        'bidi': False,  # right-to-left
-        'code': 'ua',
-        'name': 'Ukrainian',
-        'name_local': u'Українська',  # unicode codepoints here
-    },
-}
-
-import django.conf.locale
-LANG_INFO = dict(
-    django.conf.locale.LANG_INFO.items() + EXTRA_LANG_INFO.items())
-django.conf.locale.LANG_INFO = LANG_INFO
 
 
 TIME_ZONE = 'Europe/Kiev'
