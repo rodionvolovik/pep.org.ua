@@ -14,6 +14,7 @@ from django.utils.translation import ugettext_noop as _
 import select2.fields
 import select2.models
 from django_markdown.models import MarkdownField
+from django.utils import translation
 
 from core.utils import parse_fullname
 
@@ -316,6 +317,12 @@ class Person(models.Model):
 
     def get_absolute_url(self):
         return reverse("person_details", kwargs={"person_id": self.pk})
+
+    def localized_url(self, locale):
+        translation.activate(locale)
+        url = self.get_absolute_url()
+        translation.deactivate()
+        return url
 
     class Meta:
         verbose_name = "Фізична особа"

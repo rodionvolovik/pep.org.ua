@@ -23,3 +23,4 @@ oauth2client==1.4.12
 pyOpenSSL==0.15.1
 gspread==0.2.5
 WeasyPrint==0.24
+django-qartez==0.6

@@ -34,10 +34,6 @@ urlpatterns = i18n_patterns(
     # url(r'^company/(?P<company_id>\d+)$$', 'core.views.company_details',
     #     name='company_details'),
 
-    url(r'^sitemap-(?P<section>.+).xml$',
-        'django.contrib.sitemaps.views.sitemap',
-        {'sitemaps': sitemaps}),
-
     url(r'', include(wagtail_urls)),
 )
 
@@ -45,6 +41,13 @@ urlpatterns += [
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^sitemap.xml$', 'django.contrib.sitemaps.views.index',
         {'sitemaps': sitemaps}),
+
+    url(r'^sitemap-(?P<section>.+).xml$',
+        'django.contrib.sitemaps.views.sitemap',
+        {
+            'sitemaps': sitemaps,
+            'template_name': 'qartez/rel_alternate_hreflang_sitemap.xml'
+        }),
 
     url(r'^grappelli/', include('grappelli.urls')),  # grappelli urls
     url(r'^markdown/', include('django_markdown.urls')),  # django_markdown url
