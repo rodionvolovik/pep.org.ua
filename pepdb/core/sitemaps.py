@@ -20,7 +20,7 @@ class MainXML(RelAlternateHreflangSitemap):
 
     def alternate_hreflangs(self, obj):
         return [
-            (lang, "/%s/" % lang)
+            (lang, "%s/%s/" % (settings.SITE_URL, lang))
             for lang, _ in settings.LANGUAGES]
 
 
@@ -33,7 +33,7 @@ class PersonXML(RelAlternateHreflangSitemap):
 
     def alternate_hreflangs(self, obj):
         return [
-            (lang, obj.localized_url(lang))
+            (lang, "%s%s" % (settings.SITE_URL, obj.localized_url(lang)))
             for lang, _ in settings.LANGUAGES]
 
 
@@ -46,5 +46,5 @@ class StaticXML(RelAlternateHreflangSitemap):
 
     def alternate_hreflangs(self, obj):
         return [
-            (lang, obj.localized_url(lang))
+            (lang, "%s%s" % (settings.SITE_URL, obj.localized_url(lang)))
             for lang, _ in settings.LANGUAGES]
