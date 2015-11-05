@@ -66,7 +66,6 @@ body {
 .printWrap {
     padding: 20px;
     border: #C4C4C4 2px solid;
-    overflow: auto;
 }
 
 #profile #profile-wrap {
@@ -152,19 +151,34 @@ body {
     margin-top: 40px;
 }
 
+#profile-suggest .printWrap,
+#assets .printWrap {
+    zoom:1;
+    overflow-y: hidden;
+    min-height: 100%;
+}  
+
+#profile-suggest .printWrap:after,
+#assets .printWrap:after {
+    clear:both;
+}
+
+#profile-suggest,
 #profile #assets {
     font-size: 14px;
-    display: table;
+    width: 100%;
+    zoom:1;
+    overflow-y: hidden;
+    min-height: 100%; 
 }
 
 #profile #assets .panel,
 #profile-suggest li {
-    width: 45%;
-    margin: 0 2.5% 10px 2.5%;
-    float: left;
-    display: table-cell;
+    width: 43%;
+    padding: 0 2.5% 10px 2.5%;
+    float: left !important;
+    display: block;
 }
-    
 
 #profile #assets .panel .panel-footer {
     font-size: 13px;
