@@ -111,6 +111,7 @@ class Person(models.Model):
     risk_category = models.CharField(
         "Рівень ризику",
         choices=(
+            ("danger", _("Неприйнятно високий")),
             ("high", _("Високий")),
             ("medium", _("Середній")),
             ("low", _("Низький")),
