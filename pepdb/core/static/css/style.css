@@ -879,3 +879,86 @@ h1 {
 #navbar li.edit-page {
     margin: 0;
 }
+
+#send-form {
+    display: block;
+    width: 200px;
+    position: fixed;
+    z-index: 999;
+    right: 50px;
+    background: #355383;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    transform: translateY(-30px);
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    -ms-transition: all 1s ease;
+    transition: all 1s ease;
+}
+
+#send-form.open {
+    bottom: 0;
+    transform: translateY(0);
+    width: 400px;
+    -webkit-box-shadow: 0px 0px 13px 0px rgba(0, 0, 0, 0.9);
+    -moz-box-shadow:    0px 0px 13px 0px rgba(0, 0, 0, 0.9);
+    box-shadow:         0px 0px 13px 0px rgba(0, 0, 0, 0.9);
+    
+}
+
+#send-form header a {
+    padding-top: 3px;
+    height: 30px;
+    text-align: center;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    display: block;
+    width: 100%;
+}
+
+#send-form .btn-close {
+    display: none;
+    left: -35px;
+    font-size: 26px;
+    position: absolute;
+}
+
+#send-form.open .btn-close {
+    display: block;
+}
+
+.form-content {
+    width: 100%;
+    padding: 10px 10px 0 10px;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+.form-content form {
+    background: white;
+    opacity: 0;
+    padding: 10px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+#send-form  textarea {
+    resize: none;
+}
+
+#send-form .form-group {
+    margin-bottom: 5px;
+}
+
+#send-form.open form {
+    opacity: 1;
+}
+
+.g-recaptcha {
+    transform: scale(0.75);
+    margin-left: -30px;
+}

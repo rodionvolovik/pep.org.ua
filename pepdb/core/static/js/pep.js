@@ -44,6 +44,9 @@ $(function() {
     square_height();
     
     $('.tooltip-anchor').tooltip();
+    
+    $('#send-form .show-form').on('click', function() {$('#send-form').addClass("open");});
+    $('#send-form .btn-close').on('click', function() {$('#send-form').removeClass("open");});
 
     $(window).resize(function() {
         square_height();

@@ -115,6 +115,24 @@
     #footer {
         height: 80px;
     }
+    
+    #send-form {
+        right: 5px;
+    }
+    
+    #send-form {
+        height: 420px;
+        bottom: -420px;
+        max-width: 100%;
+    }
+    #send-form .btn-close {
+        left: 5px;
+        top: -35px;
+    }
+    
+    #send-form .form-group {
+        margin-bottom: 5px;
+    }
 }
 @media(min-width:768px) {
     body {
@@ -155,6 +173,15 @@
     
     #footer {
         height: 260px;
+    }
+    
+    #send-form {
+        height: 420px;
+        bottom: -420px;
+    }
+    
+    #send-form .form-group {
+        margin-bottom: 5px;
     }
     
 }
@@ -207,6 +234,15 @@
     
     #footer {
         height: 180px;
+    }
+    
+    #send-form {
+        height: 380px;
+        bottom: -380px;
+    }
+    
+    #send-form .form-group {
+        margin-bottom: 15px;
     }
 }
 @media(min-width:1200px) {
