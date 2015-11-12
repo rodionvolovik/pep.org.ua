@@ -64,6 +64,7 @@ INSTALLED_APPS = (
 
     'cms_pages',
     'qartez',
+    'captcha',
     'core',
 )
 
@@ -98,6 +99,7 @@ TEMPLATES = [
                 "django.core.context_processors.i18n",
                 "django.core.context_processors.request",
                 "django.contrib.messages.context_processors.messages",
+                "core.context_processors.feedback_processor",
                 "cms_pages.context_processors.menu_processor"
             ),
             "extensions": DEFAULT_EXTENSIONS + [
@@ -129,6 +131,7 @@ TEMPLATES = [
                 "django.core.context_processors.i18n",
                 "django.core.context_processors.request",
                 "django.contrib.messages.context_processors.messages",
+                "core.context_processors.feedback_processor",
                 "cms_pages.context_processors.menu_processor"
             )
         },
@@ -263,6 +266,11 @@ THUMBNAIL_ALIASES = {
 }
 
 CATALOG_PER_PAGE = 6
+
+RECAPTCHA_PUBLIC_KEY = ""
+RECAPTCHA_PRIVATE_KEY = ""
+NOCAPTCHA = True
+RECAPTCHA_USE_SSL = True
 
 try:
     from local_settings import *

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-10 16:19+0200\n"
+"POT-Creation-Date: 2015-11-12 22:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,6 +30,18 @@ msgstr ""
 #: cms_pages/templates/cms_pages/static_page.jinja:18
 #: core/templates/person.jinja:48 core/templates/search.jinja:51
 msgid "Головна"
+msgstr ""
+
+#: core/forms.py:18
+msgid "ПІБ"
+msgstr ""
+
+#: core/forms.py:22
+msgid "Текст повідомлення"
+msgstr ""
+
+#: core/forms.py:25
+msgid "http://"
 msgstr ""
 
 #: core/models.py:101
@@ -284,8 +296,36 @@ msgstr ""
 msgid "Зареєстрована"
 msgstr ""
 
+#: core/models.py:794
+msgid "Про кого"
+msgstr ""
+
+#: core/models.py:796
+msgid "Інформація"
+msgstr ""
+
+#: core/models.py:798
+msgid "Підтвердження"
+msgstr ""
+
+#: core/models.py:799
+msgid "Прочитано"
+msgstr ""
+
+#: core/templates/_feedback_form.jinja:37
+msgid "Надіслати"
+msgstr ""
+
+#: core/templates/_thank_you.jinja:1
+msgid "Дякуємо за надану інформацію"
+msgstr ""
+
 #: core/templates/base.jinja:30
 msgid "Перемкнути :)"
+msgstr ""
+
+#: core/templates/base.jinja:118
+msgid "Надіслати інформацію"
 msgstr ""
 
 #: core/templates/macros/_connections.jinja:8
@@ -451,10 +491,10 @@ msgstr ""
 msgid "Пов'язані особи"
 msgstr ""
 
-#: pepdb/settings.py:157
+#: pepdb/settings.py:160
 msgid "Ukrainian"
 msgstr ""
 
-#: pepdb/settings.py:158
+#: pepdb/settings.py:161
 msgid "English"
 msgstr ""

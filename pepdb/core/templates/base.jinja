@@ -17,7 +17,6 @@
     {% endif %}
 
     {% stylesheet 'css_print' %}
-    <script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
 
 {% set calling_page = page.url if page else "" %}
@@ -69,6 +68,7 @@
                         <li>
                             <form action="{{ url("set_language") }}" method="POST">
                                 {% csrf_token %}
+                                {# Ugly! #}
                                 {% if request.path.startswith("/" + LANGUAGE_CODE + "/") %}
                                     <input type="hidden" name="next" value="{{ request.path.replace("/" + LANGUAGE_CODE + "/", "/" + lang.0 + "/", 1) }}" />
                                 {% else %}
@@ -115,41 +115,10 @@
             <a class="btn-close" href="#closeform"><i class="fa fa-times-circle"></i></a>
             <div class="form-container">
                 <header>
-                    <a class="show-form" href="#showform">Надіслати інформацію</a>
+                    <a class="show-form" href="#showform">{{ _("Надіслати інформацію") }}</a>
                 </header>
                 <div class="form-content">
-                    <form class="form-horizontal">
-                        <fieldset>
-                            <div class="form-group row">
-                                <label class="col-md-4 control-label" for="textinput1">Якесь поле 1</label>  
-                                <div class="col-md-8">
-                                    <input id="textinput1" name="textinput1" type="text" placeholder="placeholder 1" class="form-control input-md" required="">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-4 control-label" for="textinput2">Якесь поле 2</label>  
-                                <div class="col-md-8">
-                                    <input id="textinput2" name="textinput2" type="text" placeholder="placeholder 2" class="form-control input-md" required="">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-4 control-label" for="textarea">Якийсь текст</label>
-                                <div class="col-md-8">                     
-                                    <textarea class="form-control" id="textarea" name="textarea"></textarea>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-8 col-md-offset-4">       
-                                    <div class="g-recaptcha" data-sitekey="6LcByxATAAAAAB_37J3BK1_bVedP3mKDNGyqdHbB"></div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-4 col-md-offset-4">
-                                    <button id="singlebutton" name="singlebutton" class="btn btn-danger">Надіслати</button>
-                                </div>
-                            </div>                            
-                        </fieldset>
-                    </form>
+                    {% include "_feedback_form.jinja" %}
                 </div>
             </div>
         </div>

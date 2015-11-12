@@ -8,8 +8,8 @@ from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 from django.utils import formats
 from django.core.urlresolvers import reverse
-# from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext_noop as _
+from django.utils.translation import ugettext_lazy
 
 import select2.fields
 import select2.models
@@ -787,3 +787,18 @@ class Ua2EnDictionary(models.Model):
     class Meta:
         verbose_name = "Переклад англійською"
         verbose_name_plural = "Переклади англійською"
+
+
+class FeedbackMessage(models.Model):
+    person = models.CharField(
+        ugettext_lazy("Про кого"), max_length=150, blank=True)
+    text = models.TextField(
+        ugettext_lazy("Інформація"), blank=False)
+    link = models.URLField(
+        ugettext_lazy("Підтвердження"), max_length=512, blank=True)
+    read = models.BooleanField(ugettext_lazy("Прочитано"), default=False)
+    added = models.DateTimeField("Був надісланий", auto_now=True)
+
+    class Meta:
+        verbose_name = "Зворотній зв'язок"
+        verbose_name_plural = "Зворотній зв'язок"

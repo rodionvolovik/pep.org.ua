@@ -134,4 +134,14 @@ $(function() {
             }
         }
     });
+
+    $("body").on("submit", ".ajax-form", function(e) {
+        e.preventDefault();
+        var form = $(this).closest("form");
+        form.find("button").attr("disabled", "disabled");
+
+        $.post(form.attr("action"), form.serialize(), function(data) {
+            form.parent().html(data);
+        });
+    });
 });

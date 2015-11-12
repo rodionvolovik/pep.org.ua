@@ -2,8 +2,8 @@ from __future__ import unicode_literals
 from operator import itemgetter
 
 from django.http import JsonResponse
-
-from django.shortcuts import get_object_or_404, redirect
+from django.utils import translation
+from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
 
 from elasticsearch_dsl.query import Q
@@ -14,7 +14,8 @@ from core.api import hybrid_response
 from core.pdf import pdf_response
 from core.utils import is_cyr
 from core.paginator import paginated_search
-from django.utils import translation
+from core.forms import FeedbackForm
+
 
 from core.elastic_models import (
     Person as ElasticPerson,
@@ -213,3 +214,19 @@ def person_details(request, person_id):
 
 def company_details(request, company_id):
     pass
+
+
+def send_feedback(request):
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            return render(request, "_thank_you.jinja")
+    else:
+        form = FeedbackForm()
+
+    return render(request, "_feedback_form.jinja", {
+        "feedback_form_override": form
+    })

@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 
@@ -39,6 +39,7 @@ urlpatterns = i18n_patterns(
 
 urlpatterns += [
     url(r'^i18n/', include('django.conf.urls.i18n')),
+    url(r'^_send_feedback', "core.views.send_feedback", name="send_feedback"),
     url(r'^sitemap.xml$', 'django.contrib.sitemaps.views.index',
         {'sitemaps': sitemaps}),
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-10 16:19+0200\n"
+"POT-Creation-Date: 2015-11-12 22:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,6 +29,18 @@ msgstr "Check"
 #: core/templates/person.jinja:48 core/templates/search.jinja:51
 msgid "Головна"
 msgstr "Main page"
+
+#: core/forms.py:18
+msgid "ПІБ"
+msgstr "Name of the person"
+
+#: core/forms.py:22
+msgid "Текст повідомлення"
+msgstr "Your message"
+
+#: core/forms.py:25
+msgid "http://"
+msgstr "http://"
 
 #: core/models.py:101
 msgid "Національний публічний діяч"
@@ -67,8 +79,6 @@ msgid "Низький"
 msgstr "Low"
 
 #: core/models.py:362 core/models.py:363
-#, fuzzy
-#| msgid "Головна"
 msgid "чоловік"
 msgstr "husband"
 
@@ -284,9 +294,37 @@ msgstr "Under sanctions"
 msgid "Зареєстрована"
 msgstr "Registered"
 
+#: core/models.py:794
+msgid "Про кого"
+msgstr "Of whom"
+
+#: core/models.py:796
+msgid "Інформація"
+msgstr "Information"
+
+#: core/models.py:798
+msgid "Підтвердження"
+msgstr "Confirmation"
+
+#: core/models.py:799
+msgid "Прочитано"
+msgstr "Read"
+
+#: core/templates/_feedback_form.jinja:37
+msgid "Надіслати"
+msgstr "Send"
+
+#: core/templates/_thank_you.jinja:1
+msgid "Дякуємо за надану інформацію"
+msgstr "Thank you for your message"
+
 #: core/templates/base.jinja:30
 msgid "Перемкнути :)"
 msgstr "Switch"
+
+#: core/templates/base.jinja:118
+msgid "Надіслати інформацію"
+msgstr "Send information"
 
 #: core/templates/macros/_connections.jinja:8
 msgid "Підтвердження зв'язку"
@@ -453,10 +491,10 @@ msgstr "Individuals"
 msgid "Пов'язані особи"
 msgstr "Close associates"
 
-#: pepdb/settings.py:157
+#: pepdb/settings.py:160
 msgid "Ukrainian"
 msgstr "Ukrainian"
 
-#: pepdb/settings.py:158
+#: pepdb/settings.py:161
 msgid "English"
 msgstr "English"
