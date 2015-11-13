@@ -203,11 +203,17 @@ def person_details(request, person_id):
         "person": person
     }
 
-    full_name = unicode(person)
+    full_name = "%s %s %s" % (
+        person.last_name_uk, person.first_name_uk, person.patronymic_uk)
+
     if is_cyr(full_name):
         context["filename"] = translit(full_name.lower().replace(" ", "_"))
     else:
         context["filename"] = person.pk
+
+    context["feedback_form_override"] = FeedbackForm(initial={
+        "person": unicode(person)
+    })
 
     return context
 
