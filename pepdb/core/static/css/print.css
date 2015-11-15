@@ -1,4 +1,4 @@
-#profile-nav, 
+#profile-nav,
 #navbar,
 #breadcrumbs,
 button.close,
@@ -14,47 +14,48 @@ button.close,
 }
 
 @page {
-  size: A4 portrait;
-  margin: 1cm 1cm 1cm 1.5cm;
+    size: A4 portrait;
+    margin: 1cm 1cm 1cm 1.5cm;
 }
 
+
 h1 {
-  /*page-break-before: always;*/
-  font-size: 36px;
-  border-bottom: black 2px solid;
+    /*page-break-before: always;*/
+    font-size: 36px;
+    border-bottom: black 2px solid;
 }
 
 h1.pep-name {
-  font-size: 42px;
+    font-size: 42px;
 }
 
 h1, h2, h3, h4, h5 {
-  page-break-after: avoid;
+    page-break-after: avoid;
 }
 
 table, figure {
-  page-break-inside: avoid;
+    page-break-inside: avoid;
 }
 
 td {
     padding: 10px 20px;
 }
 
-@page:right{
-  @bottom-right {
-    content: counter(page);
-  }
+@page :right {
+    @bottom-right {
+        content: counter(page);
+    }
 }
+
 
 body {
     font-family: Gotham, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 16px;
 }
 
-
 /* PROFILE PAGE */
 #profile .avatar {
-    float: left; 
+    float: left;
     margin-right: 20px;
     margin-bottom: 20px;
 }
@@ -76,7 +77,7 @@ body {
 #profile .box h3,
 #profile-suggest h3 {
     border: #C4C4C4 2px solid;
-    border-bottom: none;   
+    border-bottom: none;
     -moz-border-radius-topleft: 15px;
     -moz-border-radius-topright: 15px;
     border-top-left-radius: 15px;
@@ -88,8 +89,8 @@ body {
     display: inline-block;
     min-width: 200px;
     text-align: center;
-
 }
+
 #profile .tree .parent_li {
     list-style: none;
 }
@@ -125,8 +126,8 @@ body {
     font-weight: normal;
 }
 
-#profile  #profile-wiki p,
-#profile  #reputation p {
+#profile #profile-wiki p,
+#profile #reputation p {
     text-align: justify;
 }
 
@@ -153,23 +154,23 @@ body {
 
 #profile-suggest .printWrap,
 #assets .printWrap {
-    zoom:1;
+    zoom: 1;
     overflow-y: hidden;
     min-height: 100%;
-}  
+}
 
 #profile-suggest .printWrap:after,
 #assets .printWrap:after {
-    clear:both;
+    clear: both;
 }
 
 #profile-suggest,
 #profile #assets {
     font-size: 14px;
     width: 100%;
-    zoom:1;
+    zoom: 1;
     overflow-y: hidden;
-    min-height: 100%; 
+    min-height: 100%;
 }
 
 #profile #assets .panel,
@@ -225,7 +226,7 @@ body {
 #search-results h2 {
     border-bottom: black 2px solid;
     font-size: 36px;
-    margin-top:40px;
+    margin-top: 40px;
     margin-bottom: 20px;
 }
 
@@ -248,4 +249,7 @@ body {
     margin-bottom: 0;
     border-bottom: none;
 }
-    
+
+#send-form {
+    display: none;
+}
