@@ -9,6 +9,11 @@ $(function() {
         });
     }
     
+    function sendForm() {
+        $('#send-form .show-form').on('click', function() {$('#send-form').addClass("open");});
+        $('#send-form .btn-close').on('click', function() {$('#send-form').removeClass("open");});
+    }
+    
     equalheight = function(container){
         var currentTallest = 0,
              currentRowStart = 0,
@@ -45,8 +50,7 @@ $(function() {
     
     $('.tooltip-anchor').tooltip();
     
-    $('#send-form .show-form').on('click', function() {$('#send-form').addClass("open");});
-    $('#send-form .btn-close').on('click', function() {$('#send-form').removeClass("open");});
+    sendForm();
 
     $(window).resize(function() {
         square_height();
