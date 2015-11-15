@@ -238,8 +238,8 @@
     }
 
     #send-form {
-        height: 450px;
-        bottom: -450px;
+        height: 510px;
+        bottom: -510px;
     }
 
     #send-form .form-group {

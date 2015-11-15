@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-12 22:41+0200\n"
+"POT-Creation-Date: 2015-11-15 18:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,6 +42,10 @@ msgstr ""
 
 #: core/forms.py:25
 msgid "http://"
+msgstr ""
+
+#: core/forms.py:29
+msgid "Ваш імейл або телефон"
 msgstr ""
 
 #: core/models.py:101
@@ -308,7 +312,11 @@ msgstr ""
 msgid "Підтвердження"
 msgstr ""
 
-#: core/models.py:799
+#: core/models.py:800
+msgid "Контакти"
+msgstr ""
+
+#: core/models.py:801
 msgid "Прочитано"
 msgstr ""
 

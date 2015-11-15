@@ -796,6 +796,8 @@ class FeedbackMessage(models.Model):
         ugettext_lazy("Інформація"), blank=False)
     link = models.URLField(
         ugettext_lazy("Підтвердження"), max_length=512, blank=True)
+    contacts = models.TextField(
+        ugettext_lazy("Контакти"), max_length=512, blank=True)
     read = models.BooleanField(ugettext_lazy("Прочитано"), default=False)
     added = models.DateTimeField("Був надісланий", auto_now=True)
 
