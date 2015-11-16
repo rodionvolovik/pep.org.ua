@@ -984,3 +984,27 @@ ul.errorlist {
     padding: 0;
     font-size: 12px;
 }
+
+#declarations table {
+    border: none;
+}
+
+#declarations th {
+    vertical-align: middle;
+    border-top: 1px solid #ddd;
+}
+
+td.decl-year,
+td.decl-income,
+td.decl-familyincome {
+    white-space: nowrap;
+}
+
+#declarations .decl-download {
+    border-top: none;
+    border-bottom: none;
+    border-right: none;
+    background: none;
+    padding: 5px 15px;
+    text-align: center;
+}

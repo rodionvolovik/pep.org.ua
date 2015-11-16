@@ -138,6 +138,11 @@
     .g-recaptcha {
         margin-left: -50px;
     }
+
+    #declarations .table-responsive {
+        border: none;
+        border-left: 1px solid #ddd;
+    }
 }
 
 @media (min-width: 768px) {
