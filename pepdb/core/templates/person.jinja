@@ -75,6 +75,9 @@
                 {% if workplaces %}
                 <li><a href="#workbefore" class="btn btn-transp trans"><i class="fa fa-wrench"></i> {{ _("Кар'єра") }}</a></li>
                 {% endif %}
+                
+                {#<li><a href="#declarations" class="btn btn-transp trans"><i class="fa fa-file-text-o"></i> {{ _("Декларації") }}</a></li>#}
+                
                 {% if related_persons.all %}
                 <li><a href="#connections" class="btn btn-transp trans"><i class="fa fa-heart"></i> {{ _("З'вязки") }}</a></li>
                 {% endif %}
@@ -258,6 +261,50 @@
                 </div>
             </div>
             {% endif %}
+            
+            {#<div id="declarations" class="sub box">
+                <h3>{{ _("Данні з декларації про доходи:") }}</h3>
+                <div class="printWrap">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th class="decl-year">Рік</th>
+                                    <th class="decl-position">Посада</th>
+                                    <th class="decl-income">Доходи декларанта</th>
+                                    <th class="decl-familyincome">Доходи сім'ї</th>
+                                    <th class="decl-download"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="decl-year">2010</td>
+                                    <td class="decl-position"><span itemscope="" itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">Кабінет міністрів України</span></span>, Перший віце-прем'єр-міністр України - Міністр економічного розвитку і торгівлі України</td>
+                                    <td class="decl-income">100 000</td>
+                                    <td class="decl-familyincome"> 200 000</td>
+                                    <td class="decl-download print-hidden"><a href="link-to-declaration" title="Завантажити декларацію"><i class="fa fa-download"></i></a></td>
+                                </tr>
+                                <tr>
+                                    <td class="decl-year">2014</td>
+                                    <td class="decl-position"><span itemscope="" itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">Рада національної безпеки і оборони України</span></span>, Секретар</td>
+                                    <td class="decl-income"> 150 458.56</td>
+                                    <td class="decl-familyincome"> 300 000</td>
+                                    <td class="decl-download print-hidden"><a href="link-to-declaration" title="Завантажити декларацію"><i class="fa fa-download"></i></a></td>
+                                </tr>
+                                <tr>
+                                    <td class="decl-year">2014</td>
+                                    <td class="decl-position"><span itemscope="" itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">Кабінет міністрів України</span></span>, Перший віце-прем'єр-міністр України - Міністр економічного розвитку і торгівлі України</td>
+                                    <td class="decl-income">250 5000</td>
+                                    <td class="decl-familyincome">1 000 000</td>
+                                    <td class="decl-download print-hidden"><a href="link-to-declaration" title="Завантажити декларацію"><i class="fa fa-download"></i></a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            #}
+            
             {% if related_persons.all %}
             <div id="connections" class="sub box">
                 <h3>{{ _("Зв'язки:") }}</h3>
