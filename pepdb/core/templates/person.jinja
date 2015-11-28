@@ -68,7 +68,7 @@
                     <li><a href="#reputation" class="btn btn-transp trans"><i class="fa fa-bullhorn"></i>{{ _("Репутація") }}</a></li>
                     {% endif %}
                 {% else %}
-                    {% if person.reputation_sanctions_ua or person.reputation_crimes_ua or person.reputation_manhunt_ua or person.reputation_convictions_ua %}
+                    {% if person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk %}
                     <li><a href="#reputation" class="btn btn-transp trans"><i class="fa fa-bullhorn"></i>{{ _("Репутація") }}</a></li>
                     {% endif %}
                 {% endif %}
@@ -194,25 +194,25 @@
                 </div>
                 {% endif %}
             {% else %}
-                {% if person.reputation_sanctions_ua or person.reputation_crimes_ua or person.reputation_manhunt_ua or person.reputation_convictions_ua %}
+                {% if person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk %}
                 <div id="reputation" class="sub box">
                     <h3>{{ _("Репутація:") }}</h3>
                     <div class="printWrap">
-                        {% if person.reputation_sanctions_ua %}
+                        {% if person.reputation_sanctions_uk %}
                             <h4>{{ _("Санкції") }}</h4>
-                            {{ person.reputation_sanctions_ua|markdown }}
+                            {{ person.reputation_sanctions_uk|markdown }}
                         {% endif %}
-                        {% if person.reputation_crimes_ua %}
+                        {% if person.reputation_crimes_uk %}
                             <h4>{{ _("Кримінальні впровадження") }}</h4>
-                            {{ person.reputation_crimes_ua|markdown }}
+                            {{ person.reputation_crimes_uk|markdown }}
                         {% endif %}
-                        {% if person.reputation_manhunt_ua %}
+                        {% if person.reputation_manhunt_uk %}
                             <h4>{{ _("Перебування у розшуку") }}</h4>
-                            {{ person.reputation_manhunt_ua|markdown }}
+                            {{ person.reputation_manhunt_uk|markdown }}
                         {% endif %}
-                        {% if person.reputation_convictions_ua %}
+                        {% if person.reputation_convictions_uk %}
                             <h4>{{ _("Наявність судимості") }}</h4>
-                            {{ person.reputation_convictions_ua|markdown }}
+                            {{ person.reputation_convictions_uk|markdown }}
                         {% endif %}
                     </div>
                 </div>
@@ -338,7 +338,7 @@
                     </div>
                 {% endif %}
             {% else %}
-                {% if person.assets or person.reputation_assets_ua %}
+                {% if person.assets or person.reputation_assets_uk %}
                     <div id="assets" class="sub box">
                         <h3>{{ _("Статки:") }}</h3>
                         <div class="printWrap">
@@ -363,8 +363,8 @@
                                 
                                 {{ render_connection(asset, "modalAsset-{}".format(loop.index)) }}
                             {% endfor %}
-                            {% if person.reputation_assets_ua %}
-                                {{ person.reputation_assets_ua|markdown }}
+                            {% if person.reputation_assets_uk %}
+                                {{ person.reputation_assets_uk|markdown }}
                             {% endif %}
                         </div>
                     </div>

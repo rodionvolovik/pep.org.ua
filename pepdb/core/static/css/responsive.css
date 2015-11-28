@@ -134,7 +134,7 @@
     #send-form .form-group {
         margin-bottom: 5px;
     }
-    
+
     .g-recaptcha {
         margin-left: -50px;
     }
@@ -189,11 +189,11 @@
     #send-form .form-group {
         margin-bottom: 5px;
     }
-    
+
     #send-form .form-horizontal .control-label {
         text-align: left;
     }
-    
+
     .g-recaptcha {
         margin-left: -50px;
     }
@@ -250,14 +250,14 @@
     }
 
     #send-form {
-        height: 420px;
-        bottom: -420px;
+        height: 510px;
+        bottom: -510px;
     }
 
     #send-form .form-group {
         margin-bottom: 15px;
     }
-    
+
     .g-recaptcha {
         margin-left: -30px;
     }

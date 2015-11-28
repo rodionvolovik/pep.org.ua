@@ -19,16 +19,24 @@
                         {% if connection.date_cofirmed %}
                             <p><b>{{ _("Підтверджено: ") }}</b>{{ connection.date_confirmed }}</p>
                         {% endif %}
-                                      
+
                         {% if connection.proof_title or connection.proof %}
+                            {% set proofs = connection.proof.split(", ") %}
                             <p>
                                 <b>{{ _("Доказ зв'язку: ") }}</b>
-                                {% if connection.proof %}
-                                    <a href="{{ connection.proof }}" target="_blank">
-                                {% endif %}
-                                {{ connection.proof_title|default(_("Посилання"), true) }}
-                                {% if connection.proof %}
-                                    </a>
+                                {% if proofs|length <= 1 %}
+                                    {% if connection.proof %}
+                                        <a href="{{ connection.proof }}" target="_blank">
+                                    {% endif %}
+                                    {{ connection.proof_title|default(_("Посилання"), true) }}
+                                    {% if connection.proof %}
+                                        </a>
+                                    {% endif %}
+                                {% else %}
+                                    {% set comma = joiner(", ") %}
+                                    {% for proof in proofs -%}
+                                        {{ comma() }}<a href="{{ proof }}" target="_blank">{{ _("Посилання") }}</a>
+                                    {%- endfor %}
                                 {% endif %}
                             </p>
                         {% endif %}

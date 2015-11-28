@@ -10,7 +10,7 @@ from grappelli_modeltranslation.admin import (
 from core.models import (
     Country, Person, Company, Person2Person, Document, Person2Country,
     Person2Company, Company2Company, Company2Country, Ua2RuDictionary,
-    Ua2EnDictionary)
+    Ua2EnDictionary, FeedbackMessage)
 
 
 def make_published(modeladmin, request, queryset):
@@ -208,9 +208,43 @@ class DocumentAdmin(TranslationAdmin):
 
     list_display = ("name", "link", "uploader", "uploaded")
 
+
+class FeedbackAdmin(admin.ModelAdmin):
+    def link_expanded(self, obj):
+        return (u'<a href="{0}" target="_blank">Лінк</a>'.format(obj.link)
+                if obj.link else "")
+
+    link_expanded.allow_tags = True
+    link_expanded.short_description = 'Джерело'
+
+    def text_expanded(self, obj):
+        return (u'<strong><sup>*</sup> {0}</strong>'.format(obj.text)
+                if not obj.read else
+                u'<span style="font-weight:normal">{0}</span>'.format(
+                    obj.text))
+
+    text_expanded.allow_tags = True
+    text_expanded.short_description = 'Інформація'
+
+    list_display = ("text_expanded", "person", "link_expanded", "added",
+                    "contacts")
+
+    def get_queryset(self, request):
+        qs = super(FeedbackAdmin, self).get_queryset(request)
+        return qs.order_by("-pk")
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        FeedbackMessage.objects.filter(pk=object_id).update(read=True)
+
+        return super(FeedbackAdmin, self).change_view(
+            request, object_id, form_url, extra_context=extra_context)
+
+
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(Country, CountryAdmin)
 admin.site.register(Document, DocumentAdmin)
 admin.site.register(Ua2RuDictionary, Ua2RuDictionaryAdmin)
 admin.site.register(Ua2EnDictionary, Ua2EnDictionaryAdmin)
+admin.site.register(FeedbackMessage, FeedbackAdmin)

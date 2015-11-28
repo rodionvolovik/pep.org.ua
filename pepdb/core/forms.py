@@ -11,7 +11,7 @@ class FeedbackForm(ModelForm):
 
     class Meta:
         model = FeedbackMessage
-        fields = ['person', 'text', 'link']
+        fields = ['person', 'text', 'link', 'contacts']
 
         widgets = {
             'person': TextInput(attrs={"class": "form-control input-md",
@@ -23,4 +23,8 @@ class FeedbackForm(ModelForm):
 
             'link': TextInput(attrs={"class": "form-control input-md",
                                      "placeholder": _("http://")}),
+
+            'contacts': TextInput(
+                attrs={"class": "form-control input-md",
+                       "placeholder": _("Ваш імейл або телефон")}),
         }
