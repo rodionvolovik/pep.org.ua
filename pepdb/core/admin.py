@@ -1,8 +1,11 @@
 # coding: utf-8
+from __future__ import unicode_literals
 import json
 from django import forms
 from django.contrib import admin
+from django.db.models import Q
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 
 from grappelli_modeltranslation.admin import (
     TranslationAdmin, TranslationTabularInline)
@@ -187,12 +190,40 @@ class CompanyAdmin(TranslationAdmin):
     actions = [make_published, make_unpublished]
 
 
+class EmptyValueFilter(admin.SimpleListFilter):
+    title = _('Наявність перекладу')
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'translation'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('no', _('Немає')),
+            ('yes', _('Є'))
+        )
+
+    def queryset(self, request, queryset):
+        # to decide how to filter the queryset.
+        if self.value() == 'yes':
+            return queryset.exclude(
+                Q(translation="") | Q(translation__isnull=True))
+        if self.value() == 'no':
+            return queryset.filter(
+                Q(translation="") | Q(translation__isnull=True))
+
+
 class Ua2RuDictionaryAdmin(admin.ModelAdmin):
     list_display = ("term", "translation", "alt_translation", "comments")
+    list_editable = ("translation", "alt_translation", "comments")
+
+    list_filter = (EmptyValueFilter,)
 
 
 class Ua2EnDictionaryAdmin(admin.ModelAdmin):
     list_display = ("term", "translation", "alt_translation", "comments")
+    list_editable = ("translation", "alt_translation", "comments")
+
+    list_filter = (EmptyValueFilter,)
 
 
 class CountryAdmin(TranslationAdmin):

@@ -763,13 +763,14 @@ class Document(models.Model):
 
 class Ua2RuDictionary(models.Model):
     term = models.CharField("Термін", max_length=255)
-    translation = models.CharField("Переклад російською", max_length=255)
+    translation = models.CharField(
+        "Переклад російською", max_length=255, blank=True)
     alt_translation = models.CharField(
         "Альтернативний переклад", max_length=255, blank=True)
     comments = models.CharField("Коментарі", blank=True, max_length=100)
 
     def __unicode__(self):
-        return self.name
+        return self.term
 
     class Meta:
         verbose_name = "Переклад російською"
@@ -778,13 +779,14 @@ class Ua2RuDictionary(models.Model):
 
 class Ua2EnDictionary(models.Model):
     term = models.CharField("Термін", max_length=512)
-    translation = models.CharField("Переклад англійською", max_length=512)
+    translation = models.CharField(
+        "Переклад англійською", max_length=512, blank=True)
     alt_translation = models.CharField(
         "Альтернативний переклад", max_length=512, blank=True)
     comments = models.CharField("Коментарі", blank=True, max_length=100)
 
     def __unicode__(self):
-        return self.name
+        return self.term
 
     class Meta:
         verbose_name = "Переклад англійською"
