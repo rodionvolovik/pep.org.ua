@@ -9,7 +9,8 @@ button.close,
 .tree > ul > li > span,
 .pagination,
 #footer p,
-#profile .profileActions {
+#profile .profileActions,
+.print-hidden {
     display: none !important;
 }
 
@@ -183,6 +184,15 @@ body {
 
 #profile #assets .panel .panel-footer {
     font-size: 13px;
+}
+
+#declarations .table-bordered th,
+#declarations .table-bordered td {
+    border: 1px solid #ddd;
+}
+
+#declarations .decl-download {
+    border: none !important;
 }
 
 .tree > ul > li {

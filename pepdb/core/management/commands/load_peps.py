@@ -12,11 +12,28 @@ from translitua import translitua
 from core.utils import (
     expand_gdrive_download_url, download, parse_date,
     get_spreadsheet, parse_fullname)
-from core.models import Company, Person, Person2Company, Document
+from core.models import (
+    Ua2RuDictionary, Company, Person, Person2Company, Document,
+    Ua2EnDictionary)
 
 
 class Command(BaseCommand):
     help = ('Loads the GoogleDocs table of PEPs to db')
+
+    def load_dicts(self):
+        self.en_translations = {}
+
+        for t in Ua2EnDictionary.objects.all():
+            self.en_translations[t.term.lower()] = filter(None, [
+                t.translation, t.alt_translation
+            ])
+
+        self.ru_translations = {}
+
+        for t in Ua2RuDictionary.objects.all():
+            self.ru_translations[t.term.lower()] = filter(None, [
+                t.translation, t.alt_translation
+            ])
 
     def process_company(self, company_id, company_ipn, company_name):
         if not company_ipn and not company_name:
@@ -30,7 +47,7 @@ class Command(BaseCommand):
         company = None
 
         for k, v in [("pk", company_id), ("edrpou", company_ipn),
-                     ("name", company_name)]:
+                     ("name_uk", company_name)]:
             try:
                 if v:
                     company = Company.objects.get(**{k: v})
@@ -42,8 +59,14 @@ class Command(BaseCommand):
             company = Company(state_company=True)
 
         # Set missing params
-        if not company.name:
-            company.name = company_name
+        if not company.name_uk:
+            company.name_uk = company_name
+
+        # if not company.name_en:
+        #     company.name_en = (
+        #         self.en_translations.get(
+        #             company.name.lower(),
+        #             [company.name_uk]) or [company.name_uk])[0]
 
         if not company.edrpou:
             company.edrpou = company_ipn
@@ -52,11 +75,14 @@ class Command(BaseCommand):
         return company
 
     def handle(self, *args, **options):
+        self.load_dicts()
+
         peklun = User.objects.get(username="peklun")
 
         wks = get_spreadsheet().sheet1
 
         for i, l in enumerate(wks.get_all_records()):
+            # reopen it time from time to avoid disconnect by timeout
             if i % 2000 == 0 and i:
                 wks = get_spreadsheet().sheet1
 
@@ -89,7 +115,7 @@ class Command(BaseCommand):
             person_to = parse_date(l.get("Дата звільнення", ""))
 
             doc_received = parse_date(l.get("Дата відповіді", ""))
-            doc = l.get("Лінк на відповідь", "").strip()
+            docs = l.get("Лінк на відповідь", "").strip()
             website = l.get("лінк на сайт", "").strip()
 
             # Now let's search for the person
@@ -154,30 +180,42 @@ class Command(BaseCommand):
                     person_id = person.pk
                     wks.update_cell(i + 2, len(l.keys()) - 1, person.pk)
 
-                doc_instance = None
-                if doc and "folderview" not in doc \
-                        and "drive/#folders" not in doc:
-                    doc = expand_gdrive_download_url(doc)
-                    doc_hash = sha1(doc).hexdigest()
+                docs_downloaded = []
+                first_doc_name = False
+                for doc in docs.split(", "):
+                    doc_instance = None
 
-                    try:
-                        doc_instance = Document.objects.get(hash=doc_hash)
-                    except Document.DoesNotExist:
-                        self.stdout.write(
-                            'Downloading file {}'.format(doc))
-                        doc_name, doc_san_name, doc_content = download(doc)
-                        doc_san_name = translitua(doc_san_name)
+                    # we cannot download folders from google docs, so let's
+                    # skip them
 
-                        if doc_name:
-                            doc_instance = Document(
-                                name_uk=doc_name,
-                                uploader=peklun,
-                                hash=doc_hash
-                            )
+                    # TODO: process multiple links
+                    if doc and "folderview" not in doc \
+                            and "drive/#folders" not in doc:
+                        doc = expand_gdrive_download_url(doc)
+                        doc_hash = sha1(doc).hexdigest()
 
-                            doc_instance.doc.save(
-                                doc_san_name, ContentFile(doc_content))
-                            doc_instance.save()
+                        try:
+                            doc_instance = Document.objects.get(hash=doc_hash)
+                        except Document.DoesNotExist:
+                            self.stdout.write(
+                                'Downloading file {}'.format(doc))
+                            doc_name, doc_san_name, doc_content = download(doc)
+                            doc_san_name = translitua(doc_san_name)
+
+                            if doc_name:
+                                doc_instance = Document(
+                                    name_uk=doc_name,
+                                    uploader=peklun,
+                                    hash=doc_hash
+                                )
+
+                                doc_instance.doc.save(
+                                    doc_san_name, ContentFile(doc_content))
+                                doc_instance.save()
+
+                        first_doc_name = doc_instance.name_uk
+
+                        docs_downloaded.append(doc_instance.doc.url)
 
                 links = Person2Company.objects.filter(
                     (Q(date_established=person_from) |
@@ -202,14 +240,15 @@ class Command(BaseCommand):
                 if not link.relationship_type:
                     link.relationship_type = position
 
-                if doc_instance is not None:
-                    link.proof_title = doc_instance.name
-                    link.proof = doc_instance.doc.url
+                all_docs = docs_downloaded + website.split(", ")
+
+                if all_docs:
+                    link.proof = ", ".join(all_docs)
+
+                    if first_doc_name:
+                        link.proof_title = first_doc_name
 
                 link.date_confirmed = doc_received
                 link.is_employee = True
-
-                if not doc and website:
-                    link.proof = website
 
                 link.save()

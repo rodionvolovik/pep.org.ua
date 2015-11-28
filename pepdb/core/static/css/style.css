@@ -907,6 +907,10 @@ h1 {
     box-shadow: 0px 0px 13px 0px rgba(0, 0, 0, 0.9);
 }
 
+#send-form.open.filled {
+    bottom: -300px;
+}
+
 #send-form header a {
     padding-top: 3px;
     height: 30px;
@@ -923,6 +927,7 @@ h1 {
     left: -35px;
     font-size: 26px;
     position: absolute;
+    color: #ff5a5f;
 }
 
 #send-form.open .btn-close {
@@ -936,13 +941,20 @@ h1 {
     height: 100%;
 }
 
-.form-content form {
+.form-content .form {
     background: white;
-    opacity: 0;
     padding: 10px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
+}
+
+.form-content .form h3 {
+    text-align: center;
+}
+
+.form-content form {
+    opacity: 0;
 }
 
 #send-form textarea {
@@ -959,7 +971,6 @@ h1 {
 
 .g-recaptcha {
     transform: scale(0.75);
-    margin-left: -30px;
 }
 
 ul.errorlist {
@@ -979,4 +990,28 @@ ul.errorlist {
     color: #d9534f;
     font-weight: bold;
     padding-right: 5px;
+}
+
+#declarations table {
+    border: none;
+}
+
+#declarations th {
+    vertical-align: middle;
+    border-top: 1px solid #ddd;
+}
+
+td.decl-year,
+td.decl-income,
+td.decl-familyincome {
+    white-space: nowrap;
+}
+
+#declarations .decl-download {
+    border-top: none;
+    border-bottom: none;
+    border-right: none;
+    background: none;
+    padding: 5px 15px;
+    text-align: center;
 }

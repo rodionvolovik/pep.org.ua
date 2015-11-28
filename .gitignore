@@ -60,3 +60,4 @@ pepdb/core/dicts/peps.csv
 pepdb/core/dicts/new_peps.csv
 media
 *.db
+_venv/*

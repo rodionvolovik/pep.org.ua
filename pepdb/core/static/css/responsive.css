@@ -121,8 +121,8 @@
     }
 
     #send-form {
-        height: 420px;
-        bottom: -420px;
+        height: 470px;
+        bottom: -470px;
         max-width: 100%;
     }
 
@@ -133,6 +133,15 @@
 
     #send-form .form-group {
         margin-bottom: 5px;
+    }
+
+    .g-recaptcha {
+        margin-left: -50px;
+    }
+
+    #declarations .table-responsive {
+        border: none;
+        border-left: 1px solid #ddd;
     }
 }
 
@@ -178,12 +187,20 @@
     }
 
     #send-form {
-        height: 420px;
-        bottom: -420px;
+        height: 490px;
+        bottom: -490px;
     }
 
     #send-form .form-group {
         margin-bottom: 5px;
+    }
+
+    #send-form .form-horizontal .control-label {
+        text-align: left;
+    }
+
+    .g-recaptcha {
+        margin-left: -50px;
     }
 }
 
@@ -244,6 +261,10 @@
 
     #send-form .form-group {
         margin-bottom: 15px;
+    }
+
+    .g-recaptcha {
+        margin-left: -30px;
     }
 }
 

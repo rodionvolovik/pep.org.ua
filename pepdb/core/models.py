@@ -203,7 +203,8 @@ class Person(models.Model):
             relationship_type_uk__in=["Засновник/учасник",
                                       "Колишній засновник/учасник",
                                       "Бенефіціарний власник",
-                                      "Номінальний власник", ])
+                                      "Номінальний власник",
+                                      "Контролер", ])
 
     @property
     def all_related_persons(self):
@@ -479,7 +480,8 @@ class Person2Company(AbstractRelationship):
         "Номінальний директор",
         "Фінансові зв'язки",
         "Секретар",
-        "Керуючий"
+        "Керуючий",
+        "Контролер",
     ]
 
     from_person = models.ForeignKey("Person")
