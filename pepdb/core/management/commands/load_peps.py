@@ -243,7 +243,7 @@ class Command(BaseCommand):
                 all_docs = docs_downloaded + website.split(", ")
 
                 if all_docs:
-                    link.proof = ", ".join(all_docs)
+                    link.proof = ", ".join(filter(None, all_docs))
 
                     if first_doc_name:
                         link.proof_title = first_doc_name
