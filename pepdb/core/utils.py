@@ -27,8 +27,12 @@ def expand_gdrive_download_url(url):
     m = re.search(r"file\/d\/([^\/]+)\/", url)
     if m:
         return "https://docs.google.com/uc?export=download&id=%s" % m.group(1)
-    else:
-        return url
+
+    m = re.search(r"open\?id=([^&]+)", url)
+    if m:
+        return "https://docs.google.com/uc?export=download&id=%s" % m.group(1)
+
+    return url
 
 
 def download(url):
