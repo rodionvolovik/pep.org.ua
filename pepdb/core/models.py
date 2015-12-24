@@ -518,6 +518,19 @@ class Person2Company(AbstractRelationship):
                                   self.from_person.last_name)
         }
 
+    def save(self, *args, **kwargs):
+        if not self.relationship_type_en:
+            t = Ua2EnDictionary.objects.filter(
+                term__iexact=self.relationship_type_uk).first()
+
+            if t and t.translation:
+                print("Hooray, translation %s found for %s" % (
+                    t.translation, t.term))
+
+                self.relationship_type_en = t.translation
+
+        super(Person2Company, self).save(*args, **kwargs)
+
     class Meta:
         verbose_name = "Зв'язок з компанією/установою"
         verbose_name_plural = "Зв'язки з компаніями/установами"
@@ -602,6 +615,19 @@ class Company(models.Model):
         d["_id"] = d["id"]
 
         return d
+
+    def save(self, *args, **kwargs):
+        if not self.name_en:
+            t = Ua2EnDictionary.objects.filter(
+                term__iexact=self.name_uk).first()
+
+            if t and t.translation:
+                print("Hooray, translation %s found for %s" % (
+                    t.translation, t.term))
+
+                self.name_en = t.translation
+
+        super(Company, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Юрідична особа"

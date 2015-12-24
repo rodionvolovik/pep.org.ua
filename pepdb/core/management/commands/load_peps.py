@@ -20,21 +20,6 @@ from core.models import (
 class Command(BaseCommand):
     help = ('Loads the GoogleDocs table of PEPs to db')
 
-    def load_dicts(self):
-        self.en_translations = {}
-
-        for t in Ua2EnDictionary.objects.all():
-            self.en_translations[t.term.lower()] = filter(None, [
-                t.translation, t.alt_translation
-            ])
-
-        self.ru_translations = {}
-
-        for t in Ua2RuDictionary.objects.all():
-            self.ru_translations[t.term.lower()] = filter(None, [
-                t.translation, t.alt_translation
-            ])
-
     def process_company(self, company_id, company_ipn, company_name):
         if not company_ipn and not company_name:
             return None
@@ -64,12 +49,6 @@ class Command(BaseCommand):
 
         Ua2EnDictionary.objects.get_or_create(term=company_name)
 
-        # if not company.name_en:
-        #     company.name_en = (
-        #         self.en_translations.get(
-        #             company.name.lower(),
-        #             [company.name_uk]) or [company.name_uk])[0]
-
         if not company.edrpou:
             company.edrpou = company_ipn
 
@@ -77,8 +56,6 @@ class Command(BaseCommand):
         return company
 
     def handle(self, *args, **options):
-        self.load_dicts()
-
         peklun = User.objects.get(username="peklun")
 
         wks = get_spreadsheet().sheet1
