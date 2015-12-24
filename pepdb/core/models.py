@@ -762,7 +762,7 @@ class Document(models.Model):
 
 
 class Ua2RuDictionary(models.Model):
-    term = models.CharField("Термін", max_length=255)
+    term = models.CharField("Термін", max_length=255, unique=True)
     translation = models.CharField(
         "Переклад російською", max_length=255, blank=True)
     alt_translation = models.CharField(
@@ -778,7 +778,7 @@ class Ua2RuDictionary(models.Model):
 
 
 class Ua2EnDictionary(models.Model):
-    term = models.CharField("Термін", max_length=512)
+    term = models.CharField("Термін", max_length=512, unique=True)
     translation = models.CharField(
         "Переклад англійською", max_length=512, blank=True)
     alt_translation = models.CharField(

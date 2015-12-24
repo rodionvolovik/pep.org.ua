@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'django_jinja.contrib._humanize',
     'django_jinja.contrib._easy_thumbnails',
 
+    'easy_thumbnails',
     'compressor',
     'taggit',
     'modelcluster',

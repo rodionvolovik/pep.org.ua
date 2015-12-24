@@ -62,6 +62,8 @@ class Command(BaseCommand):
         if not company.name_uk:
             company.name_uk = company_name
 
+        Ua2EnDictionary.objects.get_or_create(term=company_name)
+
         # if not company.name_en:
         #     company.name_en = (
         #         self.en_translations.get(
@@ -156,6 +158,10 @@ class Command(BaseCommand):
                 person.last_name_uk = last_name
                 person.patronymic_uk = patronymic
 
+                Ua2RuDictionary.objects.get_or_create(term=first_name)
+                Ua2RuDictionary.objects.get_or_create(term=last_name)
+                Ua2RuDictionary.objects.get_or_create(term=patronymic)
+
                 person.first_name_en = translitua(first_name)
                 person.last_name_en = translitua(last_name)
                 person.patronymic_en = translitua(patronymic)
@@ -239,6 +245,8 @@ class Command(BaseCommand):
 
                 if not link.relationship_type:
                     link.relationship_type = position
+
+                Ua2EnDictionary.objects.get_or_create(term=position)
 
                 all_docs = docs_downloaded + website.split(", ")
 
