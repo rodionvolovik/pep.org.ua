@@ -11,12 +11,14 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_noop as _
 from django.utils.translation import ugettext_lazy
 
+from jsonfield import JSONField
 import select2.fields
 import select2.models
 from django_markdown.models import MarkdownField
 from django.utils import translation
 
-from core.utils import parse_fullname
+
+from core.utils import parse_fullname, parse_family_member, RELATIONS_MAPPING
 
 
 # to_*_dict methods are used to convert two main entities that we have, Person
@@ -161,8 +163,8 @@ class Person(models.Model):
         qs = self._last_workplace()
         if qs:
             l = qs[0]
-            return [l.to_company.short_name or l.to_company.name,
-                    l.relationship_type]
+            return [l.to_company.short_name_uk or l.to_company.name_uk,
+                    l.relationship_type_uk]
 
         return ""
 
@@ -361,6 +363,9 @@ class AbstractRelationship(models.Model):
 class Person2Person(AbstractRelationship):
     _relationships_explained = {
         _("чоловік"): [_("дружина")],
+        _("чоловік/дружина"): [_("чоловік/дружина")],
+        _("батько/мати"): [_("батько/мати")],
+        _("син/дочка"): [_("син/дочка")],
         _("дружина"): [_("чоловік")],
         _("батько"): [_("син"), _("дочка")],
         _("мати"): [_("син"), _("дочка")],
@@ -524,9 +529,6 @@ class Person2Company(AbstractRelationship):
                 term__iexact=self.relationship_type_uk).first()
 
             if t and t.translation:
-                print("Hooray, translation %s found for %s" % (
-                    t.translation, t.term))
-
                 self.relationship_type_en = t.translation
 
         super(Person2Company, self).save(*args, **kwargs)
@@ -622,9 +624,6 @@ class Company(models.Model):
                 term__iexact=self.name_uk).first()
 
             if t and t.translation:
-                print("Hooray, translation %s found for %s" % (
-                    t.translation, t.term))
-
                 self.name_en = t.translation
 
         super(Company, self).save(*args, **kwargs)
@@ -834,3 +833,69 @@ class FeedbackMessage(models.Model):
     class Meta:
         verbose_name = "Зворотній зв'язок"
         verbose_name_plural = "Зворотній зв'язок"
+
+
+class Declaration(models.Model):
+    STATUS_CHOICES = (
+        ('p', 'Не перевірено'),
+        ('r', 'Не підходить'),
+        ('a', 'Опубліковано'),
+    )
+
+    declaration_id = models.CharField(
+        "Ідентифікатор", max_length=50, db_index=True)
+
+    last_name = models.CharField("Прізвище", max_length=40)
+    first_name = models.CharField("Ім'я", max_length=40)
+    patronymic = models.CharField("По-батькові", max_length=40, blank=True)
+    position = models.CharField("Посада", max_length=512, blank=True)
+    office = models.CharField("Відомство", max_length=512, blank=True)
+    region = models.CharField("Регіон", max_length=50, blank=True)
+    year = models.CharField("Рік", max_length=4, blank=True)
+    source = JSONField()
+    url = models.URLField("Посилання", max_length=512, blank=True)
+    confirmed = models.CharField(
+        "Підтверджено", max_length=1, choices=STATUS_CHOICES, default="p")
+    fuzziness = models.IntegerField("Відстань", default=0)
+    person = models.ForeignKey("Person", default=None)
+
+    @property
+    def family(self):
+        res = []
+        if ("family" in self.source["general"] and
+                self.source["general"]["family"]):
+
+            res = [
+                {
+                    "relation":
+                        member.get(
+                            "relations",
+                            member.get("relations_other", "")),
+
+                    "name": member.get("family_name", "")
+                } for member in self.source["general"]["family"]
+                if (
+                    member.get("family_name", "") and
+                    (member["relations"] + member.get("relations_other", ""))
+                )
+            ]
+        elif ("family_raw" in self.source["general"] and
+                self.source["general"]["family_raw"]):
+            res = map(
+                parse_family_member,
+                filter(None, self.source["general"]["family_raw"].split(";")))
+
+        res = filter(None, res)
+
+        for i, r in enumerate(res):
+            res[i]["mapped"] = RELATIONS_MAPPING.get(
+                r["relation"].lower(), "особи, які спільно проживають")
+
+            res[i]["last_name"], res[i]["first_name"], res[i]["patronymic"] = \
+                parse_fullname(r["name"])
+
+        return res
+
+    class Meta:
+        verbose_name = "Декларація"
+        verbose_name_plural = "Декларації"

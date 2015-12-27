@@ -273,6 +273,8 @@ RECAPTCHA_PRIVATE_KEY = ""
 NOCAPTCHA = True
 RECAPTCHA_USE_SSL = True
 
+DECLARATIONS_ENDPOINT = "http://declarations.com.ua/fuzzy_search"
+
 try:
     from local_settings import *
 except ImportError:

@@ -16,7 +16,6 @@ translitua==1.2.1
 rfc6266==0.0.4
 django-markdown==0.8.4
 django-pipeline==1.5.0
-easy-thumbnails==2.2
 wagtail==1.1
 elasticsearch-dsl==0.0.4
 oauth2client==1.4.12
@@ -26,3 +25,4 @@ WeasyPrint==0.24
 django-qartez==0.6
 django-recaptcha==1.0.4
 easy-thumbnails==2.3
+jsonfield==1.0.3

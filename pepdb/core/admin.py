@@ -5,6 +5,7 @@ from django import forms
 from django.contrib import admin
 from django.db.models import Q
 from django.conf import settings
+from django.shortcuts import redirect, render
 from django.utils.translation import ugettext_lazy as _
 
 from grappelli_modeltranslation.admin import (
@@ -13,7 +14,7 @@ from grappelli_modeltranslation.admin import (
 from core.models import (
     Country, Person, Company, Person2Person, Document, Person2Country,
     Person2Company, Company2Company, Company2Country, Ua2RuDictionary,
-    Ua2EnDictionary, FeedbackMessage)
+    Ua2EnDictionary, FeedbackMessage, Declaration)
 
 
 def make_published(modeladmin, request, queryset):
@@ -213,15 +214,15 @@ class EmptyValueFilter(admin.SimpleListFilter):
 
 
 class Ua2RuDictionaryAdmin(admin.ModelAdmin):
-    list_display = ("term", "translation", "alt_translation", "comments")
-    list_editable = ("translation", "alt_translation", "comments")
+    list_display = ("term", "translation", "alt_translation")
+    list_editable = ("translation", "alt_translation")
 
     list_filter = (EmptyValueFilter,)
 
 
 class Ua2EnDictionaryAdmin(admin.ModelAdmin):
-    list_display = ("term", "translation", "alt_translation", "comments")
-    list_editable = ("translation", "alt_translation", "comments")
+    list_display = ("term", "translation")
+    list_editable = ("translation",)
 
     list_filter = (EmptyValueFilter,)
 
@@ -272,6 +273,69 @@ class FeedbackAdmin(admin.ModelAdmin):
             request, object_id, form_url, extra_context=extra_context)
 
 
+def populate_relatives(modeladmin, request, queryset):
+    return render(request, "admin/relatives.html", {
+        "qs": queryset,
+        "relations": Person2Person._relationships_explained.keys()
+    })
+
+populate_relatives.short_description = "Створити родичів"
+
+
+class DeclarationAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        return False
+
+    def fullname_decl(self, obj):
+        return ("%s %s %s" % (obj.first_name, obj.patronymic,
+                              obj.last_name)).replace("  ", " ").strip()
+
+    fullname_decl.short_description = 'ПІБ з декларації'
+
+    def fullname_pep(self, obj):
+        return ("%s %s %s" % (
+            obj.person.first_name_uk, obj.person.patronymic_uk,
+            obj.person.last_name_uk)).replace("  ", " ").strip()
+    fullname_pep.short_description = 'ПІБ з БД PEP'
+
+    def position_decl(self, obj):
+        return ("%s @ %s" % (obj.position, obj.office))
+    position_decl.short_description = 'Посада з декларації'
+
+    def position_pep(self, obj):
+        return "%s @ %s" % (obj.person.last_workplace[1],
+                            obj.person.last_workplace[0])
+    position_pep.short_description = 'Посада з БД PEP'
+
+    def family_table(self, obj):
+        family = obj.family
+        if family:
+            return "".join(
+                ["<table>"] +
+                [("<tr><td>{name}</td><td>{relation}</td>" +
+                  "<td>{mapped}</td</tr>").format(**x)
+                 for x in family if x] +
+                ["</table>"])
+        else:
+            return ""
+
+        return "%s @ %s" % (obj.person.last_workplace[1],
+                            obj.person.last_workplace[0])
+    family_table.short_description = 'Родина'
+    family_table.allow_tags = True
+
+    list_select_related = ("person", )
+
+    list_display = (
+        "fullname_decl", "fullname_pep", "position_decl", "position_pep",
+        "region", "year", "family_table", "confirmed", "fuzziness")
+
+    list_editable = ("confirmed",)
+    list_filter = ("confirmed", )
+
+    actions = [populate_relatives]
+
+
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(Country, CountryAdmin)
@@ -279,3 +343,4 @@ admin.site.register(Document, DocumentAdmin)
 admin.site.register(Ua2RuDictionary, Ua2RuDictionaryAdmin)
 admin.site.register(Ua2EnDictionary, Ua2EnDictionaryAdmin)
 admin.site.register(FeedbackMessage, FeedbackAdmin)
+admin.site.register(Declaration, DeclarationAdmin)
