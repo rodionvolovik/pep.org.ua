@@ -287,10 +287,12 @@ class DeclarationAdmin(admin.ModelAdmin):
         return False
 
     def fullname_decl(self, obj):
-        return ("%s %s %s" % (obj.first_name, obj.patronymic,
-                              obj.last_name)).replace("  ", " ").strip()
+        return ('<a href="%s" target="_blank">%s %s %s</a>' % (
+            obj.url, obj.first_name, obj.patronymic, obj.last_name)).replace(
+            "  ", " ").strip()
 
     fullname_decl.short_description = 'ПІБ з декларації'
+    fullname_decl.allow_tags = True
 
     def fullname_pep(self, obj):
         return ("%s %s %s" % (
@@ -327,7 +329,7 @@ class DeclarationAdmin(admin.ModelAdmin):
     list_select_related = ("person", )
 
     list_display = (
-        "fullname_decl", "fullname_pep", "position_decl", "position_pep",
+        "fullname_pep", "fullname_decl", "position_pep", "position_decl", 
         "region", "year", "family_table", "confirmed", "fuzziness")
 
     list_editable = ("confirmed",)
