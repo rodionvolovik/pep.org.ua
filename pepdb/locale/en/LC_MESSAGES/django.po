@@ -503,7 +503,7 @@ msgstr "till"
 
 #: core/templates/person.jinja:267
 msgid "Дані з декларації про доходи:"
-msgstr "Declaration of assets, income, expenses and financial obligations:"
+msgstr "Income declaration:"
 
 #: core/templates/person.jinja:273
 msgid "Рік"
@@ -515,7 +515,7 @@ msgstr "Position"
 
 #: core/templates/person.jinja:275
 msgid "Доходи декларанта"
-msgstr "Declarant income"
+msgstr "Declarant's income"
 
 #: core/templates/person.jinja:276
 msgid "Доходи сім'ї"
