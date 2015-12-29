@@ -9,13 +9,12 @@ from django.core.urlresolvers import reverse
 from elasticsearch_dsl.query import Q
 from translitua import translit
 
-from core.models import Person
+from core.models import Person, Declaration
 from core.api import hybrid_response
 from core.pdf import pdf_response
 from core.utils import is_cyr
 from core.paginator import paginated_search
 from core.forms import FeedbackForm
-
 
 from core.elastic_models import (
     Person as ElasticPerson,
@@ -200,7 +199,9 @@ def _search_related(request):
 def person_details(request, person_id):
     person = get_object_or_404(Person, pk=person_id)
     context = {
-        "person": person
+        "person": person,
+        "declarations": Declaration.objects.filter(
+            person=person, confirmed="a").order_by("year")
     }
 
     full_name = "%s %s %s" % (

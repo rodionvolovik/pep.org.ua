@@ -693,6 +693,10 @@ h1 {
     font-size: 16px;
 }
 
+#side-profilemenu {
+    max-width: 165px;
+}
+
 #side-profilemenu.affix {
     top: 50px;
 }

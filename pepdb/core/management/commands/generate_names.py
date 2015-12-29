@@ -64,4 +64,5 @@ class Command(BaseCommand):
                         result.add(translit(n, ru_table))
 
             person.names = "\n".join(result | set(translated))
+
             person.save()

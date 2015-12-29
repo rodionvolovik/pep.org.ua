@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_noop as _
 from django.utils.translation import ugettext_lazy
 
+from translitua import translitua
 from jsonfield import JSONField
 import select2.fields
 import select2.models
@@ -327,6 +328,18 @@ class Person(models.Model):
         url = self.get_absolute_url()
         translation.deactivate()
         return url
+
+    def save(self, *args, **kwargs):
+        if not self.first_name_en:
+            self.first_name_en = translitua(self.first_name_uk)
+
+        if not self.last_name_en:
+            self.last_name_en = translitua(self.last_name_uk)
+
+        if not self.patronymic_en:
+            self.patronymic_en = translitua(self.patronymic_uk)
+
+        super(Person, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Фізична особа"
@@ -700,6 +713,7 @@ class Person2Country(AbstractRelationship):
             ("lived_in", _("Проживав(-ла)")),
             ("citizenship", _("Громадянин(-ка)")),
             ("business", _("Має зареєстрований бізнес")),
+            ("realty", _("Має нерухомість")),
             ("under_sanctions", _("Під санкціями")),
         ),
 
@@ -851,11 +865,12 @@ class Declaration(models.Model):
     position = models.CharField("Посада", max_length=512, blank=True)
     office = models.CharField("Відомство", max_length=512, blank=True)
     region = models.CharField("Регіон", max_length=50, blank=True)
-    year = models.CharField("Рік", max_length=4, blank=True)
+    year = models.CharField("Рік", max_length=4, blank=True, db_index=True)
     source = JSONField()
     url = models.URLField("Посилання", max_length=512, blank=True)
     confirmed = models.CharField(
-        "Підтверджено", max_length=1, choices=STATUS_CHOICES, default="p")
+        "Підтверджено", max_length=1, choices=STATUS_CHOICES, default="p",
+        db_index=True)
     fuzziness = models.IntegerField("Відстань", default=0)
     person = models.ForeignKey("Person", default=None)
 
