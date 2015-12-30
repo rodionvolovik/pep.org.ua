@@ -1,8 +1,9 @@
 # coding: utf-8
 from __future__ import unicode_literals
+
+from django.utils.safestring import mark_safe
 from django_markdown.utils import markdown as _markdown
 from django_jinja import library
-from django.utils.safestring import mark_safe
 
 
 @library.filter

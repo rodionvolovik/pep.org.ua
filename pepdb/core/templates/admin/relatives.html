@@ -1,5 +1,5 @@
 {% extends "admin/base_site.html" %}
-
+{% load admin_misc %}
 {% block title %}Створити родичів{{ block.super }}{% endblock %}
 
 <!-- LOADING -->
@@ -24,17 +24,33 @@
 
 <!-- CONTENT -->
 {% block content %}
+    <script type="text/javascript">
+        (function($) {
+            $(function() {
+                $(".suggest-link").on("click", function(e) {
+                    e.preventDefault();
+                    var el = $(this),
+                        parent = el.closest("td");
+
+                    parent.find(".rel_id").val(el.data("id"));
+                    parent.find(".last_name_input").val(el.data("last_name"));
+                    parent.find(".first_name_input").val(el.data("first_name"));
+                    parent.find(".patronymic_input").val(el.data("patronymic"));
+                });
+            });
+        })(django.jQuery);
+    </script>
     <div class="grp-module">
-        <form method="POST" action="">
+        <form method="POST" action="{% url 'admin:store_relatives' %}">
+        {% csrf_token %}
         <table>
             <thead>
                 <tr>
                     <th>Створити</th>
                     <th>Фізична особа</th>
-                    <th>Прізвище родича</th>
-                    <th>Ім'я родича</th>
-                    <th>По-батькові родича</th>
-                    <th>Вид зв'язку</th>
+                    <th>Фізична особа є</th>
+                    <th>ПІБ родича</th>
+                    <th>Родич є</th>
                 </tr>
             </thead>
             <tbody>
@@ -42,25 +58,50 @@
                     {% for member in r.family %}
                     <tr class="grp-row {% cycle 'grp-row-odd' 'grp-row-even' %}">
                         <td>
-                            <input type="hidden" name="person_{{loop.index}}_id" value="{{ r.person_id }}" />
-                            <input type="checkbox" name="iswear" value="{{ loop_index }}" checked />
+                            <input type="hidden" name="person_{{ r.pk }}_{{ forloop.counter }}_id" value="{{ r.person_id }}" />
+                            <input type="checkbox" name="iswear" value="{{ r.pk }}_{{ forloop.counter }}" checked />
                         </td>
                         <td>
                             {{ r.person.last_name_uk }}
                             {{ r.person.first_name_uk }}
-                            {{ r.person.patronymic_uk }}
+                            {{ r.person.patronymic_uk }},<br/>
+                            {{ r.person.last_workplace|join:", " }}
                         </td>
                         <td>
-                            <input type="text" name="person_{{loop.index}}_last_name" value="{{ member.last_name }}" />
+                            <select name="person_{{ r.pk }}_{{ forloop.counter }}_relation_from" style="width: 150px">
+                            <option value=""></option>
+                            {% for rel in relations %}
+                                <option value="{{ rel }}">{{ rel }}</option>
+                            {% endfor %}
+                            </select>
                         </td>
                         <td>
-                            <input type="text" name="person_{{loop.index}}_first_name" value="{{ member.first_name }}" />
+                            <input type="hidden" name="person_{{ r.pk }}_{{ forloop.counter }}_rel_id" value="" class="rel_id" />
+                            <input type="text" name="person_{{ r.pk }}_{{ forloop.counter }}_last_name" value="{{ member.last_name }}" style="margin-bottom: 4px!important" class="last_name_input"/>
+                            <input type="text" name="person_{{ r.pk }}_{{ forloop.counter }}_first_name" value="{{ member.first_name }}" style="margin-bottom: 4px!important" class="first_name_input"/>
+                            <input type="text" name="person_{{ r.pk }}_{{ forloop.counter }}_patronymic" value="{{ member.patronymic }}" style="margin-bottom: 4px!important" class="patronymic_input"/>
+                            {% if member|suggest %}
+                                <br />
+                                Вже є в БД PEP:
+                                <ul>
+                                {% for suggestions in member|suggest %}
+                                    <li>
+                                        <a href="#"
+                                            class="suggest-link"
+                                            data-last_name="{{ suggestions.last_name_uk }}"
+                                            data-first_name="{{ suggestions.first_name_uk }}"
+                                            data-patronymic="{{ suggestions.patronymic_uk }}"
+                                            data-id="{{ suggestions.id }}">
+                                            {{ suggestions.last_name_uk }} {{ suggestions.first_name_uk }} {{ suggestions.patronymic_uk }},
+                                            {{ suggestions.last_workplace|join:", " }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                            {% endif %}
                         </td>
                         <td>
-                            <input type="text" name="person_{{loop.index}}_patronymic" value="{{ member.patronymic }}" />
-                        </td>
-                        <td>
-                            <select name="person_{{loop.index}}_relation">
+                            <select name="person_{{ r.pk }}_{{ forloop.counter }}_relation_to" style="width: 150px">
                             {% for rel in relations %}
                             <option value="{{ rel }}" {% if rel == member.mapped %}selected="selected"{% endif %}>{{ rel }}</option>
                             {% endfor %}

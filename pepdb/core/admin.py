@@ -5,7 +5,9 @@ from django import forms
 from django.contrib import admin
 from django.db.models import Q
 from django.conf import settings
+from django.conf.urls import url
 from django.shortcuts import redirect, render
+from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from grappelli_modeltranslation.admin import (
@@ -309,6 +311,68 @@ class DeclarationAdmin(admin.ModelAdmin):
                             obj.person.last_workplace[0])
     position_pep.short_description = 'Посада з БД PEP'
 
+    def get_urls(self):
+        urls = super(DeclarationAdmin, self).get_urls()
+        return [
+            url(r'^store_relatives/$',
+                self.admin_site.admin_view(self.store_relatives),
+                name="store_relatives"),
+        ] + urls
+
+    def store_relatives(self, request):
+        persons_created = 0
+        connections_created = 0
+
+        for rec_id in request.POST.getlist('iswear'):
+            last_name = request.POST.get("person_%s_last_name" % rec_id)
+            first_name = request.POST.get("person_%s_first_name" % rec_id)
+            patronymic = request.POST.get("person_%s_patronymic" % rec_id)
+            base_person_id = request.POST.get("person_%s_id" % rec_id)
+            relation_from = request.POST.get(
+                "person_%s_relation_from" % rec_id)
+            relation_to = request.POST.get(
+                "person_%s_relation_to" % rec_id)
+
+            base_person = Person.objects.get(pk=base_person_id)
+
+            rel_id = request.POST.get("person_%s_rel_id" % rec_id)
+
+            if rel_id:
+                relative = Person.objects.get(pk=rel_id)
+            else:
+                relative = Person.objects.create(
+                    first_name_uk=first_name,
+                    last_name_uk=last_name,
+                    patronymic_uk=patronymic,
+                    type_of_official=4,
+                    is_pep=False
+                )
+                persons_created += 1
+
+                # relative, _ = Person.objects.get_or_create(
+                #     first_name_uk__iexact=first_name,
+                #     last_name_uk__iexact=last_name,
+                #     patronymic_uk__iexact=patronymic,
+                #     defaults={
+                #         "is_pep": False
+                #     }
+                # )
+
+            _, created = Person2Person.objects.update_or_create(
+                from_person=base_person,
+                to_person=relative,
+                from_relationship_type=relation_from,
+                to_relationship_type=relation_to
+            )
+            if created:
+                connections_created += 1
+
+        self.message_user(
+            request, "%s осіб та %s зв'язків було створено." % (
+                persons_created, connections_created))
+
+        return redirect(reverse("admin:core_declaration_changelist"))
+
     def family_table(self, obj):
         family = obj.family
         if family:
@@ -329,7 +393,7 @@ class DeclarationAdmin(admin.ModelAdmin):
     list_select_related = ("person", )
 
     list_display = (
-        "fullname_pep", "fullname_decl", "position_pep", "position_decl", 
+        "fullname_pep", "fullname_decl", "position_pep", "position_decl",
         "region", "year", "family_table", "confirmed", "fuzziness")
 
     list_editable = ("confirmed",)

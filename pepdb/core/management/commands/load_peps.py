@@ -72,6 +72,7 @@ class Command(BaseCommand):
             company_name = l.get("Назва", "")
             person_id = l.get("id персони", "")
             company_id = l.get("id компанії", "")
+            photo_url = l.get("Фото", "")
 
             person = None
             # First let's search for appropriate company
@@ -157,26 +158,44 @@ class Command(BaseCommand):
                     if len(person_dob) > 4 and len(person_dob) < 7:
                         person.dob_details = 1  # month and year
 
+                # Let's download the photo (if any)
+                if not person.photo and photo_url:
+                    photo_name, photo_san_name, photo_content = download(
+                        photo_url, translitua(person_name))
+
+                    if photo_name:
+                        person.photo.save(
+                            photo_san_name,
+                            ContentFile(photo_content))
+                    else:
+                        self.stdout.write("Cannot download image %s for %s" % (
+                            photo_url, person_name
+                        ))
+
                 person.save()
 
+                # Let's write the person id back to the table.
                 if person.pk != person_id:
                     person_id = person.pk
                     wks.update_cell(i + 2, len(l.keys()) - 1, person.pk)
 
+                # Now let's download all supporting docs
                 docs_downloaded = []
                 first_doc_name = False
+
+                # There might be many of them
                 for doc in docs.split(", "):
                     doc_instance = None
 
                     # we cannot download folders from google docs, so let's
                     # skip them
 
-                    # TODO: process multiple links
                     if doc and "folderview" not in doc \
                             and "drive/#folders" not in doc:
                         doc = expand_gdrive_download_url(doc)
                         doc_hash = sha1(doc).hexdigest()
 
+                        # Check, if docs
                         try:
                             doc_instance = Document.objects.get(hash=doc_hash)
                         except Document.DoesNotExist:
@@ -200,6 +219,7 @@ class Command(BaseCommand):
 
                         docs_downloaded.append(doc_instance.doc.url)
 
+                # Now let's setup links between person and companies
                 links = Person2Company.objects.filter(
                     (Q(date_established=person_from) |
                      Q(date_established__isnull=True)),
@@ -223,10 +243,11 @@ class Command(BaseCommand):
                 if not link.relationship_type:
                     link.relationship_type = position
 
+                # And translate them
                 Ua2EnDictionary.objects.get_or_create(term=position)
 
+                # oh, and add links to supporting docs
                 all_docs = docs_downloaded + website.split(", ")
-
                 if all_docs:
                     link.proof = ", ".join(filter(None, all_docs))
 
@@ -237,3 +258,5 @@ class Command(BaseCommand):
                 link.is_employee = True
 
                 link.save()
+
+                break

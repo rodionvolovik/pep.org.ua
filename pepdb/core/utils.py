@@ -35,7 +35,7 @@ def expand_gdrive_download_url(url):
     return url
 
 
-def download(url):
+def download(url, name=""):
     """
     Downloads from url, extracts filename from url or content disposition
     Returns original fname, sanitized one and content of file
@@ -45,8 +45,11 @@ def download(url):
 
     if resp.status_code == 200:
         parsed = parse_requests_response(resp)
-        fname = parsed.filename_sanitized(
-            os.path.splitext(parsed.filename_unsafe)[-1].strip("."))
+        if name:
+            fname = name + os.path.splitext(parsed.filename_unsafe)[-1]
+        else:
+            fname = parsed.filename_sanitized(
+                os.path.splitext(parsed.filename_unsafe)[-1].strip("."))
 
         return parsed.filename_unsafe, fname, resp.content
     else:
@@ -279,9 +282,11 @@ def parse_family_member(s):
             if person.lower().startswith(pos):
                 raise ValueError
 
+        person = re.sub("приховано", "", person, flags=re.I)
+
         return {
             "relation": position,
-            "name": person
+            "name": person.strip(" ,")
         }
     except ValueError:
         return None
