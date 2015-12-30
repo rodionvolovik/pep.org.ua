@@ -258,5 +258,3 @@ class Command(BaseCommand):
                 link.is_employee = True
 
                 link.save()
-
-                break
