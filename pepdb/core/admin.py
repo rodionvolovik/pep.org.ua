@@ -344,7 +344,7 @@ class DeclarationAdmin(admin.ModelAdmin):
                     first_name_uk=first_name,
                     last_name_uk=last_name,
                     patronymic_uk=patronymic,
-                    type_of_official=4,
+                    type_of_official=5,
                     is_pep=False
                 )
                 persons_created += 1

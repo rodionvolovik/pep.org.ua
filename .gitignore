@@ -61,3 +61,4 @@ pepdb/core/dicts/new_peps.csv
 media
 *.db
 _venv/*
+node_modules/
