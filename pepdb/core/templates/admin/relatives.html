@@ -77,6 +77,7 @@
                         </td>
                         <td>
                             <input type="hidden" name="person_{{ r.pk }}_{{ forloop.counter }}_rel_id" value="" class="rel_id" />
+                            <input type="hidden" name="person_{{ r.pk }}_{{ forloop.counter }}_declaration_id" value="{{ r.pk }}" />
                             <input type="text" name="person_{{ r.pk }}_{{ forloop.counter }}_last_name" value="{{ member.last_name }}" style="margin-bottom: 4px!important" class="last_name_input"/>
                             <input type="text" name="person_{{ r.pk }}_{{ forloop.counter }}_first_name" value="{{ member.first_name }}" style="margin-bottom: 4px!important" class="first_name_input"/>
                             <input type="text" name="person_{{ r.pk }}_{{ forloop.counter }}_patronymic" value="{{ member.patronymic }}" style="margin-bottom: 4px!important" class="patronymic_input"/>

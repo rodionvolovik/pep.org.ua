@@ -431,6 +431,10 @@ class Person2Person(AbstractRelationship):
         max_length=100,
         blank=True)
 
+    declaration = models.ForeignKey(
+        "Declaration", blank=True, null=True,
+        verbose_name="Декларація, що підтверджує зв'язок")
+
     def __unicode__(self):
         return "%s (%s) -> %s (%s)" % (
             self.from_person, self.get_from_relationship_type_display(),

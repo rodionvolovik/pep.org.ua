@@ -328,12 +328,15 @@ class DeclarationAdmin(admin.ModelAdmin):
             first_name = request.POST.get("person_%s_first_name" % rec_id)
             patronymic = request.POST.get("person_%s_patronymic" % rec_id)
             base_person_id = request.POST.get("person_%s_id" % rec_id)
+            declaration_id = request.POST.get(
+                "person_%s_declaration_id" % rec_id)
             relation_from = request.POST.get(
                 "person_%s_relation_from" % rec_id)
             relation_to = request.POST.get(
                 "person_%s_relation_to" % rec_id)
 
             base_person = Person.objects.get(pk=base_person_id)
+            declaration = Declaration.objects.get(pk=declaration_id)
 
             rel_id = request.POST.get("person_%s_rel_id" % rec_id)
 
@@ -362,6 +365,10 @@ class DeclarationAdmin(admin.ModelAdmin):
                 from_person=base_person,
                 to_person=relative,
                 from_relationship_type=relation_from,
+                declaration=declaration,
+                proof=declaration.url + "?source",
+                proof_title=(
+                    "Декларація за %s рік" % declaration.year),
                 to_relationship_type=relation_to
             )
             if created:
