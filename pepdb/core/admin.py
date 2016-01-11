@@ -307,8 +307,13 @@ class DeclarationAdmin(admin.ModelAdmin):
     position_decl.short_description = 'Посада з декларації'
 
     def position_pep(self, obj):
-        return "%s @ %s" % (obj.person.last_workplace[1],
-                            obj.person.last_workplace[0])
+        last_workplace = obj.person.last_workplace
+        if last_workplace:
+            return "%s @ %s" % (obj.person.last_workplace[1],
+                                obj.person.last_workplace[0])
+
+        return ""
+
     position_pep.short_description = 'Посада з БД PEP'
 
     def get_urls(self):
@@ -389,11 +394,9 @@ class DeclarationAdmin(admin.ModelAdmin):
                   "<td>{mapped}</td</tr>").format(**x)
                  for x in family if x] +
                 ["</table>"])
-        else:
-            return ""
 
-        return "%s @ %s" % (obj.person.last_workplace[1],
-                            obj.person.last_workplace[0])
+        return ""
+
     family_table.short_description = 'Родина'
     family_table.allow_tags = True
 
