@@ -877,6 +877,8 @@ class Declaration(models.Model):
         db_index=True)
     fuzziness = models.IntegerField("Відстань", default=0)
     person = models.ForeignKey("Person", default=None)
+    relatives_populated = models.BooleanField(
+        "Родина була внесена до БД", default=False, db_index=True)
 
     @property
     def family(self):

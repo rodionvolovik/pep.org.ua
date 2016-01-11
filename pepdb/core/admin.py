@@ -294,6 +294,7 @@ class DeclarationAdmin(admin.ModelAdmin):
             "  ", " ").strip()
 
     fullname_decl.short_description = 'ПІБ з декларації'
+    fullname_decl.admin_order_field = 'last_name'
     fullname_decl.allow_tags = True
 
     def fullname_pep(self, obj):
@@ -301,6 +302,7 @@ class DeclarationAdmin(admin.ModelAdmin):
             obj.person.first_name_uk, obj.person.patronymic_uk,
             obj.person.last_name_uk)).replace("  ", " ").strip()
     fullname_pep.short_description = 'ПІБ з БД PEP'
+    fullname_pep.admin_order_field = 'person__last_name_uk'
 
     def position_decl(self, obj):
         return ("%s @ %s" % (obj.position, obj.office))
@@ -379,6 +381,8 @@ class DeclarationAdmin(admin.ModelAdmin):
             if created:
                 connections_created += 1
 
+        declaration.relatives_populated = True
+        declaration.save()
         self.message_user(
             request, "%s осіб та %s зв'язків було створено." % (
                 persons_created, connections_created))
@@ -389,6 +393,8 @@ class DeclarationAdmin(admin.ModelAdmin):
         family = obj.family
         if family:
             return "".join(
+                ["<strong>Родину вже було внесено до БД</strong>"
+                 if obj.relatives_populated else ""] +
                 ["<table>"] +
                 [("<tr><td>{name}</td><td>{relation}</td>" +
                   "<td>{mapped}</td</tr>").format(**x)
@@ -406,8 +412,13 @@ class DeclarationAdmin(admin.ModelAdmin):
         "fullname_pep", "fullname_decl", "position_pep", "position_decl",
         "region", "year", "family_table", "confirmed", "fuzziness")
 
+    search_fields = [
+        'last_name', "first_name", "patronymic",
+        'person__last_name_uk', 'person__first_name_uk',
+        'person__patronymic_uk']
+
     list_editable = ("confirmed",)
-    list_filter = ("confirmed", )
+    list_filter = ("confirmed", "relatives_populated", )
 
     actions = [populate_relatives]
 
