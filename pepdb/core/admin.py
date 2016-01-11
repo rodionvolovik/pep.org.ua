@@ -290,7 +290,7 @@ class DeclarationAdmin(admin.ModelAdmin):
 
     def fullname_decl(self, obj):
         return ('<a href="%s" target="_blank">%s %s %s</a>' % (
-            obj.url, obj.first_name, obj.patronymic, obj.last_name)).replace(
+            obj.url, obj.last_name, obj.first_name, obj.patronymic)).replace(
             "  ", " ").strip()
 
     fullname_decl.short_description = 'ПІБ з декларації'
@@ -299,8 +299,9 @@ class DeclarationAdmin(admin.ModelAdmin):
 
     def fullname_pep(self, obj):
         return ("%s %s %s" % (
-            obj.person.first_name_uk, obj.person.patronymic_uk,
-            obj.person.last_name_uk)).replace("  ", " ").strip()
+            obj.person.last_name_uk, obj.person.first_name_uk,
+            obj.person.patronymic_uk,
+        )).replace("  ", " ").strip()
     fullname_pep.short_description = 'ПІБ з БД PEP'
     fullname_pep.admin_order_field = 'person__last_name_uk'
 
@@ -381,8 +382,9 @@ class DeclarationAdmin(admin.ModelAdmin):
             if created:
                 connections_created += 1
 
-        declaration.relatives_populated = True
-        declaration.save()
+            declaration.relatives_populated = True
+            declaration.save()
+
         self.message_user(
             request, "%s осіб та %s зв'язків було створено." % (
                 persons_created, connections_created))
