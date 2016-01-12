@@ -858,6 +858,7 @@ class Declaration(models.Model):
         ('p', 'Не перевірено'),
         ('r', 'Не підходить'),
         ('a', 'Опубліковано'),
+        ('c', 'Перевірити'),
     )
 
     declaration_id = models.CharField(
