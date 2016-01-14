@@ -1,7 +1,7 @@
 {% extends "base.jinja" %}
 {% from "macros/_connections.jinja" import render_connection %}
 
-{% block page_title %}{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}, {{ person.last_workplace[0] }}, {{ person.last_workplace[1] }}{% endblock %}
+{% block page_title %}{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}{% if person.last_workplace %}, {{ person.last_workplace[0] }}, {{ person.last_workplace[1] }}{% endif %}{% endblock %}
 
 {% block extra_menu %}
     {% if request.user.is_superuser %}
