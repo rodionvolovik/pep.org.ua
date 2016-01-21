@@ -19,8 +19,8 @@ from django_markdown.models import MarkdownField
 from django.utils import translation
 
 
-from core.utils import parse_fullname, parse_family_member, RELATIONS_MAPPING
-
+from core.utils import (
+    parse_fullname, parse_family_member, RELATIONS_MAPPING, TranslatedField)
 
 # to_*_dict methods are used to convert two main entities that we have, Person
 # and Company into document indexable by ElasticSearch.
@@ -177,6 +177,17 @@ class Person(models.Model):
             l = qs[0]
             return [l.to_company.short_name_en or l.to_company.name_en,
                     l.relationship_type_en]
+
+        return ""
+
+    # Fuuugly hack
+    @property
+    def translated_last_workplace(self):
+        qs = self._last_workplace()
+        if qs:
+            l = qs[0]
+            return [l.to_company.short_name or l.to_company.name,
+                    l.relationship_type]
 
         return ""
 

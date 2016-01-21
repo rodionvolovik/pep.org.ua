@@ -1,7 +1,7 @@
 {% extends "base.jinja" %}
 {% from "macros/_connections.jinja" import render_connection %}
 
-{% block page_title %}{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}{% if person.last_workplace %}, {{ person.last_workplace[0] }}, {{ person.last_workplace[1] }}{% endif %}{% endblock %}
+{% block page_title %}{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}{% if person.last_workplace %}, {{ person.translated_last_workplace[0] }}, {{ person.translated_last_workplace[1] }}{% endif %}{% endblock %}
 
 {% block extra_menu %}
     {% if request.user.is_superuser %}
@@ -21,10 +21,10 @@
         {% if person.rtype %}{{ _(person.rtype) }},{% endif %}
         {% if person.dob %}<meta itemprop="birthDate" content="{{ person.dob }} "/>{% endif %}
 
-        {% set last_workplace = person.last_workplace %}
+        {% set last_workplace = person.translated_last_workplace %}
         {% if last_workplace %}
-        <span itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ person.last_workplace[0] }}</span></span>,
-        <span itemprop="jobTitle">{{ person.last_workplace[1] }}</span>
+        <span itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ last_workplace[0] }}</span></span>,
+        <span itemprop="jobTitle">{{ last_workplace[1] }}</span>
         {% endif %}
         
 
@@ -136,8 +136,8 @@
                                 <td>{{ _("Остання посада") }}</td>
                                 <td>
                                     <strong>
-                                        <span itemprop="worksFor" itemscope itemtype="http://schema.org/Organization"><span itemprop="name">{{ person.last_workplace[0] }}</span></span>, 
-                                        <span itemprop="jobTitle">{{ person.last_workplace[1] }}</span>
+                                        <span itemprop="worksFor" itemscope itemtype="http://schema.org/Organization"><span itemprop="name">{{ person.translated_last_workplace[0] }}</span></span>, 
+                                        <span itemprop="jobTitle">{{ person.translated_last_workplace[1] }}</span>
                                     </strong>
                                 </td>
                             </tr>

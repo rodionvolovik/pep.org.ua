@@ -156,7 +156,8 @@ class TranslatedField(object):
 
     def __get__(self, instance, owner):
         if translation.get_language() == 'en':
-            return getattr(instance, self.en_field)
+            return (getattr(instance, self.en_field) or
+                    getattr(instance, self.ua_field))
         else:
             return getattr(instance, self.ua_field)
 
