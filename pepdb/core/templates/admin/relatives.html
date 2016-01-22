@@ -42,6 +42,7 @@
     </script>
     <div class="grp-module">
         <form method="POST" action="{% url 'admin:store_relatives' %}">
+        <input type="hidden" name="redirect_back" value="{{ referer }}" />
         {% csrf_token %}
         <table>
             <thead>

@@ -278,6 +278,7 @@ class FeedbackAdmin(admin.ModelAdmin):
 def populate_relatives(modeladmin, request, queryset):
     return render(request, "admin/relatives.html", {
         "qs": queryset,
+        "referer": request.META.get("HTTP_REFERER"),
         "relations": Person2Person._relationships_explained.keys()
     })
 
@@ -389,7 +390,10 @@ class DeclarationAdmin(admin.ModelAdmin):
             request, "%s осіб та %s зв'язків було створено." % (
                 persons_created, connections_created))
 
-        return redirect(reverse("admin:core_declaration_changelist"))
+        if request.POST.get("redirect_back"):
+            return redirect(request.POST.get("redirect_back"))
+        else:
+            return redirect(reverse("admin:core_declaration_changelist"))
 
     def family_table(self, obj):
         family = obj.family
