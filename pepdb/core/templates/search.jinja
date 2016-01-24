@@ -29,6 +29,16 @@
                     <span itemprop="jobTitle">{{ p.translated_last_job_title }}</span>
                 </p>
                 {% endif %}
+
+                {% set relevant_related_persons = p.relevant_related_persons()[:4] %}
+                {#% if relevant_related_persons %}
+                <p>
+                    {% for rel in relevant_related_persons %}
+                        <span>{{ _("Зв'язок") }}:</span> {% if rel.relationship_type %}{{ _(rel.relationship_type) }}, {% endif %}{{ rel.person }}<br />
+                    {% endfor %}
+                </p>
+                {% endif %#}
+
                 {% if p.risk_category %}
                 <p>
                     <span class="tooltip-anchor" data-toggle="tooltip" data-placement="bottom" title="{{ _("Відповідно до методології, національним публічним діячам присвоюється такі ступені ризику відмивання коштів: неприйнятно високий; високий; середній; низький") }}">

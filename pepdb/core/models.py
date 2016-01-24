@@ -224,9 +224,10 @@ class Person(models.Model):
     @property
     def all_related_persons(self):
         related_persons = [
-            (i.to_relationship_type, i.to_person, i)
+            (i.to_relationship_type, i.from_relationship_type, i.to_person, i)
             for i in self.to_persons.select_related("to_person")] + [
-            (i.from_relationship_type, i.from_person, i)
+            (i.from_relationship_type, i.to_relationship_type,
+             i.from_person, i)
             for i in self.from_persons.select_related("from_person")
         ]
 
@@ -237,8 +238,9 @@ class Person(models.Model):
             "all": []
         }
 
-        for rtp, p, rel in related_persons:
+        for rtp, rrtp, p, rel in related_persons:
             p.rtype = rtp
+            p.reverse_rtype = rrtp
             p.connection = rel
 
             if rtp in ["особисті зв'язки"]:

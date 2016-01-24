@@ -96,7 +96,13 @@
                                             data-id="{{ suggestions.id }}">
                                             {{ suggestions.last_name_uk }} {{ suggestions.first_name_uk }} {{ suggestions.patronymic_uk }},
                                             {{ suggestions.last_workplace|join:", " }}
-                                        </a>
+                                        </a> {{ suggestions.last_workplace|join:", " }}
+
+                                        {% for rel in suggestions.all_related_persons.all %}
+                                            <br />
+                                            {% if rel.reverse_rtype %}{{ rel.reverse_rtype }},{% endif %}
+                                            {{ rel.last_name_uk }} {{ rel.first_name_uk }} {{ rel.patronymic_uk }}
+                                        {% endfor %}
                                     </li>
                                 {% endfor %}
                                 </ul>
