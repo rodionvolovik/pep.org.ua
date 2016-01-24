@@ -461,10 +461,14 @@ class Person2Person(AbstractRelationship):
         return {
             "relationship_type": self.to_relationship_type,
             "is_pep": self.to_person.is_pep,
-            "person": "%s %s %s" % (
-                self.to_person.first_name,
-                self.to_person.patronymic,
-                self.to_person.last_name)
+            "person_uk": "%s %s %s" % (
+                self.to_person.first_name_uk,
+                self.to_person.patronymic_uk,
+                self.to_person.last_name_uk),
+            "person_en": "%s %s %s" % (
+                self.to_person.first_name_en,
+                self.to_person.patronymic_en,
+                self.to_person.last_name_en),
         }
 
     def to_dict_reverse(self):
@@ -474,10 +478,14 @@ class Person2Person(AbstractRelationship):
         return {
             "relationship_type": self.from_relationship_type,
             "is_pep": self.from_person.is_pep,
-            "person": "%s %s %s" % (
-                self.from_person.first_name,
-                self.from_person.patronymic,
-                self.from_person.last_name)
+            "person_uk": "%s %s %s" % (
+                self.from_person.first_name_uk,
+                self.from_person.patronymic_uk,
+                self.from_person.last_name_uk),
+            "person_en": "%s %s %s" % (
+                self.from_person.first_name_en,
+                self.from_person.patronymic_en,
+                self.from_person.last_name_en),
         }
 
     class Meta:

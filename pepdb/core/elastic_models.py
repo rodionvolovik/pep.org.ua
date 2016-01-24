@@ -17,17 +17,24 @@ class Person(DocType):
         "last_job_title", "last_job_title_en")
 
     def relevant_related_persons(self):
-        hl = getattr(
-            self.meta,
-            "highlight",
-            {"related_persons.person": []})["related_persons.person"]
+        hl = getattr(self.meta, "highlight", None)
+
+        if hl is not None:
+            hl_uk = hl.get("related_persons.person_uk", [])
+
+            hl_en = hl.get("related_persons.person_en", [])
+        else:
+            hl_en = []
+            hl_uk = []
 
         highlighted = []
         peps = []
         rest = []
 
         for p in self.related_persons:
-            if p.person in hl:
+            if p.person_uk in hl_uk:
+                highlighted.append(p)
+            elif p.person_en in hl_en:
                 highlighted.append(p)
             elif p.is_pep:
                 peps.append(p)
@@ -37,7 +44,9 @@ class Person(DocType):
         res = highlighted + peps + rest
 
         # Sorting the list so best matches will appear on top
-        res.sort(key=lambda x: hl.index(x.person) if x.person in hl else 10000)
+        res.sort(key=lambda x: min(
+            hl_en.index(x.person_en) if x.person_en in hl_en else 10000,
+            hl_uk.index(x.person_uk) if x.person_uk in hl_uk else 10000))
 
         return res
 

@@ -155,7 +155,7 @@ def _search_related(request):
         all_related = Q(
             "multi_match", query=query,
             operator="and",
-            fields=["related_persons.person"])
+            fields=["related_persons.person_uk", "related_persons.person_en"])
 
         non_peps = Q(
             "multi_match", query=query,
@@ -170,7 +170,8 @@ def _search_related(request):
                 "multi_match", query=query,
                 operator="or",
                 minimum_should_match="2",
-                fields=["related_persons.person"])
+                fields=["related_persons.person_uk",
+                        "related_persons.person_en"])
 
             non_peps = Q(
                 "multi_match", query=query,
@@ -191,8 +192,11 @@ def _search_related(request):
         # caused the match to show it in the person's card on the top of the
         # list. Check Person.relevant_related_persons method for details
         related_persons.highlight(
-            'related_persons.person',
-            order="score", pre_tags=[""], post_tags=[""]))
+            'related_persons.person_uk',
+            order="score", pre_tags=[""], post_tags=[""]).highlight(
+            'related_persons.person_en',
+            order="score", pre_tags=[""], post_tags=[""])
+    )
 
 
 @pdf_response("person.jinja")

@@ -31,13 +31,14 @@
                 {% endif %}
 
                 {% set relevant_related_persons = p.relevant_related_persons()[:4] %}
-                {#% if relevant_related_persons %}
+                {% if relevant_related_persons %}
                 <p>
                     {% for rel in relevant_related_persons %}
-                        <span>{{ _("Зв'язок") }}:</span> {% if rel.relationship_type %}{{ _(rel.relationship_type) }}, {% endif %}{{ rel.person }}<br />
+                        <span>{{ _("Зв'язок") }}:</span> {% if rel.relationship_type %}{{ _(rel.relationship_type) }}, {% endif %}
+                        {% if LANGUAGE_CODE =="en" %}{{ rel.person_en }}{% else %}{{ rel.person_uk }}{% endif %}<br />
                     {% endfor %}
                 </p>
-                {% endif %#}
+                {% endif %}
 
                 {% if p.risk_category %}
                 <p>
