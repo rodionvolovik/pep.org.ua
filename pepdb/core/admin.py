@@ -160,9 +160,12 @@ class PersonAdmin(TranslationAdmin):
                Person2CountryInline, Person2CompanyInline)
 
     list_display = ("last_name_uk", "first_name_uk", "patronymic_uk",
-                    "is_pep", "dob", "type_of_official", "publish")
+                    "is_pep", "dob", "dob_details", "type_of_official",
+                    "publish")
     readonly_fields = ('names',)
     search_fields = ['last_name_uk', "first_name_uk", "patronymic_uk", "names"]
+    list_editable = ("dob", "dob_details")
+
     actions = [make_published, make_unpublished]
 
     fieldsets = [
