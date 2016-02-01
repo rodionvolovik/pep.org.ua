@@ -40,14 +40,14 @@
                 </p>
                 {% endif %}
 
-                {% if p.risk_category %}
+                {#% if p.risk_category %}
                 <p>
                     <span class="tooltip-anchor" data-toggle="tooltip" data-placement="bottom" title="{{ _("Відповідно до методології, національним публічним діячам присвоюється такі ступені ризику відмивання коштів: неприйнятно високий; високий; середній; низький") }}">
                         <span>{{ _("Рівень ризику") }}:</span>
                         <span class="riskLevel">{{ _(p.risk_category) }}</span>
                     </span>
                 </p>
-                {% endif %}
+                {% endif %#}
             </div>
         </div>
     </div>

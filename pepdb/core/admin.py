@@ -1,6 +1,9 @@
 # coding: utf-8
 from __future__ import unicode_literals
+
+import datetime
 import json
+
 from django import forms
 from django.contrib import admin
 from django.db.models import Q
@@ -8,6 +11,9 @@ from django.conf import settings
 from django.conf.urls import url
 from django.shortcuts import redirect, render
 from django.core.urlresolvers import reverse
+from django.utils import formats
+
+from django.utils.encoding import force_str
 from django.utils.translation import ugettext_lazy as _
 
 from grappelli_modeltranslation.admin import (
@@ -332,6 +338,16 @@ class DeclarationAdmin(admin.ModelAdmin):
         ] + urls
 
     def store_relatives(self, request):
+        input_formats = formats.get_format_lazy('DATE_INPUT_FORMATS')
+
+        def strptime(value):
+            for fmt in input_formats:
+                try:
+                    return datetime.datetime.strptime(
+                        force_str(value), fmt).date()
+                except (ValueError, TypeError):
+                    continue
+
         persons_created = 0
         connections_created = 0
 
@@ -346,6 +362,10 @@ class DeclarationAdmin(admin.ModelAdmin):
                 "person_%s_relation_from" % rec_id)
             relation_to = request.POST.get(
                 "person_%s_relation_to" % rec_id)
+
+            dob = strptime(request.POST.get("person_%s_dob" % rec_id))
+            dob_details = int(
+                request.POST.get("person_%s_dob_details" % rec_id))
 
             base_person = Person.objects.get(pk=base_person_id)
             declaration = Declaration.objects.get(pk=declaration_id)
@@ -363,6 +383,11 @@ class DeclarationAdmin(admin.ModelAdmin):
                     is_pep=False
                 )
                 persons_created += 1
+
+            if dob is not None:
+                relative.dob = dob
+                relative.dob_details = dob_details
+                relative.save()
 
                 # relative, _ = Person.objects.get_or_create(
                 #     first_name_uk__iexact=first_name,
