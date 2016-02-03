@@ -91,12 +91,16 @@ class Person2CompanyForm(forms.ModelForm):
         fields = '__all__'
 
         widgets = {
-            'relationship_type': forms.Textarea(
+            'relationship_type_uk': forms.Textarea(
                 attrs={
                     'data-choices': json.dumps(
                         Person2Company._relationships_explained),
                     'class': "suggest"
-                })
+                }),
+        }
+        help_texts = {
+            'relationship_type_en':
+                "Залиште порожнім для автоматичного перекладу",
         }
 
 

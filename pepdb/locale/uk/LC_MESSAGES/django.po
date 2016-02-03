@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-24 14:46+0200\n"
+"POT-Creation-Date: 2016-02-03 03:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,20 +27,32 @@ msgstr ""
 msgid "Перевірити"
 msgstr ""
 
+#: cms_pages/templates/cms_pages/home.jinja:63
+msgid "Профілів фізичних осіб в Реєстрі"
+msgstr ""
+
+#: cms_pages/templates/cms_pages/home.jinja:67
+msgid "Профілів публічних діячів у Реєстрі"
+msgstr ""
+
+#: cms_pages/templates/cms_pages/home.jinja:71
+msgid "Профілів пов'язаних осіб в Реєстрі"
+msgstr ""
+
 #: cms_pages/templates/cms_pages/static_page.jinja:18
-#: core/templates/person.jinja:48 core/templates/search.jinja:61
+#: core/templates/person.jinja:48 core/templates/search.jinja:62
 msgid "Головна"
 msgstr ""
 
-#: core/admin.py:197
+#: core/admin.py:210
 msgid "Наявність перекладу"
 msgstr ""
 
-#: core/admin.py:204
+#: core/admin.py:217
 msgid "Немає"
 msgstr ""
 
-#: core/admin.py:205
+#: core/admin.py:218
 msgid "Є"
 msgstr ""
 
@@ -220,131 +232,131 @@ msgstr ""
 msgid "особисті зв'язки"
 msgstr ""
 
-#: core/models.py:669
+#: core/models.py:677
 msgid "Власник"
 msgstr ""
 
-#: core/models.py:670
+#: core/models.py:678
 msgid "Співвласник"
 msgstr ""
 
-#: core/models.py:671
+#: core/models.py:679
 msgid "Споріднена"
 msgstr ""
 
-#: core/models.py:672
+#: core/models.py:680
 msgid "Кредитор (фінансовий партнер)"
 msgstr ""
 
-#: core/models.py:673
+#: core/models.py:681
 msgid "Надавач професійних послуг"
 msgstr ""
 
-#: core/models.py:674
+#: core/models.py:682
 msgid "Клієнт"
 msgstr ""
 
-#: core/models.py:675
+#: core/models.py:683
 msgid "Виконавець"
 msgstr ""
 
-#: core/models.py:676
+#: core/models.py:684
 msgid "Замовник"
 msgstr ""
 
-#: core/models.py:677
+#: core/models.py:685
 msgid "Підрядник"
 msgstr ""
 
-#: core/models.py:678
+#: core/models.py:686
 msgid "Субпідрядник"
 msgstr ""
 
-#: core/models.py:679
+#: core/models.py:687
 msgid "Постачальник"
 msgstr ""
 
-#: core/models.py:680
+#: core/models.py:688
 msgid "Орендар"
 msgstr ""
 
-#: core/models.py:681
+#: core/models.py:689
 msgid "Орендодавець"
 msgstr ""
 
-#: core/models.py:682
+#: core/models.py:690
 msgid "Контрагент"
 msgstr ""
 
-#: core/models.py:683
+#: core/models.py:691
 msgid "Правонаступник"
 msgstr ""
 
-#: core/models.py:684
+#: core/models.py:692
 msgid "Правовласник"
 msgstr ""
 
-#: core/models.py:685
+#: core/models.py:693
 msgid "Материнська компанія"
 msgstr ""
 
-#: core/models.py:686
+#: core/models.py:694
 msgid "Дочірня компанія"
 msgstr ""
 
-#: core/models.py:687
+#: core/models.py:695
 msgid "Член наглядового органу)"
 msgstr ""
 
-#: core/models.py:729
+#: core/models.py:737
 msgid "Народився(-лась)"
 msgstr ""
 
-#: core/models.py:730
+#: core/models.py:738
 msgid "Зареєстрований(-а)"
 msgstr ""
 
-#: core/models.py:731
+#: core/models.py:739
 msgid "Проживав(-ла)"
 msgstr ""
 
-#: core/models.py:732
+#: core/models.py:740
 msgid "Громадянин(-ка)"
 msgstr ""
 
-#: core/models.py:733
+#: core/models.py:741
 msgid "Має зареєстрований бізнес"
 msgstr ""
 
-#: core/models.py:734
+#: core/models.py:742
 msgid "Має нерухомість"
 msgstr ""
 
-#: core/models.py:735 core/models.py:764
+#: core/models.py:743 core/models.py:772
 msgid "Під санкціями"
 msgstr ""
 
-#: core/models.py:763
+#: core/models.py:771
 msgid "Зареєстрована"
 msgstr ""
 
-#: core/models.py:855
+#: core/models.py:863
 msgid "Про кого"
 msgstr ""
 
-#: core/models.py:857
+#: core/models.py:865
 msgid "Інформація"
 msgstr ""
 
-#: core/models.py:859
+#: core/models.py:867
 msgid "Підтвердження"
 msgstr ""
 
-#: core/models.py:861
+#: core/models.py:869
 msgid "Контакти"
 msgstr ""
 
-#: core/models.py:862
+#: core/models.py:870
 msgid "Прочитано"
 msgstr ""
 
@@ -392,7 +404,7 @@ msgstr ""
 msgid "Закрити"
 msgstr ""
 
-#: core/templates/person.jinja:49 core/templates/search.jinja:63
+#: core/templates/person.jinja:49 core/templates/search.jinja:64
 msgid "Публічні діячі"
 msgstr ""
 
@@ -448,14 +460,14 @@ msgstr ""
 msgid "Остання посада"
 msgstr ""
 
-#: core/templates/person.jinja:145 core/templates/search.jinja:44
+#: core/templates/person.jinja:145 core/templates/search.jinja:45
 msgid ""
 "Відповідно до методології, національним публічним діячам присвоюється такі "
 "ступені ризику відмивання коштів: неприйнятно високий; високий; середній; "
 "низький"
 msgstr ""
 
-#: core/templates/person.jinja:146 core/templates/search.jinja:45
+#: core/templates/person.jinja:146 core/templates/search.jinja:46
 msgid "Рівень ризику"
 msgstr ""
 
@@ -551,15 +563,15 @@ msgstr ""
 msgid "Зв'язок"
 msgstr ""
 
-#: core/templates/search.jinja:62
+#: core/templates/search.jinja:63
 msgid "Результати пошуку"
 msgstr ""
 
-#: core/templates/search.jinja:69
+#: core/templates/search.jinja:70
 msgid "Фізичні особи"
 msgstr ""
 
-#: core/templates/search.jinja:88
+#: core/templates/search.jinja:89
 msgid "Пов'язані особи"
 msgstr ""
 

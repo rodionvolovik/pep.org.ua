@@ -305,7 +305,7 @@
                                 <ul>
                                     {% if related_persons.family %}
                                     <li>
-                                        <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Родина та близькі особи") }} <i class="fa fa-heart"></i></span>
+                                        <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Родина та близькі особи") }}</span>
                                         <ul class="h">
                                             {% for rp in related_persons.family %}
                                                 {{ render_related_person(rp, "family") }}
@@ -315,7 +315,7 @@
                                     {% endif %}
                                     {% if related_persons.personal %}
                                     <li>
-                                        <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Персональні зв'язки") }} <i class="fa fa-user-secret"></i></span>
+                                        <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Персональні зв'язки") }}</span>
                                         <ul class="h">
                                             {% for rp in related_persons.personal %}
                                                 {{ render_related_person(rp, "personal") }}
@@ -325,7 +325,7 @@
                                     {% endif %}
                                     {% if related_persons.business %}
                                     <li>
-                                        <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Ділові зв'язки") }} <i class="fa fa-users"></i></span>
+                                        <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Ділові зв'язки") }}</span>
                                         <ul class="h">
                                             {% for rp in related_persons.business %}
                                                 {{ render_related_person(rp, "business") }}

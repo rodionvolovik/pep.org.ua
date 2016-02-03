@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.conf import settings
 from django.utils.html import mark_safe
+from django.utils import translation
 
 from modelcluster.fields import ParentalKey
 
@@ -15,8 +16,9 @@ from wagtail.wagtailcore.whitelist import (
     attribute_rule, allow_without_attributes)
 from wagtail.wagtailadmin.edit_handlers import (
     InlinePanel, FieldPanel, PageChooserPanel, MultiFieldPanel)
+
 from core.utils import TranslatedField
-from django.utils import translation
+from core.models import Person
 
 
 @hooks.register('construct_whitelister_element_rules')
@@ -266,3 +268,12 @@ class HomePage(AbstractJinjaPage, Page):
         FieldPanel('footer', classname="full"),
         FieldPanel('footer_en', classname="full"),
     ]
+
+    def get_context(self, request, *args, **kwargs):
+        ctx = super(HomePage, self).get_context(request, *args, **kwargs)
+
+        ctx["persons_total"] = Person.objects.count()
+        ctx["persons_pep"] = Person.objects.filter(type_of_official=1).count()
+        ctx["persons_related"] = Person.objects.exclude(
+            type_of_official=1).count()
+        return ctx

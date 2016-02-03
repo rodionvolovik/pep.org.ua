@@ -41,7 +41,7 @@
         </div>
     </section>
 
-    {% if page.columns %}
+    {#% if page.columns %}
     <selection id="hp-columns">
         <div class="container">
             <div class="row">
@@ -54,13 +54,31 @@
             </div>
         </div>
     </selection>
-    {% endif %}    
+    {% endif %#}
+    <selection id="hp-columns">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h3>{{ persons_total }}</h3>
+                    {{ _("Профілів фізичних осіб в Реєстрі") }}
+                </div>
+                <div class="col-md-4">
+                    <h3>{{ persons_pep }}</h3>
+                    {{ _("Профілів публічних діячів у Реєстрі") }}
+                </div>
+                <div class="col-md-4">
+                    <h3>{{ persons_related }}</h3>
+                    {{ _("Профілів пов'язаних осіб в Реєстрі") }}
+                </div>
+            </div>
+        </div>
+    </selection>
 
-    {% if page.banners %}
+    {% if page.banner_items %}
     <selection id="sponsors">
         <div class="container">
             <div class="row">
-                {% for banner in page.banners %}
+                {% for banner in page.banner_items.all() %}
                     {% if banner.image %}
                     <div class="sponsor text-center col-md-3 col-xs-6">
                         <a href="{{ banner.link }}" target="_blank">

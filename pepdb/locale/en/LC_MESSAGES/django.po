@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-24 14:46+0200\n"
+"POT-Creation-Date: 2016-02-03 03:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,20 +25,32 @@ msgstr "Enter name"
 msgid "Перевірити"
 msgstr "Check"
 
+#: cms_pages/templates/cms_pages/home.jinja:63
+msgid "Профілів фізичних осіб в Реєстрі"
+msgstr "of individual profiles in the Register"
+
+#: cms_pages/templates/cms_pages/home.jinja:67
+msgid "Профілів публічних діячів у Реєстрі"
+msgstr "of PEPs profiles in the Register"
+
+#: cms_pages/templates/cms_pages/home.jinja:71
+msgid "Профілів пов'язаних осіб в Реєстрі"
+msgstr "of close associates profiles in the Register"
+
 #: cms_pages/templates/cms_pages/static_page.jinja:18
-#: core/templates/person.jinja:48 core/templates/search.jinja:61
+#: core/templates/person.jinja:48 core/templates/search.jinja:62
 msgid "Головна"
 msgstr "Main page"
 
-#: core/admin.py:197
+#: core/admin.py:210
 msgid "Наявність перекладу"
 msgstr "Translation availability"
 
-#: core/admin.py:204
+#: core/admin.py:217
 msgid "Немає"
 msgstr "No"
 
-#: core/admin.py:205
+#: core/admin.py:218
 msgid "Є"
 msgstr "Yes"
 
@@ -224,131 +236,131 @@ msgstr "business relationships"
 msgid "особисті зв'язки"
 msgstr "personal relationships"
 
-#: core/models.py:669
+#: core/models.py:677
 msgid "Власник"
 msgstr "Owner"
 
-#: core/models.py:670
+#: core/models.py:678
 msgid "Співвласник"
 msgstr "Co-owner"
 
-#: core/models.py:671
+#: core/models.py:679
 msgid "Споріднена"
 msgstr "Related"
 
-#: core/models.py:672
+#: core/models.py:680
 msgid "Кредитор (фінансовий партнер)"
 msgstr "Lender (financial partner)"
 
-#: core/models.py:673
+#: core/models.py:681
 msgid "Надавач професійних послуг"
 msgstr "Professional Services Provider"
 
-#: core/models.py:674
+#: core/models.py:682
 msgid "Клієнт"
 msgstr "Client"
 
-#: core/models.py:675
+#: core/models.py:683
 msgid "Виконавець"
 msgstr "Contractor"
 
-#: core/models.py:676
+#: core/models.py:684
 msgid "Замовник"
 msgstr "Ordering customer"
 
-#: core/models.py:677
+#: core/models.py:685
 msgid "Підрядник"
 msgstr "Сontract holder"
 
-#: core/models.py:678
+#: core/models.py:686
 msgid "Субпідрядник"
 msgstr "Subcontractor"
 
-#: core/models.py:679
+#: core/models.py:687
 msgid "Постачальник"
 msgstr "Vendor"
 
-#: core/models.py:680
+#: core/models.py:688
 msgid "Орендар"
 msgstr "Lessee"
 
-#: core/models.py:681
+#: core/models.py:689
 msgid "Орендодавець"
 msgstr "Lessor"
 
-#: core/models.py:682
+#: core/models.py:690
 msgid "Контрагент"
 msgstr "Counterparty"
 
-#: core/models.py:683
+#: core/models.py:691
 msgid "Правонаступник"
 msgstr "Legal successor"
 
-#: core/models.py:684
+#: core/models.py:692
 msgid "Правовласник"
 msgstr "Stakeholder"
 
-#: core/models.py:685
+#: core/models.py:693
 msgid "Материнська компанія"
 msgstr "Parent company"
 
-#: core/models.py:686
+#: core/models.py:694
 msgid "Дочірня компанія"
 msgstr "Subsidiary"
 
-#: core/models.py:687
+#: core/models.py:695
 msgid "Член наглядового органу)"
 msgstr "Member of the supervisory authority"
 
-#: core/models.py:729
+#: core/models.py:737
 msgid "Народився(-лась)"
 msgstr "Born"
 
-#: core/models.py:730
+#: core/models.py:738
 msgid "Зареєстрований(-а)"
 msgstr "Registered"
 
-#: core/models.py:731
+#: core/models.py:739
 msgid "Проживав(-ла)"
 msgstr "Resident"
 
-#: core/models.py:732
+#: core/models.py:740
 msgid "Громадянин(-ка)"
 msgstr "Citizen"
 
-#: core/models.py:733
+#: core/models.py:741
 msgid "Має зареєстрований бізнес"
 msgstr "has a registered business"
 
-#: core/models.py:734
+#: core/models.py:742
 msgid "Має нерухомість"
 msgstr "Has the real estate"
 
-#: core/models.py:735 core/models.py:764
+#: core/models.py:743 core/models.py:772
 msgid "Під санкціями"
 msgstr "Under sanctions"
 
-#: core/models.py:763
+#: core/models.py:771
 msgid "Зареєстрована"
 msgstr "Registered"
 
-#: core/models.py:855
+#: core/models.py:863
 msgid "Про кого"
 msgstr "Of whom"
 
-#: core/models.py:857
+#: core/models.py:865
 msgid "Інформація"
 msgstr "Information"
 
-#: core/models.py:859
+#: core/models.py:867
 msgid "Підтвердження"
 msgstr "Confirmation"
 
-#: core/models.py:861
+#: core/models.py:869
 msgid "Контакти"
 msgstr "Contacts"
 
-#: core/models.py:862
+#: core/models.py:870
 msgid "Прочитано"
 msgstr "Read"
 
@@ -396,7 +408,7 @@ msgstr "Link"
 msgid "Закрити"
 msgstr "Close"
 
-#: core/templates/person.jinja:49 core/templates/search.jinja:63
+#: core/templates/person.jinja:49 core/templates/search.jinja:64
 msgid "Публічні діячі"
 msgstr "Politically Exposed Persons"
 
@@ -452,7 +464,7 @@ msgstr "Place of birth"
 msgid "Остання посада"
 msgstr "Last position"
 
-#: core/templates/person.jinja:145 core/templates/search.jinja:44
+#: core/templates/person.jinja:145 core/templates/search.jinja:45
 msgid ""
 "Відповідно до методології, національним публічним діячам присвоюється такі "
 "ступені ризику відмивання коштів: неприйнятно високий; високий; середній; "
@@ -461,7 +473,7 @@ msgstr ""
 "According to the methodology Domestic PEPs are assigned the following levels "
 "of money laundering risk: unacceptably high; high; medium; low."
 
-#: core/templates/person.jinja:146 core/templates/search.jinja:45
+#: core/templates/person.jinja:146 core/templates/search.jinja:46
 msgid "Рівень ризику"
 msgstr "Risk level"
 
@@ -557,15 +569,15 @@ msgstr "Maybe you were looking for:"
 msgid "Зв'язок"
 msgstr "Connection:"
 
-#: core/templates/search.jinja:62
+#: core/templates/search.jinja:63
 msgid "Результати пошуку"
 msgstr "Search results"
 
-#: core/templates/search.jinja:69
+#: core/templates/search.jinja:70
 msgid "Фізичні особи"
 msgstr "Individuals"
 
-#: core/templates/search.jinja:88
+#: core/templates/search.jinja:89
 msgid "Пов'язані особи"
 msgstr "Close associates"
 
