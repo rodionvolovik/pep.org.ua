@@ -228,17 +228,18 @@
                 <div class="printWrap">
                     <div id="element">
                         <ul class="timeline">
-                            {% for date_tag, type, connection in person.workplaces %}
+                            {% for connection in person.workplaces %}
                             <li class="tl-item">
                                 <div class="tl-wrap">
                                     <span class="tl-date">
-                                        {% if date_tag %}
-                                            {% if type == "from" %}
-                                                {{ _("з") }}
-                                            {% elif type == "to" %}
-                                                {{ _("по") }}
-                                            {% endif %}
-                                            {{ date_tag }}
+                                        {% if connection.date_established %}
+                                            {{ _("з") }}
+                                            {{ connection.date_established }}
+                                            <br/>
+                                        {% endif %}
+                                        {% if connection.date_finished %}
+                                            {{ _("по") }}
+                                            {{ connection.date_finished }}
                                         {% endif %}
                                     </span>
                                     <div class="tl-content panel padder b-a">
