@@ -1,5 +1,6 @@
 from modeltranslation.translator import translator, TranslationOptions
-from core.models import Country, Document, Person, Company, Person2Company
+from core.models import (
+    Country, Document, Person, Company, Person2Company, Declaration)
 
 
 class CountryTranslationOptions(TranslationOptions):
@@ -24,8 +25,13 @@ class Person2CompanyTranslationOptions(TranslationOptions):
     fields = ('relationship_type',)
 
 
+class DeclarationTranslationOptions(TranslationOptions):
+    fields = ("position", "office", "region",)
+
+
 translator.register(Country, CountryTranslationOptions)
 translator.register(Document, DocumentTranslationOptions)
 translator.register(Person, PersonTranslationOptions)
 translator.register(Company, CompanyTranslationOptions)
 translator.register(Person2Company, Person2CompanyTranslationOptions)
+translator.register(Declaration, DeclarationTranslationOptions)
