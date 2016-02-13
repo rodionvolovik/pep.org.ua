@@ -7,7 +7,6 @@ from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
-from django.utils import formats
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_noop as _
 from django.utils.translation import ugettext_lazy
@@ -19,9 +18,9 @@ import select2.models
 from django_markdown.models import MarkdownField
 from django.utils import translation
 
-
 from core.utils import (
-    parse_fullname, parse_family_member, RELATIONS_MAPPING, TranslatedField)
+    parse_fullname, parse_family_member, RELATIONS_MAPPING, TranslatedField,
+    render_date)
 
 # to_*_dict methods are used to convert two main entities that we have, Person
 # and Company into document indexable by ElasticSearch.
@@ -133,30 +132,12 @@ class Person(models.Model):
 
     @property
     def date_of_birth(self):
-        if not self.dob:
-            return ""
-
-        if self.dob_details == 0:
-            return formats.date_format(self.dob, "DATE_FORMAT")
-        elif self.dob_details == 1:
-            return formats.date_format(
-                self.dob, "MONTH_YEAR_DATE_FORMAT")
-        elif self.dob_details == 2:
-            return formats.date_format(self.dob, "YEAR_DATE_FORMAT")
+        return render_date(self.dob, self.dob_details)
 
     def _last_workplace(self):
-        qs = self.person2company_set.filter(
-            is_employee=True, date_finished__exact=None)
-
-        if not qs:
-            qs = self.person2company_set.filter(
-                is_employee=True).order_by("-date_finished")
-        if not qs:
-            qs = self.person2company_set.filter(
-                is_employee=False, date_finished__exact=None)
-        if not qs:
-            qs = self.person2company_set.filter(
-                is_employee=False).order_by("-date_finished")
+        qs = self.person2company_set.order_by(
+            "-is_employee", "-date_finished").select_related(
+            "to_company")
 
         return qs
 
@@ -213,10 +194,37 @@ class Person(models.Model):
     def all_related_persons(self):
         related_persons = [
             (i.to_relationship_type, i.from_relationship_type, i.to_person, i)
-            for i in self.to_persons.select_related("to_person")] + [
+            for i in self.to_persons.select_related("to_person").defer(
+                "to_person__passport_id",
+                "to_person__passport_reg",
+                "to_person__tax_payer_id",
+                "to_person__id_number",
+                "to_person__reputation_assets",
+                "to_person__reputation_sanctions",
+                "to_person__reputation_crimes",
+                "to_person__reputation_manhunt",
+                "to_person__reputation_convictions",
+                "to_person__wiki",
+                "to_person__names",
+                "to_person__hash"
+            )
+        ] + [
             (i.from_relationship_type, i.to_relationship_type,
              i.from_person, i)
-            for i in self.from_persons.select_related("from_person")
+            for i in self.from_persons.select_related("from_person").defer(
+                "from_person__passport_id",
+                "from_person__passport_reg",
+                "from_person__tax_payer_id",
+                "from_person__id_number",
+                "from_person__reputation_assets",
+                "from_person__reputation_sanctions",
+                "from_person__reputation_crimes",
+                "from_person__reputation_manhunt",
+                "from_person__reputation_convictions",
+                "from_person__wiki",
+                "from_person__names",
+                "from_person__hash"
+            )
         ]
 
         res = {
@@ -355,10 +363,54 @@ class Person(models.Model):
 class AbstractRelationship(models.Model):
     date_established = models.DateField(
         "Зв'язок почався", blank=True, null=True)
+
+    date_established_details = models.IntegerField(
+        "точність",
+        choices=(
+            (0, "Точна дата"),
+            (1, "Рік та місяць"),
+            (2, "Тільки рік"),
+        ),
+        default=0)
+
     date_finished = models.DateField(
         "Зв'язок скінчився", blank=True, null=True)
+
+    date_finished_details = models.IntegerField(
+        "точність",
+        choices=(
+            (0, "Точна дата"),
+            (1, "Рік та місяць"),
+            (2, "Тільки рік"),
+        ),
+        default=0)
+
     date_confirmed = models.DateField(
         "Підтверджено", blank=True, null=True)
+
+    date_confirmed_details = models.IntegerField(
+        "точність",
+        choices=(
+            (0, "Точна дата"),
+            (1, "Рік та місяць"),
+            (2, "Тільки рік"),
+        ),
+        default=0)
+
+    @property
+    def date_established_human(self):
+        return render_date(self.date_established,
+                           self.date_established_details)
+
+    @property
+    def date_finished_human(self):
+        return render_date(self.date_finished,
+                           self.date_finished_details)
+
+    @property
+    def date_confirmed_human(self):
+        return render_date(self.date_confirmed,
+                           self.date_confirmed_details)
 
     proof_title = models.TextField(
         "Назва доказу зв'язку", blank=True,
@@ -380,12 +432,12 @@ class Person2Person(AbstractRelationship):
         (_("чоловік"), [_("дружина")]),
         (_("дружина"), [_("чоловік")]),
         (_("чоловік/дружина"), [_("чоловік/дружина")]),
-        (_("батько"), [_("син"), _("дочка")]),
-        (_("мати"), [_("син"), _("дочка")]),
-        (_("батько/мати"), [_("батько/мати")]),
-        (_("син"), [_("батько"), _("мати")]),
-        (_("дочка"), [_("батько"), _("мати")]),
-        (_("син/дочка"), [_("син/дочка")]),
+        (_("батько"), [_("син"), _("дочка"), _("син/дочка")]),
+        (_("мати"), [_("син"), _("дочка"), _("син/дочка")]),
+        (_("батько/мати"), [_("син"), _("дочка"), _("син/дочка")]),
+        (_("син"), [_("батько"), _("мати"), _("батько/мати")]),
+        (_("дочка"), [_("батько"), _("мати"), _("батько/мати")]),
+        (_("син/дочка"), [_("батько"), _("мати"), _("батько/мати")]),
         (_("вітчим"), [_("пасинок"), _("падчерка")]),
         (_("мачуха"), [_("пасинок"), _("падчерка")]),
         (_("пасинок"), [_("вітчим"), _("мачуха")]),
@@ -400,6 +452,12 @@ class Person2Person(AbstractRelationship):
         (_("внучка"), [_("дід"), _("баба")]),
         (_("правнук"), [_("прадід"), _("прабаба")]),
         (_("правнучка"), [_("прадід"), _("прабаба")]),
+        (_("зять"), [_("теща"), _("тесть")]),
+        (_("невістка"), [_("свекор"), _("свекруха")]),
+        (_("тесть"), [_("зять")]),
+        (_("теща"), [_("зять")]),
+        (_("свекор"), [_("невістка")]),
+        (_("свекруха"), [_("невістка")]),
         (_("усиновлювач"), [_("усиновлений")]),
         (_("усиновлений"), [_("усиновлювач")]),
         (_("опікун чи піклувальник"),

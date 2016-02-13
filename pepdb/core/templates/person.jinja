@@ -1,7 +1,9 @@
 {% extends "base.jinja" %}
 {% from "macros/_connections.jinja" import render_connection %}
 
-{% block page_title %}{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}{% if person.last_workplace %}, {{ person.translated_last_workplace[0] }}, {{ person.translated_last_workplace[1] }}{% endif %}{% endblock %}
+{% set last_workplace = person.translated_last_workplace %}
+
+{% block page_title %}{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}{% if last_workplace %}, {{ last_workplace[0] }}, {{ last_workplace[1] }}{% endif %}{% endblock %}
 
 {% block extra_menu %}
     {% if request.user.is_superuser %}
@@ -131,13 +133,13 @@
                                 <td itemprop="birthPlace">{{ person.city_of_birth }}</td>
                             </tr>
                             {% endif %}
-                            {% if person.last_workplace %}
+                            {% if last_workplace %}
                             <tr>
                                 <td>{{ _("Остання посада") }}</td>
                                 <td>
                                     <strong>
-                                        <span itemprop="worksFor" itemscope itemtype="http://schema.org/Organization"><span itemprop="name">{{ person.translated_last_workplace[0] }}</span></span>, 
-                                        <span itemprop="jobTitle">{{ person.translated_last_workplace[1] }}</span>
+                                        <span itemprop="worksFor" itemscope itemtype="http://schema.org/Organization"><span itemprop="name">{{ last_workplace[0] }}</span></span>, 
+                                        <span itemprop="jobTitle">{{ last_workplace[1] }}</span>
                                     </strong>
                                 </td>
                             </tr>
@@ -233,13 +235,12 @@
                                 <div class="tl-wrap">
                                     <span class="tl-date">
                                         {% if connection.date_established %}
-                                            {{ _("з") }}
-                                            {{ connection.date_established }}
+                                            {{ connection.date_established_human }}
                                             <br/>
                                         {% endif %}
                                         {% if connection.date_finished %}
-                                            {{ _("по") }}
-                                            {{ connection.date_finished }}
+                                            {{ _("до") }}
+                                            {{ connection.date_finished_human }}
                                         {% endif %}
                                     </span>
                                     <div class="tl-content panel padder b-a">

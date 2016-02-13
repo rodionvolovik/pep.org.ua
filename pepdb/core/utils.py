@@ -9,6 +9,7 @@ from string import capwords
 from datetime import datetime
 
 from django.conf import settings
+from django.utils import formats
 
 from oauth2client.client import SignedJwtAssertionCredentials
 from dateutil import parser
@@ -291,3 +292,16 @@ def parse_family_member(s):
         }
     except ValueError:
         return None
+
+
+def render_date(date, date_details):
+    if not date:
+        return ""
+
+    if date_details == 0:
+        return formats.date_format(date, "DATE_FORMAT")
+    elif date_details == 1:
+        return formats.date_format(
+            date, "MONTH_YEAR_DATE_FORMAT")
+    elif date_details == 2:
+        return formats.date_format(date, "YEAR_DATE_FORMAT")

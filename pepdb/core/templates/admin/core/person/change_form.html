@@ -1,0 +1,68 @@
+{% extends "admin/change_form.html" %}
+
+{% block javascripts %}
+    {{ block.super }}
+
+    <script type="text/javascript" charset="utf-8">
+    	var person2person_rels = {{ person2person_rels|safe }};
+
+		grp.jQuery(function(){
+			var $ = grp.jQuery;
+
+			function apply_restrictions(el,
+				switch_to_first_elem) {
+				var name = el.attr("name"),
+					trgt = $("select[name=" + name.replace("from_relationship_type",
+						"to_relationship_type") + "]"),
+					permitted_values = person2person_rels[el.val()];
+
+				trgt.find("option:not(:first-child)").each(function() {
+					var opt = $(this);
+
+					if (typeof(permitted_values) !== "undefined" && permitted_values.indexOf(opt.val()) == -1) {
+						opt.attr("disabled", "");
+					} else {
+						opt.removeAttr("disabled");
+					}
+				});
+
+				if (switch_to_first_elem) {
+					trgt.val("");
+				}
+			}
+
+			$(document.body).on("change", "select[name^=to_persons-][name$=from_relationship_type]", function() {
+				apply_restrictions($(this), true);
+			});
+
+			$("select[name^=to_persons-][name$=from_relationship_type]").each(function() {
+				apply_restrictions($(this), false);
+			});
+
+			$(document.body).on("change", "select[name^=from_persons-][name$=from_relationship_type]", function() {
+				apply_restrictions($(this), true);
+			});
+
+			$("select[name^=from_persons-][name$=from_relationship_type]").each(function() {
+				apply_restrictions($(this), false);
+			});
+		});
+	</script>
+{% endblock %}
+
+{% block stylesheets %}
+	{{ block.super }}
+	<style type="text/css">
+		.grp-open .grp-row input[type="url"],
+		.grp-open .grp-row input[type="email"],
+		.grp-open .grp-row .vTextField,
+		.grp-open .grp-row .vURLField,
+		.grp-open .grp-row .vFileBrowseField,
+		.grp-open .grp-row textarea,
+		.grp-open .grp-row .vLargeTextField,
+		.grp-open .grp-row .vXMLLargeTextField,
+		.grp-open .grp-autocomplete-wrapper-m2m {
+			width: 450px;
+		}
+	</style>
+{% endblock %}

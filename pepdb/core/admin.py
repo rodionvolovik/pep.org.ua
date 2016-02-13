@@ -17,7 +17,7 @@ from django.utils.encoding import force_str
 from django.utils.translation import ugettext_lazy as _
 
 from grappelli_modeltranslation.admin import (
-    TranslationAdmin, TranslationTabularInline)
+    TranslationAdmin, TranslationTabularInline, TranslationStackedInline)
 
 from core.models import (
     Country, Person, Company, Person2Person, Document, Person2Country,
@@ -35,13 +35,17 @@ def make_unpublished(modeladmin, request, queryset):
 make_unpublished.short_description = "Приховати"
 
 
-class Person2PersonInline(admin.TabularInline):
+class Person2PersonInline(admin.StackedInline):
     model = Person2Person
     fk_name = "from_person"
     extra = 1
-    fields = ["from_relationship_type", "to_person", "to_relationship_type",
-              "date_established", "date_finished", "date_confirmed",
-              "proof_title", "proof"]
+    fields = ["from_relationship_type", ("to_relationship_type", "to_person"),
+              ("date_established", "date_established_details"),
+              ("date_finished", "date_finished_details"),
+              ("date_confirmed", "date_confirmed_details"),
+              ("proof_title", "proof")]
+
+    inline_classes = ('grp-collapse grp-open',)
 
     raw_id_fields = ('to_person',)
     autocomplete_lookup_fields = {
@@ -49,24 +53,34 @@ class Person2PersonInline(admin.TabularInline):
     }
 
 
-class Person2PersonBackInline(admin.TabularInline):
+class Person2PersonBackInline(admin.StackedInline):
     verbose_name = u"Зворотній зв'язок з іншою персоною"
     verbose_name_plural = u"Зворотні зв'язки з іншими персонами"
     model = Person2Person
     fk_name = "to_person"
     extra = 0
     max_num = 0
-    fields = ["from_person", "from_relationship_type", "to_relationship_type",
-              "date_established", "date_finished", "date_confirmed",
-              "proof_title", "proof"]
+
+    inline_classes = ('grp-collapse grp-open',)
+
+    fields = [("from_person", "from_relationship_type"),
+              "to_relationship_type",
+              ("date_established", "date_established_details"),
+              ("date_finished", "date_finished_details"),
+              ("date_confirmed", "date_confirmed_details"),
+              ("proof_title", "proof")]
 
 
-class Person2CountryInline(admin.TabularInline):
+class Person2CountryInline(admin.StackedInline):
     model = Person2Country
     extra = 1
-    fields = ["relationship_type", "to_country", "date_established",
-              "date_finished", "date_confirmed", "proof_title", "proof"]
+    fields = [("relationship_type", "to_country"),
+              ("date_established", "date_established_details"),
+              ("date_finished", "date_finished_details"),
+              ("date_confirmed", "date_confirmed_details"),
+              ("proof_title", "proof")]
 
+    inline_classes = ('grp-collapse grp-open',)
     raw_id_fields = ('to_country',)
     autocomplete_lookup_fields = {
         'fk': ['to_country'],
@@ -104,19 +118,23 @@ class Person2CompanyForm(forms.ModelForm):
         }
 
 
-class Person2CompanyInline(TranslationTabularInline):
+class Person2CompanyInline(TranslationStackedInline):
     model = Person2Company
     form = Person2CompanyForm
     extra = 1
-    fields = ["relationship_type", "is_employee", "to_company",
-              "date_established", "date_finished", "date_confirmed",
-              "proof_title", "proof"]
+    fields = [("relationship_type", "is_employee", "to_company",),
+              ("date_established", "date_established_details"),
+              ("date_finished", "date_finished_details"),
+              ("date_confirmed", "date_confirmed_details"),
+              ("proof_title", "proof")]
 
     raw_id_fields = ('to_company',)
 
     autocomplete_lookup_fields = {
         'fk': ['to_company'],
     }
+
+    inline_classes = ('grp-collapse grp-open',)
 
     class Media:
         css = {
@@ -125,15 +143,20 @@ class Person2CompanyInline(TranslationTabularInline):
         js = ("js/init_autocompletes.js",)
 
 
-class Company2PersonInline(admin.TabularInline):
+class Company2PersonInline(TranslationStackedInline):
     verbose_name = u"Зв'язок з іншою персоною"
     verbose_name_plural = u"Зв'язки з іншими персонами"
 
     model = Person2Company
     fk_name = "to_company"
     extra = 1
-    fields = ["from_person", "relationship_type", "date_established",
-              "date_finished", "date_confirmed", "proof_title", "proof"]
+    fields = [("relationship_type", "is_employee", "from_person"),
+              ("date_established", "date_established_details"),
+              ("date_finished", "date_finished_details"),
+              ("date_confirmed", "date_confirmed_details"),
+              ("proof_title", "proof")]
+
+    inline_classes = ('grp-collapse grp-open',)
 
     raw_id_fields = ('from_person',)
     autocomplete_lookup_fields = {
@@ -196,6 +219,14 @@ class PersonAdmin(TranslationAdmin):
             'fields': ['passport_id', 'passport_reg', 'tax_payer_id',
                        'registration', 'id_number']}),
     ]
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['person2person_rels'] = json.dumps(
+            Person2Person._relationships_explained)
+
+        return super(PersonAdmin, self).change_view(
+            request, object_id, form_url, extra_context=extra_context)
 
 
 class CompanyAdmin(TranslationAdmin):
