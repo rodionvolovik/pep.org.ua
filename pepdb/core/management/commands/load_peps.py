@@ -237,7 +237,9 @@ class Command(BaseCommand):
                     from_person=person,
                     to_company=company,
                     date_established=person_from,
-                    date_finished=person_to
+                    date_established_details=0,
+                    date_finished=person_to,
+                    date_finished_details=0
                 )
 
                 if not link.relationship_type:
