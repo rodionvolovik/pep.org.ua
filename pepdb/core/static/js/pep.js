@@ -59,6 +59,7 @@ $(function() {
 
     $("#search-form").typeahead({
         minLength: 2,
+        items: 100,
         autoSelect: false,
         source: function(query, process) {
             $.get($("#search-form").data("endpoint"), {

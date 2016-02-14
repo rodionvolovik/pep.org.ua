@@ -48,25 +48,26 @@ def suggest(request):
         if res.success:
             results += res.suggest['name'][0]['options']
 
-        # search = ElasticCompany.search()\
-        #     .suggest(
-        #         'name',
-        #         q,
-        #         completion={
-        #             'field': 'name_suggest',
-        #             'size': 3,
-        #             'fuzzy': {
-        #                 'fuzziness': 3,
-        #                 'unicode_aware': 1
-        #             }
-        #         }
-        # )
+        search = ElasticCompany.search()\
+            .suggest(
+                'name',
+                q,
+                completion={
+                    'field': 'name_suggest',
+                    'size': 5,
+                    'fuzzy': {
+                        'fuzziness': fuzziness,
+                        'unicode_aware': 1
+                    }
+                }
+        )
 
-        # res = search.execute()
-        # if res.success:
-        #     results += res.suggest['name'][0]['options']
+        res = search.execute()
+        if res.success:
+            results += res.suggest['name'][0]['options']
 
         results = sorted(results, key=itemgetter("score"), reverse=True)
+
 
         if results:
             return [val['text'] for val in results]
@@ -79,7 +80,7 @@ def suggest(request):
     # for unicode strings
     fuzziness = 0
 
-    if len(q) > 2:
+    if len(q) > 3:
         fuzziness = 1
 
     suggestions = assume(q, fuzziness)

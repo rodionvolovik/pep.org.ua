@@ -1,6 +1,7 @@
 # coding: utf-8
 from __future__ import unicode_literals
 from itertools import chain
+from copy import copy
 from collections import OrderedDict
 
 from django.db import models
@@ -184,11 +185,46 @@ class Person(models.Model):
     def assets(self):
         return self.person2company_set.select_related("to_company").filter(
             is_employee=False,
-            relationship_type_uk__in=["Засновник/учасник",
-                                      "Колишній засновник/учасник",
-                                      "Бенефіціарний власник",
-                                      "Номінальний власник",
-                                      "Контролер", ])
+            relationship_type_uk__in=(
+                "Член центрального статутного органу",
+                "Повірений у справах",
+                "Засновник/учасник",
+                "Колишній засновник/учасник",
+                "Бенефіціарний власник",
+                "Номінальний власник",
+                "Номінальний директор",
+                "Фінансові зв'язки",
+                "Секретар",
+                "Керуючий",
+                "Контролер",
+            ))
+
+
+    @property
+    def related_companies(self):
+        companies = self.person2company_set.select_related("to_company").filter(
+            is_employee=False)
+
+        assets = []
+        related = []
+        for c in companies:
+            if c.relationship_type_uk in (
+                    "Член центрального статутного органу",
+                    "Повірений у справах",
+                    "Засновник/учасник",
+                    "Колишній засновник/учасник",
+                    "Бенефіціарний власник",
+                    "Номінальний власник",
+                    "Номінальний директор",
+                    "Фінансові зв'язки",
+                    "Секретар",
+                    "Керуючий",
+                    "Контролер"):
+                assets.append(c)
+            else:
+                related.append(c)
+
+        return assets, related
 
     @property
     def all_related_persons(self):
@@ -694,8 +730,22 @@ class Company(models.Model):
             for i in self.from_companies.select_related("from_company")
         ]
 
+        suggestions = []
+
+        for field in (d["name"], d["short_name"]):
+            if not field:
+                continue
+
+            chunks = list(map(lambda x: x.strip("'\",.-“”«»"), field.split(" ")))
+
+            for i in xrange(len(chunks)):
+                variant = copy(chunks)
+                variant = [variant[i]] + variant[:i] + variant[i + 1:]
+                suggestions.append(" ".join(variant))
+
+
         d["name_suggest"] = {
-            "input": filter(None, [d["name"], d["short_name"]]),
+            "input": suggestions,
             "output": d["name"]
         }
 
