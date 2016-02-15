@@ -1,1021 +1,1699 @@
 @font-face {
-    font-family: 'arsenalbold';
-    src: url("../fonts/arsenal-bold.eot");
-    src: url("../fonts/arsenal-bold.eot?#iefix") format("embedded-opentype"), url("../fonts/arsenal-bold.woff") format("woff"), url("../fonts/arsenal-bold.ttf.gz") format("truetype");
-    font-weight: bold;
-    font-style: normal;
+  font-family: 'arsenalbold';
+  src: url("../fonts/arsenal-bold.eot");
+  src: url("../fonts/arsenal-bold.eot?#iefix") format("embedded-opentype"), url("../fonts/arsenal-bold.woff") format("woff"), url("../fonts/arsenal-bold.ttf.gz") format("truetype");
+  font-weight: bold;
+  font-style: normal;
 }
-
-
 @font-face {
-    font-family: 'arsenalbold_italic';
-    src: url("../fonts/arsenal-bolditalic.eot");
-    src: url("../fonts/arsenal-bolditalic.eot?#iefix") format("embedded-opentype"), url("../fonts/arsenal-bolditalic.woff") format("woff"), url("../fonts/arsenal-bolditalic.ttf.gz") format("truetype");
-    font-weight: bold;
+  font-family: 'arsenalbold_italic';
+  src: url("../fonts/arsenal-bolditalic.eot");
+  src: url("../fonts/arsenal-bolditalic.eot?#iefix") format("embedded-opentype"), url("../fonts/arsenal-bolditalic.woff") format("woff"), url("../fonts/arsenal-bolditalic.ttf.gz") format("truetype");
+  font-weight: bold;
 }
-
-
 @font-face {
-    font-family: 'arsenalitalic';
-    src: url("../fonts/arsenal-italic.eot");
-    src: url("../fonts/arsenal-italic.eot?#iefix") format("embedded-opentype"), url("../fonts/arsenal-italic.woff") format("woff"), url("../fonts/arsenal-italic.ttf.gz") format("truetype");
-    font-weight: normal;
+  font-family: 'arsenalitalic';
+  src: url("../fonts/arsenal-italic.eot");
+  src: url("../fonts/arsenal-italic.eot?#iefix") format("embedded-opentype"), url("../fonts/arsenal-italic.woff") format("woff"), url("../fonts/arsenal-italic.ttf.gz") format("truetype");
+  font-weight: normal;
 }
-
-
 @font-face {
-    font-family: 'arsenalregular';
-    src: url("../fonts/arsenal-regular.eot");
-    src: url("../fonts/arsenal-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/arsenal-regular.woff") format("woff"), url("../fonts/arsenal-regular.ttf.gz") format("truetype");
-    font-weight: normal;
-    font-style: normal;
+  font-family: 'arsenalregular';
+  src: url("../fonts/arsenal-regular.eot");
+  src: url("../fonts/arsenal-regular.eot?#iefix") format("embedded-opentype"), url("../fonts/arsenal-regular.woff") format("woff"), url("../fonts/arsenal-regular.ttf.gz") format("truetype");
+  font-weight: normal;
+  font-style: normal;
 }
-
-
 @font-face {
-    font-family: 'ws';
-    src: url("../fonts/web_serveroff-webfont.eot");
-    src: url("../fonts/web_serveroff-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/../fonts/web_serveroff-webfont.woff") format("woff"), url("../fonts/web_serveroff-webfont.ttf") format("truetype"), url("../fonts/web_serveroff-webfont.svg#web_serveroffregular") format("svg");
-    font-weight: normal;
-    font-style: normal;
+  font-family: 'ws';
+  src: url("../fonts/web_serveroff-webfont.eot");
+  src: url("../fonts/web_serveroff-webfont.eot?#iefix") format("embedded-opentype"), url("../fonts/web_serveroff-webfont.woff") format("woff"), url("../fonts/web_serveroff-webfont.ttf") format("truetype"), url("../fonts/web_serveroff-webfont.svg#web_serveroffregular") format("svg");
+  font-weight: normal;
+  font-style: normal;
 }
-
-
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-}
-
+/* line 44, css\less\general.less */
+html,
 body {
-    background: #e9e9e9;
-    font-family: 'arsenalregular';
-    font-size: 16px;
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
-
+/* line 50, css\less\general.less */
+body {
+  background: #e9e9e9;
+  font-family: 'arsenalregular';
+  font-size: 16px;
+}
+/* line 56, css\less\general.less */
 body.front {
-    background: #fff;
+  background: #fff;
 }
-
+/* line 60, css\less\general.less */
 #wrapper {
-    min-height: 100%;
-    position: relative;
+  min-height: 100%;
+  position: relative;
 }
-
+/* line 65, css\less\general.less */
 .cp {
-    display: block;
-    padding-bottom: 30px;
+  display: block;
+  padding-bottom: 30px;
 }
-
+/* line 70, css\less\general.less */
 .clr {
-    clear: both;
-    height: 1px;
+  clear: both;
+  height: 1px;
 }
-
+/* line 75, css\less\general.less */
 a.trans {
-    -webkit-transition: all 0.3s ease;
-    -moz-transition: all 0.3s ease;
-    -o-transition: all 0.3s ease;
-    -ms-transition: all 0.3s ease;
-    transition: all 0.3s ease;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  transition: all 0.3s ease;
 }
-
+/* line 83, css\less\general.less */
 .breadcrumb {
-    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
-    font-size: 14px;
-    margin-top: 20px;
+  background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+  font-size: 14px;
+  margin-top: 20px;
 }
-
+/* line 89, css\less\general.less */
 .btn-transp {
-    background-color: transparent;
-    color: rgba(0, 0, 0, 0.84);
-    border-radius: 2px;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 6px rgba(0, 0, 0, 0.12);
-    margin: 10px 1px;
-    position: relative;
-    transition: box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1) 0s;
-    text-transform: uppercase;
+  background-color: transparent;
+  color: rgba(0, 0, 0, 0.84);
+  border-radius: 2px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 6px rgba(0, 0, 0, 0.12);
+  margin: 10px 1px;
+  position: relative;
+  transition: box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  text-transform: uppercase;
 }
-
+/* line 100, css\less\general.less */
 .btn-transp:hover {
-    background-color: #fff;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3), 0 1px 6px rgba(0, 0, 0, 0.3);
+  background-color: #fff;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3), 0 1px 6px rgba(0, 0, 0, 0.3);
 }
-
+/* line 105, css\less\general.less */
 .navbar-inverse .navbar-toggle .icon-bar {
-    background-color: #333;
+  background-color: #333;
 }
-
+/* line 109, css\less\general.less */
 #footer {
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    background: #333333;
-    padding-top: 30px;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: #333333;
+  padding-top: 30px;
 }
-
+/* line 118, css\less\general.less */
 #footer td {
-    padding: 0 40px 0 0;
-    vertical-align: top;
+  padding: 0 40px 0 0;
+  vertical-align: top;
 }
-
+/* line 123, css\less\general.less */
 #footer p {
-    color: #cacaca;
+  color: #cacaca;
 }
-
+/* line 127, css\less\general.less */
 .not-front #footer p {
-    color: #747171;
+  color: #747171;
 }
-
+/* line 131, css\less\general.less */
 #footer li {
-    color: #cacaca;
-    text-transform: uppercase;
-    list-style: none;
+  color: #cacaca;
+  text-transform: uppercase;
+  list-style: none;
 }
-
+/* line 137, css\less\general.less */
 #footer li a {
-    color: #cacaca;
-    text-transform: uppercase;
-    white-space: nowrap;
+  color: #cacaca;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
-
+/* line 143, css\less\general.less */
 #footer li a:hover {
-    color: #4285f4;
-    text-decoration: underline;
+  color: #4285f4;
+  text-decoration: underline;
 }
-
+/* line 148, css\less\general.less */
 i {
-    font-style: normal;
-    font-family: 'arsenalitalic';
+  font-style: normal;
+  font-family: 'arsenalitalic';
 }
-
+/* line 153, css\less\general.less */
 #navbar {
-    border: none;
-    background: #fff;
-    border-radius: 0;
-    margin-bottom: 0;
-    padding-top: 0;
-    padding-bottom: 0;
+  border: none;
+  background: #fff;
+  border-radius: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
 }
-
+/* line 162, css\less\general.less */
 .navbar-inverse .navbar-collapse,
 .navbar-inverse .navbar-form {
-    border: none;
+  border: none;
 }
-
+/* line 167, css\less\general.less */
 .not-front .navbar-inverse .navbar-toggle {
-    border-color: white;
+  border-color: white;
 }
-
+/* line 171, css\less\general.less */
 .not-front .navbar-inverse .navbar-toggle .icon-bar {
-    background-color: white;
+  background-color: white;
 }
-
+/* line 175, css\less\general.less */
 #navbar li {
-    margin-right: 15px;
-    text-transform: uppercase;
+  margin-right: 15px;
+  text-transform: uppercase;
 }
-
+/* line 180, css\less\general.less */
 #navbar li a,
 #navbar .navbar-brand {
-    color: #333333;
-    text-transform: uppercase;
-    padding-bottom: 30px;
-    padding-top: 30px;
+  color: #333333;
+  text-transform: uppercase;
+  padding-bottom: 30px;
+  padding-top: 30px;
 }
-
+/* line 188, css\less\general.less */
 #navbar li.active a {
-    background-color: #e7e7e7;
+  background-color: #e7e7e7;
 }
-
+/* line 192, css\less\general.less */
 #navbar .btn {
-    color: #333;
-    border: #333 1px solid;
-    padding: 10px 30px;
-    margin-top: 5px;
-    font-size: 18px;
+  color: #333;
+  border: #333 1px solid;
+  padding: 10px 30px;
+  margin-top: 5px;
+  font-size: 18px;
 }
-
-#navbar li a:hover, #navbar .navbar-brand:hover {
-    color: #4285f4;
+/* line 200, css\less\general.less */
+#navbar li a:hover,
+#navbar .navbar-brand:hover {
+  color: #4285f4;
 }
-
+/* line 204, css\less\general.less */
 #navbar .btn:hover {
-    color: #4285f4;
-    border: #4285f4 1px solid;
-    background: #FFF;
+  color: #4285f4;
+  border: #4285f4 1px solid;
+  background: #FFF;
 }
-
+/* line 210, css\less\general.less */
 .not-front #navbar {
-    background: #355383;
+  background: #355383;
 }
-
+/* line 214, css\less\general.less */
 .not-front #navbar li a,
 .not-front #navbar .navbar-brand {
-    color: white;
+  color: white;
 }
-
+/* line 219, css\less\general.less */
 .not-front #navbar li a:hover,
 .not-front #navbar li.active a {
-    background: #1c2c47;
-    color: white;
+  background: #1c2c47;
+  color: white;
 }
-
+/* line 225, css\less\general.less */
 #sponsors {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
-
+/* line 229, css\less\general.less */
 .btn-danger {
-    background-color: #ff5a5f;
-    color: #FFF;
-    border: #FFF 1px solid;
+  background-color: #ff5a5f;
+  color: #FFF;
+  border: #FFF 1px solid;
 }
-
+/* line 235, css\less\general.less */
 .btn-danger:hover {
-    border: #fff 1px solid;
+  border: #fff 1px solid;
 }
-
+/* line 239, css\less\general.less */
 h1 {
-    text-transform: uppercase;
-    font-family: 'Noto Sans', sans-serif;
-    font-weight: bold;
+  text-transform: uppercase;
+  font-family: 'Noto Sans', sans-serif;
+  font-weight: bold;
 }
-
+/* line 245, css\less\general.less */
 #searchbox {
-    background: #355383 url(../images/baner.png) no-repeat center center;
-    margin-bottom: 40px;
+  background: #355383 url(../images/baner.png) no-repeat center center;
+  margin-bottom: 40px;
 }
-
+/* line 250, css\less\general.less */
 #searchbox h1 {
-    color: #FFF;
+  color: #FFF;
 }
-
+/* line 254, css\less\general.less */
 #searchbox p {
-    color: #FFF;
+  color: #FFF;
 }
-
+/* line 258, css\less\general.less */
 #searchbox p a {
-    color: #FFF;
-    text-decoration: underline;
+  color: #FFF;
+  text-decoration: underline;
 }
-
+/* line 263, css\less\general.less */
 #searchbox .input-group {
-    margin-top: 60px;
+  margin-top: 60px;
 }
-
+/* line 267, css\less\general.less */
 #searchbox input.form-control {
-    color: #939391;
-    font-size: 20px;
-    padding: 10px;
-    height: 42px;
-    border: #fff 1px solid;
+  color: #939391;
+  font-size: 20px;
+  padding: 10px;
+  height: 42px;
+  border: #fff 1px solid;
 }
-
+/* line 275, css\less\general.less */
 #searchbox .btn {
-    font-size: 20px;
-    height: 42px;
+  font-size: 20px;
+  height: 42px;
 }
-
+/* line 280, css\less\general.less */
 .regularSearch {
-    margin-top: 20px;
-    max-width: 250px;
+  margin-top: 20px;
+  max-width: 250px;
 }
-
+/* line 285, css\less\general.less */
 .regularSearch input,
 .regularSearch .btn {
-    height: 40px;
+  height: 40px;
 }
-
+/* line 290, css\less\general.less */
 #pep-search .typeahead.dropdown-menu li {
-    border-bottom: #F1F1F1 1px solid;
-    width: 100%;
+  border-bottom: #F1F1F1 1px solid;
+  width: 100%;
 }
-
+/* line 295, css\less\general.less */
 #pep-search .typeahead.dropdown-menu li:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
-
+/* line 299, css\less\general.less */
 #pep-search .typeahead.dropdown-menu li a {
-    color: black;
-    padding: 10px 20px;
-    text-transform: uppercase;
+  color: black;
+  padding: 10px 20px;
+  text-transform: uppercase;
 }
-
+/* line 305, css\less\general.less */
 #pep-search .typeahead.dropdown-menu li a strong {
-    font-weight: normal;
-    font-family: 'arsenalbold';
-    color: #ff5a5f;
+  font-weight: normal;
+  font-family: 'arsenalbold';
+  color: #ff5a5f;
 }
-
+/* line 311, css\less\general.less */
 #pep-search .typeahead.dropdown-menu li.active a {
-    background: #355383;
-    color: white;
+  background: #355383;
+  color: white;
 }
-
+/* line 316, css\less\general.less */
 #navbar .regularSearch ul {
-    right: 0;
-    left: auto !important;
+  right: 0;
+  left: auto !important;
 }
-
+/* line 321, css\less\general.less */
 #navbar .regularSearch ul li {
-    float: left;
-    position: relative;
-    padding: 0;
-    margin-left: 0;
-    margin-right: 0;
+  float: left;
+  position: relative;
+  padding: 0;
+  margin-left: 0;
+  margin-right: 0;
 }
-
+/* line 329, css\less\general.less */
 #navbar .regularSearch ul li a {
-    display: inline-block;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    width: 100%;
+  display: inline-block;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width: 100%;
 }
-
+/* line 336, css\less\general.less */
 #navbar .regularSearch .btn {
-    margin-top: 0;
-    padding: 0 10px;
-    background: #4285f4;
-    border: #4285f4 1px solid;
+  margin-top: 0;
+  padding: 0 10px;
+  background: #4285f4;
+  border: #4285f4 1px solid;
 }
-
+/* line 343, css\less\general.less */
 .not-front #navbar .regularSearch .btn {
-    background: #e9e9e9;
-    border: #e9e9e9 1px solid;
+  background: #e9e9e9;
+  border: #e9e9e9 1px solid;
 }
-
+/* line 348, css\less\general.less */
 #navbar .regularSearch .btn i {
-    color: white;
+  color: white;
 }
-
+/* line 352, css\less\general.less */
 .not-front #navbar .regularSearch .btn i {
-    color: #355383;
+  color: #355383;
 }
-
+/* line 356, css\less\general.less */
 .square {
-    max-width: 100%;
+  max-width: 100%;
 }
-
+/* line 360, css\less\general.less */
 .card {
-    margin-bottom: 100px;
+  margin-bottom: 100px;
 }
-
+/* line 364, css\less\general.less */
 .card {
-    font-size: 20px;
-    padding: 0;
-    text-transform: uppercase;
-    display: table;
+  font-size: 20px;
+  padding: 0;
+  text-transform: uppercase;
+  display: table;
 }
-
+/* line 371, css\less\general.less */
 .card a {
-    display: table-cell;
-    vertical-align: middle;
-    border: #4185f4 1px solid;
-    padding: 0 15px;
+  display: table-cell;
+  vertical-align: middle;
+  border: #4185f4 1px solid;
+  padding: 0 15px;
 }
-
+/* line 378, css\less\general.less */
 .card i {
-    display: block;
-    margin-bottom: 20px;
+  display: block;
+  margin-bottom: 20px;
 }
-
-.card i, .card a {
-    color: #4185f4;
-    text-decoration: none;
+/* line 383, css\less\general.less */
+.card i,
+.card a {
+  color: #4185f4;
+  text-decoration: none;
 }
-
+/* line 388, css\less\general.less */
 .card a:hover {
-    background-color: #ff5a5f;
-    color: #fff;
-    border: #fff 1px solid;
+  background-color: #ff5a5f;
+  color: #fff;
+  border: #fff 1px solid;
 }
-
+/* line 394, css\less\general.less */
 .card a:hover i {
-    color: #fff;
+  color: #fff;
 }
-
+/* line 398, css\less\general.less */
 #profile-nav ul {
-    padding-left: 0;
+  padding-left: 0;
 }
-
+/* line 402, css\less\general.less */
 #profile-nav li {
-    list-style: none;
-    width: 100%;
+  list-style: none;
+  width: 100%;
 }
-
+/* line 407, css\less\general.less */
 #profile-nav li a {
-    width: 100%;
-    white-space: normal;
-    min-height: 48px;
-    text-align: left;
+  width: 100%;
+  white-space: normal;
+  min-height: 48px;
+  text-align: left;
 }
-
+/* line 414, css\less\general.less */
 #profile-nav li i {
-    margin-right: 20px;
-    float: left;
-    padding-top: 5px;
-    padding-bottom: 10px;
+  margin-right: 20px;
+  float: left;
+  padding-top: 5px;
+  padding-bottom: 10px;
 }
-
+/* line 421, css\less\general.less */
 .box {
-    background: none repeat scroll 0 0 #fff;
-    border: 0 none;
-    border-radius: 2px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.23), 0 3px 10px rgba(0, 0, 0, 0.16);
-    padding: 24px;
-    margin-bottom: 40px;
+  background: none repeat scroll 0 0 #fff;
+  border: 0 none;
+  border-radius: 2px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.23), 0 3px 10px rgba(0, 0, 0, 0.16);
+  padding: 24px;
+  margin-bottom: 40px;
 }
-
+/* line 430, css\less\general.less */
 #profile-wrap.box {
-    margin-top: 10px;
-    background: #fff url(../images/plashka.png) no-repeat top;
-    padding: 30px;
+  margin-top: 10px;
+  background: #ffffff url(../images/plashka.png) no-repeat top;
+  padding: 30px;
 }
-
+/* line 436, css\less\general.less */
 #profile-wrap .avatar {
-    float: left;
-    margin-right: 50px;
+  float: left;
+  margin-right: 50px;
 }
-
+/* line 441, css\less\general.less */
 .pep-name {
-    font-size: 28px;
-    margin-top: 10px;
+  font-size: 28px;
+  margin-top: 10px;
 }
-
+/* line 446, css\less\general.less */
 .pep-name,
 .pep-name a {
-    color: #FFFFFF;
+  color: #FFFFFF;
 }
-
+/* line 451, css\less\general.less */
 .pep-pib {
-    display: block;
-    text-transform: none;
+  display: block;
+  text-transform: none;
 }
-
+/* line 456, css\less\general.less */
 #profile .profileActions {
-    position: absolute;
-    margin-top: -15px;
-    left: auto;
-    right: 0;
-    margin-right: 30px;
+  position: absolute;
+  margin-top: -15px;
+  left: auto;
+  right: 0;
+  margin-right: 30px;
 }
-
+/* line 464, css\less\general.less */
 #profile .profileActions li {
-    list-style: none;
-    float: left;
-    margin-left: 10px;
+  list-style: none;
+  float: left;
+  margin-left: 10px;
 }
-
+/* line 470, css\less\general.less */
 #profile .profileActions li a {
-    color: white;
-    font-size: 18px;
-    padding: 2px 5px;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
+  color: white;
+  font-size: 18px;
+  padding: 2px 5px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
 }
-
+/* line 479, css\less\general.less */
 #profile .profileActions li a:hover {
-    background: white;
-    color: #428bca;
+  background: white;
+  color: #428bca;
 }
-
+/* line 484, css\less\general.less */
 #profile .profile-header {
-    margin-bottom: 40px;
+  margin-bottom: 40px;
 }
-
+/* line 488, css\less\general.less */
 #profile .sub {
-    display: block;
-    width: 100%;
-    clear: both;
+  display: block;
+  width: 100%;
+  clear: both;
 }
-
+/* line 494, css\less\general.less */
 #profile-wiki p {
-    text-align: justify;
+  text-align: justify;
 }
-
+/* line 498, css\less\general.less */
 #profile .sub h3 {
-    text-align: center;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-    font-family: 'Noto Sans', sans-serif;
-    font-weight: bold;
-    color: #ff5a5f;
+  text-align: center;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  font-family: 'Noto Sans', sans-serif;
+  font-weight: bold;
+  color: #ff5a5f;
 }
-
+/* line 507, css\less\general.less */
 #profile .sub h4 {
-    font-weight: bold;
+  font-weight: bold;
 }
-
+/* line 511, css\less\general.less */
 #profile td {
-    vertical-align: middle;
+  vertical-align: middle;
 }
-
+/* line 515, css\less\general.less */
 #personal {
-    padding-left: 178px;
-    padding-right: 60px;
+  padding-left: 178px;
+  padding-right: 60px;
 }
-
+/* line 520, css\less\general.less */
 #personal table tr:first-child td {
-    border: none;
+  border: none;
 }
-
+/* line 524, css\less\general.less */
 #personal td:nth-child(1) {
-    font-size: 14px;
-    color: #6a6a6a;
-    min-width: 140px;
+  font-size: 14px;
+  color: #6a6a6a;
+  min-width: 140px;
 }
-
+/* line 530, css\less\general.less */
 #search-results h2 {
-    clear: both;
-    float: none;
-    width: 100%;
-    padding-top: 80px;
+  clear: both;
+  float: none;
+  width: 100%;
+  padding-top: 80px;
 }
-
+/* line 537, css\less\general.less */
 #search-results h2:first-child {
-    padding-top: 0;
+  padding-top: 0;
 }
-
+/* line 541, css\less\general.less */
 .small-profile {
-    padding-bottom: 30px;
+  padding-bottom: 30px;
 }
-
+/* line 545, css\less\general.less */
 .small-profile .box {
-    padding: 20px 20px 5px 20px;
-    background: #fff url(../images/plashka.png) no-repeat 0 -48px;
-    min-height: 140px;
-    height: 100%;
+  padding: 20px 20px 5px 20px;
+  background: #ffffff url(../images/plashka.png) no-repeat 0 -48px;
+  min-height: 140px;
+  height: 100%;
 }
-
+/* line 552, css\less\general.less */
 .small-profile a {
-    color: #333;
+  color: #333;
 }
-
+/* line 556, css\less\general.less */
 .small-profile .box {
-    cursor: pointer;
+  cursor: pointer;
 }
-
+/* line 560, css\less\general.less */
 .small-profile .box:hover {
-    box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.23), inset 0 3px 10px rgba(0, 0, 0, 0.16);
+  box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.23), inset 0 3px 10px rgba(0, 0, 0, 0.16);
 }
-
+/* line 564, css\less\general.less */
 .small-profile img {
-    height: 100px;
-    width: auto;
+  height: 100px;
+  width: auto;
 }
-
+/* line 569, css\less\general.less */
 .small-profile .avatar {
-    margin-right: 20px;
-    display: block;
-    height: 100px;
-    width: 100px;
-    float: left;
-    background-size: cover;
-    background-color: #e9e9e9;
-    background-repeat: repeat;
+  margin-right: 20px;
+  display: block;
+  height: 100px;
+  width: 100px;
+  float: left;
+  background-size: cover;
+  background-color: #e9e9e9;
+  background-repeat: repeat;
 }
-
+/* line 580, css\less\general.less */
 .small-profile h3 {
-    font-family: 'arsenalregular';
-    font-weight: normal;
-    font-size: 20px;
-    margin-top: 0;
-    text-transform: uppercase;
+  font-family: 'arsenalregular';
+  font-weight: normal;
+  font-size: 20px;
+  margin-top: 0;
+  text-transform: uppercase;
 }
-
+/* line 588, css\less\general.less */
 .small-profile h3 span {
-    text-transform: capitalize;
+  text-transform: capitalize;
 }
-
+/* line 592, css\less\general.less */
 .small-profile .descr {
-    margin-left: 120px;
+  margin-left: 120px;
 }
-
+/* line 596, css\less\general.less */
 .small-profile .descr p {
-    margin-bottom: 10px;
-    font-size: 14px;
+  margin-bottom: 10px;
+  font-size: 14px;
 }
-
+/* line 601, css\less\general.less */
 .small-profile .descr span {
-    font-weight: bold;
+  font-weight: bold;
 }
-
+/* line 605, css\less\general.less */
 .small-profile .descr span.small-tip {
-    font-size: 12px;
-    margin-left: -45px;
-    color: #7B7B7B;
+  font-size: 12px;
+  margin-left: -45px;
+  color: #7B7B7B;
 }
-
+/* line 611, css\less\general.less */
 .small-profile span.riskLevel {
-    font-weight: normal;
+  font-weight: normal;
 }
-
+/* line 615, css\less\general.less */
 .small-profile .riskLevel.tip {
-    display: none;
-    position: absolute;
-    background: white;
-    bottom: -10px;
-    padding: 5px 10px;
-    color: #DF4500;
-    font-family: 'arsenalitalic';
-    line-height: 14px;
-    font-size: 13px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.23), 0 3px 10px rgba(0, 0, 0, 0.16);
+  display: none;
+  position: absolute;
+  background: white;
+  bottom: -10px;
+  padding: 5px 10px;
+  color: #DF4500;
+  font-family: 'arsenalitalic';
+  line-height: 14px;
+  font-size: 13px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.23), 0 3px 10px rgba(0, 0, 0, 0.16);
 }
-
+/* line 628, css\less\general.less */
 .small-profile a:hover .riskLevel.tip {
-    display: block;
+  display: block;
 }
-
+/* line 632, css\less\general.less */
 .small-profile .descr {
-    position: relative;
-    display: block;
+  position: relative;
+  display: block;
 }
-
+/* line 637, css\less\general.less */
 .small-profile.fizik .avatar {
-    background-image: url(../images/short-avatar.png);
+  background-image: url(../images/short-avatar.png);
 }
-
+/* line 641, css\less\general.less */
 .small-profile.yurik .box {
-    background: #fff url(../images/fplashka.png) no-repeat 0 -55px;
+  background: #ffffff url(../images/fplashka.png) no-repeat 0 -55px;
 }
-
+/* line 645, css\less\general.less */
 .small-profile.yurik .avatar {
-    background-image: url(../images/short-avatar-yurik.png);
+  background-image: url(../images/short-avatar-yurik.png);
 }
-
+/* line 649, css\less\general.less */
 .small-profile.linked .box {
-    background: #fff url(../images/lplashka.png) no-repeat 0 -55px;
+  background: #ffffff url(../images/lplashka.png) no-repeat 0 -55px;
 }
-
+/* line 653, css\less\general.less */
 .small-profile.linked .avatar {
-    background-image: url(../images/short-avatar-linked.png);
+  background-image: url(../images/short-avatar-linked.png);
 }
-
+/* line 657, css\less\general.less */
 .timeline .tl-date {
-    font-family: 'arsenalbold';
+  font-family: 'arsenalbold';
 }
-
+/* line 661, css\less\general.less */
 .node {
-    cursor: pointer;
+  cursor: pointer;
 }
-
+/* line 665, css\less\general.less */
 .node circle {
-    fill: #fff;
-    stroke: steelblue;
-    stroke-width: 1.5px;
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
 }
-
+/* line 671, css\less\general.less */
 .node text {
-    font: 10px sans-serif;
+  font: 10px sans-serif;
 }
-
+/* line 675, css\less\general.less */
 .link {
-    fill: none;
-    stroke: #ccc;
-    stroke-width: 1.5px;
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
 }
-
+/* line 681, css\less\general.less */
 #profile-suggest h3 {
-    color: #ff5a5f;
-    font-size: 18px;
+  color: #ff5a5f;
+  font-size: 18px;
 }
-
+/* line 686, css\less\general.less */
 #profile-suggest ul {
-    padding-left: 0;
+  padding-left: 0;
 }
-
+/* line 690, css\less\general.less */
 #profile-suggest li {
-    list-style: none;
-    margin-bottom: 10px;
-    font-size: 16px;
+  list-style: none;
+  margin-bottom: 10px;
+  font-size: 16px;
 }
-
+/* line 696, css\less\general.less */
 #side-profilemenu {
-    max-width: 165px;
+  max-width: 165px;
 }
-
+/* line 700, css\less\general.less */
 #side-profilemenu.affix {
-    top: 50px;
+  top: 50px;
 }
-
+/* line 704, css\less\general.less */
 .tree {
-    min-height: 20px;
-    padding: 19px;
-    margin-bottom: 20px;
-    background-color: #fbfbfb;
-    border: 1px solid #999;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    border-radius: 4px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  min-height: 20px;
+  padding: 19px;
+  margin-bottom: 20px;
+  background-color: #fbfbfb;
+  border: 1px solid #999;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
 }
-
+/* line 718, css\less\general.less */
 .tree li {
-    list-style-type: none;
-    margin: 0;
-    padding: 10px 5px 0 5px;
-    position: relative;
+  list-style-type: none;
+  margin: 0;
+  padding: 10px 5px 0 5px;
+  position: relative;
 }
-
+/* line 725, css\less\general.less */
 .tree li a {
-    font-size: 12px;
+  font-size: 12px;
 }
-
-.tree li::before, .tree li::after {
-    content: '';
-    left: -20px;
-    position: absolute;
-    right: auto;
-}
-
-.tree li::before {
-    border-left: 1px solid #999;
-    bottom: 50px;
-    height: 100%;
-    top: 0;
-    width: 1px;
-}
-
+/* line 729, css\less\general.less */
+.tree li::before,
 .tree li::after {
-    border-top: 1px solid #999;
-    height: 20px;
-    top: 25px;
-    width: 25px;
+  content: '';
+  left: -20px;
+  position: absolute;
+  right: auto;
 }
-
+/* line 736, css\less\general.less */
+.tree li::before {
+  border-left: 1px solid #999;
+  bottom: 50px;
+  height: 100%;
+  top: 0;
+  width: 1px;
+}
+/* line 744, css\less\general.less */
+.tree li::after {
+  border-top: 1px solid #999;
+  height: 20px;
+  top: 25px;
+  width: 25px;
+}
+/* line 751, css\less\general.less */
 .tree li span {
-    display: inline-block;
-    text-decoration: none;
+  display: inline-block;
+  text-decoration: none;
 }
-
+/* line 756, css\less\general.less */
 .tree li .info-gray {
-    font-size: 16px;
+  font-size: 16px;
 }
-
+/* line 760, css\less\general.less */
 .tree li span:first-child {
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-    border: 1px solid #999;
-    border-radius: 5px;
-    padding: 3px 8px;
-    font-size: 20px;
-    font-weight: normal;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border: 1px solid #999;
+  border-radius: 5px;
+  padding: 3px 8px;
+  font-size: 20px;
+  font-weight: normal;
 }
-
+/* line 770, css\less\general.less */
 .tree li span:first-child span {
-    border: none;
-    padding: 0;
+  border: none;
+  padding: 0;
 }
-
+/* line 775, css\less\general.less */
 .tree li span span {
-    padding: 0;
+  padding: 0;
 }
-
+/* line 779, css\less\general.less */
 .tree li.parent_li > span {
-    cursor: pointer;
+  cursor: pointer;
 }
-
-.tree > ul > li::before, .tree > ul > li::after {
-    border: 0;
+/* line 783, css\less\general.less */
+.tree > ul > li::before,
+.tree > ul > li::after {
+  border: 0;
 }
-
+/* line 787, css\less\general.less */
 .tree li:last-child::before {
-    height: 25px;
+  height: 25px;
 }
-
+/* line 791, css\less\general.less */
 .tree li.parent_li > span:hover {
-    background: #eee;
-    border: 1px solid #94a0b4;
-    color: #000;
+  background: #eee;
+  border: 1px solid #94a0b4;
+  color: #000;
 }
-
+/* line 797, css\less\general.less */
 .h li {
-    display: none;
+  display: none;
 }
-
+/* line 801, css\less\general.less */
 .mc {
-    margin-left: auto;
-    margin-right: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
-
+/* line 806, css\less\general.less */
 .is_pep {
-    font-weight: bold;
+  font-weight: bold;
 }
-
+/* line 810, css\less\general.less */
 .antac-logo {
-    margin-top: 15px;
-    float: right;
-    height: auto;
+  margin-top: 15px;
+  float: right;
+  height: auto;
 }
-
+/* line 816, css\less\general.less */
 .description {
-    max-width: 800px;
-    margin: 0 auto;
+  max-width: 800px;
+  margin: 0 auto;
 }
-
+/* line 821, css\less\general.less */
 .description p {
-    margin: 10px 0;
+  margin: 10px 0;
 }
-
+/* line 825, css\less\general.less */
 #hp-columns h3 {
-    text-align: center;
+  text-align: center;
 }
-
+/* line 829, css\less\general.less */
 .modalConnectionShow .info-gray {
-    color: rgba(0, 0, 0, 0.65);
+  color: rgba(0, 0, 0, 0.65);
 }
-
+/* line 833, css\less\general.less */
 .modal-header {
-    background: #fff url(../images/plashka.png) no-repeat top;
-    color: white;
+  background: #ffffff url(../images/plashka.png) no-repeat top;
+  color: white;
 }
-
+/* line 838, css\less\general.less */
 .fa-pencil-square-o {
-    color: red;
+  color: red;
 }
-
+/* line 842, css\less\general.less */
 #cs100 {
-    display: none;
+  display: none;
 }
-
+/* line 846, css\less\general.less */
 #footerInfo p {
-    margin-top: 0;
+  margin-top: 0;
 }
-
+/* line 850, css\less\general.less */
 #languageSelect {
-    float: right;
-    top: 25px;
-    margin-right: 20px;
+  float: right;
+  top: 25px;
+  margin-right: 20px;
 }
-
+/* line 856, css\less\general.less */
 #languageSelect button {
-    background: none;
-    border: none;
+  background: none;
+  border: none;
 }
-
+/* line 861, css\less\general.less */
 #languageSelect .dropdown-menu {
-    min-width: 0;
-    left: auto;
-    padding: 0;
+  min-width: 0;
+  left: auto;
+  padding: 0;
 }
-
+/* line 867, css\less\general.less */
 #languageSelect .dropdown-menu > li {
-    padding: 3px 4px;
-    margin: 0;
+  padding: 3px 4px;
+  margin: 0;
 }
-
+/* line 872, css\less\general.less */
 #languageSelect .dropdown-menu > li > a {
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
 }
-
+/* line 877, css\less\general.less */
 .languageMenu li {
-    display: inline;
-    float: left;
-    margin-right: 10px;
+  display: inline;
+  float: left;
+  margin-right: 10px;
 }
-
+/* line 883, css\less\general.less */
 #navbar li.edit-page {
-    margin: 0;
+  margin: 0;
 }
-
+/* line 887, css\less\general.less */
 #send-form {
-    display: block;
-    width: 200px;
-    position: fixed;
-    z-index: 999;
-    right: 50px;
-    background: #355383;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-    transform: translateY(-30px);
-    -webkit-transition: all 1s ease;
-    -moz-transition: all 1s ease;
-    -o-transition: all 1s ease;
-    -ms-transition: all 1s ease;
-    transition: all 1s ease;
+  display: block;
+  width: 200px;
+  position: fixed;
+  z-index: 999;
+  right: 50px;
+  background: #355383;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  transform: translateY(-30px);
+  -webkit-transition: all 1s ease;
+  -moz-transition: all 1s ease;
+  -o-transition: all 1s ease;
+  -ms-transition: all 1s ease;
+  transition: all 1s ease;
 }
-
+/* line 905, css\less\general.less */
 #send-form.open {
-    bottom: 0;
-    transform: translateY(0);
-    width: 400px;
-    -webkit-box-shadow: 0px 0px 13px 0px rgba(0, 0, 0, 0.9);
-    -moz-box-shadow: 0px 0px 13px 0px rgba(0, 0, 0, 0.9);
-    box-shadow: 0px 0px 13px 0px rgba(0, 0, 0, 0.9);
+  bottom: 0;
+  transform: translateY(0);
+  width: 400px;
+  -webkit-box-shadow: 0px 0px 13px 0px rgba(0, 0, 0, 0.9);
+  -moz-box-shadow: 0px 0px 13px 0px rgba(0, 0, 0, 0.9);
+  box-shadow: 0px 0px 13px 0px rgba(0, 0, 0, 0.9);
 }
-
+/* line 914, css\less\general.less */
 #send-form.open.filled {
-    bottom: -300px;
+  bottom: -300px;
 }
-
+/* line 918, css\less\general.less */
 #send-form header a {
-    padding-top: 3px;
-    height: 30px;
-    text-align: center;
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
-    display: block;
-    width: 100%;
+  padding-top: 3px;
+  height: 30px;
+  text-align: center;
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  display: block;
+  width: 100%;
 }
-
+/* line 929, css\less\general.less */
 #send-form .btn-close {
-    display: none;
-    left: -35px;
-    font-size: 26px;
-    position: absolute;
-    color: #ff5a5f;
+  display: none;
+  left: -35px;
+  font-size: 26px;
+  position: absolute;
+  color: #ff5a5f;
 }
-
+/* line 937, css\less\general.less */
 #send-form.open .btn-close {
-    display: block;
+  display: block;
 }
-
+/* line 941, css\less\general.less */
 .form-content {
-    width: 100%;
-    padding: 10px 10px 0 10px;
-    box-sizing: border-box;
-    height: 100%;
+  width: 100%;
+  padding: 10px 10px 0 10px;
+  box-sizing: border-box;
+  height: 100%;
 }
-
+/* line 948, css\less\general.less */
 .form-content .form {
-    background: white;
-    padding: 10px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
+  background: white;
+  padding: 10px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }
-
+/* line 956, css\less\general.less */
 .form-content .form h3 {
-    text-align: center;
+  text-align: center;
 }
-
+/* line 960, css\less\general.less */
 .form-content form {
-    opacity: 0;
+  opacity: 0;
 }
-
+/* line 964, css\less\general.less */
 #send-form textarea {
-    resize: none;
+  resize: none;
 }
-
+/* line 968, css\less\general.less */
 #send-form .form-group {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
-
+/* line 972, css\less\general.less */
 #send-form.open form {
-    opacity: 1;
+  opacity: 1;
 }
-
+/* line 976, css\less\general.less */
 .g-recaptcha {
-    transform: scale(0.75);
+  transform: scale(0.75);
 }
-
+/* line 980, css\less\general.less */
 ul.errorlist {
-    margin-bottom: 0;
-    padding: 0;
+  margin-bottom: 0;
+  padding: 0;
 }
-
+/* line 985, css\less\general.less */
 .errorlist li {
-    list-style-type: none;
-    color: #d9534f;
-    padding: 0;
-    font-size: 12px;
+  list-style-type: none;
+  color: #d9534f;
+  padding: 0;
+  font-size: 12px;
 }
-
+/* line 992, css\less\general.less */
 .label-required::before {
-    content: "*";
-    color: #d9534f;
-    font-weight: bold;
-    padding-right: 5px;
+  content: "*";
+  color: #d9534f;
+  font-weight: bold;
+  padding-right: 5px;
 }
-
+/* line 999, css\less\general.less */
 #declarations table {
-    border: none;
+  border: none;
 }
-
+/* line 1003, css\less\general.less */
 #declarations th {
-    vertical-align: middle;
-    border-top: 1px solid #ddd;
+  vertical-align: middle;
+  border-top: 1px solid #ddd;
 }
-
+/* line 1008, css\less\general.less */
 td.decl-year,
 td.decl-income,
 td.decl-familyincome {
-    white-space: nowrap;
+  white-space: nowrap;
 }
-
+/* line 1014, css\less\general.less */
 #declarations .decl-download {
-    border-top: none;
-    border-bottom: none;
-    border-right: none;
-    background: none;
-    padding: 5px 15px;
-    text-align: center;
+  border-top: none;
+  border-bottom: none;
+  border-right: none;
+  background: none;
+  padding: 5px 15px;
+  text-align: center;
+}
+/* line 1, css\less\timeline.less */
+.b-a {
+  border: 1px solid #dee5e7;
+}
+/* line 5, css\less\timeline.less */
+.padder {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+/* line 10, css\less\timeline.less */
+.panel {
+  border-radius: 2px;
+}
+/* line 14, css\less\timeline.less */
+.panel .accordion-toggle {
+  font-size: 14px;
+  display: block;
+  cursor: pointer;
+}
+/* line 20, css\less\timeline.less */
+.panel .list-group-item {
+  border-color: #edf1f2;
+}
+/* line 24, css\less\timeline.less */
+.panel.no-borders {
+  border-width: 0;
+}
+/* line 28, css\less\timeline.less */
+.panel.no-borders .panel-heading,
+.panel.no-borders .panel-footer {
+  border-width: 0;
+}
+/* line 33, css\less\timeline.less */
+.timeline {
+  margin: 0;
+  padding: 0;
+}
+/* line 38, css\less\timeline.less */
+.tl-item {
+  display: block;
+}
+/* line 42, css\less\timeline.less */
+.tl-item:before,
+.tl-item:after {
+  content: " ";
+  display: table;
+}
+/* line 48, css\less\timeline.less */
+.tl-item:after {
+  clear: both;
+}
+/* line 52, css\less\timeline.less */
+.visible-left {
+  display: none;
+}
+/* line 56, css\less\timeline.less */
+.tl-wrap {
+  display: block;
+  margin-left: 10em;
+  padding: 15px 0 15px 20px;
+  border-style: solid;
+  border-color: #dee5e7;
+  border-width: 0 0 0 4px;
+}
+/* line 65, css\less\timeline.less */
+.tl-wrap:before,
+.tl-wrap:after {
+  content: " ";
+  display: table;
+}
+/* line 71, css\less\timeline.less */
+.tl-wrap:after {
+  clear: both;
+}
+/* line 75, css\less\timeline.less */
+.tl-wrap:before {
+  position: relative;
+  content: "";
+  float: left;
+  top: 15px;
+  margin-left: -27px;
+  width: 10px;
+  height: 10px;
+  border-color: inherit;
+  border-width: 3px;
+  border-radius: 50%;
+  border-style: solid;
+  background: #edf1f2;
+  box-shadow: 0 0 0 4px #f0f3f4;
+}
+/* line 91, css\less\timeline.less */
+.tl-wrap:hover:before {
+  background: transparent;
+  border-color: #fff;
+}
+/* line 96, css\less\timeline.less */
+.tl-date {
+  position: relative;
+  top: 10px;
+  float: left;
+  margin-left: -12.5em;
+  display: block;
+  width: 10em;
+  text-align: right;
+}
+/* line 106, css\less\timeline.less */
+.tl-content {
+  display: inline-block;
+  position: relative;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: white;
+}
+/* line 114, css\less\timeline.less */
+.tl-content.block {
+  display: block;
+  width: 100%;
+}
+/* line 119, css\less\timeline.less */
+.tl-content.panel {
+  margin-bottom: 0;
+}
+/* line 123, css\less\timeline.less */
+.tl-header {
+  display: block;
+  width: 12em;
+  text-align: center;
+  margin-left: 2px;
+}
+/* line 130, css\less\timeline.less */
+.timeline-center .tl-item {
+  margin-left: 50%;
+}
+/* line 134, css\less\timeline.less */
+.timeline-center .tl-item .tl-wrap {
+  margin-left: -2px;
+}
+/* line 138, css\less\timeline.less */
+.timeline-center .tl-header {
+  width: auto;
+  margin: 0;
+}
+/* line 143, css\less\timeline.less */
+.timeline-center .tl-left {
+  margin-left: 0;
+  margin-right: 50%;
+}
+/* line 148, css\less\timeline.less */
+.timeline-center .tl-left .hidden-left {
+  display: none !important;
+}
+/* line 152, css\less\timeline.less */
+.timeline-center .tl-left .visible-left {
+  display: inherit;
+}
+/* line 156, css\less\timeline.less */
+.timeline-center .tl-left .tl-wrap {
+  float: right;
+  margin-right: -2px;
+  border-left-width: 0;
+  border-right-width: 4px;
+  padding-left: 0;
+  padding-right: 20px;
+}
+/* line 165, css\less\timeline.less */
+.timeline-center .tl-left .tl-wrap:before {
+  float: right;
+  margin-left: 0;
+  margin-right: -27px;
+}
+/* line 171, css\less\timeline.less */
+.timeline-center .tl-left .tl-date {
+  float: right;
+  margin-left: 0;
+  margin-right: -8.5em;
+  text-align: left;
+}
+/* line 178, css\less\timeline.less */
+.arrow {
+  border-width: 9px;
+  z-index: 10;
+}
+/* line 183, css\less\timeline.less */
+.arrow,
+.arrow:after {
+  position: absolute;
+  display: block;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+}
+/* line 193, css\less\timeline.less */
+.arrow:after {
+  border-width: 8px;
+  content: "";
+}
+/* line 198, css\less\timeline.less */
+.arrow.top {
+  left: 50%;
+  margin-left: -9px;
+  border-top-width: 0;
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+  top: -9px;
+}
+/* line 206, css\less\timeline.less */
+.arrow.top:after {
+  top: 1px;
+  margin-left: -8px;
+  border-top-width: 0;
+  border-bottom-color: #ffffff;
+}
+/* line 213, css\less\timeline.less */
+.arrow.top.arrow-primary:after {
+  border-bottom-color: #7266ba;
+}
+/* line 217, css\less\timeline.less */
+.arrow.top.arrow-info:after {
+  border-bottom-color: #23b7e5;
+}
+/* line 221, css\less\timeline.less */
+.arrow.top.arrow-success:after {
+  border-bottom-color: #27c24c;
+}
+/* line 225, css\less\timeline.less */
+.arrow.top.arrow-danger:after {
+  border-bottom-color: #f05050;
+}
+/* line 229, css\less\timeline.less */
+.arrow.top.arrow-warning:after {
+  border-bottom-color: #fad733;
+}
+/* line 233, css\less\timeline.less */
+.arrow.top.arrow-light:after {
+  border-bottom-color: #edf1f2;
+}
+/* line 237, css\less\timeline.less */
+.arrow.top.arrow-dark:after {
+  border-bottom-color: #3a3f51;
+}
+/* line 241, css\less\timeline.less */
+.arrow.top.arrow-black:after {
+  border-bottom-color: #13171e;
+}
+/* line 245, css\less\timeline.less */
+.arrow.right {
+  top: 50%;
+  right: -9px;
+  margin-top: -9px;
+  border-right-width: 0;
+  border-left-color: rgba(0, 0, 0, 0.1);
+}
+/* line 253, css\less\timeline.less */
+.arrow.right:after {
+  right: 1px;
+  bottom: -8px;
+  border-right-width: 0;
+  border-left-color: #ffffff;
+}
+/* line 260, css\less\timeline.less */
+.arrow.right.arrow-primary:after {
+  border-left-color: #7266ba;
+}
+/* line 264, css\less\timeline.less */
+.arrow.right.arrow-info:after {
+  border-left-color: #23b7e5;
+}
+/* line 268, css\less\timeline.less */
+.arrow.right.arrow-success:after {
+  border-left-color: #27c24c;
+}
+/* line 272, css\less\timeline.less */
+.arrow.right.arrow-danger:after {
+  border-left-color: #f05050;
+}
+/* line 276, css\less\timeline.less */
+.arrow.right.arrow-warning:after {
+  border-left-color: #fad733;
+}
+/* line 280, css\less\timeline.less */
+.arrow.right.arrow-light:after {
+  border-left-color: #edf1f2;
+}
+/* line 284, css\less\timeline.less */
+.arrow.right.arrow-dark:after {
+  border-left-color: #3a3f51;
+}
+/* line 288, css\less\timeline.less */
+.arrow.right.arrow-black:after {
+  border-left-color: #13171e;
+}
+/* line 292, css\less\timeline.less */
+.arrow.bottom {
+  left: 50%;
+  bottom: -9px;
+  margin-left: -9px;
+  border-bottom-width: 0;
+  border-top-color: rgba(0, 0, 0, 0.1);
+}
+/* line 300, css\less\timeline.less */
+.arrow.bottom:after {
+  bottom: 1px;
+  margin-left: -8px;
+  border-bottom-width: 0;
+  border-top-color: #ffffff;
+}
+/* line 307, css\less\timeline.less */
+.arrow.bottom.arrow-primary:after {
+  border-top-color: #7266ba;
+}
+/* line 311, css\less\timeline.less */
+.arrow.bottom.arrow-info:after {
+  border-top-color: #23b7e5;
+}
+/* line 315, css\less\timeline.less */
+.arrow.bottom.arrow-success:after {
+  border-top-color: #27c24c;
+}
+/* line 319, css\less\timeline.less */
+.arrow.bottom.arrow-danger:after {
+  border-top-color: #f05050;
+}
+/* line 323, css\less\timeline.less */
+.arrow.bottom.arrow-warning:after {
+  border-top-color: #fad733;
+}
+/* line 327, css\less\timeline.less */
+.arrow.bottom.arrow-light:after {
+  border-top-color: #edf1f2;
+}
+/* line 331, css\less\timeline.less */
+.arrow.bottom.arrow-dark:after {
+  border-top-color: #3a3f51;
+}
+/* line 335, css\less\timeline.less */
+.arrow.bottom.arrow-black:after {
+  border-top-color: #13171e;
+}
+/* line 339, css\less\timeline.less */
+.arrow.left {
+  top: 50%;
+  left: -9px;
+  margin-top: -9px;
+  border-left-width: 0;
+  border-right-color: rgba(0, 0, 0, 0.1);
+}
+/* line 347, css\less\timeline.less */
+.arrow.left:after {
+  left: 1px;
+  bottom: -8px;
+  border-left-width: 0;
+  border-right-color: #ffffff;
+}
+/* line 354, css\less\timeline.less */
+.arrow.left.arrow-primary:after {
+  border-right-color: #7266ba;
+}
+/* line 358, css\less\timeline.less */
+.arrow.left.arrow-info:after {
+  border-right-color: #23b7e5;
+}
+/* line 362, css\less\timeline.less */
+.arrow.left.arrow-success:after {
+  border-right-color: #27c24c;
+}
+/* line 366, css\less\timeline.less */
+.arrow.left.arrow-danger:after {
+  border-right-color: #f05050;
+}
+/* line 370, css\less\timeline.less */
+.arrow.left.arrow-warning:after {
+  border-right-color: #fad733;
+}
+/* line 374, css\less\timeline.less */
+.arrow.left.arrow-light:after {
+  border-right-color: #edf1f2;
+}
+/* line 378, css\less\timeline.less */
+.arrow.left.arrow-dark:after {
+  border-right-color: #3a3f51;
+}
+/* line 382, css\less\timeline.less */
+.arrow.left.arrow-black:after {
+  border-right-color: #13171e;
+}
+/* line 386, css\less\timeline.less */
+.arrow.pull-left {
+  left: 19px;
+}
+/* line 390, css\less\timeline.less */
+.arrow.pull-right {
+  left: auto;
+  right: 19px;
+}
+/* line 395, css\less\timeline.less */
+.arrow.pull-up {
+  top: 19px;
+}
+/* line 399, css\less\timeline.less */
+.arrow.pull-down {
+  top: auto;
+  bottom: 19px;
+}
+@media (max-width: 767px) {
+  /* line 2, css\less\responsive.less */
+  body {
+    font-size: 14px;
+  }
+  /* line 6, css\less\responsive.less */
+  .card.square {
+    width: 150px;
+    max-width: 100%;
+  }
+  /* line 11, css\less\responsive.less */
+  #searchbox h1 {
+    font-size: 26px;
+  }
+  /* line 15, css\less\responsive.less */
+  #searchbox {
+    padding-bottom: 60px;
+    padding-top: 30px;
+  }
+  /* line 20, css\less\responsive.less */
+  .antac-logo {
+    display: none;
+  }
+  /* line 24, css\less\responsive.less */
+  #navbar li a,
+  #navbar .navbar-brand {
+    padding-top: 15px;
+    padding-bottom: 15px;
+  }
+  /* line 29, css\less\responsive.less */
+  .regularSearch {
+    float: left !important;
+    margin-top: 0;
+    margin-bottom: 20px;
+  }
+  /* line 35, css\less\responsive.less */
+  .nav > li {
+    margin-left: 15px;
+  }
+  /* line 39, css\less\responsive.less */
+  .pull-right.regularSearch {
+    float: left;
+    clear: left;
+  }
+  /* line 44, css\less\responsive.less */
+  h1.pep-name {
+    font-size: 18px;
+    margin-top: 10px;
+  }
+  /* line 49, css\less\responsive.less */
+  #profile-wrap .avatar {
+    padding-right: 15px;
+    margin-right: 0;
+  }
+  /* line 54, css\less\responsive.less */
+  .small-profile .avatar {
+    height: 70px;
+    width: 70px;
+  }
+  /* line 59, css\less\responsive.less */
+  .small-profile img {
+    height: 70px;
+  }
+  /* line 63, css\less\responsive.less */
+  .small-profile .descr {
+    margin-left: 0;
+    margin-top: 40px;
+  }
+  /* line 68, css\less\responsive.less */
+  #profile .profileActions {
+    display: none;
+  }
+  /* line 72, css\less\responsive.less */
+  #profile .profile-header {
+    margin-bottom: 50px;
+  }
+  /* line 76, css\less\responsive.less */
+  #personal {
+    padding: 0;
+  }
+  /* line 80, css\less\responsive.less */
+  #personal .table-responsive > .table > thead > tr > th,
+  #personal .table-responsive > .table > tbody > tr > th,
+  #personal .table-responsive > .table > tfoot > tr > th,
+  #personal .table-responsive > .table > thead > tr > td,
+  #personal .table-responsive > .table > tbody > tr > td,
+  #personal .table-responsive > .table > tfoot > tr > td {
+    white-space: normal;
+  }
+  /* line 84, css\less\responsive.less */
+  #profile-wrap .avatar img {
+    width: 100px;
+    height: auto;
+  }
+  /* line 89, css\less\responsive.less */
+  .tree {
+    padding: 5px;
+  }
+  /* line 93, css\less\responsive.less */
+  .tree > ul {
+    padding: 0;
+  }
+  /* line 97, css\less\responsive.less */
+  .tree ul ul {
+    padding-left: 25px;
+  }
+  /* line 101, css\less\responsive.less */
+  .tree li span:first-child {
+    font-size: 14px;
+  }
+  /* line 105, css\less\responsive.less */
+  #navbar .regularSearch ul {
+    left: 0 !important;
+    right: auto;
+    font-size: 13px;
+  }
+  /* line 111, css\less\responsive.less */
+  #page {
+    padding-bottom: 80px;
+    /* Height of the footer*/
+  }
+  /* line 115, css\less\responsive.less */
+  #footer {
+    height: 80px;
+  }
+  /* line 119, css\less\responsive.less */
+  #send-form {
+    right: 5px;
+  }
+  /* line 123, css\less\responsive.less */
+  #send-form {
+    height: 470px;
+    bottom: -470px;
+    max-width: 100%;
+  }
+  /* line 129, css\less\responsive.less */
+  #send-form .btn-close {
+    left: 5px;
+    top: -35px;
+  }
+  /* line 134, css\less\responsive.less */
+  #send-form .form-group {
+    margin-bottom: 5px;
+  }
+  /* line 138, css\less\responsive.less */
+  .g-recaptcha {
+    margin-left: -50px;
+  }
+  /* line 142, css\less\responsive.less */
+  #declarations .table-responsive {
+    border: none;
+    border-left: 1px solid #ddd;
+  }
+}
+@media (min-width: 768px) {
+  /* line 149, css\less\responsive.less */
+  body {
+    font-size: 16px;
+  }
+  /* line 153, css\less\responsive.less */
+  .navbar-nav {
+    float: none;
+    margin: 0 auto;
+    display: table;
+    table-layout: fixed;
+  }
+  /* line 160, css\less\responsive.less */
+  .card.square {
+    width: 193px;
+    max-width: 100%;
+  }
+  /* line 165, css\less\responsive.less */
+  #searchbox h1 {
+    font-size: 32px;
+  }
+  /* line 169, css\less\responsive.less */
+  #searchbox {
+    padding-top: 120px;
+    padding-bottom: 120px;
+  }
+  /* line 174, css\less\responsive.less */
+  .regularSearch {
+    float: left !important;
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-left: 0;
+  }
+  /* line 181, css\less\responsive.less */
+  #page {
+    padding-bottom: 260px;
+    /* Height of the footer*/
+  }
+  /* line 185, css\less\responsive.less */
+  #footer {
+    height: 260px;
+  }
+  /* line 189, css\less\responsive.less */
+  #send-form {
+    height: 490px;
+    bottom: -490px;
+  }
+  /* line 194, css\less\responsive.less */
+  #send-form .form-group {
+    margin-bottom: 5px;
+  }
+  /* line 198, css\less\responsive.less */
+  #send-form .form-horizontal .control-label {
+    text-align: left;
+  }
+  /* line 202, css\less\responsive.less */
+  .g-recaptcha {
+    margin-left: -50px;
+  }
+}
+@media (max-width: 991px) {
+  /* line 208, css\less\responsive.less */
+  .antac-logo img {
+    width: 140px;
+  }
+  /* line 212, css\less\responsive.less */
+  .nav > li > a {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  /* line 217, css\less\responsive.less */
+  .regularSearch {
+    float: left !important;
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-left: 0;
+  }
+}
+@media only screen and (max-device-width: 992px) and (orientation: portrait) {
+  /* line 226, css\less\responsive.less */
+  .regularSearch {
+    float: left !important;
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-left: 0;
+  }
+}
+@media (min-width: 992px) {
+  /* line 235, css\less\responsive.less */
+  #searchbox h1 {
+    font-size: 40px;
+  }
+  /* line 239, css\less\responsive.less */
+  .antac-logo img {
+    width: 163px;
+  }
+  /* line 243, css\less\responsive.less */
+  .regularSearch {
+    margin-top: 20px;
+    margin-bottom: 0;
+    float: right !important;
+  }
+  /* line 249, css\less\responsive.less */
+  #page {
+    padding-bottom: 180px;
+    /* Height of the footer*/
+  }
+  /* line 253, css\less\responsive.less */
+  #footer {
+    height: 180px;
+  }
+  /* line 257, css\less\responsive.less */
+  #send-form {
+    height: 510px;
+    bottom: -510px;
+  }
+  /* line 262, css\less\responsive.less */
+  #send-form .form-group {
+    margin-bottom: 15px;
+  }
+  /* line 266, css\less\responsive.less */
+  .g-recaptcha {
+    margin-left: -30px;
+  }
 }

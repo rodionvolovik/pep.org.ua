@@ -205,9 +205,7 @@ PIPELINE_CSS = {
             'css/bootstrap.min.css',
             'css/ripples.min.css',
             'css/animate.css',
-            'css/timeline.css',
             'css/style.css',
-            'css/responsive.css',
         ),
         'output_filename': 'css/merged.css',
         'extra_context': {
