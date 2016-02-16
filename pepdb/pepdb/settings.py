@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     'django_markdown',
+    'redactor',
 
     'pipeline',
     'django_jinja',
@@ -187,6 +188,9 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_URL = '/media/'
+
+REDACTOR_OPTIONS = {'lang': 'ua'}
+REDACTOR_UPLOAD = 'uploads/'
 
 
 JINJA2_EXTENSIONS = ["pipeline.jinja2.ext.PipelineExtension"]

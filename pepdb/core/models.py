@@ -16,8 +16,8 @@ from translitua import translitua
 from jsonfield import JSONField
 import select2.fields
 import select2.models
-from django_markdown.models import MarkdownField
 from django.utils import translation
+from redactor.fields import RedactorField
 
 from core.utils import (
     parse_fullname, parse_family_member, RELATIONS_MAPPING, TranslatedField,
@@ -75,16 +75,16 @@ class Person(models.Model):
         "Ідентифікаційний номер (внутрішне поле)", max_length=10,
         blank=True)
 
-    reputation_assets = MarkdownField(
+    reputation_assets = RedactorField(
         "Майно", blank=True)
 
-    reputation_sanctions = MarkdownField(
+    reputation_sanctions = RedactorField(
         "Наявність санкцій", blank=True)
-    reputation_crimes = MarkdownField(
+    reputation_crimes = RedactorField(
         "Кримінальні впровадження", blank=True)
-    reputation_manhunt = MarkdownField(
+    reputation_manhunt = RedactorField(
         "Перебування у розшуку", blank=True)
-    reputation_convictions = MarkdownField(
+    reputation_convictions = RedactorField(
         "Наявність судимості", blank=True)
 
     related_persons = select2.fields.ManyToManyField(
@@ -96,7 +96,7 @@ class Person(models.Model):
     related_companies = models.ManyToManyField(
         "Company", through="Person2Company")
 
-    wiki = MarkdownField("Вікі-стаття", blank=True)
+    wiki = RedactorField("Вікі-стаття", blank=True)
     names = models.TextField("Варіанти написання імені", blank=True)
 
     type_of_official = models.IntegerField(
@@ -678,7 +678,7 @@ class Company(models.Model):
     street = models.CharField("Вулиця", max_length=100, blank=True)
     appt = models.CharField("№ будинку, офісу", max_length=50, blank=True)
 
-    wiki = MarkdownField("Вікі-стаття", blank=True)
+    wiki = RedactorField("Вікі-стаття", blank=True)
 
     other_founders = models.TextField(
         "Інші засновники",

@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.utils import translation
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
+from django.template.defaultfilters import truncatewords
 
 from elasticsearch_dsl.query import Q
 from translitua import translit
@@ -62,15 +63,15 @@ def suggest(request):
                 }
         )
 
-        res = search.execute()
-        if res.success:
-            results += res.suggest['name'][0]['options']
+        # res = search.execute()
+        # if res.success:
+        #     results += res.suggest['name'][0]['options']
 
         results = sorted(results, key=itemgetter("score"), reverse=True)
 
 
         if results:
-            return [val['text'] for val in results]
+            return [truncatewords(val['text'], 4) for val in results]
         else:
             []
 

@@ -52,6 +52,7 @@ urlpatterns += [
 
     url(r'^grappelli/', include('grappelli.urls')),  # grappelli urls
     url(r'^markdown/', include('django_markdown.urls')),  # django_markdown url
+    url(r'^redactor/', include('redactor.urls')),
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^cms/', include(wagtailadmin_urls)),
