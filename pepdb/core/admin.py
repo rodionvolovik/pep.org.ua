@@ -263,12 +263,16 @@ class Ua2RuDictionaryAdmin(admin.ModelAdmin):
     list_display = ("term", "translation", "alt_translation")
     list_editable = ("translation", "alt_translation")
 
+    search_fields = ["term", "translation", "alt_translation"]
+
     list_filter = (EmptyValueFilter,)
 
 
 class Ua2EnDictionaryAdmin(admin.ModelAdmin):
     list_display = ("term", "translation")
     list_editable = ("translation",)
+
+    search_fields = ["term", "translation"]
 
     list_filter = (EmptyValueFilter,)
 
