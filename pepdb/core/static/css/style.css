@@ -1026,3 +1026,7 @@ td.decl-familyincome {
     padding: 5px 15px;
     text-align: center;
 }
+
+.richtext img {
+    cursor: pointer;
+}

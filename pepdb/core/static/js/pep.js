@@ -149,4 +149,8 @@ $(function() {
             form.parent().html(data);
         });
     });
+
+    $(".richtext img").featherlight({
+        targetAttr: "src"
+    });
 });
