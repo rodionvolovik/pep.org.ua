@@ -695,14 +695,14 @@ h1 {
   display: block;
 }
 /* line 666, css\less\general.less */
-.form-content {
+#send-form .form-content {
   width: 100%;
   padding: 10px 10px 0 10px;
   box-sizing: border-box;
   height: 100%;
 }
 /* line 673, css\less\general.less */
-.form-content .form {
+#send-form .form-content .form {
   background: white;
   padding: 10px;
   -webkit-border-radius: 3px;
@@ -710,11 +710,11 @@ h1 {
   border-radius: 3px;
 }
 /* line 681, css\less\general.less */
-.form-content .form h3 {
+#send-form .form-content .form h3 {
   text-align: center;
 }
 /* line 685, css\less\general.less */
-.form-content form {
+#send-form .form-content form {
   opacity: 0;
 }
 /* line 689, css\less\general.less */
@@ -730,44 +730,40 @@ h1 {
   opacity: 1;
 }
 /* line 701, css\less\general.less */
-.g-recaptcha {
-  transform: scale(0.75);
-}
-/* line 705, css\less\general.less */
 ul.errorlist {
   margin-bottom: 0;
   padding: 0;
 }
-/* line 710, css\less\general.less */
+/* line 706, css\less\general.less */
 .errorlist li {
   list-style-type: none;
   color: #d9534f;
   padding: 0;
   font-size: 12px;
 }
-/* line 717, css\less\general.less */
+/* line 713, css\less\general.less */
 .label-required::before {
   content: "*";
   color: #d9534f;
   font-weight: bold;
   padding-right: 5px;
 }
-/* line 724, css\less\general.less */
+/* line 720, css\less\general.less */
 #declarations table {
   border: none;
 }
-/* line 728, css\less\general.less */
+/* line 724, css\less\general.less */
 #declarations th {
   vertical-align: middle;
   border-top: 1px solid #ddd;
 }
-/* line 733, css\less\general.less */
+/* line 729, css\less\general.less */
 td.decl-year,
 td.decl-income,
 td.decl-familyincome {
   white-space: nowrap;
 }
-/* line 739, css\less\general.less */
+/* line 735, css\less\general.less */
 #declarations .decl-download {
   border-top: none;
   border-bottom: none;
@@ -776,7 +772,7 @@ td.decl-familyincome {
   padding: 5px 15px;
   text-align: center;
 }
-/* line 748, css\less\general.less */
+/* line 744, css\less\general.less */
 .tab-pane {
   padding: 40px;
 }
@@ -1561,86 +1557,78 @@ td.decl-familyincome {
     margin-bottom: 5px;
   }
   /* line 138, css\less\responsive.less */
-  .g-recaptcha {
-    margin-left: -50px;
-  }
-  /* line 142, css\less\responsive.less */
   #declarations .table-responsive {
     border: none;
     border-left: 1px solid #ddd;
   }
 }
 @media (min-width: 768px) {
-  /* line 149, css\less\responsive.less */
+  /* line 145, css\less\responsive.less */
   body {
     font-size: 16px;
   }
-  /* line 153, css\less\responsive.less */
+  /* line 149, css\less\responsive.less */
   .navbar-nav {
     float: none;
     margin: 0 auto;
     display: table;
     table-layout: fixed;
   }
-  /* line 160, css\less\responsive.less */
+  /* line 156, css\less\responsive.less */
   .card.square {
     width: 193px;
     max-width: 100%;
   }
-  /* line 165, css\less\responsive.less */
+  /* line 161, css\less\responsive.less */
   #searchbox h1 {
     font-size: 32px;
   }
-  /* line 169, css\less\responsive.less */
+  /* line 165, css\less\responsive.less */
   #searchbox {
     padding-top: 120px;
     padding-bottom: 120px;
   }
-  /* line 174, css\less\responsive.less */
+  /* line 170, css\less\responsive.less */
   .regularSearch {
     float: left !important;
     margin-top: 0;
     margin-bottom: 20px;
     padding-left: 0;
   }
-  /* line 181, css\less\responsive.less */
+  /* line 177, css\less\responsive.less */
   #page {
     padding-bottom: 260px;
     /* Height of the footer*/
   }
-  /* line 185, css\less\responsive.less */
+  /* line 181, css\less\responsive.less */
   #footer {
     height: 260px;
   }
-  /* line 189, css\less\responsive.less */
+  /* line 185, css\less\responsive.less */
   #send-form {
     height: 490px;
     bottom: -490px;
   }
-  /* line 194, css\less\responsive.less */
+  /* line 190, css\less\responsive.less */
   #send-form .form-group {
     margin-bottom: 5px;
   }
-  /* line 198, css\less\responsive.less */
+  /* line 194, css\less\responsive.less */
   #send-form .form-horizontal .control-label {
     text-align: left;
   }
-  /* line 202, css\less\responsive.less */
-  .g-recaptcha {
-    margin-left: -50px;
-  }
 }
 @media (max-width: 991px) {
-  /* line 208, css\less\responsive.less */
+  /* line 201, css\less\responsive.less */
   .antac-logo img {
     width: 140px;
   }
-  /* line 212, css\less\responsive.less */
+  /* line 205, css\less\responsive.less */
   .nav > li > a {
     padding-left: 5px;
     padding-right: 5px;
   }
-  /* line 217, css\less\responsive.less */
+  /* line 210, css\less\responsive.less */
   .regularSearch {
     float: left !important;
     margin-top: 0;
@@ -1649,7 +1637,7 @@ td.decl-familyincome {
   }
 }
 @media only screen and (max-device-width: 992px) and (orientation: portrait) {
-  /* line 226, css\less\responsive.less */
+  /* line 219, css\less\responsive.less */
   .regularSearch {
     float: left !important;
     margin-top: 0;
@@ -1658,40 +1646,36 @@ td.decl-familyincome {
   }
 }
 @media (min-width: 992px) {
-  /* line 235, css\less\responsive.less */
+  /* line 228, css\less\responsive.less */
   #searchbox h1 {
     font-size: 40px;
   }
-  /* line 239, css\less\responsive.less */
+  /* line 232, css\less\responsive.less */
   .antac-logo img {
     width: 163px;
   }
-  /* line 243, css\less\responsive.less */
+  /* line 236, css\less\responsive.less */
   .regularSearch {
     margin-top: 20px;
     margin-bottom: 0;
     float: right !important;
   }
-  /* line 249, css\less\responsive.less */
+  /* line 242, css\less\responsive.less */
   #page {
     padding-bottom: 180px;
     /* Height of the footer*/
   }
-  /* line 253, css\less\responsive.less */
+  /* line 246, css\less\responsive.less */
   #footer {
     height: 180px;
   }
-  /* line 257, css\less\responsive.less */
+  /* line 250, css\less\responsive.less */
   #send-form {
     height: 510px;
     bottom: -510px;
   }
-  /* line 262, css\less\responsive.less */
+  /* line 255, css\less\responsive.less */
   #send-form .form-group {
     margin-bottom: 15px;
-  }
-  /* line 266, css\less\responsive.less */
-  .g-recaptcha {
-    margin-left: -30px;
   }
 }

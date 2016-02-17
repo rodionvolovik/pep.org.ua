@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
 
 from django.contrib import admin
 
@@ -23,6 +24,7 @@ urlpatterns = i18n_patterns(
 
     url(r'^search$', 'core.views.search', name='search'),
     url(r'^countries$', 'core.views.search', name='countries'),
+    url(r'^feedback', TemplateView.as_view(template_name="feedback.jinja")),
     url(r'^search_person$', 'core.views.search', name='search_person',
         kwargs={"sources": ["persons"]}),
     url(r'^search_related$', 'core.views.search', name='search_related',
