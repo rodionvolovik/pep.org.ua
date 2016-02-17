@@ -776,6 +776,10 @@ td.decl-familyincome {
   padding: 5px 15px;
   text-align: center;
 }
+/* line 748, css\less\general.less */
+.tab-pane {
+  padding: 40px;
+}
 /* line 2, css\less\profile.less */
 #profile-nav ul {
   padding-left: 0;

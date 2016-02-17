@@ -120,6 +120,36 @@ def search(request, sources=["persons", "related"]):
         params["related_persons"] = _search_related(request)
 
     return params
+    
+@hybrid_response("countries.jinja")
+def search(request, sources=["persons", "related"]):
+    params = {}
+
+    query = request.GET.get("q", "")
+    is_exact = request.GET.get("is_exact", "") == "on"
+
+    if is_exact:
+        persons = ElasticPerson.search().query(
+            "multi_match", query=query,
+            operator="and",
+            fields=["full_name", "names"])
+
+        # Special case when we were looking for one exact person and found it.
+        if persons.count() == 1:
+            person = persons.execute()[0]
+
+            return redirect(
+                reverse("person_details",
+                        kwargs={"person_id": person.id})
+            )
+
+    if "persons" in sources:
+        params["persons"] = _search_person(request)
+
+    if "related" in sources:
+        params["related_persons"] = _search_related(request)
+
+    return params
 
 
 def _search_person(request):

@@ -62,3 +62,4 @@ media
 *.db
 _venv/*
 node_modules/
+bower_components/

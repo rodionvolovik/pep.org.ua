@@ -22,6 +22,7 @@ urlpatterns = i18n_patterns(
     # '',
 
     url(r'^search$', 'core.views.search', name='search'),
+    url(r'^countries$', 'core.views.search', name='countries'),
     url(r'^search_person$', 'core.views.search', name='search_person',
         kwargs={"sources": ["persons"]}),
     url(r'^search_related$', 'core.views.search', name='search_related',

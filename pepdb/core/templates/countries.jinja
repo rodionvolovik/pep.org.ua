@@ -1,0 +1,147 @@
+{% extends "base.jinja" %}
+{% from "macros/_pagination.jinja" import render_pagination with context %}
+
+{% macro render_person(p) %}
+    <div class="small-profile {% if p.is_pep %}fizik{% else %}linked{% endif %} col-sm-6" itemscope itemtype="http://schema.org/Person">
+        <link itemprop="url" href="{{ url("person_details", person_id=p.id) }}" />
+        <div class="box active-box" data-url="{{ url("person_details", person_id=p.id) }}">
+            <header class="profile-header">
+                <div class="avatar">
+                {% if p.photo %}
+                    <img src="{{ p.photo|thumbnail_url("small_avatar") }}" itemprop="image" />
+                {% endif %}
+                </div>
+
+                <h3 class="pep-name" itemprop="name">
+                    <span itemprop="familyName">{{ p.translated_last_name }}</span> <span class="pep-pib"><span itemprop="givenName">{{ p.translated_first_name }}</span> <span itemprop="additionalName">{{ p.translated_patronymic }}</span>
+                </h3>
+            </header>
+
+            <div class="descr">
+                {% if p.date_of_birth %}
+                <meta itemprop="birthDate" content="{{ p.dob }} "/>
+                <p><span>{{ _("Дата народження") }}:</span> {{ p.date_of_birth }}</p>
+                {% endif %}
+                {% if p.last_workplace %}
+                <p>
+                    <span>{{ _("Остання посада") }}:</span>
+                    <span itemprop="worksFor" itemscope itemtype="http://schema.org/Organization"><span itemprop="name">{{ p.translated_last_workplace }}</span></span>, 
+                    <span itemprop="jobTitle">{{ p.translated_last_job_title }}</span>
+                </p>
+                {% endif %}
+
+                {% set relevant_related_persons = p.relevant_related_persons()[:4] %}
+                {% if relevant_related_persons %}
+                <p>
+                    {% for rel in relevant_related_persons %}
+                        <span>{{ _("Зв'язок") }}:</span> {% if rel.relationship_type %}{{ _(rel.relationship_type) }}, {% endif %}
+                        {% if LANGUAGE_CODE =="en" %}{{ rel.person_en }}{% else %}{{ rel.person_uk }}{% endif %}<br />
+                    {% endfor %}
+                </p>
+                {% endif %}
+
+                {#% if p.risk_category %}
+                <p>
+                    <span class="tooltip-anchor" data-toggle="tooltip" data-placement="bottom" title="{{ _("Відповідно до методології, національним публічним діячам присвоюється такі ступені ризику відмивання коштів: неприйнятно високий; високий; середній; низький") }}">
+                        <span>{{ _("Рівень ризику") }}:</span>
+                        <span class="riskLevel">{{ _(p.risk_category) }}</span>
+                    </span>
+                </p>
+                {% endif %#}
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+
+        <div id="breadcrumbs">
+            <ol class="breadcrumb">
+                <li><a href="{{ url("wagtail_serve", "") }}">{{ _("Головна") }}</a></li>
+                <li class="active">{{ _("Результати пошуку") }}</li>
+                <li class="active">{{ _("Публічні діячі") }}</li>
+            </ol> 
+        </div>
+
+        <section id="search-by-country">
+        
+            <h1>Пошук по країнам</h1>
+            <div class="dropdown as-select">
+              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                Україна
+                <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+                <li><a href="#">Україна</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#">Ангола</a></li>
+                <li><a href="#">Америка</a></li>
+                <li><a href="#">Аргентина</a></li>
+              </ul>
+            </div>
+            
+            <br><br> <!--TODO -->
+            
+            <div class="pep-tab" data-example-id="togglable-tabs">
+                <ul id="myTabs" class="nav nav-tabs" role="tablist">
+                    {% if persons %}
+                        <li role="presentation" class="active">
+                            <a href="#f" id="fiziki" role="tab" data-toggle="tab" aria-controls="fiziki" aria-expanded="true">{{ _("Фізичні особи") }} <span class="badge">42</span></a>
+                        </li>
+                    {% endif %}
+                    {% if related_persons %} <!-- TODO: change to yuriki -->
+                    <li role="presentation" class="">
+                        <a href="#y" role="tab" id="yuriki" data-toggle="tab" aria-controls="profile" aria-expanded="false">{{ _("Юридичні особи") }} <span class="badge">8</span></a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <div id="pepTabContant" class="tab-content">
+                    {% if persons %}
+                    <div role="tabpanel" class="tab-pane fade active in" id="fiziki" aria-labelledby="fiziki">
+            
+                        {% for p in persons %}
+                            {{ render_person(p) }}
+                            {% if loop.index is divisibleby 2 %}
+                                <div class="clearfix"></div>
+                            {% endif %}
+                        {% endfor %}
+                            
+                        {% if persons.paginator.num_pages > 1 %}
+                        <div class="text-center">
+                            <nav>
+                                {{ render_pagination(persons, url("search_person")) }}
+                            </nav>
+                        </div>
+                        {% endif %}
+                    
+                    </div>
+                    {% endif %}
+                    {% if related_persons %} <!-- TODO: change to fiziki -->
+                    <div role="tabpanel" class="tab-pane fade" id="yuriki" aria-labelledby="yuriki">
+            
+                        {% for p in related_persons %}
+                            {{ render_person(p) }}
+                            {% if loop.index is divisibleby 2 %}
+                                <div class="clearfix"></div>
+                            {% endif %}
+                        {% endfor %}
+                            
+                        {% if related_persons.paginator.num_pages > 1 %}
+                        <div class="text-center">
+                            <nav>
+                                {{ render_pagination(related_persons, url("search_related")) }}
+                            </nav>
+                        </div>
+                        {% endif %}
+            
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>
+{% endblock %}

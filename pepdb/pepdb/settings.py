@@ -202,7 +202,7 @@ STATICFILES_FINDERS = (
 PIPELINE_CSS = {
     'css_all': {
         'source_filenames': (
-            'css/bootstrap.min.css',
+            'bower_components/bootstrap/dist/css/bootstrap.min.css',
             'css/ripples.min.css',
             'css/animate.css',
             'css/style.css',
@@ -228,9 +228,10 @@ PIPELINE_CSS = {
 PIPELINE_JS = {
     'js_all': {
         'source_filenames': (
-            "js/jquery-1.10.2.js",
-            "js/bootstrap.min.js",
-            "js/bootstrap3-typeahead.min.js",
+            "bower_components/jquery/dist/jquery.js",
+            "bower_components/bootstrap/dist/js/bootstrap.js",
+            "bower_components/bootstrap/js/tab.js",
+            "bower_components/bootstrap3-typeahead/bootstrap3-typeahead.js",
             "js/ripples.min.js",
             "js/pep.js",
         ),

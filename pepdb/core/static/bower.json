@@ -1,0 +1,15 @@
+{
+  "name": "pep",
+  "version": "1.0.0",
+  "authors": [
+    "DC",
+    "AT"
+  ],
+  "description": "pep project for cpk",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "*",
+    "jquery": "2.1.4",
+    "bootstrap3-typeahead": "*"
+  }
+}

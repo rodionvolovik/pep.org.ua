@@ -50,6 +50,15 @@ $(function() {
     
     $('.tooltip-anchor').tooltip();
     
+    $('.pep-tab a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+    })
+    
+    $(".as-select .dropdown-menu li a").click(function(){
+        $(this).parents(".as-select").find(".dropdown-toggle").html($(this).html() + " <span class=\"caret\"></span>");
+    });
+    
     sendForm();
 
     $(window).resize(function() {
