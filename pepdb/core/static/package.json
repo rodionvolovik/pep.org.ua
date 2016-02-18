@@ -1,0 +1,19 @@
+{
+  "name": "pep",
+  "version": "1.0.0",
+  "authors": [
+    "DC",
+    "AT"
+  ],
+  "description": "PEP project",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-cli": "*",
+    "grunt-contrib-less": "^1.0.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "autoprefixer": "*"
+  },
+  "scripts": {
+    "grunt": "grunt"
+  }
+}
