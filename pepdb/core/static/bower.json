@@ -10,6 +10,7 @@
   "dependencies": {
     "bootstrap": "*",
     "jquery": "2.1.4",
-    "bootstrap3-typeahead": "*"
+    "bootstrap3-typeahead": "*",
+    "featherlight": "~1.3.5"
   }
 }
