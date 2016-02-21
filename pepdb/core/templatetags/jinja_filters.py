@@ -8,7 +8,7 @@ from django_jinja import library
 
 @library.filter
 def markdown(*args, **kwargs):
-    return _markdown(*args, **kwargs)
+    return mark_safe('<div class="richtext">%s</div>' % _markdown(*args, **kwargs))
 
 
 @library.global_function

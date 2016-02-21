@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     'django_markdown',
+    'redactor',
 
     'pipeline',
     'django_jinja',
@@ -188,6 +189,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_URL = '/media/'
 
+REDACTOR_OPTIONS = {'lang': 'ua'}
+REDACTOR_UPLOAD = 'uploads/'
+
 
 JINJA2_EXTENSIONS = ["pipeline.jinja2.ext.PipelineExtension"]
 
@@ -205,6 +209,7 @@ PIPELINE_CSS = {
             'bower_components/bootstrap/dist/css/bootstrap.min.css',
             'css/ripples.min.css',
             'css/animate.css',
+            'css/featherlight.css',
             'css/style.css',
         ),
         'output_filename': 'css/merged.css',
@@ -232,6 +237,7 @@ PIPELINE_JS = {
             "bower_components/bootstrap/dist/js/bootstrap.js",
             "bower_components/bootstrap/js/tab.js",
             "bower_components/bootstrap3-typeahead/bootstrap3-typeahead.js",
+            "js/featherlight.js",
             "js/ripples.min.js",
             "js/pep.js",
         ),
