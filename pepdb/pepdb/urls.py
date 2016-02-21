@@ -23,7 +23,8 @@ urlpatterns = i18n_patterns(
     # '',
 
     url(r'^search$', 'core.views.search', name='search'),
-    url(r'^countries$', 'core.views.search', name='countries'),
+    url(r'^countries/$', 'core.views.countries', name='countries'),
+    url(r'^countries/(?P<country_id>[a-zA-Z]+)$', 'core.views.countries', name='countries'),
     url(r'^feedback', TemplateView.as_view(template_name="feedback.jinja")),
     url(r'^search_person$', 'core.views.search', name='search_person',
         kwargs={"sources": ["persons"]}),

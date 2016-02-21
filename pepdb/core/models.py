@@ -849,7 +849,8 @@ class Person2Country(AbstractRelationship):
     def to_dict(self):
         return {
             "relationship_type": self.relationship_type,
-            "to_country": self.to_country.name
+            "to_country_en": self.to_country.name_en,
+            "to_country_uk": self.to_country.name_uk
         }
 
     class Meta:
@@ -874,7 +875,8 @@ class Company2Country(AbstractRelationship):
     def to_dict(self):
         return {
             "relationship_type": self.relationship_type,
-            "to_country": self.to_country.name
+            "to_country_en": self.to_country.name_en,
+            "to_country_uk": self.to_country.name_uk
         }
 
     def __unicode__(self):
