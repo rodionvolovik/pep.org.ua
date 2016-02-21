@@ -5,12 +5,13 @@ from django.http import JsonResponse
 from django.utils import translation
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
+from django.db.models import Count, F
+from django.template.defaultfilters import truncatewords
 
 from elasticsearch_dsl.query import Q
 from translitua import translit
 
-from core.models import Person, Declaration
-from core.api import hybrid_response
+from core.models import Person, Declaration, Country
 from core.pdf import pdf_response
 from core.utils import is_cyr
 from core.paginator import paginated_search
@@ -62,15 +63,14 @@ def suggest(request):
                 }
         )
 
-        res = search.execute()
-        if res.success:
-            results += res.suggest['name'][0]['options']
+        # res = search.execute()
+        # if res.success:
+        #     results += res.suggest['name'][0]['options']
 
         results = sorted(results, key=itemgetter("score"), reverse=True)
 
-
         if results:
-            return [val['text'] for val in results]
+            return [truncatewords(val['text'], 4) for val in results]
         else:
             []
 
@@ -91,7 +91,6 @@ def suggest(request):
     return JsonResponse(suggestions, safe=False)
 
 
-@hybrid_response("search.jinja")
 def search(request, sources=["persons", "related"]):
     params = {}
 
@@ -119,37 +118,7 @@ def search(request, sources=["persons", "related"]):
     if "related" in sources:
         params["related_persons"] = _search_related(request)
 
-    return params
-    
-@hybrid_response("countries.jinja")
-def search(request, sources=["persons", "related"]):
-    params = {}
-
-    query = request.GET.get("q", "")
-    is_exact = request.GET.get("is_exact", "") == "on"
-
-    if is_exact:
-        persons = ElasticPerson.search().query(
-            "multi_match", query=query,
-            operator="and",
-            fields=["full_name", "names"])
-
-        # Special case when we were looking for one exact person and found it.
-        if persons.count() == 1:
-            person = persons.execute()[0]
-
-            return redirect(
-                reverse("person_details",
-                        kwargs={"person_id": person.id})
-            )
-
-    if "persons" in sources:
-        params["persons"] = _search_person(request)
-
-    if "related" in sources:
-        params["related_persons"] = _search_related(request)
-
-    return params
+    return render(request, "search.jinja", params)
 
 
 def _search_person(request):
@@ -252,6 +221,34 @@ def person_details(request, person_id):
     })
 
     return context
+
+
+def countries(request, sources=["persons", "companies"], country_id=None):
+    country = None
+    if country_id is not None:
+        country = get_object_or_404(Country, iso2=country_id)
+
+    used_countries = Country.objects.annotate(
+        persons_count=Count("person2country"),
+        companies_count=Count("company2country")).annotate(
+        usages=F("persons_count") + F("companies_count")).exclude(
+        usages=0, iso2="").order_by("-usages")
+
+    params = {
+        "used_countries": used_countries,
+        "country": country
+    }
+
+    if "persons" in sources:
+        if country_id is None:
+            persons = ElasticPerson.search().query('match_all')
+        else:
+            persons = ElasticPerson.search().query(
+                'match', related_countries__to_country_uk=country.name_uk)
+
+    params["persons"] = paginated_search(request, persons)
+
+    return render(request, "countries.jinja", params)
 
 
 def company_details(request, company_id):

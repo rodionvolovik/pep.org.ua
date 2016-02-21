@@ -1,57 +1,6 @@
 {% extends "base.jinja" %}
 {% from "macros/_pagination.jinja" import render_pagination with context %}
-
-{% macro render_person(p) %}
-    <div class="small-profile {% if p.is_pep %}fizik{% else %}linked{% endif %} col-sm-6" itemscope itemtype="http://schema.org/Person">
-        <link itemprop="url" href="{{ url("person_details", person_id=p.id) }}" />
-        <div class="box active-box" data-url="{{ url("person_details", person_id=p.id) }}">
-            <header class="profile-header">
-                <div class="avatar">
-                {% if p.photo %}
-                    <img src="{{ p.photo|thumbnail_url("small_avatar") }}" itemprop="image" />
-                {% endif %}
-                </div>
-
-                <h3 class="pep-name" itemprop="name">
-                    <span itemprop="familyName">{{ p.translated_last_name }}</span> <span class="pep-pib"><span itemprop="givenName">{{ p.translated_first_name }}</span> <span itemprop="additionalName">{{ p.translated_patronymic }}</span>
-                </h3>
-            </header>
-
-            <div class="descr">
-                {% if p.date_of_birth %}
-                <meta itemprop="birthDate" content="{{ p.dob }} "/>
-                <p><span>{{ _("Дата народження") }}:</span> {{ p.date_of_birth }}</p>
-                {% endif %}
-                {% if p.last_workplace %}
-                <p>
-                    <span>{{ _("Остання посада") }}:</span>
-                    <span itemprop="worksFor" itemscope itemtype="http://schema.org/Organization"><span itemprop="name">{{ p.translated_last_workplace }}</span></span>, 
-                    <span itemprop="jobTitle">{{ p.translated_last_job_title }}</span>
-                </p>
-                {% endif %}
-
-                {% set relevant_related_persons = p.relevant_related_persons()[:4] %}
-                {% if relevant_related_persons %}
-                <p>
-                    {% for rel in relevant_related_persons %}
-                        <span>{{ _("Зв'язок") }}:</span> {% if rel.relationship_type %}{{ _(rel.relationship_type) }}, {% endif %}
-                        {% if LANGUAGE_CODE =="en" %}{{ rel.person_en }}{% else %}{{ rel.person_uk }}{% endif %}<br />
-                    {% endfor %}
-                </p>
-                {% endif %}
-
-                {#% if p.risk_category %}
-                <p>
-                    <span class="tooltip-anchor" data-toggle="tooltip" data-placement="bottom" title="{{ _("Відповідно до методології, національним публічним діячам присвоюється такі ступені ризику відмивання коштів: неприйнятно високий; високий; середній; низький") }}">
-                        <span>{{ _("Рівень ризику") }}:</span>
-                        <span class="riskLevel">{{ _(p.risk_category) }}</span>
-                    </span>
-                </p>
-                {% endif %#}
-            </div>
-        </div>
-    </div>
-{% endmacro %}
+{% from "macros/_search.jinja" import render_person with context %}
 
 {% block content %}
 <div class="container">
