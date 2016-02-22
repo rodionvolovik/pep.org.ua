@@ -22,9 +22,10 @@
     <section id="searchbox" class="">
         <div class="container">
             <div class="row">
-                <h1 class="text-center">{{ page.translated_title }}</h1>
-                <div class="description">
-                    {{ page.translated_body|richtext }}
+                <h1 class="text-center">Search for property of Ukrainian officials</h1>
+                <div class="description text-center">
+                    <p>Our project - a struggle with Ukrainian Politically Exposed Persons (PEP), who stole money and property, and then take it to Europe.</p>
+                    <p>But we find ! <a href="#">Know more about project</a></p>
                 </div>
 
                 <div class="col-lg-6 col-md-8 col-xs-12 col-lg-offset-3 col-md-offset-2">
@@ -39,45 +40,37 @@
                 </div>
             </div>
         </div>
-    </section>
-
-    {#% if page.columns %}
-    <selection id="hp-columns">
-        <div class="container">
+    </section>           
+    
+    <section id="hp-columns">
+        <div class="container">      
             <div class="row">
-                {% for column in page.columns.all()[:3] %}
-                <div class="col-md-4">
-                    <h3>{{ column.translated_title }}</h3>
-                    {{ column.translated_body|richtext }}
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </selection>
-    {% endif %#}
-    <selection id="hp-columns">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 text-center">
                     <h3>{{ persons_total }}</h3>
-                    {{ _("Профілів фізичних осіб в Реєстрі") }}
+                    {{ _("Профілів фізичних осіб") }}
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 text-center">
                     <h3>{{ persons_pep }}</h3>
-                    {{ _("Профілів публічних діячів у Реєстрі") }}
+                    {{ _("Профілів публічних діячів") }}
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 text-center">
                     <h3>{{ persons_related }}</h3>
-                    {{ _("Профілів пов'язаних осіб в Реєстрі") }}
+                    {{ _("Профілів пов'язаних осіб") }}
                 </div>
             </div>
         </div>
-    </selection>
+    </section>
+    
 
     {% if page.banner_items %}
-    <selection id="sponsors">
+    <section id="oursponsors">
         <div class="container">
             <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 oursponsors-text">
+                    <p>Корумповані високопосадовці легко відмивають брудні гроші через міжнародну банківську систему. Тому у світі запровадили особливі правила контролю за фінансовими операціями публічних осіб: кожна фінансова установа має встановити, хто її клієнт і звідки в нього гроші. Якщо клієнтом є публічний діяч, його фінансові операції мають бути ретельно перевірені.</p>
+                    <p>Реєстр розроблено командами Центру протидії корупції та Канцелярської Сотні спільно зі спеціалістами Державної служби фінансового моніторингу та Міністерства юстиції України за фінансової підтримки міжнародних донорів:</p>
+                </div>
+
                 {% for banner in page.banner_items.all() %}
                     {% if banner.image %}
                     <div class="sponsor text-center col-md-3 col-xs-6">
@@ -90,7 +83,7 @@
                 {% endfor %}
             </div>
         </div>
-    </selection>
+    </section>
     {% endif %}
 
     <div class="cp"></div> <!--   clear padding  -->

@@ -1,4 +1,5 @@
-@media (max-width: 767px) {
+
+@media (max-width: @max-sm) {
     body {
         font-size: 14px;
     }
@@ -141,7 +142,7 @@
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: @min-sm) {
     body {
         font-size: 16px;
     }
@@ -160,11 +161,6 @@
 
     #searchbox h1 {
         font-size: 32px;
-    }
-
-    #searchbox {
-        padding-top: 120px;
-        padding-bottom: 120px;
     }
 
     .regularSearch {
@@ -197,7 +193,7 @@
 
 }
 
-@media (max-width: 991px) {
+@media (max-width: @max-sm) {
     .antac-logo img {
         width: 140px;
     }
@@ -215,7 +211,7 @@
     }
 }
 
-@media only screen and (max-device-width: 992px) and (orientation: portrait) {
+@media only screen and (max-device-width: @max-sm) and (orientation: portrait) {
     .regularSearch {
         float: left !important;
         margin-top: 0;
@@ -224,7 +220,7 @@
     }
 }
 
-@media (min-width: 992px) {
+@media (min-width: @min-md) {
     #searchbox h1 {
         font-size: 40px;
     }
@@ -258,4 +254,4 @@
 
 }
 
-@media (min-width: 1200px) {}
+@media (min-width: @min-lg) {}
