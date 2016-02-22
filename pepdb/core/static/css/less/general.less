@@ -9,10 +9,56 @@ body {
     font-family: 'arsenalregular';
     font-size: 16px;
     
-    border-top: @pep-blue 15px solid;
+    @border: 6px;
+    border-top: @pep-yellow @border * 2 solid;
+    
+    &:before {
+        content: "";
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: @border;
+        top: 0px;
+        left: 0; 
+        border-top: @border solid @pep-blue;
+    }
     
     @media (min-width: @min-sm) {
-        border-width: 30px;
+        @border: 5px;
+        border-top-width: @border * 4;
+    
+        &:before {
+            height: @border * 2;
+            border-top-width: @border * 2;
+        }
+    }
+    
+    @media (min-width: @min-md) {
+        @border: 6px;
+        border-top-width: @border * 4;
+    
+        &:before {
+            height: @border * 2;
+            border-top-width: @border * 2;
+        }
+    }
+}
+
+.page-content {
+    background: none repeat scroll 0 0 #fff;
+    border: 0 none;
+    border-radius: 2px;
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.45);
+    -moz-box-shadow:    0px 0px 5px 0px rgba(50, 50, 50, 0.45);
+    box-shadow:         0px 0px 5px 0px rgba(50, 50, 50, 0.45);
+    padding: 30px;
+    
+    h1 {
+        margin-top: 0;
+        margin-bottom: 30px;
+    }
+    
+    .content-body {  
     }
 }
 
@@ -63,6 +109,12 @@ a.trans {
 
 .navbar-inverse .navbar-toggle .icon-bar {
     background-color: #333;
+}
+
+.scrollable-menu {
+    height: auto;
+    max-height: @max-scroll-menu-height;
+    overflow-x: hidden;
 }
 
 #footer {
@@ -186,17 +238,6 @@ h1 {
     }
 }
 
-
-.regularSearch {
-    margin-top: 20px;
-    max-width: 250px;
-}
-
-.regularSearch input,
-.regularSearch .btn {
-    height: 40px;
-}
-
 #pep-search .typeahead.dropdown-menu li {
     border-bottom: #F1F1F1 1px solid;
     width: 100%;
@@ -221,46 +262,6 @@ h1 {
 #pep-search .typeahead.dropdown-menu li.active a {
     background: @pep-blue;
     color: white;
-}
-
-#navbar .regularSearch ul {
-    right: 0;
-    left: auto !important;
-}
-
-#navbar .regularSearch ul li {
-    float: left;
-    position: relative;
-    padding: 0;
-    margin-left: 0;
-    margin-right: 0;
-}
-
-#navbar .regularSearch ul li a {
-    display: inline-block;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    width: 100%;
-}
-
-#navbar .regularSearch .btn {
-    margin-top: 0;
-    padding: 0 10px;
-    background: @pep-light-blue;
-    border: @pep-light-blue 1px solid;
-}
-
-.not-front #navbar .regularSearch .btn {
-    background: @pep-bg;
-    border: @pep-bg 1px solid;
-}
-
-#navbar .regularSearch .btn i {
-    color: white;
-}
-
-.not-front #navbar .regularSearch .btn i {
-    color: @pep-blue;
 }
 
 .square {
@@ -480,12 +481,6 @@ h1 {
     font-weight: bold;
 }
 
-.antac-logo {
-    margin-top: 15px;
-    float: right;
-    height: auto;
-}
-
 .description {
     max-width: 800px;
     margin: 0 auto;
@@ -518,39 +513,6 @@ h1 {
 
 #footerInfo p {
     margin-top: 0;
-}
-
-#languageSelect {
-    float: right;
-    top: 25px;
-    margin-right: 20px;
-}
-
-#languageSelect button {
-    background: none;
-    border: none;
-}
-
-#languageSelect .dropdown-menu {
-    min-width: 0;
-    left: auto;
-    padding: 0;
-}
-
-#languageSelect .dropdown-menu > li {
-    padding: 3px 4px;
-    margin: 0;
-}
-
-#languageSelect .dropdown-menu > li > a {
-    padding: 0;
-    margin: 0;
-}
-
-.languageMenu li {
-    display: inline;
-    float: left;
-    margin-right: 10px;
 }
 
 #navbar li.edit-page {

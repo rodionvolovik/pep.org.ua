@@ -71,3 +71,4 @@ bower_components/
 .vagrant/machines/default/virtualbox/synced_folders
 Vagrantfile
 pep.ppk
+pep.txt

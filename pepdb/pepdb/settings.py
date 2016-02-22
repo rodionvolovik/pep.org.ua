@@ -238,6 +238,7 @@ PIPELINE_JS = {
             "bower_components/bootstrap/js/tab.js",
             "bower_components/bootstrap3-typeahead/bootstrap3-typeahead.js",
             "bower_components/featherlight/src/featherlight.js",
+            "bower_components/jquery.nicescroll/jquery.nicescroll.min.js",
             "js/ripples.min.js",
             "js/pep.js",
         ),
