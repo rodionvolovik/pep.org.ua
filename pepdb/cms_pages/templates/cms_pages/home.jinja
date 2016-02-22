@@ -22,10 +22,9 @@
     <section id="searchbox" class="">
         <div class="container">
             <div class="row">
-                <h1 class="text-center">Search for property of Ukrainian officials</h1>
+                <h1 class="text-center">{{ page.translated_title }}</h1>
                 <div class="description text-center">
-                    <p>Our project - a struggle with Ukrainian Politically Exposed Persons (PEP), who stole money and property, and then take it to Europe.</p>
-                    <p>But we find ! <a href="#">Know more about project</a></p>
+                    {{ page.translated_body|richtext }}
                 </div>
 
                 <div class="col-lg-6 col-md-8 col-xs-12 col-lg-offset-3 col-md-offset-2">
@@ -67,8 +66,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-10 col-sm-offset-1 oursponsors-text">
-                    <p>Корумповані високопосадовці легко відмивають брудні гроші через міжнародну банківську систему. Тому у світі запровадили особливі правила контролю за фінансовими операціями публічних осіб: кожна фінансова установа має встановити, хто її клієнт і звідки в нього гроші. Якщо клієнтом є публічний діяч, його фінансові операції мають бути ретельно перевірені.</p>
-                    <p>Реєстр розроблено командами Центру протидії корупції та Канцелярської Сотні спільно зі спеціалістами Державної служби фінансового моніторингу та Міністерства юстиції України за фінансової підтримки міжнародних донорів:</p>
+                    {{ root_page.translated_footer|richtext }}
                 </div>
 
                 {% for banner in page.banner_items.all() %}

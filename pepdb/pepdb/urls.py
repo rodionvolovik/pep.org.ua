@@ -73,8 +73,9 @@ urlpatterns += [
     url(r'^wg_search/', include(wagtailsearch_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-if settings.DEBUG:
+if "debug_toolbar" in settings.INSTALLED_APPS:
     import debug_toolbar
-    urlpatterns += patterns('',
+    urlpatterns += patterns(
+        '',
         url(r'^__debug__/', include(debug_toolbar.urls)),
     )

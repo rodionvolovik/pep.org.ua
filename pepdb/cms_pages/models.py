@@ -230,11 +230,11 @@ class HomePage(AbstractJinjaPage, Page):
 
     footer = RichTextField(
         default="",
-        verbose_name="[UA] Текст внизу усіх сторінок")
+        verbose_name="[UA] Текст внизу головної")
 
     footer_en = RichTextField(
         default="",
-        verbose_name="[EN] Текст внизу усіх сторінок")
+        verbose_name="[EN] Текст внизу головної")
 
     translated_title = TranslatedField(
         'title',
@@ -261,7 +261,7 @@ class HomePage(AbstractJinjaPage, Page):
         FieldPanel('body_en', classname="full"),
 
         InlinePanel('top_menu_links', label="Меню зверху"),
-        InlinePanel('columns', label="Колонки під пошуком"),
+        # InlinePanel('columns', label="Колонки під пошуком"),
         InlinePanel('banner_items', label="Банери спонсорів"),
         InlinePanel('bottom_menu_links', label="Меню знизу"),
 
