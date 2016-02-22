@@ -1,6 +1,6 @@
 {% extends "base.jinja" %}
 {% from "macros/_pagination.jinja" import render_pagination with context %}
-{% from "macros/_search.jinja" import render_person with context %}
+{% from "macros/_search.jinja" import render_person, render_company with context %}
 
 {% block content %}
     <div class="container">
@@ -41,16 +41,16 @@
                                    aria-expanded="true">{{ _("Фізичні особи") }} <span class="badge">{{ persons.paginator.count }}</span></a>
                             </li>
                         {% endif %}
-                        {% if related_persons %} <!-- TODO: change to yuriki -->
+                        {% if companies %}
                             <li role="presentation" class="">
                                 <a href="#y" role="tab" id="yuriki" data-toggle="tab" aria-controls="profile"
-                                   aria-expanded="false">{{ _("Юридичні особи") }} <span class="badge">8</span></a>
+                                   aria-expanded="false">{{ _("Юридичні особи") }} <span class="badge">{{ companies.paginator.count }}</span></a>
                             </li>
                         {% endif %}
                     </ul>
                     <div id="pepTabContant" class="tab-content">
                         {% if persons %}
-                            <div role="tabpanel" class="tab-pane fade active in" id="fiziki" aria-labelledby="fiziki">
+                            <div role="tabpanel" class="tab-pane fade active in" id="f" aria-labelledby="fiziki">
                                  {% for p in persons %}
                                     {{ render_person(p, include_related_persons=False) }}
                                     {% if loop.index is divisibleby 2 %}
@@ -59,6 +59,7 @@
                                 {% endfor %}
 
                                 {% if persons.paginator.num_pages > 1 %}
+                                    <div class="clearfix"></div>
                                     <div class="text-center">
                                         <nav>
                                             {{ render_pagination(persons, "") }}
@@ -68,24 +69,23 @@
  
                             </div>
                         {% endif %}
-                        {% if related_persons %} <!-- TODO: change to fiziki -->
-                            <div role="tabpanel" class="tab-pane fade" id="yuriki" aria-labelledby="yuriki">
-{#
-                                {% for p in related_persons %}
-                                    {{ render_person(p) }}
+                        {% if companies %}
+                            <div role="tabpanel" class="tab-pane fade" id="y" aria-labelledby="yuriki">
+                                {% for c in companies %}
+                                    {{ render_company(c) }}
                                     {% if loop.index is divisibleby 2 %}
                                         <div class="clearfix"></div>
                                     {% endif %}
                                 {% endfor %}
 
-                                {% if related_persons.paginator.num_pages > 1 %}
+                                {% if companies.paginator.num_pages > 1 %}
+                                    <div class="clearfix"></div>
                                     <div class="text-center">
                                         <nav>
-                                            {{ render_pagination(related_persons, url("search_related")) }}
+                                            {{ render_pagination(companies, "") }}
                                         </nav>
                                     </div>
                                 {% endif %}
- #}
                             </div>
                         {% endif %}
                     </div>

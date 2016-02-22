@@ -51,3 +51,35 @@
         </div>
     </div>
 {% endmacro %}
+
+{% macro render_company(c) %}
+    <div class="small-profile yurik col-sm-6" itemscope itemtype="http://schema.org/Organization">
+        <link itemprop="url" href="{{ url("company_details", company_id=c.id) }}" />
+        <div class="box active-box" data-url="{{ url("company_details", company_id=c.id) }}">
+            <header class="profile-header">
+                <div class="avatar">
+                </div>
+
+                <h3 class="pep-name" itemprop="name">
+                    <span>{{ c.translated_name }}</span>
+                </h3>
+            </header>
+
+            <div class="descr">
+                {% if c.edrpou %}
+                    <p><span>{{ _("ЄДРПОУ") }}:</span> {{ c.edrpou }}</p>
+                {% endif %}
+
+                {% set relevant_related_persons = c.relevant_related_persons()[:3] %}
+                {% if relevant_related_persons %}
+                <p>
+                    {% for rel in relevant_related_persons %}
+                        <span>{{ _("Зв'язок") }}:</span> {% if rel.relationship_type %}{{ _(rel.relationship_type) }}, {% endif %}
+                        {% if LANGUAGE_CODE =="en" %}{{ rel.person_en }}{% else %}{{ rel.person_uk }}{% endif %}<br />
+                    {% endfor %}
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endmacro %}

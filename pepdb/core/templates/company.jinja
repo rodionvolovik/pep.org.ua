@@ -1,0 +1,56 @@
+{% extends "base.jinja" %}
+{% from "macros/_connections.jinja" import render_connection %}
+
+{% block page_title %}{{ company.name }} {% endblock %}
+
+{% block extra_menu %}
+    {% if request.user.is_superuser %}
+        <li class="edit-page">
+            <a href="{{ url('admin:core_company_change', company.id) }}" target="_blank"><i class="fa fa-pencil-square-o"></i></a>
+        </li>
+    {% endif %}
+{% endblock %}
+
+
+{% block content %}
+<div class="container" itemscope itemtype="http://schema.org/Organization">
+    <div class="row">
+        <div id="breadcrumbs">
+            <ol class="breadcrumb">
+                <li><a href="{{ url("wagtail_serve", "") }}">{{ _("Головна") }}</a></li>
+                <li class="active">{{ _("Публічні діячі") }}</li>
+                <li class="active">{{ company.name }}</li>
+            </ol>
+        </div>
+        <aside id="profile-nav" role="complementary" class="col-sm-2 hidden-xs">
+            <ul id="side-profilemenu">
+                <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-male"></i><span>{{ _("Дані") }}</span></a></li>
+            </ul>
+        </aside>
+        <section id="profile" class="col-sm-10">
+            <link itemprop="url" href="{{ company.get_absolute_url() }}" />
+            <div id="profile-wrap" class="box">
+                <ul class="profileActions">
+                    <li><a href="?format=pdf" class="tooltip-anchor" data-toggle="tooltip" data-placement="top" title="{{ _("Скачати PDF") }}" target="_blank"><i class="fa fa-file-pdf-o"></i></a></li>
+                    <li><a href="#" class="tooltip-anchor print-me" data-toggle="tooltip" data-placement="top" title="{{ _("Роздрукувати профайл") }}"><i class="fa fa-print"></i></a></li>
+                </ul>
+                <header class="profile-header">
+                    <h1 class="pep-name" itemprop="name">{{ company.name }}</h1>
+                </header>
+                <div id="personal" class="sub">
+                    <div class="table-responsive">
+                        <table class="table table-condensed">
+                            {% if company.edrpou %}
+                            <tr>
+                                <td>{{ _("ЄДРПОУ") }} </td>
+                                <td><strong>{{ company.edrpou }}</strong></td>
+                            </tr>
+                            {% endif %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

@@ -1,6 +1,6 @@
 {% extends "base.jinja" %}
 {% from "macros/_pagination.jinja" import render_pagination with context %}
-{% from "macros/_search.jinja" import render_person with context %}
+{% from "macros/_search.jinja" import render_person, render_company with context %}
 
 {% block content %}
 <div class="container">
@@ -25,14 +25,33 @@
                 {% endfor %}
                 
                 {% if persons.paginator.num_pages > 1 %}
-                <div class="text-center">
-                    <nav>
-                    {{ render_pagination(persons, url("search_person")) }}
-                    </nav>
-                </div>
+                    <div class="clearfix"></div>
+                    <div class="text-center">
+                        <nav>
+                        {{ render_pagination(persons, url("search_person")) }}
+                        </nav>
+                    </div>
                 {% endif %}
             {% endif %}
 
+            {% if companies %}
+            <h2 class="text-center">{{ _("Юридичні особи") }}</h2>
+                {% for c in companies %}
+                    {{ render_company(c) }}
+                    {% if loop.index is divisibleby 2 %}
+                        <div class="clearfix"></div>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if companies.paginator.num_pages > 1 %}
+                    <div class="clearfix"></div>
+                    <div class="text-center">
+                        <nav>
+                        {{ render_pagination(companies, url("search_company")) }}
+                        </nav>
+                    </div>
+                {% endif %}
+            {% endif %}
 
             {% if related_persons %}
             <h2 class="text-center">{{ _("Пов'язані особи") }}</h2>
@@ -44,11 +63,12 @@
                 {% endfor %}
                 
                 {% if related_persons.paginator.num_pages > 1 %}
-                <div class="text-center">
-                    <nav>
-                    {{ render_pagination(related_persons, url("search_related")) }}
-                    </nav>
-                </div>
+                    <div class="clearfix"></div>
+                    <div class="text-center">
+                        <nav>
+                        {{ render_pagination(related_persons, url("search_related")) }}
+                        </nav>
+                    </div>
                 {% endif %}
             {% endif %}
 

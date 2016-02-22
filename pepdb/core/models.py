@@ -20,8 +20,7 @@ from django.utils import translation
 from redactor.fields import RedactorField
 
 from core.utils import (
-    parse_fullname, parse_family_member, RELATIONS_MAPPING, TranslatedField,
-    render_date)
+    parse_fullname, parse_family_member, RELATIONS_MAPPING, render_date)
 
 # to_*_dict methods are used to convert two main entities that we have, Person
 # and Company into document indexable by ElasticSearch.
@@ -199,11 +198,10 @@ class Person(models.Model):
                 "Контролер",
             ))
 
-
     @property
     def related_companies(self):
-        companies = self.person2company_set.select_related("to_company").filter(
-            is_employee=False)
+        companies = self.person2company_set.select_related(
+            "to_company").filter(is_employee=False)
 
         assets = []
         related = []
@@ -538,7 +536,7 @@ class Person2Person(AbstractRelationship):
 
     def to_dict(self):
         """
-        Convert link between two persons into indexable presentation
+        Convert link between two persons into indexable presentation.
         """
         return {
             "relationship_type": self.to_relationship_type,
@@ -555,7 +553,7 @@ class Person2Person(AbstractRelationship):
 
     def to_dict_reverse(self):
         """
-        Convert back link between two persons to indexable presentation
+        Convert back link between two persons to indexable presentation.
         """
         return {
             "relationship_type": self.from_relationship_type,
@@ -631,17 +629,25 @@ class Person2Company(AbstractRelationship):
         return {
             "relationship_type": self.relationship_type,
             "state_company": self.to_company.state_company,
-            "to_company": self.to_company.name,
-            "to_company_short": self.to_company.short_name
+
+            "to_company_uk": self.to_company.name_uk,
+            "to_company_short_uk": self.to_company.short_name_uk,
+            "to_company_en": self.to_company.name_en,
+            "to_company_short_en": self.to_company.short_name_en
         }
 
     def to_person_dict(self):
         return {
             "relationship_type": self.relationship_type,
             "is_pep": self.from_person.is_pep,
-            "name": "%s %s %s" % (self.from_person.first_name,
-                                  self.from_person.patronymic,
-                                  self.from_person.last_name)
+            "person_uk": "%s %s %s" % (
+                self.from_person.first_name_uk,
+                self.from_person.patronymic_uk,
+                self.from_person.last_name_uk),
+            "person_en": "%s %s %s" % (
+                self.from_person.first_name_en,
+                self.from_person.patronymic_en,
+                self.from_person.last_name_en),
         }
 
     def save(self, *args, **kwargs):
@@ -711,7 +717,7 @@ class Company(models.Model):
     def to_dict(self):
         d = model_to_dict(self, fields=[
             "id", "name", "short_name", "name_en", "short_name_en",
-            "state_company", "edrpo", "wiki",
+            "state_company", "edrpou", "wiki", "city", "street",
             "other_founders", "other_recipient", "other_owners",
             "other_managers", "bank_name"])
 
@@ -736,13 +742,13 @@ class Company(models.Model):
             if not field:
                 continue
 
-            chunks = list(map(lambda x: x.strip("'\",.-“”«»"), field.split(" ")))
+            chunks = list(
+                map(lambda x: x.strip("'\",.-“”«»"), field.split(" ")))
 
             for i in xrange(len(chunks)):
                 variant = copy(chunks)
                 variant = [variant[i]] + variant[:i] + variant[i + 1:]
                 suggestions.append(" ".join(variant))
-
 
         d["name_suggest"] = {
             "input": suggestions,
@@ -762,6 +768,15 @@ class Company(models.Model):
                 self.name_en = t.translation
 
         super(Company, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse("company_details", kwargs={"company_id": self.pk})
+
+    def localized_url(self, locale):
+        translation.activate(locale)
+        url = self.get_absolute_url()
+        translation.deactivate()
+        return url
 
     class Meta:
         verbose_name = "Юрідична особа"
