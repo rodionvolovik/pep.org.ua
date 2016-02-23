@@ -97,7 +97,14 @@
                             <ul>
                                 {% for menuitem in bottom_menu %}
                                     <li class="{% if calling_page.startswith(menuitem.link) %} active{% endif %}">
-                                        <a href="{{ menuitem.link }}">{{ menuitem.translated_caption }}</a>
+                                        <a href="{{ menuitem.link }}">
+                                            <span class="footer-logo">
+                                            {% if menuitem.image %}
+                                                <img src="{{ menuitem.image.get_rendition("max-50x50").url }}" alt="" class="" title=""/>
+                                            {% endif %}
+                                            </span>
+                                            <span class="footer-logo-text">{{ menuitem.translated_caption }}</span>
+                                        </a>
                                     </li>
                                 {% endfor %}
                                 <!-- <li><a href="#"><i class="fa fa-rss"></i> Updates</a></li> -->
@@ -105,7 +112,9 @@
                             </ul>
                         </td>
                         <td>
-                            <div id="footerInfo" class="hidden-xs text-justify"></div>
+                            <div id="footerInfo" class="hidden-xs text-justify">
+                                {{ root_page.translated_footer|richtext }}
+                            </div>
                         </td>
                     </tr>
                 </table>

@@ -32,21 +32,21 @@
   font-weight: normal;
   font-style: normal;
 }
-/* line 1, css/less/general.less */
+/* line 1, css\less\general.less */
 html,
 body {
   margin: 0;
   padding: 0;
   height: 100%;
 }
-/* line 7, css/less/general.less */
+/* line 7, css\less\general.less */
 body {
-  background: #e9e9e9;
+  background: #ebecf1;
   font-family: 'arsenalregular';
   font-size: 16px;
   border-top: #ffcc00 12px solid;
 }
-/* line 15, css/less/general.less */
+/* line 15, css\less\general.less */
 body:before {
   content: "";
   display: block;
@@ -58,28 +58,28 @@ body:before {
   border-top: 6px solid #355383;
 }
 @media (min-width: 768px) {
-  /* line 26, css/less/general.less */
+  /* line 26, css\less\general.less */
   body {
     border-top-width: 20px;
   }
-  /* line 30, css/less/general.less */
+  /* line 30, css\less\general.less */
   body:before {
     height: 10px;
     border-top-width: 10px;
   }
 }
 @media (min-width: 992px) {
-  /* line 36, css/less/general.less */
+  /* line 36, css\less\general.less */
   body {
     border-top-width: 24px;
   }
-  /* line 40, css/less/general.less */
+  /* line 40, css\less\general.less */
   body:before {
     height: 12px;
     border-top-width: 12px;
   }
 }
-/* line 47, css/less/general.less */
+/* line 47, css\less\general.less */
 .page-content {
   background: none repeat scroll 0 0 #fff;
   border: 0 none;
@@ -89,27 +89,27 @@ body:before {
   box-shadow: 0px 0px 5px 0px rgba(50, 50, 50, 0.45);
   padding: 30px;
 }
-/* line 56, css/less/general.less */
+/* line 56, css\less\general.less */
 .page-content h1 {
   margin-top: 0;
   margin-bottom: 30px;
 }
-/* line 65, css/less/general.less */
+/* line 65, css\less\general.less */
 #wrapper {
   min-height: 100%;
   position: relative;
 }
-/* line 70, css/less/general.less */
+/* line 70, css\less\general.less */
 .cp {
   display: block;
   padding-bottom: 30px;
 }
-/* line 75, css/less/general.less */
+/* line 75, css\less\general.less */
 .clr {
   clear: both;
   height: 1px;
 }
-/* line 80, css/less/general.less */
+/* line 80, css\less\general.less */
 a.trans {
   -webkit-transition: all 0.3s ease;
   -moz-transition: all 0.3s ease;
@@ -117,13 +117,13 @@ a.trans {
   -ms-transition: all 0.3s ease;
   transition: all 0.3s ease;
 }
-/* line 88, css/less/general.less */
+/* line 88, css\less\general.less */
 .breadcrumb {
   background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
   font-size: 14px;
   margin-top: 20px;
 }
-/* line 94, css/less/general.less */
+/* line 94, css\less\general.less */
 .btn-transp {
   background-color: transparent;
   color: rgba(0, 0, 0, 0.84);
@@ -134,105 +134,66 @@ a.trans {
   transition: box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1) 0s;
   text-transform: uppercase;
 }
-/* line 105, css/less/general.less */
+/* line 105, css\less\general.less */
 .btn-transp:hover {
   background-color: #fff;
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3), 0 1px 6px rgba(0, 0, 0, 0.3);
 }
-/* line 110, css/less/general.less */
+/* line 110, css\less\general.less */
 .navbar-inverse .navbar-toggle .icon-bar {
   background-color: #333;
 }
-/* line 114, css/less/general.less */
+/* line 114, css\less\general.less */
 .scrollable-menu {
   height: auto;
   max-height: 250px;
   overflow-x: hidden;
 }
-/* line 120, css/less/general.less */
-#footer {
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  background: #333333;
-  padding-top: 30px;
-}
-/* line 129, css/less/general.less */
-#footer td {
-  padding: 0 40px 0 0;
-  vertical-align: top;
-}
-/* line 134, css/less/general.less */
-#footer p {
-  color: #cacaca;
-}
-/* line 138, css/less/general.less */
-.not-front #footer p {
-  color: #747171;
-}
-/* line 142, css/less/general.less */
-#footer li {
-  color: #cacaca;
-  text-transform: uppercase;
-  list-style: none;
-}
-/* line 148, css/less/general.less */
-#footer li a {
-  color: #cacaca;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-/* line 154, css/less/general.less */
-#footer li a:hover {
-  color: #4285f4;
-  text-decoration: underline;
-}
-/* line 159, css/less/general.less */
+/* line 120, css\less\general.less */
 i {
   font-style: normal;
   font-family: 'arsenalitalic';
 }
-/* line 164, css/less/general.less */
+/* line 125, css\less\general.less */
 .btn-danger {
   background-color: #f42d33;
   color: #FFF;
   border: #f42d33 1px solid;
 }
-/* line 170, css/less/general.less */
+/* line 131, css\less\general.less */
 .btn-danger:hover {
   border: #fff 1px solid;
 }
-/* line 174, css/less/general.less */
+/* line 135, css\less\general.less */
 h1 {
   text-transform: uppercase;
   font-family: 'Noto Sans', sans-serif;
   font-weight: bold;
 }
-/* line 180, css/less/general.less */
+/* line 141, css\less\general.less */
 #searchbox {
   background: white;
   padding-top: 20px;
   padding-bottom: 0;
 }
-/* line 185, css/less/general.less */
+/* line 146, css\less\general.less */
 #searchbox h1 {
   color: #355383;
 }
-/* line 189, css/less/general.less */
+/* line 150, css\less\general.less */
 #searchbox p {
   color: #464646;
 }
-/* line 192, css/less/general.less */
+/* line 153, css\less\general.less */
 #searchbox p a {
   color: #464646;
   text-decoration: underline;
 }
-/* line 199, css/less/general.less */
+/* line 160, css\less\general.less */
 #searchbox .input-group {
   margin-top: 20px;
 }
-/* line 203, css/less/general.less */
+/* line 164, css\less\general.less */
 #searchbox input.form-control {
   color: #939391;
   font-size: 20px;
@@ -240,105 +201,105 @@ h1 {
   height: 42px;
   border: #979797 1px solid;
 }
-/* line 211, css/less/general.less */
+/* line 172, css\less\general.less */
 #searchbox .btn {
   font-size: 20px;
   height: 42px;
 }
-/* line 217, css/less/general.less */
+/* line 178, css\less\general.less */
 #hp-columns {
   background: white;
   padding: 40px 0;
   color: #355383;
 }
-/* line 222, css/less/general.less */
+/* line 183, css\less\general.less */
 #hp-columns a {
   color: #355383;
 }
-/* line 226, css/less/general.less */
+/* line 187, css\less\general.less */
 #hp-columns h3 {
   font-family: 'Noto Sans', sans-serif;
   font-weight: bold;
   font-size: 20px;
 }
-/* line 233, css/less/general.less */
+/* line 194, css\less\general.less */
 #oursponsors {
   margin-bottom: 30px;
 }
-/* line 236, css/less/general.less */
+/* line 197, css\less\general.less */
 #oursponsors .oursponsors-text {
   padding: 40px 0;
 }
-/* line 241, css/less/general.less */
+/* line 202, css\less\general.less */
 #pep-search .typeahead.dropdown-menu li {
   border-bottom: #F1F1F1 1px solid;
   width: 100%;
 }
-/* line 246, css/less/general.less */
+/* line 207, css\less\general.less */
 #pep-search .typeahead.dropdown-menu li:last-child {
   border-bottom: none;
 }
-/* line 250, css/less/general.less */
+/* line 211, css\less\general.less */
 #pep-search .typeahead.dropdown-menu li a {
   color: black;
   padding: 10px 20px;
   text-transform: uppercase;
 }
-/* line 256, css/less/general.less */
+/* line 217, css\less\general.less */
 #pep-search .typeahead.dropdown-menu li a strong {
   font-weight: normal;
   font-family: 'arsenalbold';
   color: #f42d33;
 }
-/* line 262, css/less/general.less */
+/* line 223, css\less\general.less */
 #pep-search .typeahead.dropdown-menu li.active a {
   background: #355383;
   color: white;
 }
-/* line 267, css/less/general.less */
+/* line 228, css\less\general.less */
 .square {
   max-width: 100%;
 }
-/* line 271, css/less/general.less */
+/* line 232, css\less\general.less */
 .card {
   margin-bottom: 100px;
 }
-/* line 275, css/less/general.less */
+/* line 236, css\less\general.less */
 .card {
   font-size: 20px;
   padding: 0;
   text-transform: uppercase;
   display: table;
 }
-/* line 282, css/less/general.less */
+/* line 243, css\less\general.less */
 .card a {
   display: table-cell;
   vertical-align: middle;
   border: #4185f4 1px solid;
   padding: 0 15px;
 }
-/* line 289, css/less/general.less */
+/* line 250, css\less\general.less */
 .card i {
   display: block;
   margin-bottom: 20px;
 }
-/* line 294, css/less/general.less */
+/* line 255, css\less\general.less */
 .card i,
 .card a {
   color: #4185f4;
   text-decoration: none;
 }
-/* line 299, css/less/general.less */
+/* line 260, css\less\general.less */
 .card a:hover {
   background-color: #f42d33;
   color: #fff;
   border: #fff 1px solid;
 }
-/* line 305, css/less/general.less */
+/* line 266, css\less\general.less */
 .card a:hover i {
   color: #fff;
 }
-/* line 311, css/less/general.less */
+/* line 272, css\less\general.less */
 .box {
   background: none repeat scroll 0 0 #fff;
   border: 0 none;
@@ -347,65 +308,65 @@ h1 {
   padding: 24px;
   margin-bottom: 40px;
 }
-/* line 320, css/less/general.less */
+/* line 281, css\less\general.less */
 #search-results h2 {
   clear: both;
   float: none;
   width: 100%;
   padding-top: 80px;
 }
-/* line 327, css/less/general.less */
+/* line 288, css\less\general.less */
 #search-results h2:first-child {
   padding-top: 0;
 }
-/* line 331, css/less/general.less */
+/* line 292, css\less\general.less */
 .timeline .tl-date {
   font-family: 'arsenalbold';
 }
-/* line 335, css/less/general.less */
+/* line 296, css\less\general.less */
 .node {
   cursor: pointer;
 }
-/* line 339, css/less/general.less */
+/* line 300, css\less\general.less */
 .node circle {
   fill: #fff;
   stroke: steelblue;
   stroke-width: 1.5px;
 }
-/* line 345, css/less/general.less */
+/* line 306, css\less\general.less */
 .node text {
   font: 10px sans-serif;
 }
-/* line 349, css/less/general.less */
+/* line 310, css\less\general.less */
 .link {
   fill: none;
   stroke: #ccc;
   stroke-width: 1.5px;
 }
-/* line 355, css/less/general.less */
+/* line 316, css\less\general.less */
 #profile-suggest h3 {
   color: #f42d33;
   font-size: 18px;
 }
-/* line 360, css/less/general.less */
+/* line 321, css\less\general.less */
 #profile-suggest ul {
   padding-left: 0;
 }
-/* line 364, css/less/general.less */
+/* line 325, css\less\general.less */
 #profile-suggest li {
   list-style: none;
   margin-bottom: 10px;
   font-size: 16px;
 }
-/* line 370, css/less/general.less */
+/* line 331, css\less\general.less */
 #side-profilemenu {
   max-width: 165px;
 }
-/* line 374, css/less/general.less */
+/* line 335, css\less\general.less */
 #side-profilemenu.affix {
   top: 50px;
 }
-/* line 378, css/less/general.less */
+/* line 339, css\less\general.less */
 .tree {
   min-height: 20px;
   padding: 19px;
@@ -419,18 +380,18 @@ h1 {
   -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
 }
-/* line 392, css/less/general.less */
+/* line 353, css\less\general.less */
 .tree li {
   list-style-type: none;
   margin: 0;
   padding: 10px 5px 0 5px;
   position: relative;
 }
-/* line 399, css/less/general.less */
+/* line 360, css\less\general.less */
 .tree li a {
   font-size: 12px;
 }
-/* line 403, css/less/general.less */
+/* line 364, css\less\general.less */
 .tree li::before,
 .tree li::after {
   content: '';
@@ -438,7 +399,7 @@ h1 {
   position: absolute;
   right: auto;
 }
-/* line 410, css/less/general.less */
+/* line 371, css\less\general.less */
 .tree li::before {
   border-left: 1px solid #999;
   bottom: 50px;
@@ -446,23 +407,23 @@ h1 {
   top: 0;
   width: 1px;
 }
-/* line 418, css/less/general.less */
+/* line 379, css\less\general.less */
 .tree li::after {
   border-top: 1px solid #999;
   height: 20px;
   top: 25px;
   width: 25px;
 }
-/* line 425, css/less/general.less */
+/* line 386, css\less\general.less */
 .tree li span {
   display: inline-block;
   text-decoration: none;
 }
-/* line 430, css/less/general.less */
+/* line 391, css\less\general.less */
 .tree li .info-gray {
   font-size: 16px;
 }
-/* line 434, css/less/general.less */
+/* line 395, css\less\general.less */
 .tree li span:first-child {
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
@@ -472,86 +433,86 @@ h1 {
   font-size: 20px;
   font-weight: normal;
 }
-/* line 444, css/less/general.less */
+/* line 405, css\less\general.less */
 .tree li span:first-child span {
   border: none;
   padding: 0;
 }
-/* line 449, css/less/general.less */
+/* line 410, css\less\general.less */
 .tree li span span {
   padding: 0;
 }
-/* line 453, css/less/general.less */
+/* line 414, css\less\general.less */
 .tree li.parent_li > span {
   cursor: pointer;
 }
-/* line 457, css/less/general.less */
+/* line 418, css\less\general.less */
 .tree > ul > li::before,
 .tree > ul > li::after {
   border: 0;
 }
-/* line 461, css/less/general.less */
+/* line 422, css\less\general.less */
 .tree li:last-child::before {
   height: 25px;
 }
-/* line 465, css/less/general.less */
+/* line 426, css\less\general.less */
 .tree li.parent_li > span:hover {
   background: #eee;
   border: 1px solid #94a0b4;
   color: #000;
 }
-/* line 471, css/less/general.less */
+/* line 432, css\less\general.less */
 .h li {
   display: none;
 }
-/* line 475, css/less/general.less */
+/* line 436, css\less\general.less */
 .mc {
   margin-left: auto;
   margin-right: auto;
 }
-/* line 480, css/less/general.less */
+/* line 441, css\less\general.less */
 .is_pep {
   font-weight: bold;
 }
-/* line 484, css/less/general.less */
+/* line 445, css\less\general.less */
 .description {
   max-width: 800px;
   margin: 0 auto;
 }
-/* line 489, css/less/general.less */
+/* line 450, css\less\general.less */
 .description p {
   margin: 10px 0;
 }
-/* line 493, css/less/general.less */
+/* line 454, css\less\general.less */
 #hp-columns h3 {
   text-align: center;
 }
-/* line 497, css/less/general.less */
+/* line 458, css\less\general.less */
 .modalConnectionShow .info-gray {
   color: rgba(0, 0, 0, 0.65);
 }
-/* line 501, css/less/general.less */
+/* line 462, css\less\general.less */
 .modal-header {
   background: #fff url(../images/plashka.png) no-repeat top;
   color: white;
 }
-/* line 506, css/less/general.less */
+/* line 467, css\less\general.less */
 .fa-pencil-square-o {
   color: red;
 }
-/* line 510, css/less/general.less */
+/* line 471, css\less\general.less */
 #cs100 {
   display: none;
 }
-/* line 514, css/less/general.less */
+/* line 475, css\less\general.less */
 #footerInfo p {
   margin-top: 0;
 }
-/* line 518, css/less/general.less */
+/* line 479, css\less\general.less */
 #navbar li.edit-page {
   margin: 0;
 }
-/* line 522, css/less/general.less */
+/* line 483, css\less\general.less */
 #send-form {
   display: block;
   width: 200px;
@@ -569,7 +530,7 @@ h1 {
   -ms-transition: all 1s ease;
   transition: all 1s ease;
 }
-/* line 540, css/less/general.less */
+/* line 501, css\less\general.less */
 #send-form.open {
   bottom: 0;
   transform: translateY(0);
@@ -578,11 +539,11 @@ h1 {
   -moz-box-shadow: 0px 0px 13px 0px rgba(0, 0, 0, 0.9);
   box-shadow: 0px 0px 13px 0px rgba(0, 0, 0, 0.9);
 }
-/* line 549, css/less/general.less */
+/* line 510, css\less\general.less */
 #send-form.open.filled {
   bottom: -300px;
 }
-/* line 553, css/less/general.less */
+/* line 514, css\less\general.less */
 #send-form header a {
   padding-top: 3px;
   height: 30px;
@@ -593,7 +554,7 @@ h1 {
   display: block;
   width: 100%;
 }
-/* line 564, css/less/general.less */
+/* line 525, css\less\general.less */
 #send-form .btn-close {
   display: none;
   left: -35px;
@@ -601,18 +562,18 @@ h1 {
   position: absolute;
   color: #f42d33;
 }
-/* line 572, css/less/general.less */
+/* line 533, css\less\general.less */
 #send-form.open .btn-close {
   display: block;
 }
-/* line 576, css/less/general.less */
+/* line 537, css\less\general.less */
 #send-form .form-content {
   width: 100%;
   padding: 10px 10px 0 10px;
   box-sizing: border-box;
   height: 100%;
 }
-/* line 583, css/less/general.less */
+/* line 544, css\less\general.less */
 #send-form .form-content .form {
   background: white;
   padding: 10px;
@@ -620,61 +581,61 @@ h1 {
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
-/* line 591, css/less/general.less */
+/* line 552, css\less\general.less */
 #send-form .form-content .form h3 {
   text-align: center;
 }
-/* line 595, css/less/general.less */
+/* line 556, css\less\general.less */
 #send-form .form-content form {
   opacity: 0;
 }
-/* line 599, css/less/general.less */
+/* line 560, css\less\general.less */
 #send-form textarea {
   resize: none;
 }
-/* line 603, css/less/general.less */
+/* line 564, css\less\general.less */
 #send-form .form-group {
   margin-bottom: 5px;
 }
-/* line 607, css/less/general.less */
+/* line 568, css\less\general.less */
 #send-form.open form {
   opacity: 1;
 }
-/* line 611, css/less/general.less */
+/* line 572, css\less\general.less */
 ul.errorlist {
   margin-bottom: 0;
   padding: 0;
 }
-/* line 616, css/less/general.less */
+/* line 577, css\less\general.less */
 .errorlist li {
   list-style-type: none;
   color: #d9534f;
   padding: 0;
   font-size: 12px;
 }
-/* line 623, css/less/general.less */
+/* line 584, css\less\general.less */
 .label-required::before {
   content: "*";
   color: #d9534f;
   font-weight: bold;
   padding-right: 5px;
 }
-/* line 630, css/less/general.less */
+/* line 591, css\less\general.less */
 #declarations table {
   border: none;
 }
-/* line 634, css/less/general.less */
+/* line 595, css\less\general.less */
 #declarations th {
   vertical-align: middle;
   border-top: 1px solid #ddd;
 }
-/* line 639, css/less/general.less */
+/* line 600, css\less\general.less */
 td.decl-year,
 td.decl-income,
 td.decl-familyincome {
   white-space: nowrap;
 }
-/* line 645, css/less/general.less */
+/* line 606, css\less\general.less */
 #declarations .decl-download {
   border-top: none;
   border-bottom: none;
@@ -683,16 +644,16 @@ td.decl-familyincome {
   padding: 5px 15px;
   text-align: center;
 }
-/* line 654, css/less/general.less */
+/* line 615, css\less\general.less */
 .tab-pane {
   padding: 40px;
 }
-/* line 658, css/less/general.less */
+/* line 619, css\less\general.less */
 .richtext img,
 .rich-text img {
   cursor: pointer;
 }
-/* line 1, css/less/nav.less */
+/* line 1, css\less\components\nav.less */
 #navbar {
   border: none;
   border-radius: 0;
@@ -701,7 +662,7 @@ td.decl-familyincome {
   padding-bottom: 0;
   background-color: transparent;
 }
-/* line 9, css/less/nav.less */
+/* line 9, css\less\components\nav.less */
 #navbar .navbar-brand {
   font-size: 26px;
   font-family: 'arsenalbold';
@@ -710,17 +671,17 @@ td.decl-familyincome {
   margin-right: 30px;
   padding-top: 0;
 }
-/* line 17, css/less/nav.less */
+/* line 17, css\less\components\nav.less */
 #navbar .navbar-brand span {
   font-size: 16px;
 }
-/* line 22, css/less/nav.less */
-#navbar li {
+/* line 22, css\less\components\nav.less */
+#navbar .navbar-nav > li {
   margin-right: 35px;
   text-transform: uppercase;
 }
-/* line 26, css/less/nav.less */
-#navbar li a {
+/* line 26, css\less\components\nav.less */
+#navbar .navbar-nav > li a {
   color: #333333;
   text-transform: uppercase;
   padding: 0;
@@ -735,47 +696,47 @@ td.decl-familyincome {
   -ms-transition: all 0.25s ease;
   transition: all 0.25s ease;
 }
-/* line 41, css/less/nav.less */
-#navbar li a.home-item {
+/* line 41, css\less\components\nav.less */
+#navbar .navbar-nav > li a.home-item {
   background-position: 0 0;
 }
-/* line 44, css/less/nav.less */
-#navbar li a.home-item:hover {
+/* line 44, css\less\components\nav.less */
+#navbar .navbar-nav > li a.home-item:hover {
   background-position: 0 -22px;
 }
-/* line 49, css/less/nav.less */
-#navbar li a.countries-item {
+/* line 49, css\less\components\nav.less */
+#navbar .navbar-nav > li a.countries-item {
   background-position: -30px 0;
 }
-/* line 52, css/less/nav.less */
-#navbar li a.countries-item:hover {
+/* line 52, css\less\components\nav.less */
+#navbar .navbar-nav > li a.countries-item:hover {
   background-position: -30px -22px;
 }
-/* line 57, css/less/nav.less */
-#navbar li a.qa-item {
+/* line 57, css\less\components\nav.less */
+#navbar .navbar-nav > li a.qa-item {
   background-position: -60px 0;
 }
-/* line 60, css/less/nav.less */
-#navbar li a.qa-item:hover {
+/* line 60, css\less\components\nav.less */
+#navbar .navbar-nav > li a.qa-item:hover {
   background-position: -60px -22px;
 }
-/* line 65, css/less/nav.less */
-#navbar li a.feedback-item {
+/* line 65, css\less\components\nav.less */
+#navbar .navbar-nav > li a.feedback-item {
   background-position: -90px 0;
 }
-/* line 68, css/less/nav.less */
-#navbar li a.feedback-item:hover {
+/* line 68, css\less\components\nav.less */
+#navbar .navbar-nav > li a.feedback-item:hover {
   background-position: -90px -22px;
 }
-/* line 73, css/less/nav.less */
-#navbar li a:hover {
+/* line 73, css\less\components\nav.less */
+#navbar .navbar-nav > li a:hover {
   color: #4285f4;
 }
-/* line 79, css/less/nav.less */
-#navbar li.active a {
+/* line 79, css\less\components\nav.less */
+#navbar .navbar-nav > li.active a {
   background-color: #e7e7e7;
 }
-/* line 85, css/less/nav.less */
+/* line 85, css\less\components\nav.less */
 #navbar .btn {
   color: #333;
   border: #333 1px solid;
@@ -783,27 +744,27 @@ td.decl-familyincome {
   margin-top: 5px;
   font-size: 18px;
 }
-/* line 92, css/less/nav.less */
+/* line 92, css\less\components\nav.less */
 #navbar .btn:hover {
   color: #4285f4;
   border: #4285f4 1px solid;
   background: #FFF;
 }
-/* line 99, css/less/nav.less */
+/* line 99, css\less\components\nav.less */
 #navbar .regularSearch {
   max-width: 250px;
 }
-/* line 103, css/less/nav.less */
+/* line 103, css\less\components\nav.less */
 #navbar .regularSearch input,
 #navbar .regularSearch .btn {
   height: 30px;
 }
-/* line 108, css/less/nav.less */
+/* line 108, css\less\components\nav.less */
 #navbar .regularSearch ul {
   right: 0;
   left: auto !important;
 }
-/* line 112, css/less/nav.less */
+/* line 112, css\less\components\nav.less */
 #navbar .regularSearch ul li {
   float: left;
   position: relative;
@@ -811,87 +772,138 @@ td.decl-familyincome {
   margin-left: 0;
   margin-right: 0;
 }
-/* line 119, css/less/nav.less */
+/* line 119, css\less\components\nav.less */
 #navbar .regularSearch ul li a {
   display: inline-block;
   padding-top: 10px;
   padding-bottom: 10px;
   width: 100%;
 }
-/* line 128, css/less/nav.less */
+/* line 128, css\less\components\nav.less */
 #navbar .regularSearch .btn {
   margin-top: 0;
   padding: 3px 15px;
   background: #355383;
   border: #355383 1px solid;
 }
-/* line 134, css/less/nav.less */
+/* line 134, css\less\components\nav.less */
 #navbar .regularSearch .btn i {
   color: white;
 }
-/* line 140, css/less/nav.less */
+/* line 140, css\less\components\nav.less */
 #navbar #languageSelect {
   margin-right: 20px;
 }
-/* line 143, css/less/nav.less */
+/* line 143, css\less\components\nav.less */
 #navbar #languageSelect button {
   background: none;
   border: none;
 }
-/* line 148, css/less/nav.less */
+/* line 148, css\less\components\nav.less */
 #navbar #languageSelect .dropdown-menu {
   min-width: 0;
   left: auto;
   padding: 0;
 }
-/* line 153, css/less/nav.less */
+/* line 153, css\less\components\nav.less */
 #navbar #languageSelect .dropdown-menu > li {
   padding: 3px 4px;
   margin: 0;
 }
-/* line 157, css/less/nav.less */
+/* line 157, css\less\components\nav.less */
 #navbar #languageSelect .dropdown-menu > li > a {
   padding: 0;
   margin: 0;
 }
-/* line 165, css/less/nav.less */
+/* line 165, css\less\components\nav.less */
 #navbar .antac-logo {
   float: right;
   height: 40px;
   margin-top: -5px;
 }
-/* line 170, css/less/nav.less */
+/* line 170, css\less\components\nav.less */
 #navbar .antac-logo img {
   width: auto;
   height: 100%;
 }
-/* line 180, css/less/nav.less */
+/* line 180, css\less\components\nav.less */
 .front #navbar .navbar-collapse {
   float: left !important;
 }
-/* line 187, css/less/nav.less */
+/* line 187, css\less\components\nav.less */
 .languageMenu li {
   display: inline;
   float: left;
   margin-right: 10px;
 }
-/* line 2, css/less/profile.less */
+/* line 1, css\less\components\footer.less */
+#footer {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: #272728;
+  padding-top: 30px;
+}
+/* line 9, css\less\components\footer.less */
+#footer #footerInfo {
+  font-size: 13px;
+}
+/* line 13, css\less\components\footer.less */
+#footer .footer-logo {
+  width: 50px;
+  text-align: center;
+  display: inline-block;
+  margin-right: 5px;
+}
+/* line 19, css\less\components\footer.less */
+#footer .footer-logo-text {
+  display: inline-block;
+}
+/* line 24, css\less\components\footer.less */
+#footer li {
+  color: #cacaca;
+  text-transform: uppercase;
+  list-style: none;
+  font-size: 14px;
+}
+/* line 30, css\less\components\footer.less */
+#footer li a {
+  color: white;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+/* line 35, css\less\components\footer.less */
+#footer li a:hover {
+  color: #4285f4;
+  text-decoration: underline;
+}
+/* line 42, css\less\components\footer.less */
+#footer p {
+  color: #cacaca;
+}
+/* line 46, css\less\components\footer.less */
+#footer td {
+  padding: 0 40px 0 0;
+  vertical-align: top;
+}
+/* line 2, css\less\profile.less */
 #profile-nav ul {
   padding-left: 0;
 }
-/* line 5, css/less/profile.less */
+/* line 5, css\less\profile.less */
 #profile-nav ul li {
   list-style: none;
   width: 100%;
 }
-/* line 9, css/less/profile.less */
+/* line 9, css\less\profile.less */
 #profile-nav ul li a {
   width: 100%;
   white-space: normal;
   min-height: 48px;
   text-align: left;
 }
-/* line 16, css/less/profile.less */
+/* line 16, css\less\profile.less */
 #profile-nav ul li i {
   margin-right: 20px;
   float: left;
@@ -900,23 +912,23 @@ td.decl-familyincome {
   min-width: 14px;
   text-align: center;
 }
-/* line 25, css/less/profile.less */
+/* line 25, css\less\profile.less */
 #profile-nav ul li span {
   float: left;
   max-width: 105px;
 }
-/* line 34, css/less/profile.less */
+/* line 34, css\less\profile.less */
 #profile-wrap.box {
   margin-top: 10px;
-  background: #fff url(../images/plashka.png) no-repeat top;
+  background: linear-gradient(180deg, #4285f4 120px, white 120px);
   padding: 30px;
 }
-/* line 40, css/less/profile.less */
+/* line 40, css\less\profile.less */
 #profile-wrap .avatar {
   float: left;
   margin-right: 50px;
 }
-/* line 47, css/less/profile.less */
+/* line 47, css\less\profile.less */
 #profile .profileActions {
   position: absolute;
   margin-top: -15px;
@@ -924,13 +936,13 @@ td.decl-familyincome {
   right: 0;
   margin-right: 30px;
 }
-/* line 54, css/less/profile.less */
+/* line 54, css\less\profile.less */
 #profile .profileActions li {
   list-style: none;
   float: left;
   margin-left: 10px;
 }
-/* line 59, css/less/profile.less */
+/* line 59, css\less\profile.less */
 #profile .profileActions li a {
   color: white;
   font-size: 18px;
@@ -939,22 +951,22 @@ td.decl-familyincome {
   -moz-border-radius: 2px;
   border-radius: 2px;
 }
-/* line 67, css/less/profile.less */
+/* line 67, css\less\profile.less */
 #profile .profileActions li a:hover {
   background: white;
   color: #428bca;
 }
-/* line 75, css/less/profile.less */
+/* line 75, css\less\profile.less */
 #profile .profile-header {
   margin-bottom: 40px;
 }
-/* line 79, css/less/profile.less */
+/* line 79, css\less\profile.less */
 #profile .sub {
   display: block;
   width: 100%;
   clear: both;
 }
-/* line 84, css/less/profile.less */
+/* line 84, css\less\profile.less */
 #profile .sub h3 {
   text-align: center;
   margin-bottom: 20px;
@@ -963,34 +975,35 @@ td.decl-familyincome {
   font-weight: bold;
   color: #f42d33;
 }
-/* line 93, css/less/profile.less */
+/* line 93, css\less\profile.less */
 #profile .sub h4 {
   font-weight: bold;
 }
-/* line 98, css/less/profile.less */
+/* line 98, css\less\profile.less */
 #profile td {
   vertical-align: middle;
 }
-/* line 103, css/less/profile.less */
+/* line 103, css\less\profile.less */
 #personal {
   padding-left: 178px;
   padding-right: 60px;
 }
-/* line 107, css/less/profile.less */
+/* line 107, css\less\profile.less */
 #personal table tr:first-child td {
   border: none;
 }
-/* line 111, css/less/profile.less */
+/* line 111, css\less\profile.less */
 #personal td:nth-child(1) {
   font-size: 14px;
   color: #6a6a6a;
   min-width: 140px;
 }
-/* line 118, css/less/profile.less */
+/* line 118, css\less\profile.less */
 .small-profile {
   padding-bottom: 30px;
+  /* TODO plashki */
 }
-/* line 121, css/less/profile.less */
+/* line 121, css\less\profile.less */
 .small-profile .box {
   padding: 20px 20px 5px 20px;
   background: #fff url(../images/plashka.png) no-repeat 0 -48px;
@@ -998,24 +1011,24 @@ td.decl-familyincome {
   height: 100%;
   cursor: pointer;
 }
-/* line 128, css/less/profile.less */
+/* line 128, css\less\profile.less */
 .small-profile .box:hover {
   box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.23), inset 0 3px 10px rgba(0, 0, 0, 0.16);
 }
-/* line 133, css/less/profile.less */
+/* line 133, css\less\profile.less */
 .small-profile a {
   color: #333;
 }
-/* line 136, css/less/profile.less */
+/* line 136, css\less\profile.less */
 .small-profile a:hover .riskLevel.tip {
   display: block;
 }
-/* line 141, css/less/profile.less */
+/* line 141, css\less\profile.less */
 .small-profile img {
   height: 100px;
   width: auto;
 }
-/* line 146, css/less/profile.less */
+/* line 146, css\less\profile.less */
 .small-profile .avatar {
   margin-right: 20px;
   display: block;
@@ -1023,10 +1036,10 @@ td.decl-familyincome {
   width: 100px;
   float: left;
   background-size: cover;
-  background-color: #e9e9e9;
+  background-color: #ebecf1;
   background-repeat: repeat;
 }
-/* line 157, css/less/profile.less */
+/* line 157, css\less\profile.less */
 .small-profile h3 {
   font-family: 'arsenalregular';
   font-weight: normal;
@@ -1035,36 +1048,36 @@ td.decl-familyincome {
   min-height: 40px;
   text-transform: uppercase;
 }
-/* line 165, css/less/profile.less */
+/* line 165, css\less\profile.less */
 .small-profile h3 span {
   text-transform: capitalize;
 }
-/* line 170, css/less/profile.less */
+/* line 170, css\less\profile.less */
 .small-profile .descr {
   margin-left: 120px;
   position: relative;
   display: block;
 }
-/* line 175, css/less/profile.less */
+/* line 175, css\less\profile.less */
 .small-profile .descr p {
   margin-bottom: 10px;
   font-size: 14px;
 }
-/* line 180, css/less/profile.less */
+/* line 180, css\less\profile.less */
 .small-profile .descr span {
   font-weight: bold;
 }
-/* line 183, css/less/profile.less */
+/* line 183, css\less\profile.less */
 .small-profile .descr span.small-tip {
   font-size: 12px;
   margin-left: -45px;
   color: #7B7B7B;
 }
-/* line 191, css/less/profile.less */
+/* line 191, css\less\profile.less */
 .small-profile .riskLevel {
   font-weight: normal;
 }
-/* line 194, css/less/profile.less */
+/* line 194, css\less\profile.less */
 .small-profile .riskLevel.tip {
   display: none;
   position: absolute;
@@ -1077,102 +1090,102 @@ td.decl-familyincome {
   font-size: 13px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.23), 0 3px 10px rgba(0, 0, 0, 0.16);
 }
-/* line 209, css/less/profile.less */
+/* line 209, css\less\profile.less */
 .small-profile.fizik .avatar {
   background-image: url(../images/short-avatar.png);
 }
-/* line 215, css/less/profile.less */
+/* line 215, css\less\profile.less */
 .small-profile.yurik .box {
   background: #fff url(../images/fplashka.png) no-repeat 0 -55px;
 }
-/* line 219, css/less/profile.less */
+/* line 219, css\less\profile.less */
 .small-profile.yurik .avatar {
   background-image: url(../images/short-avatar-yurik.png);
 }
-/* line 225, css/less/profile.less */
+/* line 225, css\less\profile.less */
 .small-profile.linked .box {
   background: #fff url(../images/lplashka.png) no-repeat 0 -55px;
 }
-/* line 229, css/less/profile.less */
+/* line 229, css\less\profile.less */
 .small-profile.linked .avatar {
   background-image: url(../images/short-avatar-linked.png);
 }
-/* line 235, css/less/profile.less */
+/* line 235, css\less\profile.less */
 .pep-name {
   font-size: 28px;
   margin-top: 10px;
   min-height: 62px;
 }
-/* line 241, css/less/profile.less */
+/* line 241, css\less\profile.less */
 .pep-name,
 .pep-name a {
   color: #FFFFFF;
 }
-/* line 246, css/less/profile.less */
+/* line 246, css\less\profile.less */
 #profile-wiki p {
   text-align: justify;
 }
-/* line 250, css/less/profile.less */
+/* line 250, css\less\profile.less */
 .pep-pib {
   display: block;
   text-transform: none;
 }
-/* line 1, css/less/timeline.less */
+/* line 1, css\less\timeline.less */
 .b-a {
   border: 1px solid #dee5e7;
 }
-/* line 5, css/less/timeline.less */
+/* line 5, css\less\timeline.less */
 .padder {
   padding-left: 15px;
   padding-right: 15px;
 }
-/* line 10, css/less/timeline.less */
+/* line 10, css\less\timeline.less */
 .panel {
   border-radius: 2px;
 }
-/* line 14, css/less/timeline.less */
+/* line 14, css\less\timeline.less */
 .panel .accordion-toggle {
   font-size: 14px;
   display: block;
   cursor: pointer;
 }
-/* line 20, css/less/timeline.less */
+/* line 20, css\less\timeline.less */
 .panel .list-group-item {
   border-color: #edf1f2;
 }
-/* line 24, css/less/timeline.less */
+/* line 24, css\less\timeline.less */
 .panel.no-borders {
   border-width: 0;
 }
-/* line 28, css/less/timeline.less */
+/* line 28, css\less\timeline.less */
 .panel.no-borders .panel-heading,
 .panel.no-borders .panel-footer {
   border-width: 0;
 }
-/* line 33, css/less/timeline.less */
+/* line 33, css\less\timeline.less */
 .timeline {
   margin: 0;
   padding: 0;
 }
-/* line 38, css/less/timeline.less */
+/* line 38, css\less\timeline.less */
 .tl-item {
   display: block;
 }
-/* line 42, css/less/timeline.less */
+/* line 42, css\less\timeline.less */
 .tl-item:before,
 .tl-item:after {
   content: " ";
   display: table;
 }
-/* line 48, css/less/timeline.less */
+/* line 48, css\less\timeline.less */
 .tl-item:after {
   clear: both;
 }
-/* line 52, css/less/timeline.less */
+/* line 52, css\less\timeline.less */
 .visible-left {
   display: none;
 }
-/* line 56, css/less/timeline.less */
+/* line 56, css\less\timeline.less */
 .tl-wrap {
   display: block;
   margin-left: 10em;
@@ -1181,17 +1194,17 @@ td.decl-familyincome {
   border-color: #dee5e7;
   border-width: 0 0 0 4px;
 }
-/* line 65, css/less/timeline.less */
+/* line 65, css\less\timeline.less */
 .tl-wrap:before,
 .tl-wrap:after {
   content: " ";
   display: table;
 }
-/* line 71, css/less/timeline.less */
+/* line 71, css\less\timeline.less */
 .tl-wrap:after {
   clear: both;
 }
-/* line 75, css/less/timeline.less */
+/* line 75, css\less\timeline.less */
 .tl-wrap:before {
   position: relative;
   content: "";
@@ -1207,12 +1220,12 @@ td.decl-familyincome {
   background: #edf1f2;
   box-shadow: 0 0 0 4px #f0f3f4;
 }
-/* line 91, css/less/timeline.less */
+/* line 91, css\less\timeline.less */
 .tl-wrap:hover:before {
   background: transparent;
   border-color: #fff;
 }
-/* line 96, css/less/timeline.less */
+/* line 96, css\less\timeline.less */
 .tl-date {
   position: relative;
   top: 10px;
@@ -1222,7 +1235,7 @@ td.decl-familyincome {
   width: 10em;
   text-align: right;
 }
-/* line 106, css/less/timeline.less */
+/* line 106, css\less\timeline.less */
 .tl-content {
   display: inline-block;
   position: relative;
@@ -1230,49 +1243,49 @@ td.decl-familyincome {
   padding-bottom: 10px;
   background-color: white;
 }
-/* line 114, css/less/timeline.less */
+/* line 114, css\less\timeline.less */
 .tl-content.block {
   display: block;
   width: 100%;
 }
-/* line 119, css/less/timeline.less */
+/* line 119, css\less\timeline.less */
 .tl-content.panel {
   margin-bottom: 0;
 }
-/* line 123, css/less/timeline.less */
+/* line 123, css\less\timeline.less */
 .tl-header {
   display: block;
   width: 12em;
   text-align: center;
   margin-left: 2px;
 }
-/* line 130, css/less/timeline.less */
+/* line 130, css\less\timeline.less */
 .timeline-center .tl-item {
   margin-left: 50%;
 }
-/* line 134, css/less/timeline.less */
+/* line 134, css\less\timeline.less */
 .timeline-center .tl-item .tl-wrap {
   margin-left: -2px;
 }
-/* line 138, css/less/timeline.less */
+/* line 138, css\less\timeline.less */
 .timeline-center .tl-header {
   width: auto;
   margin: 0;
 }
-/* line 143, css/less/timeline.less */
+/* line 143, css\less\timeline.less */
 .timeline-center .tl-left {
   margin-left: 0;
   margin-right: 50%;
 }
-/* line 148, css/less/timeline.less */
+/* line 148, css\less\timeline.less */
 .timeline-center .tl-left .hidden-left {
   display: none !important;
 }
-/* line 152, css/less/timeline.less */
+/* line 152, css\less\timeline.less */
 .timeline-center .tl-left .visible-left {
   display: inherit;
 }
-/* line 156, css/less/timeline.less */
+/* line 156, css\less\timeline.less */
 .timeline-center .tl-left .tl-wrap {
   float: right;
   margin-right: -2px;
@@ -1281,25 +1294,25 @@ td.decl-familyincome {
   padding-left: 0;
   padding-right: 20px;
 }
-/* line 165, css/less/timeline.less */
+/* line 165, css\less\timeline.less */
 .timeline-center .tl-left .tl-wrap:before {
   float: right;
   margin-left: 0;
   margin-right: -27px;
 }
-/* line 171, css/less/timeline.less */
+/* line 171, css\less\timeline.less */
 .timeline-center .tl-left .tl-date {
   float: right;
   margin-left: 0;
   margin-right: -8.5em;
   text-align: left;
 }
-/* line 178, css/less/timeline.less */
+/* line 178, css\less\timeline.less */
 .arrow {
   border-width: 9px;
   z-index: 10;
 }
-/* line 183, css/less/timeline.less */
+/* line 183, css\less\timeline.less */
 .arrow,
 .arrow:after {
   position: absolute;
@@ -1309,12 +1322,12 @@ td.decl-familyincome {
   border-color: transparent;
   border-style: solid;
 }
-/* line 193, css/less/timeline.less */
+/* line 193, css\less\timeline.less */
 .arrow:after {
   border-width: 8px;
   content: "";
 }
-/* line 198, css/less/timeline.less */
+/* line 198, css\less\timeline.less */
 .arrow.top {
   left: 50%;
   margin-left: -9px;
@@ -1322,46 +1335,46 @@ td.decl-familyincome {
   border-bottom-color: rgba(0, 0, 0, 0.1);
   top: -9px;
 }
-/* line 206, css/less/timeline.less */
+/* line 206, css\less\timeline.less */
 .arrow.top:after {
   top: 1px;
   margin-left: -8px;
   border-top-width: 0;
   border-bottom-color: #ffffff;
 }
-/* line 213, css/less/timeline.less */
+/* line 213, css\less\timeline.less */
 .arrow.top.arrow-primary:after {
   border-bottom-color: #7266ba;
 }
-/* line 217, css/less/timeline.less */
+/* line 217, css\less\timeline.less */
 .arrow.top.arrow-info:after {
   border-bottom-color: #23b7e5;
 }
-/* line 221, css/less/timeline.less */
+/* line 221, css\less\timeline.less */
 .arrow.top.arrow-success:after {
   border-bottom-color: #27c24c;
 }
-/* line 225, css/less/timeline.less */
+/* line 225, css\less\timeline.less */
 .arrow.top.arrow-danger:after {
   border-bottom-color: #f05050;
 }
-/* line 229, css/less/timeline.less */
+/* line 229, css\less\timeline.less */
 .arrow.top.arrow-warning:after {
   border-bottom-color: #fad733;
 }
-/* line 233, css/less/timeline.less */
+/* line 233, css\less\timeline.less */
 .arrow.top.arrow-light:after {
   border-bottom-color: #edf1f2;
 }
-/* line 237, css/less/timeline.less */
+/* line 237, css\less\timeline.less */
 .arrow.top.arrow-dark:after {
   border-bottom-color: #3a3f51;
 }
-/* line 241, css/less/timeline.less */
+/* line 241, css\less\timeline.less */
 .arrow.top.arrow-black:after {
   border-bottom-color: #13171e;
 }
-/* line 245, css/less/timeline.less */
+/* line 245, css\less\timeline.less */
 .arrow.right {
   top: 50%;
   right: -9px;
@@ -1369,46 +1382,46 @@ td.decl-familyincome {
   border-right-width: 0;
   border-left-color: rgba(0, 0, 0, 0.1);
 }
-/* line 253, css/less/timeline.less */
+/* line 253, css\less\timeline.less */
 .arrow.right:after {
   right: 1px;
   bottom: -8px;
   border-right-width: 0;
   border-left-color: #ffffff;
 }
-/* line 260, css/less/timeline.less */
+/* line 260, css\less\timeline.less */
 .arrow.right.arrow-primary:after {
   border-left-color: #7266ba;
 }
-/* line 264, css/less/timeline.less */
+/* line 264, css\less\timeline.less */
 .arrow.right.arrow-info:after {
   border-left-color: #23b7e5;
 }
-/* line 268, css/less/timeline.less */
+/* line 268, css\less\timeline.less */
 .arrow.right.arrow-success:after {
   border-left-color: #27c24c;
 }
-/* line 272, css/less/timeline.less */
+/* line 272, css\less\timeline.less */
 .arrow.right.arrow-danger:after {
   border-left-color: #f05050;
 }
-/* line 276, css/less/timeline.less */
+/* line 276, css\less\timeline.less */
 .arrow.right.arrow-warning:after {
   border-left-color: #fad733;
 }
-/* line 280, css/less/timeline.less */
+/* line 280, css\less\timeline.less */
 .arrow.right.arrow-light:after {
   border-left-color: #edf1f2;
 }
-/* line 284, css/less/timeline.less */
+/* line 284, css\less\timeline.less */
 .arrow.right.arrow-dark:after {
   border-left-color: #3a3f51;
 }
-/* line 288, css/less/timeline.less */
+/* line 288, css\less\timeline.less */
 .arrow.right.arrow-black:after {
   border-left-color: #13171e;
 }
-/* line 292, css/less/timeline.less */
+/* line 292, css\less\timeline.less */
 .arrow.bottom {
   left: 50%;
   bottom: -9px;
@@ -1416,46 +1429,46 @@ td.decl-familyincome {
   border-bottom-width: 0;
   border-top-color: rgba(0, 0, 0, 0.1);
 }
-/* line 300, css/less/timeline.less */
+/* line 300, css\less\timeline.less */
 .arrow.bottom:after {
   bottom: 1px;
   margin-left: -8px;
   border-bottom-width: 0;
   border-top-color: #ffffff;
 }
-/* line 307, css/less/timeline.less */
+/* line 307, css\less\timeline.less */
 .arrow.bottom.arrow-primary:after {
   border-top-color: #7266ba;
 }
-/* line 311, css/less/timeline.less */
+/* line 311, css\less\timeline.less */
 .arrow.bottom.arrow-info:after {
   border-top-color: #23b7e5;
 }
-/* line 315, css/less/timeline.less */
+/* line 315, css\less\timeline.less */
 .arrow.bottom.arrow-success:after {
   border-top-color: #27c24c;
 }
-/* line 319, css/less/timeline.less */
+/* line 319, css\less\timeline.less */
 .arrow.bottom.arrow-danger:after {
   border-top-color: #f05050;
 }
-/* line 323, css/less/timeline.less */
+/* line 323, css\less\timeline.less */
 .arrow.bottom.arrow-warning:after {
   border-top-color: #fad733;
 }
-/* line 327, css/less/timeline.less */
+/* line 327, css\less\timeline.less */
 .arrow.bottom.arrow-light:after {
   border-top-color: #edf1f2;
 }
-/* line 331, css/less/timeline.less */
+/* line 331, css\less\timeline.less */
 .arrow.bottom.arrow-dark:after {
   border-top-color: #3a3f51;
 }
-/* line 335, css/less/timeline.less */
+/* line 335, css\less\timeline.less */
 .arrow.bottom.arrow-black:after {
   border-top-color: #13171e;
 }
-/* line 339, css/less/timeline.less */
+/* line 339, css\less\timeline.less */
 .arrow.left {
   top: 50%;
   left: -9px;
@@ -1463,78 +1476,78 @@ td.decl-familyincome {
   border-left-width: 0;
   border-right-color: rgba(0, 0, 0, 0.1);
 }
-/* line 347, css/less/timeline.less */
+/* line 347, css\less\timeline.less */
 .arrow.left:after {
   left: 1px;
   bottom: -8px;
   border-left-width: 0;
   border-right-color: #ffffff;
 }
-/* line 354, css/less/timeline.less */
+/* line 354, css\less\timeline.less */
 .arrow.left.arrow-primary:after {
   border-right-color: #7266ba;
 }
-/* line 358, css/less/timeline.less */
+/* line 358, css\less\timeline.less */
 .arrow.left.arrow-info:after {
   border-right-color: #23b7e5;
 }
-/* line 362, css/less/timeline.less */
+/* line 362, css\less\timeline.less */
 .arrow.left.arrow-success:after {
   border-right-color: #27c24c;
 }
-/* line 366, css/less/timeline.less */
+/* line 366, css\less\timeline.less */
 .arrow.left.arrow-danger:after {
   border-right-color: #f05050;
 }
-/* line 370, css/less/timeline.less */
+/* line 370, css\less\timeline.less */
 .arrow.left.arrow-warning:after {
   border-right-color: #fad733;
 }
-/* line 374, css/less/timeline.less */
+/* line 374, css\less\timeline.less */
 .arrow.left.arrow-light:after {
   border-right-color: #edf1f2;
 }
-/* line 378, css/less/timeline.less */
+/* line 378, css\less\timeline.less */
 .arrow.left.arrow-dark:after {
   border-right-color: #3a3f51;
 }
-/* line 382, css/less/timeline.less */
+/* line 382, css\less\timeline.less */
 .arrow.left.arrow-black:after {
   border-right-color: #13171e;
 }
-/* line 386, css/less/timeline.less */
+/* line 386, css\less\timeline.less */
 .arrow.pull-left {
   left: 19px;
 }
-/* line 390, css/less/timeline.less */
+/* line 390, css\less\timeline.less */
 .arrow.pull-right {
   left: auto;
   right: 19px;
 }
-/* line 395, css/less/timeline.less */
+/* line 395, css\less\timeline.less */
 .arrow.pull-up {
   top: 19px;
 }
-/* line 399, css/less/timeline.less */
+/* line 399, css\less\timeline.less */
 .arrow.pull-down {
   top: auto;
   bottom: 19px;
 }
-/* line 2, css/less/pages.less */
+/* line 2, css\less\pages.less */
 .search-by-country-page .dropdown.country-list {
   margin-top: 30px;
   margin-bottom: 20px;
 }
-/* line 6, css/less/pages.less */
+/* line 6, css\less\pages.less */
 .search-by-country-page .dropdown.country-list button {
   min-width: 200px;
   text-align: left;
 }
-/* line 11, css/less/pages.less */
+/* line 11, css\less\pages.less */
 .search-by-country-page .dropdown.country-list .dropdown-menu > li > a {
   padding: 7px 20px;
 }
-/* line 14, css/less/pages.less */
+/* line 14, css\less\pages.less */
 .search-by-country-page .dropdown.country-list .dropdown-menu > li > a:focus,
 .search-by-country-page .dropdown.country-list .dropdown-menu > li > a:hover {
   color: white;
@@ -1544,81 +1557,93 @@ td.decl-familyincome {
   -moz-box-shadow: inset 0px 0px 9px 1px rgba(25, 54, 98, 0.75);
   box-shadow: inset 0px 0px 9px 1px rgba(25, 54, 98, 0.75);
 }
+/* line 28, css\less\pages.less */
+.company-profile .pep-name {
+  font-size: 22px;
+}
+/* line 33, css\less\pages.less */
+.company-profile #profile-wrap.box {
+  background: linear-gradient(180deg, #4285f4 150px, white 150px);
+}
+/* line 38, css\less\pages.less */
+.company-profile #profile .profile-header {
+  margin-bottom: 70px;
+}
 @media (max-width: 992px -1) {
-  /* line 3, css/less/responsive.less */
+  /* line 3, css\less\responsive.less */
   body {
     font-size: 14px;
   }
-  /* line 7, css/less/responsive.less */
+  /* line 7, css\less\responsive.less */
   .card.square {
     width: 150px;
     max-width: 100%;
   }
-  /* line 12, css/less/responsive.less */
+  /* line 12, css\less\responsive.less */
   #searchbox h1 {
     font-size: 26px;
   }
-  /* line 16, css/less/responsive.less */
+  /* line 16, css\less\responsive.less */
   #searchbox {
     padding-bottom: 60px;
     padding-top: 30px;
   }
-  /* line 21, css/less/responsive.less */
+  /* line 21, css\less\responsive.less */
   .antac-logo {
     display: none;
   }
-  /* line 25, css/less/responsive.less */
+  /* line 25, css\less\responsive.less */
   #navbar li a,
   #navbar .navbar-brand {
     padding-top: 15px;
     padding-bottom: 15px;
   }
-  /* line 30, css/less/responsive.less */
+  /* line 30, css\less\responsive.less */
   .nav > li {
     margin-left: 15px;
   }
-  /* line 34, css/less/responsive.less */
+  /* line 34, css\less\responsive.less */
   .pull-right.regularSearch {
     float: left;
     clear: left;
   }
-  /* line 39, css/less/responsive.less */
+  /* line 39, css\less\responsive.less */
   h1.pep-name {
     font-size: 18px;
     margin-top: 10px;
   }
-  /* line 44, css/less/responsive.less */
+  /* line 44, css\less\responsive.less */
   #profile-wrap .avatar {
     padding-right: 15px;
     margin-right: 0;
   }
-  /* line 49, css/less/responsive.less */
+  /* line 49, css\less\responsive.less */
   .small-profile .avatar {
     height: 70px;
     width: 70px;
   }
-  /* line 54, css/less/responsive.less */
+  /* line 54, css\less\responsive.less */
   .small-profile img {
     height: 70px;
   }
-  /* line 58, css/less/responsive.less */
+  /* line 58, css\less\responsive.less */
   .small-profile .descr {
     margin-left: 0;
     margin-top: 40px;
   }
-  /* line 63, css/less/responsive.less */
+  /* line 63, css\less\responsive.less */
   #profile .profileActions {
     display: none;
   }
-  /* line 67, css/less/responsive.less */
+  /* line 67, css\less\responsive.less */
   #profile .profile-header {
     margin-bottom: 50px;
   }
-  /* line 71, css/less/responsive.less */
+  /* line 71, css\less\responsive.less */
   #personal {
     padding: 0;
   }
-  /* line 75, css/less/responsive.less */
+  /* line 75, css\less\responsive.less */
   #personal .table-responsive > .table > thead > tr > th,
   #personal .table-responsive > .table > tbody > tr > th,
   #personal .table-responsive > .table > tfoot > tr > th,
@@ -1627,138 +1652,138 @@ td.decl-familyincome {
   #personal .table-responsive > .table > tfoot > tr > td {
     white-space: normal;
   }
-  /* line 79, css/less/responsive.less */
+  /* line 79, css\less\responsive.less */
   #profile-wrap .avatar img {
     width: 100px;
     height: auto;
   }
-  /* line 84, css/less/responsive.less */
+  /* line 84, css\less\responsive.less */
   .tree {
     padding: 5px;
   }
-  /* line 88, css/less/responsive.less */
+  /* line 88, css\less\responsive.less */
   .tree > ul {
     padding: 0;
   }
-  /* line 92, css/less/responsive.less */
+  /* line 92, css\less\responsive.less */
   .tree ul ul {
     padding-left: 25px;
   }
-  /* line 96, css/less/responsive.less */
+  /* line 96, css\less\responsive.less */
   .tree li span:first-child {
     font-size: 14px;
   }
-  /* line 100, css/less/responsive.less */
+  /* line 100, css\less\responsive.less */
   #navbar .regularSearch ul {
     left: 0 !important;
     right: auto;
     font-size: 13px;
   }
-  /* line 106, css/less/responsive.less */
+  /* line 106, css\less\responsive.less */
   #page {
     padding-bottom: 80px;
     /* Height of the footer*/
   }
-  /* line 110, css/less/responsive.less */
+  /* line 110, css\less\responsive.less */
   #footer {
     height: 80px;
   }
-  /* line 114, css/less/responsive.less */
+  /* line 114, css\less\responsive.less */
   #send-form {
     right: 5px;
   }
-  /* line 118, css/less/responsive.less */
+  /* line 118, css\less\responsive.less */
   #send-form {
     height: 470px;
     bottom: -470px;
     max-width: 100%;
   }
-  /* line 124, css/less/responsive.less */
+  /* line 124, css\less\responsive.less */
   #send-form .btn-close {
     left: 5px;
     top: -35px;
   }
-  /* line 129, css/less/responsive.less */
+  /* line 129, css\less\responsive.less */
   #send-form .form-group {
     margin-bottom: 5px;
   }
-  /* line 133, css/less/responsive.less */
+  /* line 133, css\less\responsive.less */
   #declarations .table-responsive {
     border: none;
     border-left: 1px solid #ddd;
   }
 }
 @media (min-width: 768px) {
-  /* line 140, css/less/responsive.less */
+  /* line 140, css\less\responsive.less */
   body {
     font-size: 16px;
   }
-  /* line 144, css/less/responsive.less */
+  /* line 144, css\less\responsive.less */
   .navbar-nav {
     float: none;
     margin: 0 auto;
     display: table;
     table-layout: fixed;
   }
-  /* line 151, css/less/responsive.less */
+  /* line 151, css\less\responsive.less */
   .card.square {
     width: 193px;
     max-width: 100%;
   }
-  /* line 156, css/less/responsive.less */
+  /* line 156, css\less\responsive.less */
   #searchbox h1 {
     font-size: 32px;
   }
-  /* line 160, css/less/responsive.less */
+  /* line 160, css\less\responsive.less */
   #page {
     padding-bottom: 260px;
     /* Height of the footer*/
   }
-  /* line 164, css/less/responsive.less */
+  /* line 164, css\less\responsive.less */
   #footer {
     height: 260px;
   }
-  /* line 168, css/less/responsive.less */
+  /* line 168, css\less\responsive.less */
   #send-form {
     height: 490px;
     bottom: -490px;
   }
-  /* line 173, css/less/responsive.less */
+  /* line 173, css\less\responsive.less */
   #send-form .form-group {
     margin-bottom: 5px;
   }
-  /* line 177, css/less/responsive.less */
+  /* line 177, css\less\responsive.less */
   #send-form .form-horizontal .control-label {
     text-align: left;
   }
 }
 @media (max-width: 992px -1) {
-  /* line 184, css/less/responsive.less */
+  /* line 184, css\less\responsive.less */
   .nav > li > a {
     padding-left: 5px;
     padding-right: 5px;
   }
 }
 @media (min-width: 992px) {
-  /* line 194, css/less/responsive.less */
+  /* line 194, css\less\responsive.less */
   #searchbox h1 {
     font-size: 40px;
   }
-  /* line 198, css/less/responsive.less */
+  /* line 198, css\less\responsive.less */
   #page {
     padding-bottom: 180px;
     /* Height of the footer*/
   }
-  /* line 202, css/less/responsive.less */
+  /* line 202, css\less\responsive.less */
   #footer {
     height: 180px;
   }
-  /* line 206, css/less/responsive.less */
+  /* line 206, css\less\responsive.less */
   #send-form {
     height: 510px;
     bottom: -510px;
   }
-  /* line 211, css/less/responsive.less */
+  /* line 211, css\less\responsive.less */
   #send-form .form-group {
     margin-bottom: 15px;
   }

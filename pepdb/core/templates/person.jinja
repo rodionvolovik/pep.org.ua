@@ -1,5 +1,6 @@
 {% extends "base.jinja" %}
 {% from "macros/_connections.jinja" import render_connection %}
+{% block body_class %}not-front profile-page person-profile page{% endblock %}
 
 {% set last_workplace = person.translated_last_workplace %}
 
