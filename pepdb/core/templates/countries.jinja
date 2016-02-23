@@ -58,8 +58,8 @@
                                         {% endif %}
                                     {% endfor %}
     
+                                    <div class="clearfix"></div>
                                     {% if persons.paginator.num_pages > 1 %}
-                                        <div class="clearfix"></div>
                                         <div class="text-center">
                                             <nav>
                                                 {{ render_pagination(persons, "") }}
@@ -78,8 +78,8 @@
                                         {% endif %}
                                     {% endfor %}
     
+                                    <div class="clearfix"></div>
                                     {% if companies.paginator.num_pages > 1 %}
-                                        <div class="clearfix"></div>
                                         <div class="text-center">
                                             <nav>
                                                 {{ render_pagination(companies, "") }}

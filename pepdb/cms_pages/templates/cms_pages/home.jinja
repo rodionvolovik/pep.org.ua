@@ -23,19 +23,24 @@
         <div class="container">
             <div class="row">
                 <h1 class="text-center">{{ page.translated_title }}</h1>
+
                 <div class="description text-center">
-                    {{ page.translated_body|richtext }}
+                    {{ page.translated_subtitle|richtext }}
                 </div>
 
                 <div class="col-lg-6 col-md-8 col-xs-12 col-lg-offset-3 col-md-offset-2">
                     <form id="pep-search" action="{{ url("search") }}" method="GET">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="{{ _("Введіть ім'я") }}" name="q" data-provide="typeahead" id="search-form" autocomplete="off" data-endpoint="{{ url("suggest") }}" />
+                            <input type="text" class="form-control" placeholder="{{ _("Введіть ім'я або назву компанії") }}" name="q" data-provide="typeahead" id="search-form" autocomplete="off" data-endpoint="{{ url("suggest") }}" />
                             <input type="hidden" name="is_exact" value="" />
                             <span class="input-group-btn"><button class="btn btn-danger" type="submit">{{ _("Перевірити") }}</button></span>
                         </div>
                     </form>
                     <!-- /input-group --> 
+                </div>
+                <div class="clearfix"></div>
+                <div class="description text-center">
+                    {{ page.translated_body|richtext }}
                 </div>
             </div>
         </div>
@@ -66,14 +71,14 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-10 col-sm-offset-1 oursponsors-text">
-                    {{ root_page.translated_footer|richtext }}
+                    {{ root_page.translated_credits|richtext }}
                 </div>
 
                 {% for banner in page.banner_items.all() %}
                     {% if banner.image %}
                     <div class="sponsor text-center col-md-3 col-xs-6">
                         <a href="{{ banner.link }}" target="_blank">
-                        <img src="{{ banner.image.get_rendition("original").url }}" alt="{{ banner.translated_caption }}" class="img-responsive mc"
+                        <img src="{{ banner.image.get_rendition("max-150x100").url }}" alt="{{ banner.translated_caption }}" class="img-responsive mc"
                         title="{{ banner.translated_caption }}"/>
                         </a>
                     </div>

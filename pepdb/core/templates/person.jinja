@@ -355,7 +355,7 @@
                             {% for asset in assets %}
                                 <div class="panel panel-default">
                                     <div class="panel-body" itemscope itemtype="http://schema.org/Organization" itemprop="affiliation">
-                                        <span itemprop="name">{{ asset.to_company }}</span>
+                                        <a href="{{ asset.to_company.get_absolute_url() }}"><span itemprop="name">{{ asset.to_company }}</span></a>
                                         {% if asset.to_company.edrpou %}
                                         , {{ _("ЄДРПОУ") }} <span itemprop="taxID">{{ asset.to_company.edrpou }}</span>
                                         {% endif%}

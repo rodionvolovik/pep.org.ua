@@ -27,7 +27,7 @@
                 <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-male"></i><span>{{ _("Дані") }}</span></a></li>
             </ul>
         </aside>
-        <section id="profile" class="col-sm-10">
+        <section id="profile" class="col-sm-8">
             <link itemprop="url" href="{{ company.get_absolute_url() }}" />
             <div id="profile-wrap" class="box">
                 <ul class="profileActions">
@@ -44,6 +44,25 @@
                             <tr>
                                 <td>{{ _("ЄДРПОУ") }} </td>
                                 <td><strong>{{ company.edrpou }}</strong></td>
+                            </tr>
+                            {% endif %}
+                            {% if company.zip_code or company.city or company.street or company.appt %}
+                            <tr>
+                                <td>{{ _("Адреса") }} </td>
+                                <td><strong>
+                                    {% if company.zip_code -%}
+                                    {{ company.zip_code }}, 
+                                    {%- endif %}
+                                    {% if company.city -%}
+                                    {{ company.city }}, 
+                                    {%- endif %}
+                                    {% if company.street -%}
+                                    {{ company.street }}, 
+                                    {%- endif %}
+                                    {% if company.appt -%}
+                                    {{ company.appt }}
+                                    {%- endif %}
+                                </strong></td>
                             </tr>
                             {% endif %}
                         </table>

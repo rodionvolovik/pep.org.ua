@@ -131,6 +131,14 @@ class LinkFields(models.Model):
         related_name='+',
         verbose_name="Або посилання на існуючу сторінку"
     )
+    image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        verbose_name="Зображення"
+    )
 
     @property
     def link(self):
@@ -140,6 +148,7 @@ class LinkFields(models.Model):
             return self.link_external
 
     panels = [
+        ImageChooserPanel('image'),
         FieldPanel('caption'),
         FieldPanel('caption_en'),
         FieldPanel('link_external'),
@@ -151,17 +160,7 @@ class LinkFields(models.Model):
 
 
 class BannerItem(LinkFields):
-    image = models.ForeignKey(
-        'wagtailimages.Image',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+',
-        verbose_name="Зображення"
-    )
-
     panels = [
-        ImageChooserPanel('image'),
         MultiFieldPanel(LinkFields.panels, "Link"),
     ]
 
@@ -220,30 +219,56 @@ class HomePage(AbstractJinjaPage, Page):
     title_en = models.CharField(
         default="", max_length=255)
 
+    subtitle = RichTextField(
+        default="",
+        verbose_name="[UA] Текст над пошуком")
+
+    subtitle_en = RichTextField(
+        default="",
+        verbose_name="[EN] Текст над пошуком")
+
     body = RichTextField(
         default="",
-        verbose_name="[UA] Текст на блакитній панелі")
+        verbose_name="[UA] Текст під пошуком")
 
     body_en = RichTextField(
         default="",
-        verbose_name="[EN] Текст на блакитній панелі")
+        verbose_name="[EN] Текст під пошуком")
+
+    credits = RichTextField(
+        default="",
+        verbose_name="[UA] Текст під статистикою")
+
+    credits_en = RichTextField(
+        default="",
+        verbose_name="[EN] Текст під статистикою")
 
     footer = RichTextField(
         default="",
-        verbose_name="[UA] Текст внизу головної")
+        verbose_name="[UA] Текст внизу кожної сторінки")
 
     footer_en = RichTextField(
         default="",
-        verbose_name="[EN] Текст внизу головної")
+        verbose_name="[EN] Текст внизу кожної сторінки")
 
     translated_title = TranslatedField(
         'title',
         'title_en',
     )
 
+    translated_subtitle = TranslatedField(
+        'subtitle',
+        'subtitle_en',
+    )
+
     translated_body = TranslatedField(
         'body',
         'body_en',
+    )
+
+    translated_credits = TranslatedField(
+        'credits',
+        'credits_en',
     )
 
     translated_footer = TranslatedField(
@@ -257,8 +282,15 @@ class HomePage(AbstractJinjaPage, Page):
     content_panels = [
         FieldPanel('title', classname="full title"),
         FieldPanel('title_en', classname="full title"),
+
+        FieldPanel('subtitle', classname="full title"),
+        FieldPanel('subtitle_en', classname="full title"),
+
         FieldPanel('body', classname="full"),
         FieldPanel('body_en', classname="full"),
+
+        FieldPanel('credits', classname="full"),
+        FieldPanel('credits_en', classname="full"),
 
         InlinePanel('top_menu_links', label="Меню зверху"),
         # InlinePanel('columns', label="Колонки під пошуком"),
