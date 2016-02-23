@@ -18,7 +18,7 @@ class PersonTranslationOptions(TranslationOptions):
 
 
 class CompanyTranslationOptions(TranslationOptions):
-    fields = ('name', 'short_name')
+    fields = ('name', 'short_name',)
 
 
 class Person2CompanyTranslationOptions(TranslationOptions):

@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from itertools import chain
 from copy import copy
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 
 from django.db import models
 from django.db.models import Q
@@ -610,7 +610,8 @@ class Person2Company(AbstractRelationship):
 
     from_person = models.ForeignKey("Person")
     to_company = models.ForeignKey(
-        "Company", verbose_name="Компанія або установа")
+        "Company", verbose_name="Компанія або установа",
+        related_name="from_persons")
 
     relationship_type = models.TextField(
         "Тип зв'язку",
@@ -686,7 +687,7 @@ class Company(models.Model):
 
     wiki = RedactorField("Вікі-стаття", blank=True)
 
-    other_founders = models.TextField(
+    other_founders = RedactorField(
         "Інші засновники",
         help_text="Через кому, не PEP", blank=True)
 
@@ -694,11 +695,11 @@ class Company(models.Model):
         "Бенефіціарій", help_text="Якщо не є PEPом", blank=True,
         max_length=100)
 
-    other_owners = models.TextField(
+    other_owners = RedactorField(
         "Інші власники",
         help_text="Через кому, не PEP", blank=True)
 
-    other_managers = models.TextField(
+    other_managers = RedactorField(
         "Інші керуючі",
         help_text="Через кому, не PEP", blank=True)
 
@@ -723,11 +724,11 @@ class Company(models.Model):
 
         d["related_persons"] = [
             i.to_person_dict()
-            for i in self.person2company_set.select_related("from_person")]
+            for i in self.from_person.select_related("from_persons")]
 
         d["related_countries"] = [
             i.to_dict()
-            for i in self.company2country_set.select_related("to_country")]
+            for i in self.from_countries.select_related("to_country")]
 
         d["related_companies"] = [
             i.to_dict()
@@ -777,6 +778,74 @@ class Company(models.Model):
         url = self.get_absolute_url()
         translation.deactivate()
         return url
+
+    @property
+    def all_related_persons(self):
+        related_persons = [
+            (i.relationship_type_uk, i.from_person, i)
+            for i in self.from_persons.select_related("from_person").defer(
+                "from_person__passport_id",
+                "from_person__passport_reg",
+                "from_person__tax_payer_id",
+                "from_person__id_number",
+                "from_person__reputation_assets",
+                "from_person__reputation_sanctions",
+                "from_person__reputation_crimes",
+                "from_person__reputation_manhunt",
+                "from_person__reputation_convictions",
+                "from_person__wiki",
+                "from_person__names",
+                "from_person__hash"
+            )
+        ]
+
+        res = {
+            "managers": [],
+            "founders": [],
+            # "business": [],
+            "all": []
+        }
+
+        for rtp, p, rel in related_persons:
+            p.rtype = rtp
+            p.connection = rel
+
+            if rtp.lower() in [
+                    "керівник", "перший заступник керівника",
+                    "заступник керівника", "голова", "заступник голови",
+                    "член правління", "член ради", "член", "директор",
+                    "підписант", "номінальний директор", "керуючий"]:
+                res["managers"].append(p)
+            elif rtp.lower() in [
+                    "засновники", "засновник/учасник",
+                    "колишній засновник/учасник", "бенефіціарний власник",
+                    "номінальний власник"]:
+                res["founders"].append(p)
+
+            # else:
+            #     res["family"].append(p)
+
+            res["all"].append(p)
+
+        return res
+
+    @property
+    def all_related_countries(self):
+        related_countries = [
+            (i.relationship_type, i.to_country, i)
+            for i in self.from_countries.select_related("to_country")
+        ]
+
+        res = defaultdict(list)
+
+        for rtp, p, rel in related_countries:
+            p.rtype = rtp
+            p.connection = rel
+
+            res[rtp].append(p)
+            res["all"].append(p)
+
+        return res
 
     class Meta:
         verbose_name = "Юрідична особа"
@@ -874,8 +943,10 @@ class Person2Country(AbstractRelationship):
 
 
 class Company2Country(AbstractRelationship):
-    from_company = models.ForeignKey("Company", verbose_name="Компанія")
-    to_country = models.ForeignKey("Country", verbose_name="Країна")
+    from_company = models.ForeignKey(
+        "Company", verbose_name="Компанія", related_name="from_countries")
+    to_country = models.ForeignKey(
+        "Country", verbose_name="Країна")
 
     relationship_type = models.CharField(
         "Тип зв'язку",

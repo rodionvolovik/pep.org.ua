@@ -688,7 +688,8 @@ td.decl-familyincome {
   padding: 40px;
 }
 /* line 658, css/less/general.less */
-.richtext img {
+.richtext img,
+.rich-text img {
   cursor: pointer;
 }
 /* line 1, css/less/nav.less */

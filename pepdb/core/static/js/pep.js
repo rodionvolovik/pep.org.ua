@@ -166,7 +166,7 @@ $(function() {
         });
     });
 
-    $(".richtext img").featherlight({
+    $(".richtext img, .rich-text img").featherlight({
         targetAttr: "src"
     });
 });
