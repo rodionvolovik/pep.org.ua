@@ -35,6 +35,14 @@
                 {% if related_persons["managers"] or company.other_managers %}
                 <li><a href="#managers" class="btn btn-transp trans"><i class="fa fa-users"></i><span>{{ _("Керівництво") }}</span></a></li>
                 {% endif %}
+
+                {% if company.wiki or company.sanctions %}
+                <li><a href="#dossier" class="btn btn-transp trans"><i class="fa fa-briefcase"></i><span>{{ _("Досьє") }}</span></a></li>
+                {% endif %}
+
+                {% if company.bank_name %}
+                <li><a href="#bank" class="btn btn-transp trans"><i class="fa fa-money"></i><span>{{ _("Фінансова інформація") }}</span></a></li>
+                {% endif %}
             </ul>
         </aside>
         <section id="profile" class="col-sm-8">
@@ -81,6 +89,12 @@
                                 </strong></td>
                             </tr>
                             {% endif %}
+                            {% if company.other_recipient %}
+                            <tr>
+                                <td>{{ _("Бенефіціарний власник") }} </td>
+                                <td><strong>{{ company.other_recipient }}</strong></td>
+                            </tr>
+                            {% endif %}                            
                         </table>
                     </div>
                 </div>
@@ -149,6 +163,29 @@
                 </div>
             {% endif %}
 
+            {% if company.sanctions or company.wiki %}
+            <div id="dossier" class="sub box">
+                <h3>{{ _("Досьє:") }}</h3>
+                <div class="printWrap">
+                    {% if company.wiki %}
+                        {{ company.wiki|richtext }}
+                    {% endif %}
+                    {% if company.sanctions %}
+                        <h4>{{ _("Санкції") }}</h4>
+                        {{ company.sanctions|richtext }}
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if company.bank_name %}
+                <div id="bank" class="sub box">
+                    <h3>{{ _("Фінансова інформація:") }}</h3>
+                    <div class="printWrap">
+                        {{ company.bank_name|richtext }}
+                    </div>
+                </div>
+            {% endif %}
         </section>
     </div>
 </div>

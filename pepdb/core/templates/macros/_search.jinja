@@ -74,8 +74,15 @@
                 {% if relevant_related_persons %}
                 <p>
                     {% for rel in relevant_related_persons %}
-                        <span>{{ _("Зв'язок") }}:</span> {% if rel.relationship_type %}{{ _(rel.relationship_type) }}, {% endif %}
-                        {% if LANGUAGE_CODE =="en" %}{{ rel.person_en }}{% else %}{{ rel.person_uk }}{% endif %}<br />
+                        <span>{{ _("Зв'язок") }}:</span>
+                        {% if LANGUAGE_CODE =="en" %}
+                            {# fugly! #}
+                            {% if rel.relationship_type_en or rel.relationship_type_uk %}{{ rel.relationship_type_en|default(rel.relationship_type_uk) }}, {% endif %}
+                            {{ rel.person_en }}
+                        {% else %}
+                            {% if rel.relationship_type_uk %}{{ rel.relationship_type_uk }}, {% endif %}
+                            {{ rel.person_uk }}
+                        {% endif %}<br />
                     {% endfor %}
                 </p>
                 {% endif %}

@@ -21,7 +21,6 @@
                 <span itemprop="familyName">{{ person.last_name }}</span> <span itemprop="givenName">{{ person.first_name }}</span> <span itemprop="additionalName">{{ person.patronymic }}</span>
             </span>
         </a> &ndash;
-        {# TODO: proper translation #}
         {% if person.rtype %}{{ _(person.rtype) }},{% endif %}
         {% if person.dob %}<meta itemprop="birthDate" content="{{ person.dob }} "/>{% endif %}
 

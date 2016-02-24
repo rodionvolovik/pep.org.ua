@@ -70,7 +70,7 @@ def suggest(request):
         results = sorted(results, key=itemgetter("score"), reverse=True)
 
         if results:
-            return [truncatewords(val['text'], 4) for val in results]
+            return [val['text'] for val in results]
         else:
             []
 
@@ -110,6 +110,20 @@ def search(request, sources=("persons", "related", "companies")):
             return redirect(
                 reverse("person_details",
                         kwargs={"person_id": person.id})
+            )
+
+        companies = ElasticCompany.search().query(
+            "multi_match", query=query,
+            operator="and",
+            fields=["short_name_en", "short_name", "name_en", "name"])
+
+        # Special case when we were looking for one exact person and found it.
+        if companies.count() == 1:
+            company = companies.execute()[0]
+
+            return redirect(
+                reverse("company_details",
+                        kwargs={"company_id": company.id})
             )
 
     if "persons" in sources:

@@ -628,7 +628,8 @@ class Person2Company(AbstractRelationship):
 
     def to_company_dict(self):
         return {
-            "relationship_type": self.relationship_type,
+            "relationship_type_uk": self.relationship_type_uk,
+            "relationship_type_en": self.relationship_type_en,
             "state_company": self.to_company.state_company,
 
             "to_company_uk": self.to_company.name_uk,
@@ -639,7 +640,8 @@ class Person2Company(AbstractRelationship):
 
     def to_person_dict(self):
         return {
-            "relationship_type": self.relationship_type,
+            "relationship_type_uk": self.relationship_type_uk,
+            "relationship_type_en": self.relationship_type_en,
             "is_pep": self.from_person.is_pep,
             "person_uk": "%s %s %s" % (
                 self.from_person.first_name_uk,
@@ -693,7 +695,7 @@ class Company(models.Model):
 
     other_recipient = models.CharField(
         "Бенефіціарій", help_text="Якщо не є PEPом", blank=True,
-        max_length=100)
+        max_length=200)
 
     other_owners = RedactorField(
         "Інші власники",
@@ -703,7 +705,9 @@ class Company(models.Model):
         "Інші керуючі",
         help_text="Через кому, не PEP", blank=True)
 
-    bank_name = models.CharField("Назва банку", blank=True, max_length=100)
+    bank_name = RedactorField("Фінансова інформація", blank=True)
+
+    sanctions = RedactorField("Санкції", blank=True)
 
     related_companies = models.ManyToManyField(
         "self", through="Company2Company", symmetrical=False)
@@ -724,7 +728,7 @@ class Company(models.Model):
 
         d["related_persons"] = [
             i.to_person_dict()
-            for i in self.from_person.select_related("from_persons")]
+            for i in self.from_persons.select_related("from_person")]
 
         d["related_countries"] = [
             i.to_dict()

@@ -50,7 +50,7 @@ $(function() {
     
     $('.tooltip-anchor').tooltip();
     
-    $('.pep-tab a').click(function (e) {
+    $('.pep-tab .nav-tabs a').click(function (e) {
         e.preventDefault();
         $(this).tab('show');
     });
