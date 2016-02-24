@@ -13,6 +13,9 @@
         text-transform: uppercase;
         margin-right: 30px;
         padding-top: 0;
+        height: 40px;
+        line-height: 28px;
+        padding: 0 15px;
     
         span {
             font-size: 16px;
@@ -78,6 +81,19 @@
         &.active {
             a {
                 background-color: #e7e7e7;
+            }
+        }
+        
+        &.edit-page {
+            a {
+                background: none;
+                text-indent: 0;
+                font-size: 23px;
+                color: @pep-red;
+                
+                &:hover {
+                    color: @pep-light-blue;
+                }
             }
         }
     }
@@ -165,7 +181,7 @@
     .antac-logo {
         float: right;
         height: 40px;
-        margin-top: -5px;
+        margin-top: -8px;
         
         img {
             width: auto;

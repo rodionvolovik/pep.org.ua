@@ -77,13 +77,27 @@ body {
     height: 1px;
 }
 
-a.trans {
-    -webkit-transition: all 0.3s ease;
-    -moz-transition: all 0.3s ease;
-    -o-transition: all 0.3s ease;
-    -ms-transition: all 0.3s ease;
-    transition: all 0.3s ease;
+a {
+   outline: none;
+   
+    &.trans {
+        -webkit-transition: all 0.3s ease;
+        -moz-transition: all 0.3s ease;
+        -o-transition: all 0.3s ease;
+        -ms-transition: all 0.3s ease;
+        transition: all 0.3s ease;
+    }   
 }
+
+:focus {
+  outline: none !important;
+}
+
+::-moz-focus-inner {
+  border: 0 !important;
+}
+
+
 
 .breadcrumb {
     background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
@@ -173,11 +187,15 @@ h1 {
         font-size: 20px;
         height: 42px;
     }
+    
+    .description {
+        margin-top: 40px;
+    }
 }
 
 #hp-columns {
     background: white;
-    padding: 40px 0;
+    padding: 20px 0 40px 0;
     color: @pep-blue;
     
     a {
@@ -464,10 +482,6 @@ h1 {
 .modal-header {
     background: #fff url(../images/plashka.png) no-repeat top;
     color: white;
-}
-
-.fa-pencil-square-o {
-    color: red;
 }
 
 #cs100 {
