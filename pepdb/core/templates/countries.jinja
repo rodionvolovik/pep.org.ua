@@ -16,8 +16,8 @@
             </div>
 
             <section id="search-by-country">
-                <h1>{{ _("Пошук по країнам") }}</h1>
-                <div class="dropdown as-select country-list">
+                <h1 class="so">{{ _("Пошук по країнам") }}</h1>
+                <div class="dropdown as-select country-list so">
                     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         {% if country %}{{ country.name }}{% else %}{{ _("Усі країни") }}{% endif %}

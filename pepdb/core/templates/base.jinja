@@ -36,7 +36,7 @@
                 </div>
 
                 {% block mini_search %}
-                <div class="col-xs-6 col-sm-6 col-md-3 pull-left regularSearch">
+                <div class="col-xs-12 col-sm-6 col-md-3 pull-left regularSearch">
                     <form id="pep-search" action="{{ url("search") }}" method="GET">
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="{{ _("Введіть ім'я або назву компанії") }}" name="q" data-provide="typeahead" id="search-form" autocomplete="off" data-endpoint="{{ url("suggest") }}" />
@@ -46,8 +46,9 @@
                     </form>
                 </div>
                 {% endblock %}
-
-                <div id="languageSelect" class="dropdown asSelect pull-right">
+                
+                <div class="collapse navbar-collapse navbar-ex1-collapse pull-right">
+                    <div id="languageSelect" class="dropdown asSelect pull-right">
                     <button class="dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         <span class="btn-text"><img src="{{ static("images/" + LANGUAGE_CODE + ".png") }}" /></span>                        
                     </button>
@@ -68,9 +69,8 @@
                         </li>
                         {% endfor %}
                     </ul>
-                </div>
+                </div>              
                 
-                <div class="collapse navbar-collapse navbar-ex1-collapse pull-right">
                     <ul class="nav navbar-nav">
                         <li><a href="/" class="home-item">Головна</a></li>
                         <li><a href="/countries" class="countries-item">Пошук по країнам</a></li>
@@ -78,6 +78,7 @@
                         <li><a href="/feedback/" class="feedback-item">Питання та відповіді</a></li>
                         {% block extra_menu %}
                         {% endblock %}
+                        
                     </ul>
                 </div>
                 
@@ -91,33 +92,25 @@
 
         <footer id="footer">
             <div class="container">
-                <table width="100%">
-                    <tr>
-                        <td>
-                            <ul>
-                                {% for menuitem in bottom_menu %}
-                                    <li class="{% if calling_page.startswith(menuitem.link) %} active{% endif %}">
-                                        <a href="{{ menuitem.link }}">
-                                            <span class="footer-logo">
-                                            {% if menuitem.image %}
-                                                <img src="{{ menuitem.image.get_rendition("max-50x50").url }}" alt="" class="" title=""/>
-                                            {% endif %}
-                                            </span>
-                                            <span class="footer-logo-text">{{ menuitem.translated_caption }}</span>
-                                        </a>
-                                    </li>
-                                {% endfor %}
-                                <!-- <li><a href="#"><i class="fa fa-rss"></i> Updates</a></li> -->
-                                {# <li>Copyright 2015</li> #}
-                            </ul>
-                        </td>
-                        <td>
-                            <div id="footerInfo" class="hidden-xs text-justify">
-                                {{ root_page.translated_footer|richtext }}
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+                <ul id="copyright" class="col-sm-6">
+                    {% for menuitem in bottom_menu %}
+                    <li class="{% if calling_page.startswith(menuitem.link) %} active{% endif %}">
+                        <a href="{{ menuitem.link }}">
+                            <span class="footer-logo">
+                            {% if menuitem.image %}
+                                <img src="{{ menuitem.image.get_rendition("max-50x50").url }}" alt="" class="" title=""/>
+                            {% endif %}
+                            </span>
+                            <span class="footer-logo-text">{{ menuitem.translated_caption }}</span>
+                        </a>
+                    </li>
+                    {% endfor %}
+                    <!-- <li><a href="#"><i class="fa fa-rss"></i> Updates</a></li> -->
+                    {# <li>Copyright 2015</li> #}
+                </ul>
+                <div id="footerInfo" class="hidden-xs text-justify col-sm-6">
+                    {{ root_page.translated_footer|richtext }}
+                </div>
             </div>
         </footer>
     </div>
