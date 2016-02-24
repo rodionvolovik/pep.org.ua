@@ -1,5 +1,6 @@
 {% extends "base.jinja" %}
 {% from "macros/_connections.jinja" import render_connection %}
+{% block body_class %}not-front profile-page person-profile page{% endblock %}
 
 {% set last_workplace = person.translated_last_workplace %}
 
@@ -163,7 +164,7 @@
                 <div id="profile-wiki" class="sub box" itemprop="description">
                     <h3>{{ _("Досьє:") }}</h3>
                     <div class="printWrap">
-                        {{ person.wiki_en|markdown }}
+                        {{ person.wiki_en|richtext }}
                     </div>
                 </div>
                 {% endif %}
@@ -172,7 +173,7 @@
                 <div id="profile-wiki" class="sub box" itemprop="description">
                     <h3>{{ _("Досьє:") }}</h3>
                     <div class="printWrap">
-                        {{ person.wiki_uk|markdown }}
+                        {{ person.wiki_uk|richtext }}
                     </div>
                 </div>
                 {% endif %}
@@ -185,19 +186,19 @@
                     <div class="printWrap">
                         {% if person.reputation_sanctions_en %}
                             <h4>{{ _("Санкції") }}</h4>
-                            {{ person.reputation_sanctions_en|markdown }}
+                            {{ person.reputation_sanctions_en|richtext }}
                         {% endif %}
                         {% if person.reputation_crimes_en %}
                             <h4>{{ _("Кримінальні впровадження") }}</h4>
-                            {{ person.reputation_crimes_en|markdown }}
+                            {{ person.reputation_crimes_en|richtext }}
                         {% endif %}
                         {% if person.reputation_manhunt_en %}
                             <h4>{{ _("Перебування у розшуку") }}</h4>
-                            {{ person.reputation_manhunt_en|markdown }}
+                            {{ person.reputation_manhunt_en|richtext }}
                         {% endif %}
                         {% if person.reputation_convictions_en %}
                             <h4>{{ _("Наявність судимості") }}</h4>
-                            {{ person.reputation_convictions_en|markdown }}
+                            {{ person.reputation_convictions_en|richtext }}
                         {% endif %}
                     </div>
                 </div>
@@ -209,19 +210,19 @@
                     <div class="printWrap">
                         {% if person.reputation_sanctions_uk %}
                             <h4>{{ _("Санкції") }}</h4>
-                            {{ person.reputation_sanctions_uk|markdown }}
+                            {{ person.reputation_sanctions_uk|richtext }}
                         {% endif %}
                         {% if person.reputation_crimes_uk %}
                             <h4>{{ _("Кримінальні впровадження") }}</h4>
-                            {{ person.reputation_crimes_uk|markdown }}
+                            {{ person.reputation_crimes_uk|richtext }}
                         {% endif %}
                         {% if person.reputation_manhunt_uk %}
                             <h4>{{ _("Перебування у розшуку") }}</h4>
-                            {{ person.reputation_manhunt_uk|markdown }}
+                            {{ person.reputation_manhunt_uk|richtext }}
                         {% endif %}
                         {% if person.reputation_convictions_uk %}
                             <h4>{{ _("Наявність судимості") }}</h4>
-                            {{ person.reputation_convictions_uk|markdown }}
+                            {{ person.reputation_convictions_uk|richtext }}
                         {% endif %}
                     </div>
                 </div>
@@ -355,7 +356,7 @@
                             {% for asset in assets %}
                                 <div class="panel panel-default">
                                     <div class="panel-body" itemscope itemtype="http://schema.org/Organization" itemprop="affiliation">
-                                        <span itemprop="name">{{ asset.to_company }}</span>
+                                        <a href="{{ asset.to_company.get_absolute_url() }}"><span itemprop="name">{{ asset.to_company }}</span></a>
                                         {% if asset.to_company.edrpou %}
                                         , {{ _("ЄДРПОУ") }} <span itemprop="taxID">{{ asset.to_company.edrpou }}</span>
                                         {% endif%}
@@ -374,7 +375,7 @@
                                 {{ render_connection(asset, "modalAsset-{}".format(loop.index)) }}
                             {% endfor %}
                             {% if person.reputation_assets %}
-                                {{ person.reputation_assets|markdown }}
+                                {{ person.reputation_assets|richtext }}
                             {% endif %}
                         </div>
                     </div>
@@ -387,7 +388,7 @@
                             {% for asset in assets %}
                                 <div class="panel panel-default">
                                     <div class="panel-body" itemscope itemtype="http://schema.org/Organization" itemprop="affiliation">
-                                        <span itemprop="name">{{ asset.to_company }}</span>
+                                        <a href="{{ asset.to_company.get_absolute_url() }}"><span itemprop="name">{{ asset.to_company }}</span></a>
                                         {% if asset.to_company.edrpou %}
                                         , {{ _("ЄДРПОУ") }} <span itemprop="taxID">{{ asset.to_company.edrpou }}</span>
                                         {% endif%}
@@ -406,7 +407,7 @@
                                 {{ render_connection(asset, "modalAsset-{}".format(loop.index)) }}
                             {% endfor %}
                             {% if person.reputation_assets_uk %}
-                                {{ person.reputation_assets_uk|markdown }}
+                                {{ person.reputation_assets_uk|richtext }}
                             {% endif %}
                         </div>
                     </div>
@@ -420,7 +421,7 @@
                         {% for related_company in related_companies %}
                             <div class="panel panel-default">
                                 <div class="panel-body" itemscope itemtype="http://schema.org/Organization" itemprop="affiliation">
-                                    <span itemprop="name">{{ related_company.to_company }}</span>
+                                    <a href="{{ related_company.to_company.get_absolute_url() }}"><span itemprop="name">{{ related_company.to_company }}</span></a>
                                     {% if related_company.to_company.edrpou %}
                                     , {{ _("ЄДРПОУ") }} <span itemprop="taxID">{{ related_company.to_company.edrpou }}</span>
                                     {% endif%}

@@ -1,4 +1,5 @@
-@media (max-width: 767px) {
+
+@media (max-width: @max-sm) {
     body {
         font-size: 14px;
     }
@@ -24,12 +25,6 @@
     #navbar li a, #navbar .navbar-brand {
         padding-top: 15px;
         padding-bottom: 15px;
-    }
-
-    .regularSearch {
-        float: left !important;
-        margin-top: 0;
-        margin-bottom: 20px;
     }
 
     .nav > li {
@@ -135,17 +130,13 @@
         margin-bottom: 5px;
     }
 
-    .g-recaptcha {
-        margin-left: -50px;
-    }
-
     #declarations .table-responsive {
         border: none;
         border-left: 1px solid #ddd;
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: @min-sm) {
     body {
         font-size: 16px;
     }
@@ -164,18 +155,6 @@
 
     #searchbox h1 {
         font-size: 32px;
-    }
-
-    #searchbox {
-        padding-top: 120px;
-        padding-bottom: 120px;
-    }
-
-    .regularSearch {
-        float: left !important;
-        margin-top: 0;
-        margin-bottom: 20px;
-        padding-left: 0;
     }
 
     #page {
@@ -199,51 +178,21 @@
         text-align: left;
     }
 
-    .g-recaptcha {
-        margin-left: -50px;
-    }
 }
 
-@media (max-width: 991px) {
-    .antac-logo img {
-        width: 140px;
-    }
-
+@media (max-width: @max-sm) {
     .nav > li > a {
         padding-left: 5px;
         padding-right: 5px;
     }
-
-    .regularSearch {
-        float: left !important;
-        margin-top: 0;
-        margin-bottom: 20px;
-        padding-left: 0;
-    }
 }
 
-@media only screen and (max-device-width: 992px) and (orientation: portrait) {
-    .regularSearch {
-        float: left !important;
-        margin-top: 0;
-        margin-bottom: 20px;
-        padding-left: 0;
-    }
+@media only screen and (max-device-width: @max-sm) and (orientation: portrait) {
 }
 
-@media (min-width: 992px) {
+@media (min-width: @min-md) {
     #searchbox h1 {
         font-size: 40px;
-    }
-
-    .antac-logo img {
-        width: 163px;
-    }
-
-    .regularSearch {
-        margin-top: 20px;
-        margin-bottom: 0;
-        float: right !important;
     }
 
     #page {
@@ -263,9 +212,6 @@
         margin-bottom: 15px;
     }
 
-    .g-recaptcha {
-        margin-left: -30px;
-    }
 }
 
-@media (min-width: 1200px) {}
+@media (min-width: @min-lg) {}

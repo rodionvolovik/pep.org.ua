@@ -40,9 +40,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
-    'django_markdown',
-    'redactor',
 
+    'redactor',
     'pipeline',
     'django_jinja',
     'django_jinja.contrib._humanize',
@@ -206,13 +205,11 @@ STATICFILES_FINDERS = (
 PIPELINE_CSS = {
     'css_all': {
         'source_filenames': (
-            'css/bootstrap.min.css',
+            'bower_components/bootstrap/dist/css/bootstrap.min.css',
             'css/ripples.min.css',
             'css/animate.css',
-            'css/timeline.css',
-            'css/featherlight.css',
+            'bower_components/featherlight/src/featherlight.css',
             'css/style.css',
-            'css/responsive.css',
         ),
         'output_filename': 'css/merged.css',
         'extra_context': {
@@ -235,10 +232,12 @@ PIPELINE_CSS = {
 PIPELINE_JS = {
     'js_all': {
         'source_filenames': (
-            "js/jquery-1.10.2.js",
-            "js/bootstrap.min.js",
-            "js/bootstrap3-typeahead.min.js",
-            "js/featherlight.js",
+            "bower_components/jquery/dist/jquery.js",
+            "bower_components/bootstrap/dist/js/bootstrap.js",
+            "bower_components/bootstrap/js/tab.js",
+            "bower_components/bootstrap3-typeahead/bootstrap3-typeahead.js",
+            "bower_components/featherlight/src/featherlight.js",
+            "bower_components/jquery.nicescroll/jquery.nicescroll.min.js",
             "js/ripples.min.js",
             "js/pep.js",
         ),

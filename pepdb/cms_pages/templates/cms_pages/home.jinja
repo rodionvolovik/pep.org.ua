@@ -23,66 +23,62 @@
         <div class="container">
             <div class="row">
                 <h1 class="text-center">{{ page.translated_title }}</h1>
-                <div class="description">
-                    {{ page.translated_body|richtext }}
+
+                <div class="description text-center">
+                    {{ page.translated_subtitle|richtext }}
                 </div>
 
                 <div class="col-lg-6 col-md-8 col-xs-12 col-lg-offset-3 col-md-offset-2">
                     <form id="pep-search" action="{{ url("search") }}" method="GET">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="{{ _("Введіть ім'я") }}" name="q" data-provide="typeahead" id="search-form" autocomplete="off" data-endpoint="{{ url("suggest") }}" />
+                            <input type="text" class="form-control" placeholder="{{ _("Введіть ім'я або назву компанії") }}" name="q" data-provide="typeahead" id="search-form" autocomplete="off" data-endpoint="{{ url("suggest") }}" />
                             <input type="hidden" name="is_exact" value="" />
                             <span class="input-group-btn"><button class="btn btn-danger" type="submit">{{ _("Перевірити") }}</button></span>
                         </div>
                     </form>
                     <!-- /input-group --> 
                 </div>
+                <div class="clearfix"></div>
+                <div class="description text-center">
+                    {{ page.translated_body|richtext }}
+                </div>
+            </div>
+        </div>
+    </section>           
+    
+    <section id="hp-columns">
+        <div class="container">      
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <h3>{{ persons_total }}</h3>
+                    {{ _("Профілів фізичних осіб") }}
+                </div>
+                <div class="col-md-4 text-center">
+                    <h3>{{ persons_pep }}</h3>
+                    {{ _("Профілів публічних діячів") }}
+                </div>
+                <div class="col-md-4 text-center">
+                    <h3>{{ persons_related }}</h3>
+                    {{ _("Профілів пов'язаних осіб") }}
+                </div>
             </div>
         </div>
     </section>
-
-    {#% if page.columns %}
-    <selection id="hp-columns">
-        <div class="container">
-            <div class="row">
-                {% for column in page.columns.all()[:3] %}
-                <div class="col-md-4">
-                    <h3>{{ column.translated_title }}</h3>
-                    {{ column.translated_body|richtext }}
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </selection>
-    {% endif %#}
-    <selection id="hp-columns">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h3>{{ persons_total }}</h3>
-                    {{ _("Профілів фізичних осіб в Реєстрі") }}
-                </div>
-                <div class="col-md-4">
-                    <h3>{{ persons_pep }}</h3>
-                    {{ _("Профілів публічних діячів у Реєстрі") }}
-                </div>
-                <div class="col-md-4">
-                    <h3>{{ persons_related }}</h3>
-                    {{ _("Профілів пов'язаних осіб в Реєстрі") }}
-                </div>
-            </div>
-        </div>
-    </selection>
+    
 
     {% if page.banner_items %}
-    <selection id="sponsors">
+    <section id="oursponsors">
         <div class="container">
             <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 oursponsors-text">
+                    {{ root_page.translated_credits|richtext }}
+                </div>
+
                 {% for banner in page.banner_items.all() %}
                     {% if banner.image %}
                     <div class="sponsor text-center col-md-3 col-xs-6">
                         <a href="{{ banner.link }}" target="_blank">
-                        <img src="{{ banner.image.get_rendition("original").url }}" alt="{{ banner.translated_caption }}" class="img-responsive mc"
+                        <img src="{{ banner.image.get_rendition("max-150x100").url }}" alt="{{ banner.translated_caption }}" class="img-responsive mc"
                         title="{{ banner.translated_caption }}"/>
                         </a>
                     </div>
@@ -90,7 +86,7 @@
                 {% endfor %}
             </div>
         </div>
-    </selection>
+    </section>
     {% endif %}
 
     <div class="cp"></div> <!--   clear padding  -->

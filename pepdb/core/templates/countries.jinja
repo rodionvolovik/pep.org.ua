@@ -1,0 +1,97 @@
+{% extends "base.jinja" %}
+{% from "macros/_pagination.jinja" import render_pagination with context %}
+{% from "macros/_search.jinja" import render_person, render_company with context %}
+{% block body_class %}not-front search-by-country-page page{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+
+            <div id="breadcrumbs">
+                <ol class="breadcrumb">
+                    <li><a href="{{ url("wagtail_serve", "") }}">{{ _("Головна") }}</a></li>
+                    <li class="active">{{ _("Результати пошуку") }}</li>
+                    <li class="active">{{ _("Публічні діячі") }}</li>
+                </ol>
+            </div>
+
+            <section id="search-by-country">
+                <h1>{{ _("Пошук по країнам") }}</h1>
+                <div class="dropdown as-select country-list">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        {% if country %}{{ country.name }}{% else %}{{ _("Усі країни") }}{% endif %}
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu scrollable-menu nice-scroll" aria-labelledby="dropdownMenu">
+                        <li><a href="{{ url("countries") }}">{{ _("Усі країни") }}</a></li>
+                        <li role="separator" class="divider"></li>
+                        {% for cntry in used_countries %}
+                            <li><a href="{{ url("countries", country_id=cntry.iso2) }}">{{ cntry.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="page-content">
+                    <div class="pep-tab" data-example-id="togglable-tabs">
+                        <ul id="myTabs" class="nav nav-tabs" role="tablist">
+                            {% if persons %}
+                                <li role="presentation" class="">
+                                    <a href="#f" id="fiziki" role="tab" data-toggle="tab" aria-controls="fiziki"
+                                       aria-expanded="true">{{ _("Фізичні особи") }} <span class="badge">{{ persons.paginator.count }}</span></a>
+                                </li>
+                            {% endif %}
+                            {% if companies %}
+                                <li role="presentation" class="active">
+                                    <a href="#y" role="tab" id="yuriki" data-toggle="tab" aria-controls="profile"
+                                       aria-expanded="false">{{ _("Юридичні особи") }} <span class="badge">{{ companies.paginator.count }}</span></a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                        <div id="pepTabContant" class="tab-content">
+                            {% if persons %}
+                                <div role="tabpanel" class="tab-pane fade" id="f" aria-labelledby="fiziki">
+                                     {% for p in persons %}
+                                        {{ render_person(p, include_related_persons=False) }}
+                                        {% if loop.index is divisibleby 2 %}
+                                            <div class="clearfix"></div>
+                                        {% endif %}
+                                    {% endfor %}
+    
+                                    <div class="clearfix"></div>
+                                    {% if persons.paginator.num_pages > 1 %}
+                                        <div class="text-center">
+                                            <nav>
+                                                {{ render_pagination(persons, "") }}
+                                            </nav>
+                                        </div>
+                                    {% endif %}
+     
+                                </div>
+                            {% endif %}
+                            {% if companies %}
+                                <div role="tabpanel" class="tab-pane fade active in" id="y" aria-labelledby="yuriki">
+                                    {% for c in companies %}
+                                        {{ render_company(c) }}
+                                        {% if loop.index is divisibleby 2 %}
+                                            <div class="clearfix"></div>
+                                        {% endif %}
+                                    {% endfor %}
+    
+                                    <div class="clearfix"></div>
+                                    {% if companies.paginator.num_pages > 1 %}
+                                        <div class="text-center">
+                                            <nav>
+                                                {{ render_pagination(companies, "") }}
+                                            </nav>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+{% endblock %}

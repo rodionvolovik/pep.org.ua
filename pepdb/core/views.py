@@ -5,13 +5,13 @@ from django.http import JsonResponse
 from django.utils import translation
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
+from django.db.models import Count, F
 from django.template.defaultfilters import truncatewords
 
 from elasticsearch_dsl.query import Q
 from translitua import translit
 
-from core.models import Person, Declaration
-from core.api import hybrid_response
+from core.models import Person, Declaration, Country, Company
 from core.pdf import pdf_response
 from core.utils import is_cyr
 from core.paginator import paginated_search
@@ -63,15 +63,14 @@ def suggest(request):
                 }
         )
 
-        # res = search.execute()
-        # if res.success:
-        #     results += res.suggest['name'][0]['options']
+        res = search.execute()
+        if res.success:
+            results += res.suggest['name'][0]['options']
 
         results = sorted(results, key=itemgetter("score"), reverse=True)
 
-
         if results:
-            return [truncatewords(val['text'], 4) for val in results]
+            return [val['text'] for val in results]
         else:
             []
 
@@ -92,8 +91,7 @@ def suggest(request):
     return JsonResponse(suggestions, safe=False)
 
 
-@hybrid_response("search.jinja")
-def search(request, sources=["persons", "related"]):
+def search(request, sources=("persons", "related", "companies")):
     params = {}
 
     query = request.GET.get("q", "")
@@ -114,23 +112,41 @@ def search(request, sources=["persons", "related"]):
                         kwargs={"person_id": person.id})
             )
 
+        companies = ElasticCompany.search().query(
+            "multi_match", query=query,
+            operator="and",
+            fields=["short_name_en", "short_name", "name_en", "name"])
+
+        # Special case when we were looking for one exact person and found it.
+        if companies.count() == 1:
+            company = companies.execute()[0]
+
+            return redirect(
+                reverse("company_details",
+                        kwargs={"company_id": company.id})
+            )
+
     if "persons" in sources:
         params["persons"] = _search_person(request)
 
     if "related" in sources:
         params["related_persons"] = _search_related(request)
 
-    return params
+    if "companies" in sources:
+        params["companies"] = _search_company(request)
+
+    return render(request, "search.jinja", params)
 
 
 def _search_person(request):
     query = request.GET.get("q", "")
+    _fields = ["full_name", "names"]
 
     if query:
         persons = ElasticPerson.search().query(
             "multi_match", query=query,
             operator="and",
-            fields=["full_name", "names"])
+            fields=_fields)
 
         persons = persons.filter("term", is_pep=True)
 
@@ -140,7 +156,7 @@ def _search_person(request):
                 "multi_match", query=query,
                 operator="or",
                 minimum_should_match="2",
-                fields=["full_name", "names"])
+                fields=_fields)
 
             persons = persons.filter("term", is_pep=True)
     else:
@@ -150,19 +166,59 @@ def _search_person(request):
     return paginated_search(request, persons)
 
 
+def _search_company(request):
+    query = request.GET.get("q", "")
+    _fields = ["name", "short_name", "name_en", "short_name_en",
+               "related_persons.person_uk", "related_persons.person_en",
+               "other_founders", "other_recipient", "other_owners",
+               "other_managers", "bank_name"]
+
+    if query:
+        companies = ElasticCompany.search().query(
+            "multi_match", query=query,
+            operator="and",
+            fields=_fields)
+
+        if companies.count() == 0:
+            # PLAN B, PLAN B
+            companies = ElasticCompany.search().query(
+                "multi_match", query=query,
+                operator="or",
+                minimum_should_match="2",
+                fields=_fields)
+
+            companies = companies.filter("term", is_pep=True)
+    else:
+        companies = ElasticCompany.search().query('match_all')
+
+    return paginated_search(
+        request,
+        # We are using highlight here to find which exact related person
+        # caused the match to show it in the person's card on the top of the
+        # list. Check Person.relevant_related_persons method for details
+        companies.highlight(
+            'related_persons.person_uk',
+            order="score", pre_tags=[""], post_tags=[""]).highlight(
+            'related_persons.person_en',
+            order="score", pre_tags=[""], post_tags=[""])
+    )
+
+
 def _search_related(request):
     query = request.GET.get("q", "")
+    _fields = ["related_persons.person_uk", "related_persons.person_en"]
+    _fields_pep = ["full_name", "names"]
 
     if query:
         all_related = Q(
             "multi_match", query=query,
             operator="and",
-            fields=["related_persons.person_uk", "related_persons.person_en"])
+            fields=_fields)
 
         non_peps = Q(
             "multi_match", query=query,
             operator="and",
-            fields=["full_name", "names"]) & Q("match", is_pep=False)
+            fields=_fields_pep) & Q("match", is_pep=False)
 
         related_persons = ElasticPerson.search().query(all_related | non_peps)
 
@@ -172,14 +228,13 @@ def _search_related(request):
                 "multi_match", query=query,
                 operator="or",
                 minimum_should_match="2",
-                fields=["related_persons.person_uk",
-                        "related_persons.person_en"])
+                fields=_fields)
 
             non_peps = Q(
                 "multi_match", query=query,
                 operator="or",
                 minimum_should_match="2",
-                fields=["full_name", "names"]) & Q("match", is_pep=False)
+                fields=_fields_pep) & Q("match", is_pep=False)
 
             related_persons = ElasticPerson.search().query(
                 all_related | non_peps)
@@ -225,8 +280,60 @@ def person_details(request, person_id):
     return context
 
 
+def countries(request, sources=("persons", "companies"), country_id=None):
+    country = None
+    if country_id is not None:
+        country = get_object_or_404(Country, iso2=country_id)
+
+    used_countries = Country.objects.annotate(
+        persons_count=Count("person2country"),
+        companies_count=Count("company2country")).annotate(
+        usages=F("persons_count") + F("companies_count")).exclude(
+        usages=0, iso2="").order_by("-usages")
+
+    params = {
+        "used_countries": used_countries,
+        "country": country
+    }
+
+    if "persons" in sources:
+        if country_id is None:
+            persons = ElasticPerson.search().query('match_all')
+        else:
+            persons = ElasticPerson.search().query(
+                'match', related_countries__to_country_uk=country.name_uk)
+
+    if "companies" in sources:
+        if country_id is None:
+            companies = ElasticCompany.search().query('match_all')
+        else:
+            companies = ElasticCompany.search().query(
+                'match', related_countries__to_country_uk=country.name_uk)
+
+    params["persons"] = paginated_search(request, persons)
+    params["companies"] = paginated_search(request, companies)
+
+    return render(request, "countries.jinja", params)
+
+
+@pdf_response("company.jinja")
 def company_details(request, company_id):
-    pass
+    company = get_object_or_404(Company, pk=company_id)
+    context = {
+        "company": company,
+    }
+
+    if is_cyr(company.name_uk):
+        context["filename"] = translit(
+            company.name_uk.lower().replace(" ", "_"))
+    else:
+        context["filename"] = company.pk
+
+    context["feedback_form_override"] = FeedbackForm(initial={
+        "company": unicode(company.name)
+    })
+
+    return context
 
 
 def send_feedback(request):

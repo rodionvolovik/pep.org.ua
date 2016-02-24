@@ -299,7 +299,7 @@ def render_date(date, date_details):
         return ""
 
     if date_details == 0:
-        return formats.date_format(date, "DATE_FORMAT")
+        return formats.date_format(date, "SHORT_DATE_FORMAT")
     elif date_details == 1:
         return formats.date_format(
             date, "MONTH_YEAR_DATE_FORMAT")

@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from itertools import chain
 from copy import copy
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 
 from django.db import models
 from django.db.models import Q
@@ -20,8 +20,7 @@ from django.utils import translation
 from redactor.fields import RedactorField
 
 from core.utils import (
-    parse_fullname, parse_family_member, RELATIONS_MAPPING, TranslatedField,
-    render_date)
+    parse_fullname, parse_family_member, RELATIONS_MAPPING, render_date)
 
 # to_*_dict methods are used to convert two main entities that we have, Person
 # and Company into document indexable by ElasticSearch.
@@ -199,11 +198,10 @@ class Person(models.Model):
                 "Контролер",
             ))
 
-
     @property
     def related_companies(self):
-        companies = self.person2company_set.select_related("to_company").filter(
-            is_employee=False)
+        companies = self.person2company_set.select_related(
+            "to_company").filter(is_employee=False)
 
         assets = []
         related = []
@@ -538,7 +536,7 @@ class Person2Person(AbstractRelationship):
 
     def to_dict(self):
         """
-        Convert link between two persons into indexable presentation
+        Convert link between two persons into indexable presentation.
         """
         return {
             "relationship_type": self.to_relationship_type,
@@ -555,7 +553,7 @@ class Person2Person(AbstractRelationship):
 
     def to_dict_reverse(self):
         """
-        Convert back link between two persons to indexable presentation
+        Convert back link between two persons to indexable presentation.
         """
         return {
             "relationship_type": self.from_relationship_type,
@@ -612,7 +610,8 @@ class Person2Company(AbstractRelationship):
 
     from_person = models.ForeignKey("Person")
     to_company = models.ForeignKey(
-        "Company", verbose_name="Компанія або установа")
+        "Company", verbose_name="Компанія або установа",
+        related_name="from_persons")
 
     relationship_type = models.TextField(
         "Тип зв'язку",
@@ -629,19 +628,29 @@ class Person2Company(AbstractRelationship):
 
     def to_company_dict(self):
         return {
-            "relationship_type": self.relationship_type,
+            "relationship_type_uk": self.relationship_type_uk,
+            "relationship_type_en": self.relationship_type_en,
             "state_company": self.to_company.state_company,
-            "to_company": self.to_company.name,
-            "to_company_short": self.to_company.short_name
+
+            "to_company_uk": self.to_company.name_uk,
+            "to_company_short_uk": self.to_company.short_name_uk,
+            "to_company_en": self.to_company.name_en,
+            "to_company_short_en": self.to_company.short_name_en
         }
 
     def to_person_dict(self):
         return {
-            "relationship_type": self.relationship_type,
+            "relationship_type_uk": self.relationship_type_uk,
+            "relationship_type_en": self.relationship_type_en,
             "is_pep": self.from_person.is_pep,
-            "name": "%s %s %s" % (self.from_person.first_name,
-                                  self.from_person.patronymic,
-                                  self.from_person.last_name)
+            "person_uk": "%s %s %s" % (
+                self.from_person.first_name_uk,
+                self.from_person.patronymic_uk,
+                self.from_person.last_name_uk),
+            "person_en": "%s %s %s" % (
+                self.from_person.first_name_en,
+                self.from_person.patronymic_en,
+                self.from_person.last_name_en),
         }
 
     def save(self, *args, **kwargs):
@@ -680,23 +689,25 @@ class Company(models.Model):
 
     wiki = RedactorField("Вікі-стаття", blank=True)
 
-    other_founders = models.TextField(
+    other_founders = RedactorField(
         "Інші засновники",
         help_text="Через кому, не PEP", blank=True)
 
     other_recipient = models.CharField(
         "Бенефіціарій", help_text="Якщо не є PEPом", blank=True,
-        max_length=100)
+        max_length=200)
 
-    other_owners = models.TextField(
+    other_owners = RedactorField(
         "Інші власники",
         help_text="Через кому, не PEP", blank=True)
 
-    other_managers = models.TextField(
+    other_managers = RedactorField(
         "Інші керуючі",
         help_text="Через кому, не PEP", blank=True)
 
-    bank_name = models.CharField("Назва банку", blank=True, max_length=100)
+    bank_name = RedactorField("Фінансова інформація", blank=True)
+
+    sanctions = RedactorField("Санкції", blank=True)
 
     related_companies = models.ManyToManyField(
         "self", through="Company2Company", symmetrical=False)
@@ -711,17 +722,17 @@ class Company(models.Model):
     def to_dict(self):
         d = model_to_dict(self, fields=[
             "id", "name", "short_name", "name_en", "short_name_en",
-            "state_company", "edrpo", "wiki",
+            "state_company", "edrpou", "wiki", "city", "street",
             "other_founders", "other_recipient", "other_owners",
             "other_managers", "bank_name"])
 
         d["related_persons"] = [
             i.to_person_dict()
-            for i in self.person2company_set.select_related("from_person")]
+            for i in self.from_persons.select_related("from_person")]
 
         d["related_countries"] = [
             i.to_dict()
-            for i in self.company2country_set.select_related("to_country")]
+            for i in self.from_countries.select_related("to_country")]
 
         d["related_companies"] = [
             i.to_dict()
@@ -736,13 +747,13 @@ class Company(models.Model):
             if not field:
                 continue
 
-            chunks = list(map(lambda x: x.strip("'\",.-“”«»"), field.split(" ")))
+            chunks = list(
+                map(lambda x: x.strip("'\",.-“”«»"), field.split(" ")))
 
             for i in xrange(len(chunks)):
                 variant = copy(chunks)
                 variant = [variant[i]] + variant[:i] + variant[i + 1:]
                 suggestions.append(" ".join(variant))
-
 
         d["name_suggest"] = {
             "input": suggestions,
@@ -762,6 +773,83 @@ class Company(models.Model):
                 self.name_en = t.translation
 
         super(Company, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse("company_details", kwargs={"company_id": self.pk})
+
+    def localized_url(self, locale):
+        translation.activate(locale)
+        url = self.get_absolute_url()
+        translation.deactivate()
+        return url
+
+    @property
+    def all_related_persons(self):
+        related_persons = [
+            (i.relationship_type_uk, i.from_person, i)
+            for i in self.from_persons.select_related("from_person").defer(
+                "from_person__passport_id",
+                "from_person__passport_reg",
+                "from_person__tax_payer_id",
+                "from_person__id_number",
+                "from_person__reputation_assets",
+                "from_person__reputation_sanctions",
+                "from_person__reputation_crimes",
+                "from_person__reputation_manhunt",
+                "from_person__reputation_convictions",
+                "from_person__wiki",
+                "from_person__names",
+                "from_person__hash"
+            )
+        ]
+
+        res = {
+            "managers": [],
+            "founders": [],
+            # "business": [],
+            "all": []
+        }
+
+        for rtp, p, rel in related_persons:
+            p.rtype = rtp
+            p.connection = rel
+
+            if rtp.lower() in [
+                    "керівник", "перший заступник керівника",
+                    "заступник керівника", "голова", "заступник голови",
+                    "член правління", "член ради", "член", "директор",
+                    "підписант", "номінальний директор", "керуючий"]:
+                res["managers"].append(p)
+            elif rtp.lower() in [
+                    "засновники", "засновник/учасник",
+                    "колишній засновник/учасник", "бенефіціарний власник",
+                    "номінальний власник"]:
+                res["founders"].append(p)
+
+            # else:
+            #     res["family"].append(p)
+
+            res["all"].append(p)
+
+        return res
+
+    @property
+    def all_related_countries(self):
+        related_countries = [
+            (i.relationship_type, i.to_country, i)
+            for i in self.from_countries.select_related("to_country")
+        ]
+
+        res = defaultdict(list)
+
+        for rtp, p, rel in related_countries:
+            p.rtype = rtp
+            p.connection = rel
+
+            res[rtp].append(p)
+            res["all"].append(p)
+
+        return res
 
     class Meta:
         verbose_name = "Юрідична особа"
@@ -849,7 +937,8 @@ class Person2Country(AbstractRelationship):
     def to_dict(self):
         return {
             "relationship_type": self.relationship_type,
-            "to_country": self.to_country.name
+            "to_country_en": self.to_country.name_en,
+            "to_country_uk": self.to_country.name_uk
         }
 
     class Meta:
@@ -858,8 +947,10 @@ class Person2Country(AbstractRelationship):
 
 
 class Company2Country(AbstractRelationship):
-    from_company = models.ForeignKey("Company", verbose_name="Компанія")
-    to_country = models.ForeignKey("Country", verbose_name="Країна")
+    from_company = models.ForeignKey(
+        "Company", verbose_name="Компанія", related_name="from_countries")
+    to_country = models.ForeignKey(
+        "Country", verbose_name="Країна")
 
     relationship_type = models.CharField(
         "Тип зв'язку",
@@ -874,7 +965,8 @@ class Company2Country(AbstractRelationship):
     def to_dict(self):
         return {
             "relationship_type": self.relationship_type,
-            "to_country": self.to_country.name
+            "to_country_en": self.to_country.name_en,
+            "to_country_uk": self.to_country.name_uk
         }
 
     def __unicode__(self):

@@ -20,9 +20,11 @@
             </ol>
         </div>
         <section id="profile" class="col-lg-8">
-            <h1>{{ page.translated_title }}</h1>
-            <div>
-                {{ page.translated_body|richtext }}
+            <div class="page-content">
+                <h1>{{ page.translated_title }}</h1>
+                <div class="content-body">
+                    {{ page.translated_body|richtext }}
+                </div>
             </div>
         </section>
     </div>
