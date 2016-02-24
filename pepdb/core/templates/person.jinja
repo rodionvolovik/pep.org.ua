@@ -1,5 +1,5 @@
 {% extends "base.jinja" %}
-{% from "macros/_connections.jinja" import render_connection %}
+{% from "macros/_connections.jinja" import render_connection with context %}
 {% block body_class %}not-front profile-page person-profile page{% endblock %}
 
 {% set last_workplace = person.translated_last_workplace %}
@@ -57,7 +57,7 @@
         <aside id="profile-nav" role="complementary" class="col-sm-2 hidden-xs">
             <ul id="side-profilemenu">
                 <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-male"></i><span>{{ _("Персональні дані") }}</span></a></li>
-                {% if LANGUAGE_CODE =="en" %}
+                {% if LANGUAGE_CODE == "en" %}
                     {% if person.wiki_en %}
                         <li><a href="#profile" class="btn btn-transp trans"><i class="fa fa-briefcase"></i><span>{{ _("Досьє") }}</span></a></li>
                     {% endif %}
@@ -67,7 +67,7 @@
                     {% endif %}
                 {% endif %}
 
-                {% if LANGUAGE_CODE =="en" %}
+                {% if LANGUAGE_CODE == "en" %}
                     {% if person.reputation_sanctions_en or person.reputation_crimes_en or person.reputation_manhunt_en or person.reputation_convictions_en %}
                     <li><a href="#reputation" class="btn btn-transp trans"><i class="fa fa-bullhorn"></i><span>{{ _("Репутація") }}</span></a></li>
                     {% endif %}
@@ -85,7 +85,7 @@
                 {% if related_persons.all %}
                 <li><a href="#connections" class="btn btn-transp trans"><i class="fa fa-heart"></i><span>{{ _("З'вязки") }}</span></a></li>
                 {% endif %}
-                {% if LANGUAGE_CODE =="en" %}
+                {% if LANGUAGE_CODE == "en" %}
                     {% if assets or person.reputation_assets_en %}
                         <li><a href="#assets" class="btn btn-transp trans"><i class="fa fa-cubes"></i><span>{{ _("Статки") }}</span></a></li>
                     {% endif %}
@@ -159,7 +159,7 @@
             </div>
 
 
-            {% if LANGUAGE_CODE =="en" %}
+            {% if LANGUAGE_CODE == "en" %}
                 {% if person.wiki_en %}
                 <div id="profile-wiki" class="sub box" itemprop="description">
                     <h3>{{ _("Досьє:") }}</h3>
@@ -179,7 +179,7 @@
                 {% endif %}
             {% endif %}
 
-            {% if LANGUAGE_CODE =="en" %}
+            {% if LANGUAGE_CODE == "en" %}
                 {% if person.reputation_sanctions_en or person.reputation_crimes_en or person.reputation_manhunt_en or person.reputation_convictions_en %}
                 <div id="reputation" class="sub box">
                     <h3>{{ _("Репутація:") }}</h3>
@@ -348,7 +348,7 @@
             </div>
             {% endif %}
 
-            {% if LANGUAGE_CODE =="en" %}
+            {% if LANGUAGE_CODE == "en" %}
                 {% if assets or person.reputation_assets_en %}
                     <div id="assets" class="sub box">
                         <h3>{{ _("Статки:") }}</h3>

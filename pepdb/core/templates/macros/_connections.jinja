@@ -28,7 +28,11 @@
                                     {% if connection.proof %}
                                         <a href="{{ connection.proof }}" target="_blank">
                                     {% endif %}
-                                    {{ connection.proof_title|default(_("Посилання"), true) }}
+                                    {% if LANGUAGE_CODE == "en" %}
+                                        {{ _("Посилання") }}
+                                    {% else %}
+                                        {{ connection.proof_title|default(_("Посилання"), true) }}
+                                    {% endif %}
                                     {% if connection.proof %}
                                         </a>
                                     {% endif %}

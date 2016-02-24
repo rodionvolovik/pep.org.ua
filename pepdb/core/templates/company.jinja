@@ -1,5 +1,5 @@
 {% extends "base.jinja" %}
-{% from "macros/_connections.jinja" import render_connection %}
+{% from "macros/_connections.jinja" import render_connection with context %}
 {% block body_class %}not-front profile-page company-profile page{% endblock %}
 
 {% block page_title %}{{ company.name }} {% endblock %}
