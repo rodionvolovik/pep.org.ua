@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-24 10:54+0200\n"
+"POT-Creation-Date: 2016-02-24 11:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,20 +26,14 @@ msgid "Перевірити"
 msgstr "Check"
 
 #: cms_pages/templates/cms_pages/home.jinja:54
-#, fuzzy
-#| msgid "Профілів фізичних осіб в Реєстрі"
 msgid "Профілів фізичних осіб"
 msgstr "Individual profiles"
 
 #: cms_pages/templates/cms_pages/home.jinja:58
-#, fuzzy
-#| msgid "Профілів публічних діячів у Реєстрі"
 msgid "Профілів публічних діячів"
 msgstr "Profiles of Politically Exposed Persons"
 
 #: cms_pages/templates/cms_pages/home.jinja:62
-#, fuzzy
-#| msgid "Профілів пов'язаних осіб в Реєстрі"
 msgid "Профілів пов'язаних та близьких осіб"
 msgstr "Profiles of close associates and family members"
 
@@ -123,8 +117,6 @@ msgid "дружина"
 msgstr "wife"
 
 #: core/models.py:468
-#, fuzzy
-#| msgid "чоловік"
 msgid "чоловік/дружина"
 msgstr "husband/wife"
 
@@ -141,8 +133,6 @@ msgid "дочка"
 msgstr "daughter"
 
 #: core/models.py:469 core/models.py:470 core/models.py:471 core/models.py:474
-#, fuzzy
-#| msgid "дочка"
 msgid "син/дочка"
 msgstr "son/daughter"
 
@@ -151,8 +141,6 @@ msgid "мати"
 msgstr "mother"
 
 #: core/models.py:471 core/models.py:472 core/models.py:473 core/models.py:474
-#, fuzzy
-#| msgid "батько"
 msgid "батько/мати"
 msgstr "father/mother"
 
@@ -419,8 +407,6 @@ msgid "Дані"
 msgstr "Legal entity basic data"
 
 #: core/templates/company.jinja:33
-#, fuzzy
-#| msgid "Замовник"
 msgid "Засновники"
 msgstr "Founders"
 
@@ -434,8 +420,6 @@ msgid "Досьє"
 msgstr "Dossier"
 
 #: core/templates/company.jinja:44
-#, fuzzy
-#| msgid "Надіслати інформацію"
 msgid "Фінансова інформація"
 msgstr "Financial information"
 
@@ -462,14 +446,10 @@ msgid "Адреса"
 msgstr "Address"
 
 #: core/templates/company.jinja:94
-#, fuzzy
-#| msgid "Правовласник"
 msgid "Бенефіціарний власник"
 msgstr "Beneficial owner"
 
 #: core/templates/company.jinja:104
-#, fuzzy
-#| msgid "Замовник"
 msgid "Засновники:"
 msgstr "Founders:"
 
@@ -488,8 +468,6 @@ msgid "Санкції"
 msgstr "Sanctions:"
 
 #: core/templates/company.jinja:183
-#, fuzzy
-#| msgid "Надіслати інформацію"
 msgid "Фінансова інформація:"
 msgstr "Financial information:"
 
@@ -511,8 +489,6 @@ msgid "Фізичні особи"
 msgstr "Individuals"
 
 #: core/templates/countries.jinja:47 core/templates/search.jinja:38
-#, fuzzy
-#| msgid "Фізичні особи"
 msgid "Юридичні особи"
 msgstr "Legal entities"
 
@@ -595,8 +571,6 @@ msgid "Статки"
 msgstr "Assets"
 
 #: core/templates/person.jinja:98
-#, fuzzy
-#| msgid "Пов'язані особи"
 msgid "Пов'язані юридичні особи"
 msgstr "Associated legal entities"
 
@@ -677,8 +651,6 @@ msgid "Статки:"
 msgstr "Assets:"
 
 #: core/templates/person.jinja:419
-#, fuzzy
-#| msgid "Пов'язані особи"
 msgid "Пов'язані юридичні особи:"
 msgstr "Associated legal entities:"
 
