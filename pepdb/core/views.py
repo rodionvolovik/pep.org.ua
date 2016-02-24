@@ -24,9 +24,11 @@ from core.elastic_models import (
 
 def suggest(request):
     if translation.get_language() == "en":
-        field = 'full_name_suggest_en'
+        field = "full_name_suggest_en"
+        company_field = "name_suggest_en"
     else:
-        field = 'full_name_suggest'
+        field = "full_name_suggest"
+        company_field = "name_suggest"
 
     def assume(q, fuzziness):
         results = []
@@ -54,7 +56,7 @@ def suggest(request):
                 'name',
                 q,
                 completion={
-                    'field': 'name_suggest',
+                    'field': company_field,
                     'size': 5,
                     'fuzzy': {
                         'fuzziness': fuzziness,

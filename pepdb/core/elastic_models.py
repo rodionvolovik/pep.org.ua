@@ -61,6 +61,7 @@ class Company(DocType, RangeRelevantEntitiesMixin):
     """Person document."""
 
     name_suggest = Completion(preserve_separators=False)
+    name_suggest_en = Completion(preserve_separators=False)
 
     translated_name = TranslatedField("name", "name_en")
 

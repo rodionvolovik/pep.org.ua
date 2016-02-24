@@ -760,6 +760,11 @@ class Company(models.Model):
             "output": d["name"]
         }
 
+        d["name_suggest_en"] = {
+            "input": suggestions,
+            "output": d["name_en"]
+        }
+
         d["_id"] = d["id"]
 
         return d
