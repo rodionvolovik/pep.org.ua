@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-25 03:51+0200\n"
+"POT-Creation-Date: 2016-02-25 13:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,9 +40,9 @@ msgid "Профілів пов'язаних та близьких осіб"
 msgstr ""
 
 #: cms_pages/templates/cms_pages/static_page.jinja:18
-#: core/templates/company.jinja:24 core/templates/countries.jinja:12
-#: core/templates/feedback.jinja:9 core/templates/person.jinja:26
-#: core/templates/search.jinja:11
+#: core/templates/base.jinja:75 core/templates/company.jinja:24
+#: core/templates/countries.jinja:12 core/templates/feedback.jinja:9
+#: core/templates/person.jinja:26 core/templates/search.jinja:11
 msgid "Головна"
 msgstr ""
 
@@ -398,6 +398,18 @@ msgstr ""
 msgid "Перемкнути :)"
 msgstr ""
 
+#: core/templates/base.jinja:76 core/templates/countries.jinja:19
+msgid "Пошук по країнам"
+msgstr ""
+
+#: core/templates/base.jinja:77
+msgid "Питання та відповіді"
+msgstr ""
+
+#: core/templates/base.jinja:78
+msgid "Зворотній зв'язок"
+msgstr ""
+
 #: core/templates/company.jinja:25 core/templates/countries.jinja:14
 #: core/templates/person.jinja:27 core/templates/search.jinja:13
 msgid "Публічні діячі"
@@ -478,10 +490,6 @@ msgstr ""
 
 #: core/templates/countries.jinja:13 core/templates/search.jinja:12
 msgid "Результати пошуку"
-msgstr ""
-
-#: core/templates/countries.jinja:19
-msgid "Пошук по країнам"
 msgstr ""
 
 #: core/templates/countries.jinja:23 core/templates/countries.jinja.py:27
