@@ -1,10 +1,10 @@
 {% extends "base.jinja" %}
-{% from "macros/_connections.jinja" import render_connection with context %}
+{% from "macros/_connections.jinja" import render_connection, render_related_person with context %}
 {% block body_class %}not-front profile-page person-profile page{% endblock %}
 
 {% set last_workplace = person.translated_last_workplace %}
 
-{% block page_title %}{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}{% if last_workplace %}, {{ last_workplace[0] }}, {{ last_workplace[1] }}{% endif %}{% endblock %}
+{% block page_title %}{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}{% if last_workplace %}, {{ last_workplace.company }}, {{ last_workplace.position }}{% endif %}{% endblock %}
 
 {% block extra_menu %}
     {% if request.user.is_superuser %}
@@ -13,32 +13,6 @@
         </li>
     {% endif %}
 {% endblock %}
-
-{% macro render_related_person(person, type) %}
-    <li itemprop="{% if type == "family" %}relatedTo{% else %}knows{% endif %}" itemscope itemtype="http://schema.org/Person">
-        <a href="{{ person.get_absolute_url() }}" itemprop="url">
-            <span class="{% if person.is_pep %}is_pep {% endif %}name-pill" itemprop="name">
-                <span itemprop="familyName">{{ person.last_name }}</span> <span itemprop="givenName">{{ person.first_name }}</span> <span itemprop="additionalName">{{ person.patronymic }}</span>
-            </span>
-        </a> &ndash;
-        {% if person.rtype %}{{ _(person.rtype) }},{% endif %}
-        {% if person.dob %}<meta itemprop="birthDate" content="{{ person.dob }} "/>{% endif %}
-
-        {% set last_workplace = person.translated_last_workplace %}
-        {% if last_workplace %}
-        <span itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ last_workplace[0] }}</span></span>,
-        <span itemprop="jobTitle">{{ last_workplace[1] }}</span>
-        {% endif %}
-        
-
-        {% if person.connection.has_additional_info %}
-            <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalPerson-{{ person.pk }}">
-               <i class="fa fa-info-circle info-gray"></i>
-            </a>
-        {% endif %}
-        {{ render_connection(person.connection, "modalPerson-{}".format(person.pk)) }}
-    </li>
-{% endmacro %}
 
 
 {% block content %}
@@ -83,7 +57,7 @@
                     <li><a href="#declarations" class="btn btn-transp trans"><i class="fa fa-file-text-o"></i><span>{{ _("Декларації") }}</span></a></li>
                 {% endif %}
                 {% if related_persons.all %}
-                <li><a href="#connections" class="btn btn-transp trans"><i class="fa fa-heart"></i><span>{{ _("З'вязки") }}</span></a></li>
+                <li><a href="#connections" class="btn btn-transp trans"><i class="fa fa-heart"></i><span>{{ _("Зв'язки") }}</span></a></li>
                 {% endif %}
                 {% if LANGUAGE_CODE == "en" %}
                     {% if assets or person.reputation_assets_en %}
@@ -143,8 +117,8 @@
                                 <td>{{ _("Остання посада") }}</td>
                                 <td>
                                     <strong>
-                                        <span itemprop="worksFor" itemscope itemtype="http://schema.org/Organization"><span itemprop="name">{{ last_workplace[0] }}</span></span>, 
-                                        <span itemprop="jobTitle">{{ last_workplace[1] }}</span>
+                                        <a href="{{ url("company_details", company_id=last_workplace.company_id) }}" itemprop="worksFor" itemscope itemtype="http://schema.org/Organization"><span itemprop="name">{{ last_workplace.company }}</span></a>, 
+                                        <span itemprop="jobTitle">{{ last_workplace.position }}</span>
                                     </strong>
                                 </td>
                             </tr>
@@ -251,7 +225,7 @@
                                     <div class="tl-content panel padder b-a">
                                         <span class="arrow left pull-up"></span>
                                         <div>
-                                            <span itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ connection.to_company }}</span></span>, {{ connection.relationship_type }}
+                                            <a href="{{ connection.to_company.get_absolute_url() }}" itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ connection.to_company }}</span></a>, {{ connection.relationship_type }}
                                             {% if connection.has_additional_info %}
                                                 <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalWork-{{ loop.index }}">
                                                    <i class="fa fa-info-circle info-gray"></i>

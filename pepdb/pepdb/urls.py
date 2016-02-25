@@ -9,12 +9,15 @@ from wagtail.wagtailcore import urls as wagtail_urls
 from wagtail.wagtailadmin import urls as wagtailadmin_urls
 from wagtail.wagtailsearch import urls as wagtailsearch_urls
 
-from core.sitemaps import MainXML, PersonXML, StaticXML
+from core.sitemaps import (
+    MainXML, PersonXML, StaticXML, CompanyXML, CountriesXML)
 
 sitemaps = {
     'main': MainXML,
     'persons': PersonXML,
     'static': StaticXML,
+    'companies': CompanyXML,
+    'countries': CountriesXML
 }
 
 
@@ -47,7 +50,8 @@ urlpatterns = i18n_patterns(
         name='company_details'),
 
     # Aux pages
-    url(r'^feedback', TemplateView.as_view(template_name="feedback.jinja")),
+    url(r'^feedback', TemplateView.as_view(template_name="feedback.jinja"),
+        name="feedback"),
     url(r'', include(wagtail_urls)),
 )
 

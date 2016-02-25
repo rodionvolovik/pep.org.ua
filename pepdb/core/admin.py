@@ -361,8 +361,8 @@ class DeclarationAdmin(admin.ModelAdmin):
     def position_pep(self, obj):
         last_workplace = obj.person.last_workplace
         if last_workplace:
-            return "%s @ %s" % (obj.person.last_workplace[1],
-                                obj.person.last_workplace[0])
+            return "%s @ %s" % (obj.person.last_workplace["position"],
+                                obj.person.last_workplace["company"])
 
         return ""
 

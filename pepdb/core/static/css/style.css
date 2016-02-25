@@ -1117,17 +1117,22 @@ td.decl-familyincome {
 /* line 133, css/less/profile.less */
 .small-profile a {
   color: #333;
+  text-decoration: underline;
 }
-/* line 136, css/less/profile.less */
+/* line 137, css/less/profile.less */
+.small-profile a:hover {
+  text-decoration: none;
+}
+/* line 141, css/less/profile.less */
 .small-profile a:hover .riskLevel.tip {
   display: block;
 }
-/* line 141, css/less/profile.less */
+/* line 146, css/less/profile.less */
 .small-profile img {
   height: 100px;
   width: auto;
 }
-/* line 146, css/less/profile.less */
+/* line 151, css/less/profile.less */
 .small-profile .avatar {
   margin-right: 20px;
   display: block;
@@ -1138,7 +1143,7 @@ td.decl-familyincome {
   background-color: #ebecf1;
   background-repeat: repeat;
 }
-/* line 157, css/less/profile.less */
+/* line 162, css/less/profile.less */
 .small-profile h3 {
   font-family: 'arsenalregular';
   font-weight: normal;
@@ -1147,36 +1152,36 @@ td.decl-familyincome {
   min-height: 40px;
   text-transform: uppercase;
 }
-/* line 165, css/less/profile.less */
+/* line 170, css/less/profile.less */
 .small-profile h3 span {
   text-transform: capitalize;
 }
-/* line 170, css/less/profile.less */
+/* line 175, css/less/profile.less */
 .small-profile .descr {
   margin-left: 120px;
   position: relative;
   display: block;
 }
-/* line 175, css/less/profile.less */
+/* line 180, css/less/profile.less */
 .small-profile .descr p {
   margin-bottom: 10px;
   font-size: 14px;
 }
-/* line 180, css/less/profile.less */
+/* line 185, css/less/profile.less */
 .small-profile .descr span {
   font-weight: bold;
 }
-/* line 183, css/less/profile.less */
+/* line 188, css/less/profile.less */
 .small-profile .descr span.small-tip {
   font-size: 12px;
   margin-left: -45px;
   color: #7B7B7B;
 }
-/* line 191, css/less/profile.less */
+/* line 196, css/less/profile.less */
 .small-profile .riskLevel {
   font-weight: normal;
 }
-/* line 194, css/less/profile.less */
+/* line 199, css/less/profile.less */
 .small-profile .riskLevel.tip {
   display: none;
   position: absolute;
@@ -1189,42 +1194,42 @@ td.decl-familyincome {
   font-size: 13px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.23), 0 3px 10px rgba(0, 0, 0, 0.16);
 }
-/* line 209, css/less/profile.less */
+/* line 214, css/less/profile.less */
 .small-profile.fizik .avatar {
   background-image: url(../images/short-avatar.png);
 }
-/* line 215, css/less/profile.less */
+/* line 220, css/less/profile.less */
 .small-profile.yurik .box {
   background: #fff url(../images/fplashka.png) no-repeat 0 -55px;
 }
-/* line 219, css/less/profile.less */
+/* line 224, css/less/profile.less */
 .small-profile.yurik .avatar {
   background-image: url(../images/short-avatar-yurik.png);
 }
-/* line 225, css/less/profile.less */
+/* line 230, css/less/profile.less */
 .small-profile.linked .box {
   background: #fff url(../images/lplashka.png) no-repeat 0 -55px;
 }
-/* line 229, css/less/profile.less */
+/* line 234, css/less/profile.less */
 .small-profile.linked .avatar {
   background-image: url(../images/short-avatar-linked.png);
 }
-/* line 235, css/less/profile.less */
+/* line 240, css/less/profile.less */
 .pep-name {
   font-size: 28px;
   margin-top: 10px;
   min-height: 62px;
 }
-/* line 241, css/less/profile.less */
+/* line 246, css/less/profile.less */
 .pep-name,
 .pep-name a {
   color: #FFFFFF;
 }
-/* line 246, css/less/profile.less */
+/* line 251, css/less/profile.less */
 #profile-wiki p {
   text-align: justify;
 }
-/* line 250, css/less/profile.less */
+/* line 255, css/less/profile.less */
 .pep-pib {
   display: block;
   text-transform: none;

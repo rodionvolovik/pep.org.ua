@@ -22,7 +22,7 @@
                 {% if p.last_workplace %}
                 <p>
                     <span>{{ _("Остання посада") }}:</span>
-                    <span itemprop="worksFor" itemscope itemtype="http://schema.org/Organization"><span itemprop="name">{{ p.translated_last_workplace }}</span></span>,
+                    <a href="{{ url("company_details", company_id=p.last_job_id) }}" itemprop="worksFor" itemscope itemtype="http://schema.org/Organization"><span itemprop="name">{{ p.translated_last_workplace }}</span></a>,
                     <span itemprop="jobTitle">{{ p.translated_last_job_title }}</span>
                 </p>
                 {% endif %}

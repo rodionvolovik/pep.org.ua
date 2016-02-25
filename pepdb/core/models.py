@@ -146,8 +146,11 @@ class Person(models.Model):
         qs = self._last_workplace()
         if qs:
             l = qs[0]
-            return [l.to_company.short_name_uk or l.to_company.name_uk,
-                    l.relationship_type_uk]
+            return {
+                "company": l.to_company.short_name_uk or l.to_company.name_uk,
+                "company_id": l.to_company.pk,
+                "position": l.relationship_type_uk
+            }
 
         return ""
 
@@ -157,8 +160,12 @@ class Person(models.Model):
         qs = self._last_workplace()
         if qs:
             l = qs[0]
-            return [l.to_company.short_name_en or l.to_company.name_en,
-                    l.relationship_type_en]
+
+            return {
+                "company": l.to_company.short_name_en or l.to_company.name_en,
+                "company_id": l.to_company.pk,
+                "position": l.relationship_type_en
+            }
 
         return ""
 
@@ -168,8 +175,12 @@ class Person(models.Model):
         qs = self._last_workplace()
         if qs:
             l = qs[0]
-            return [l.to_company.short_name or l.to_company.name,
-                    l.relationship_type]
+
+            return {
+                "company": l.to_company.short_name or l.to_company.name,
+                "company_id": l.to_company.pk,
+                "position": l.relationship_type
+            }
 
         return ""
 
@@ -317,11 +328,13 @@ class Person(models.Model):
 
         last_workplace = self.last_workplace
         if last_workplace:
-            d["last_workplace"] = last_workplace[0]
-            d["last_job_title"] = last_workplace[1]
+            d["last_workplace"] = last_workplace["company"]
+            d["last_job_title"] = last_workplace["position"]
+            d["last_job_id"] = last_workplace["company_id"]
 
-            (d["last_workplace_en"],
-             d["last_job_title_en"]) = self.last_workplace_en
+            last_workplace_en = self.last_workplace_en
+            d["last_workplace_en"] = last_workplace_en["company"]
+            d["last_job_title_en"] = last_workplace_en["position"]
 
         d["type_of_official"] = self.get_type_of_official_display()
         d["risk_category"] = self.get_risk_category_display()
@@ -721,7 +734,7 @@ class Company(models.Model):
 
     def to_dict(self):
         d = model_to_dict(self, fields=[
-            "id", "name", "short_name", "name_en", "short_name_en",
+            "id", "name_uk", "short_name_uk", "name_en", "short_name_en",
             "state_company", "edrpou", "wiki", "city", "street",
             "other_founders", "other_recipient", "other_owners",
             "other_managers", "bank_name"])
@@ -743,7 +756,8 @@ class Company(models.Model):
 
         suggestions = []
 
-        for field in (d["name"], d["short_name"]):
+        for field in (d["name_uk"], d["short_name_uk"],
+                      d["name_en"], d["short_name_en"]):
             if not field:
                 continue
 
@@ -757,7 +771,7 @@ class Company(models.Model):
 
         d["name_suggest"] = {
             "input": suggestions,
-            "output": d["name"]
+            "output": d["name_uk"]
         }
 
         d["name_suggest_en"] = {

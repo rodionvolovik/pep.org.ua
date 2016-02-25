@@ -161,7 +161,7 @@
                             {{ r.person.last_name_uk }}
                             {{ r.person.first_name_uk }}
                             {{ r.person.patronymic_uk }},<br/>
-                            {{ r.person.last_workplace|join:", " }}
+                            {{ r.person.last_workplace.company }}, {{ r.person.last_workplace.position }}
                         </td>
                         <td>
                             <select name="person_{{ r.pk }}_{{ forloop.counter }}_relation_from" style="width: 150px">
@@ -190,8 +190,8 @@
                                             data-patronymic="{{ suggestions.patronymic_uk }}"
                                             data-id="{{ suggestions.id }}">
                                             {{ suggestions.last_name_uk }} {{ suggestions.first_name_uk }} {{ suggestions.patronymic_uk }},
-                                            {{ suggestions.last_workplace|join:", " }}
-                                        </a> {{ suggestions.last_workplace|join:", " }}
+                                            {{ suggestions.last_workplace.company }}, {{ suggestions.last_workplace.position }}
+                                        </a> {{ suggestions.last_workplace.company }}, {{ suggestions.last_workplace.position }}
 
                                         {% for rel in suggestions.all_related_persons.all %}
                                             <br />

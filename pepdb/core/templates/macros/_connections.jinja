@@ -53,3 +53,29 @@
         </div>
    {% endif %}
 {% endmacro %}
+
+{% macro render_related_person(person, type) %}
+    <li itemprop="{% if type == "family" %}relatedTo{% else %}knows{% endif %}" itemscope itemtype="http://schema.org/Person">
+        <a href="{{ person.get_absolute_url() }}" itemprop="url">
+            <span class="{% if person.is_pep %}is_pep {% endif %}name-pill" itemprop="name">
+                <span itemprop="familyName">{{ person.last_name }}</span> <span itemprop="givenName">{{ person.first_name }}</span> <span itemprop="additionalName">{{ person.patronymic }}</span>
+            </span>
+        </a> &ndash;
+        {% if person.rtype %}{{ _(person.rtype) }},{% endif %}
+        {% if person.dob %}<meta itemprop="birthDate" content="{{ person.dob }} "/>{% endif %}
+
+        {% set last_workplace = person.translated_last_workplace %}
+        {% if last_workplace %}
+        <a href="{{ url("company_details", company_id=last_workplace.company_id) }}" itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ last_workplace.company }}</span></a>,
+        <span itemprop="jobTitle">{{ last_workplace.position }}</span>
+        {% endif %}
+        
+
+        {% if person.connection.has_additional_info %}
+            <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalPerson-{{ person.pk }}">
+               <i class="fa fa-info-circle info-gray"></i>
+            </a>
+        {% endif %}
+        {{ render_connection(person.connection, "modalPerson-{}".format(person.pk)) }}
+    </li>
+{% endmacro %}
