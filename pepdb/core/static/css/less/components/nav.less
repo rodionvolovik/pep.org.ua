@@ -13,15 +13,26 @@
         text-transform: uppercase;
         margin-right: 30px;
         padding-top: 0;
+        height: 40px;
+        line-height: 28px;
+        padding: 0 15px;
     
         span {
             font-size: 16px;
         }
     }
     
+    .navbar-toggle {
+        margin-top: -5px;
+    }
+    
     .navbar-nav > li {
-        margin-right: 35px;
+        margin-right: 15px;
         text-transform: uppercase;
+        
+        @media (min-width: @min-md) {
+            margin-right: 35px;
+        }
         
         a {
             color: #333333;
@@ -80,6 +91,19 @@
                 background-color: #e7e7e7;
             }
         }
+        
+        &.edit-page {
+            a {
+                background: none;
+                text-indent: 0;
+                font-size: 23px;
+                color: @pep-red;
+                
+                &:hover {
+                    color: @pep-light-blue;
+                }
+            }
+        }
     }
     
     .btn {
@@ -97,8 +121,14 @@
     }
     
     .regularSearch {
-
-        max-width: 250px;
+        @media (max-width: @max-xs) {
+            padding-left: 0;
+            padding-right: 0;
+        }
+        
+        @media (min-width: @min-sm) {
+            max-width: 250px;
+        }
 
         input,
         .btn {
@@ -165,11 +195,16 @@
     .antac-logo {
         float: right;
         height: 40px;
-        margin-top: -5px;
+        margin-top: -8px;
+        display: none;
         
         img {
             width: auto;
             height: 100%;
+        }
+        
+        @media (min-width: @min-sm) {
+            display: block;
         }
     }
 }

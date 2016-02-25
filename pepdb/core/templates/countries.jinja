@@ -16,8 +16,8 @@
             </div>
 
             <section id="search-by-country">
-                <h1>{{ _("Пошук по країнам") }}</h1>
-                <div class="dropdown as-select country-list">
+                <h1 class="so">{{ _("Пошук по країнам") }}</h1>
+                <div class="dropdown as-select country-list so">
                     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         {% if country %}{{ country.name }}{% else %}{{ _("Усі країни") }}{% endif %}
@@ -36,21 +36,21 @@
                     <div class="pep-tab" data-example-id="togglable-tabs">
                         <ul id="myTabs" class="nav nav-tabs" role="tablist">
                             {% if persons %}
-                                <li role="presentation" class="">
+                                <li role="presentation" class="active">
                                     <a href="#f" id="fiziki" role="tab" data-toggle="tab" aria-controls="fiziki"
                                        aria-expanded="true">{{ _("Фізичні особи") }} <span class="badge">{{ persons.paginator.count }}</span></a>
                                 </li>
                             {% endif %}
                             {% if companies %}
-                                <li role="presentation" class="active">
+                                <li role="presentation" class="">
                                     <a href="#y" role="tab" id="yuriki" data-toggle="tab" aria-controls="profile"
                                        aria-expanded="false">{{ _("Юридичні особи") }} <span class="badge">{{ companies.paginator.count }}</span></a>
                                 </li>
                             {% endif %}
                         </ul>
-                        <div id="pepTabContant" class="tab-content">
+                        <div id="pepTabContent" class="tab-content">
                             {% if persons %}
-                                <div role="tabpanel" class="tab-pane fade" id="f" aria-labelledby="fiziki">
+                                <div role="tabpanel" class="tab-pane fade active in" id="f" aria-labelledby="fiziki">
                                      {% for p in persons %}
                                         {{ render_person(p, include_related_persons=False) }}
                                         {% if loop.index is divisibleby 2 %}
@@ -70,7 +70,7 @@
                                 </div>
                             {% endif %}
                             {% if companies %}
-                                <div role="tabpanel" class="tab-pane fade active in" id="y" aria-labelledby="yuriki">
+                                <div role="tabpanel" class="tab-pane fade{% if companies  and not(persons) %} active in{% endif %}" id="y" aria-labelledby="yuriki">
                                     {% for c in companies %}
                                         {{ render_company(c) }}
                                         {% if loop.index is divisibleby 2 %}
