@@ -61,6 +61,7 @@ pepdb/core/dicts/new_peps.csv
 media
 *.db
 _venv/*
+
 node_modules/
 bower_components/
 .vagrant/machines/default/virtualbox/id
@@ -72,3 +73,8 @@ bower_components/
 Vagrantfile
 pep.ppk
 pep.txt
+pepdb/core/static/bower_components/
+.vagrant/machines/
+Vagrantfile
+pep.txt
+pep.ppk
