@@ -24,6 +24,27 @@
     
     .navbar-toggle {
         margin-top: -5px;
+        
+        &:focus, 
+        &:hover {
+            background: none;
+            border-color: @pep-light-blue;
+            
+            .icon-bar {
+                background-color: @pep-light-blue;
+            }
+        }
+    }
+    
+    .navbar-collapse {
+        @media (max-width: @max-xs) {
+            width: 100%;
+            margin-left: 0;
+            
+            li.edit-page {
+                margin-left: 15px;
+            }
+        }
     }
     
     .navbar-nav > li {
@@ -38,46 +59,51 @@
             color: #333333;
             text-transform: uppercase;
             padding: 0;
-            text-indent: -9999px;
+            
             display: inline-block;
-            width: 30px;
-            height: 22px;
-            background:url(../images/menu.png) no-repeat;
-            -webkit-transition: all 0.25s ease;
-            -moz-transition: all 0.25s ease;
-            -o-transition: all 0.25s ease;
-            -ms-transition: all 0.25s ease;
-            transition: all 0.25s ease;
+
             
-            &.home-item {
-                background-position: 0 0;
+            @media (min-width: @min-sm) {
+                text-indent: -9999px;
+                width: 30px;
+                height: 22px;
+                background:url(../images/menu.png) no-repeat;
+                -webkit-transition: all 0.25s ease;
+                -moz-transition: all 0.25s ease;
+                -o-transition: all 0.25s ease;
+                -ms-transition: all 0.25s ease;
+                transition: all 0.25s ease; 
                 
-                &:hover {
-                    background-position: 0 -22px;
+                &.home-item {
+                    background-position: 0 0;
+                    
+                    &:hover {
+                        background-position: 0 -22px;
+                    }
                 }
-            }
             
-            &.countries-item {
-                background-position: -30px 0;
-                
-                &:hover {
-                    background-position: -30px -22px;
+                &.countries-item {
+                    background-position: -30px 0;
+                    
+                    &:hover {
+                        background-position: -30px -22px;
+                    }
                 }
-            }
             
-            &.qa-item {
-                background-position: -60px 0;
-                
-                &:hover {
-                    background-position: -60px -22px;
+                &.qa-item {
+                    background-position: -60px 0;
+                    
+                    &:hover {
+                        background-position: -60px -22px;
+                    }
                 }
-            }
             
-            &.feedback-item {
-                background-position: -90px 0;
-                
-                &:hover {
-                    background-position: -90px -22px;
+                &.feedback-item {
+                    background-position: -90px 0;
+                    
+                    &:hover {
+                        background-position: -90px -22px;
+                    }
                 }
             }
             
@@ -169,6 +195,10 @@
     
     #languageSelect {
         margin-right: 20px;
+        
+        @media (max-width: @max-xs) {
+            float: none !important;
+        }
         
         button {
          background: none;
