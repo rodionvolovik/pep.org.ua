@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-24 11:48+0200\n"
+"POT-Creation-Date: 2016-02-25 02:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -399,8 +399,7 @@ msgid "Перемкнути :)"
 msgstr ""
 
 #: core/templates/company.jinja:25 core/templates/countries.jinja:14
-#: core/templates/feedback.jinja:11 core/templates/person.jinja:53
-#: core/templates/search.jinja:13
+#: core/templates/person.jinja:53 core/templates/search.jinja:13
 msgid "Публічні діячі"
 msgstr ""
 
@@ -473,8 +472,7 @@ msgstr ""
 msgid "Фінансова інформація:"
 msgstr ""
 
-#: core/templates/countries.jinja:13 core/templates/feedback.jinja:10
-#: core/templates/search.jinja:12
+#: core/templates/countries.jinja:13 core/templates/search.jinja:12
 msgid "Результати пошуку"
 msgstr ""
 
@@ -492,6 +490,10 @@ msgstr ""
 
 #: core/templates/countries.jinja:47 core/templates/search.jinja:38
 msgid "Юридичні особи"
+msgstr ""
+
+#: core/templates/feedback.jinja:10 core/templates/feedback.jinja.py:15
+msgid "Напишіть нам листа"
 msgstr ""
 
 #: core/templates/macros/_connections.jinja:8
@@ -514,11 +516,12 @@ msgstr ""
 msgid "Доказ зв'язку: "
 msgstr ""
 
-#: core/templates/macros/_connections.jinja:38
+#: core/templates/macros/_connections.jinja:32
+#: core/templates/macros/_connections.jinja:42
 msgid "Посилання"
 msgstr ""
 
-#: core/templates/macros/_connections.jinja:45
+#: core/templates/macros/_connections.jinja:49
 msgid "Закрити"
 msgstr ""
 

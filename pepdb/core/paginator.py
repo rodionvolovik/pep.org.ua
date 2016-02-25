@@ -1,4 +1,4 @@
-from django.core.paginator import Paginator, Page
+from django.core.paginator import Paginator, Page, PageNotAnInteger, EmptyPage
 from django.utils import six
 from django.conf import settings
 
@@ -9,6 +9,7 @@ class ElasticPaginator(Paginator):
     """Implementation of Django's Paginator that makes amends for
     Elasticsearch DSL search object details. Pass a search object to the
     constructor as `object_list` parameter."""
+
     def _get_page(self, *args, **kwargs):
         return ElasticPage(*args, **kwargs)
 
@@ -18,6 +19,23 @@ class ElasticPaginator(Paginator):
             'num_pages': self.num_pages,
             'per_page': self.per_page
         }
+
+    def validate_number(self, number):
+        """
+        Validates the given 1-based page number.
+        """
+        try:
+            number = int(number)
+        except (TypeError, ValueError):
+            raise PageNotAnInteger('That page number is not an integer')
+        if number < 1:
+            raise EmptyPage('That page number is less than 1')
+        if number > self.num_pages:
+            if number == 1 and self.allow_empty_first_page:
+                pass
+            else:
+                number = self.num_pages
+        return number
 
 
 class ElasticPage(Page):
