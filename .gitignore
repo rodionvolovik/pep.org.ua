@@ -61,4 +61,10 @@ pepdb/core/dicts/new_peps.csv
 media
 *.db
 _venv/*
+
 node_modules/
+pepdb/core/static/bower_components/
+.vagrant/machines/
+Vagrantfile
+pep.txt
+pep.ppk
