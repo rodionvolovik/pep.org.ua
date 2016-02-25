@@ -113,7 +113,7 @@
                                 <div class="panel-body" itemscope itemtype="http://schema.org/Person" itemprop="affiliation">
                                     <a href="{{ founder.get_absolute_url() }}"><span itemprop="name">{{ founder }}</span></a>
                                     {% set last_workplace = founder.translated_last_workplace %}
-                                    {% if last_workplace and last_workplace.company != company.name %}<br/>
+                                    {% if last_workplace and last_workplace.company not in [company.name, company.short_name] %}<br/>
                                     <a href="{{ url("company_details", company_id=last_workplace.company_id) }}" itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ last_workplace.company }}</span></a>,
                                     <span itemprop="jobTitle">{{ last_workplace.position }}</span>
                                     {% endif %}
@@ -145,7 +145,7 @@
                                 <div class="panel-body" itemscope itemtype="http://schema.org/Person" itemprop="affiliation">
                                     <a href="{{ manager.get_absolute_url() }}"><span itemprop="name">{{ manager }}</span></a>
                                     {% set last_workplace = manager.translated_last_workplace %}
-                                    {% if last_workplace and last_workplace.company != company.name %}<br/>
+                                    {% if last_workplace and last_workplace.company not in [company.name, company.short_name] %}<br/>
                                     <a href="{{ url("company_details", company_id=last_workplace.company_id) }}" itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ last_workplace.company }}</span></a>,
                                     <span itemprop="jobTitle">{{ last_workplace.position }}</span>
                                     {% endif %}
