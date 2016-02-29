@@ -26,7 +26,6 @@ class Command(BaseCommand):
         Index(ElasticPerson._doc_type.index).delete(ignore=404)
 
         ElasticPerson.init()
-
         docs_to_index = [
             ElasticPerson(**p.to_dict())
             for p in Person.objects.all()]
@@ -36,8 +35,6 @@ class Command(BaseCommand):
         self.stdout.write(
             'Loaded {} persons to persistence storage'.format(
                 len(docs_to_index)))
-
-        Index(ElasticCompany._doc_type.index).delete(ignore=404)
 
         ElasticCompany.init()
         docs_to_index = [
