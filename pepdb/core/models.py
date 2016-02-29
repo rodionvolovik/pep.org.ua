@@ -209,6 +209,7 @@ class Person(models.Model):
                 "Контролер",
             ))
 
+    # TODO: ooooups!
     @property
     def related_companies(self):
         companies = self.person2company_set.select_related(
