@@ -69,7 +69,8 @@ def parse_date(s):
         if s == "-" or not s:
             return None
 
-        return parser.parse(s, default=datetime(1970, 1, 1)).date()
+        return parser.parse(s, default=datetime(1970, 1, 1),
+                            dayfirst=True).date()
     except ValueError:
         return None
 
