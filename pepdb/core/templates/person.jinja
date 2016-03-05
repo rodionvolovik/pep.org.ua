@@ -28,7 +28,7 @@
                 <li class="active">{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}</li>
             </ol>
         </div>
-        <aside id="profile-nav" role="complementary" class="col-sm-2 hidden-xs">
+        <aside id="profile-nav" role="complementary" class="col-md-2">
             <ul id="side-profilemenu">
                 <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-male"></i><span>{{ _("Персональні дані") }}</span></a></li>
                 {% if LANGUAGE_CODE == "en" %}
@@ -73,7 +73,7 @@
                 {% endif %}
             </ul>
         </aside>
-        <section id="profile" class="{%- if person.parsed_names %}col-sm-8{% else %}col-sm-10{% endif -%}">
+        <section id="profile" class="{%- if person.parsed_names %}col-md-8{% else %}col-md-10{% endif -%}">
             <link itemprop="url" href="{{ person.get_absolute_url() }}" />
             <div id="profile-wrap" class="box">
                 <ul class="profileActions">
