@@ -11,18 +11,20 @@ from django.db.models.functions import Coalesce, Value
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 from django.core.urlresolvers import reverse
+
+# Strange bug related to babel
 from django.utils.translation import ugettext_noop as _
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext_lazy, activate, deactivate
 
 from translitua import translitua
 from jsonfield import JSONField
 import select2.fields
 import select2.models
-from django.utils import translation
 from redactor.fields import RedactorField
 
 from core.utils import (
-    parse_fullname, parse_family_member, RELATIONS_MAPPING, render_date)
+    parse_fullname, parse_family_member, RELATIONS_MAPPING, render_date,
+    lookup_term)
 
 # to_*_dict methods are used to convert two main entities that we have, Person
 # and Company into document indexable by ElasticSearch.
@@ -255,18 +257,18 @@ class Person(models.Model):
         assets = []
         related = []
         for c in companies:
-            if c.relationship_type_uk in (
-                    "Член центрального статутного органу",
-                    "Повірений у справах",
-                    "Засновник/учасник",
-                    "Колишній засновник/учасник",
-                    "Бенефіціарний власник",
-                    "Номінальний власник",
-                    "Номінальний директор",
-                    "Фінансові зв'язки",
-                    "Секретар",
-                    "Керуючий",
-                    "Контролер"):
+            if c.relationship_type_uk.lower() in (
+                    "член центрального статутного органу",
+                    "повірений у справах",
+                    "засновник/учасник",
+                    "колишній засновник/учасник",
+                    "бенефіціарний власник",
+                    "номінальний власник",
+                    "номінальний директор",
+                    "фінансові зв'язки",
+                    "секретар",  # ???
+                    "керуючий",
+                    "контролер"):
                 assets.append(c)
             else:
                 related.append(c)
@@ -419,9 +421,9 @@ class Person(models.Model):
         return reverse("person_details", kwargs={"person_id": self.pk})
 
     def localized_url(self, locale):
-        translation.activate(locale)
+        activate(locale)
         url = self.get_absolute_url()
-        translation.deactivate()
+        deactivate()
         return url
 
     def save(self, *args, **kwargs):
@@ -707,7 +709,7 @@ class Person2Company(AbstractRelationship):
     def save(self, *args, **kwargs):
         if not self.relationship_type_en:
             t = Ua2EnDictionary.objects.filter(
-                term__iexact=self.relationship_type_uk).first()
+                term__iexact=lookup_term(self.relationship_type_uk)).first()
 
             if t and t.translation:
                 self.relationship_type_en = t.translation
@@ -726,6 +728,19 @@ class Company(models.Model):
 
     publish = models.BooleanField("Опублікувати", default=False)
     founded = models.DateField("Дата створення", blank=True, null=True)
+    founded_details = models.IntegerField(
+        "Дата створення: точність",
+        choices=(
+            (0, "Точна дата"),
+            (1, "Рік та місяць"),
+            (2, "Тільки рік"),
+        ),
+        default=0)
+
+    @property
+    def founded_human(self):
+        return render_date(self.founded,
+                           self.founded_details)
 
     state_company = models.BooleanField(
         "Є державною установою", default=False)
@@ -809,12 +824,12 @@ class Company(models.Model):
 
         d["name_suggest"] = {
             "input": suggestions,
-            "output": d["name_uk"]
+            "output": d["short_name_uk"] or d["name_uk"]
         }
 
         d["name_suggest_en"] = {
             "input": suggestions,
-            "output": d["name_en"]
+            "output": d["short_name_en"] or d["name_en"]
         }
 
         d["_id"] = d["id"]
@@ -824,7 +839,7 @@ class Company(models.Model):
     def save(self, *args, **kwargs):
         if not self.name_en:
             t = Ua2EnDictionary.objects.filter(
-                term__iexact=self.name_uk).first()
+                term__iexact=lookup_term(self.name_uk)).first()
 
             if t and t.translation:
                 self.name_en = t.translation
@@ -835,9 +850,9 @@ class Company(models.Model):
         return reverse("company_details", kwargs={"company_id": self.pk})
 
     def localized_url(self, locale):
-        translation.activate(locale)
+        activate(locale)
         url = self.get_absolute_url()
-        translation.deactivate()
+        deactivate()
         return url
 
     @property

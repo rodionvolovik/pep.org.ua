@@ -11,7 +11,8 @@ from translitua import translitua
 
 from core.utils import (
     expand_gdrive_download_url, download, parse_date,
-    get_spreadsheet, parse_fullname, mangle_date)
+    get_spreadsheet, parse_fullname, mangle_date, lookup_term)
+
 from core.models import (
     Ua2RuDictionary, Company, Person, Person2Company, Document,
     Ua2EnDictionary)
@@ -47,7 +48,7 @@ class Command(BaseCommand):
         if not company.name_uk:
             company.name_uk = company_name
 
-        Ua2EnDictionary.objects.get_or_create(term=company_name)
+        Ua2EnDictionary.objects.get_or_create(term=lookup_term(company_name))
 
         if not company.edrpou:
             company.edrpou = company_ipn
@@ -250,7 +251,8 @@ class Command(BaseCommand):
                     link.relationship_type = position
 
                 # And translate them
-                Ua2EnDictionary.objects.get_or_create(term=position)
+                Ua2EnDictionary.objects.get_or_create(
+                    term=lookup_term(position))
 
                 # oh, and add links to supporting docs
                 all_docs = docs_downloaded + website.split(", ")

@@ -9,15 +9,15 @@
                     </div>
                     <div class="modal-body">
                         {% if connection.date_established %}
-                            <p><b>{{ _("Зв'язок почався: ") }}</b>{{ connection.date_established }}</p>
+                            <p><b>{{ _("Зв'язок почався: ") }}</b>{{ connection.date_established_human }}</p>
                         {% endif %}
                                             
                         {% if connection.date_finished %}
-                            <p><b>{{ _("Зв'язок скінчився: ") }}</b>{{ connection.date_finished }}</p>
+                            <p><b>{{ _("Зв'язок скінчився: ") }}</b>{{ connection.date_finished_human }}</p>
                         {% endif %}
                                             
                         {% if connection.date_cofirmed %}
-                            <p><b>{{ _("Підтверджено: ") }}</b>{{ connection.date_confirmed }}</p>
+                            <p><b>{{ _("Підтверджено: ") }}</b>{{ connection.date_confirmed_human }}</p>
                         {% endif %}
 
                         {% if connection.proof_title or connection.proof %}

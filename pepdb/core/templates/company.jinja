@@ -29,7 +29,7 @@
         <aside id="profile-nav" role="complementary" class="col-sm-2 hidden-xs">
             <ul id="side-profilemenu">
                 <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-info"></i><span>{{ _("Дані") }}</span></a></li>
-                {% if related_persons["founders"] or company.other_founders %}
+                {% if related_persons["founders"] or company.other_founders or company.other_owners %}
                 <li><a href="#founders" class="btn btn-transp trans"><i class="fa fa-male"></i><span>{{ _("Засновники") }}</span></a></li>
                 {% endif %}
 
@@ -67,6 +67,12 @@
                             <tr>
                                 <td>{{ _("ЄДРПОУ") }} </td>
                                 <td><strong>{{ company.edrpou }}</strong></td>
+                            </tr>
+                            {% endif %}
+                            {% if company.founded %}
+                            <tr>
+                                <td>{{ _("Дата створення") }} </td>
+                                <td><strong>{{ company.founded_human }}</strong></td>
                             </tr>
                             {% endif %}
                             {% if related_countries.registered_in %}
@@ -131,7 +137,14 @@
                             {{ render_connection(founder.connection, "modalFounders-{}".format(loop.index)) }}
                         {% endfor %}
 
-                        {{ company.other_founders|richtext }}
+                        {% if company.other_founders %}
+                            <h4>{{ _("Інші засновники") }}</h4>
+                            {{ company.other_founders|richtext }}
+                        {% endif %}
+                        {% if company.other_owners %}
+                            <h4>{{ _("Інші власники") }}</h4>
+                            {{ company.other_owners|richtext }}
+                        {% endif %}
                     </div>
                 </div>
             {% endif %}
