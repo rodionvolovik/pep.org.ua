@@ -178,6 +178,10 @@ DATE_FORMAT = "d.m.Y"
 MONTH_YEAR_DATE_FORMAT = "m.Y"
 YEAR_DATE_FORMAT = "Y"
 
+FORMAT_MODULE_PATH = [
+    'core.formats',
+]
+
 DEFAULT_JINJA2_TEMPLATE_EXTENSION = '.jinja'
 
 # Static files (CSS, JavaScript, Images)
