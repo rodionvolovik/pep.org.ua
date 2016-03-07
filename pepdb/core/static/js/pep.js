@@ -60,6 +60,10 @@ $(function() {
             }
         });
     }
+    
+    function setFixedWidth(selector, container) {
+        $(selector).css('width', $(container).width());
+    }
 
     equalheight(".small-profile");
     
@@ -92,6 +96,15 @@ $(function() {
     $(window).resize(function() {
         square_height();
         equalheight(".small-profile");
+        setFixedWidth('#side-profilemenu.affix', '#profile-nav');
+    });
+    
+    $('#side-profilemenu').on('affixed.bs.affix', function () {
+        setFixedWidth('#side-profilemenu.affix', '#profile-nav');
+    });
+    
+    $('#side-profilemenu').on('affixed-top.bs.affix', function () {
+       $('#side-profilemenu').css('width', '100%');
     });
 
     $("#search-form").typeahead({
