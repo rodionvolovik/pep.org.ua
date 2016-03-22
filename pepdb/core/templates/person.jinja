@@ -418,10 +418,13 @@
             {% endif %}
         </section>
         {% if person.parsed_names %}
-        <aside id="profile-suggest" role="complementary" class="col-lg-2">
+        <aside id="profile-suggest" role="complementary" class="col-md-2">
             <h3>{{ _("Можливо ви шукали:") }}</h3>
             <div class="printWrap">
                 <ul>
+                    {% for name_alt in person.parsed_names %}
+                    <li itemprop="alternateName">{{ name_alt }}</li>
+                    {% endfor %}
                     {% for name_alt in person.parsed_names %}
                     <li itemprop="alternateName">{{ name_alt }}</li>
                     {% endfor %}
