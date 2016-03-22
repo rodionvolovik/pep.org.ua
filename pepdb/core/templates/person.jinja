@@ -263,8 +263,8 @@
                                     <tr>
                                         <td class="decl-year">{{ declaration.source.intro.declaration_year }}</td>
                                         <td class="decl-position"><span itemscope="" itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ declaration.office }}</span></span>, {{ declaration.position }}</td>
-                                        <td class="decl-income">UAH {{ declaration.source.income['5'].value|curformat() }}</td>
-                                        <td class="decl-familyincome">UAH {{ declaration.source.income['5'].family|curformat() }}</td>
+                                        <td class="decl-income">{{ _("UAH") }} {{ declaration.source.income['5'].value|curformat() }}</td>
+                                        <td class="decl-familyincome">{{ _("UAH") }} {{ declaration.source.income['5'].family|curformat() }}</td>
                                         <td class="decl-download print-hidden"><a href="{{ declaration.url }}" title="{{ _("Відкрити декларацію") }}" target="_blank"><i class="fa fa-file-text-o"></i></a></td>
                                     </tr>
                                 {% endfor %}

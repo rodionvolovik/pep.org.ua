@@ -11,7 +11,7 @@ from translitua import translitua
 
 from core.utils import (
     expand_gdrive_download_url, download, parse_date,
-    get_spreadsheet, parse_fullname)
+    get_spreadsheet, parse_fullname, mangle_date)
 from core.models import (
     Ua2RuDictionary, Company, Person, Person2Company, Document,
     Ua2EnDictionary)
@@ -222,14 +222,18 @@ class Command(BaseCommand):
                 # Now let's setup links between person and companies
                 links = Person2Company.objects.filter(
                     (Q(date_established=person_from) |
+                     Q(date_established=mangle_date(person_from)) |
                      Q(date_established__isnull=True)),
                     (Q(date_finished=person_to) |
+                     Q(date_finished=mangle_date(person_to)) |
                      Q(date_finished__isnull=True)),
                     from_person=person,
                     to_company=company
                 )
 
                 # Delete if there are doubling links
+                # including those cases when dates were imported incorrectly
+                # because of parse_date
                 if len(links) > 1:
                     links.delete()
 

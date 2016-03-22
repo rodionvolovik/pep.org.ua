@@ -2,10 +2,12 @@
 from __future__ import unicode_literals
 from itertools import chain
 from copy import copy
+import datetime
 from collections import OrderedDict, defaultdict
 
 from django.db import models
 from django.db.models import Q
+from django.db.models.functions import Coalesce, Value
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 from django.core.urlresolvers import reverse
@@ -135,9 +137,34 @@ class Person(models.Model):
         return render_date(self.dob, self.dob_details)
 
     def _last_workplace(self):
+        # Looking for a most recent appointment that has at least one date set
+        # It'll work in following three cases:
+        # Case 1: date_finished=null, date_established is the most recent one
+        # i.e person got appointed and still holds the office
+        # else
+        # Case 2: date_finished=is the most recent one
+        # and the date_established is the most recent one or null
+        # i.e person got appointed and then resigned.
+
+        # Tricky part: null values in dates are getting on top of the list when
+        # you are sorting in decreasing order. So without exclude clause this
+        # query will return the positions without both dates on the top of the
+        # list
         qs = self.person2company_set.order_by(
-            "-is_employee", "-date_finished").select_related(
-            "to_company")
+            "-is_employee", "-date_finished",
+            "-date_established").exclude(
+                date_finished__isnull=True,  # AND!
+                date_established__isnull=True).select_related("to_company")
+
+        if qs:
+            return qs
+
+        # If nothing is found we are going to return the position that
+        # has finished date set to null or the most recent one.
+        # In contrast with previous query it'll also return those positions
+        # where date_finished and date_established == null.
+        qs = self.person2company_set.order_by(
+            "-is_employee", "-date_finished").select_related("to_company")
 
         return qs
 
@@ -186,8 +213,18 @@ class Person(models.Model):
 
     @property
     def workplaces(self):
-        timeline = self.person2company_set.select_related("to_company").filter(
-            is_employee=True).order_by("-date_established")
+        # Coalesce works by taking the first non-null value.  So we give it
+        # a date far before any non-null values of last_active.  Then it will
+        # naturally sort behind instances of Box with a non-null last_active
+        # value.
+        # djangoproject.com/en/1.8/ref/models/database-functions/#coalesce
+        the_past = datetime.datetime.now() - datetime.timedelta(days=10 * 365)
+
+        timeline = self.person2company_set.select_related(
+            "to_company").filter(is_employee=True).annotate(
+                fixed_date_established=Coalesce(
+                    'date_established', Value(the_past))
+        ).order_by('-fixed_date_established')
 
         return timeline
 
@@ -845,9 +882,6 @@ class Company(models.Model):
                     "колишній засновник/учасник", "бенефіціарний власник",
                     "номінальний власник"]:
                 res["founders"].append(p)
-
-            # else:
-            #     res["family"].append(p)
 
             res["all"].append(p)
 

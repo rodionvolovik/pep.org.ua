@@ -6,7 +6,7 @@ import requests
 import urllib2
 import httplib2
 from string import capwords
-from datetime import datetime
+from datetime import datetime, date
 
 from django.conf import settings
 from django.utils import formats
@@ -20,11 +20,11 @@ import gspread
 
 def expand_gdrive_download_url(url):
     """
-    Converts google drive links like
+    Convert google drive links like.
+
     https://drive.google.com/file/d/BLAHBLAH/view?usp=sharing
     to links that can be used for direct download from gdrive with requests
     """
-
     m = re.search(r"file\/d\/([^\/]+)\/", url)
     if m:
         return "https://docs.google.com/uc?export=download&id=%s" % m.group(1)
@@ -38,7 +38,8 @@ def expand_gdrive_download_url(url):
 
 def download(url, name=""):
     """
-    Downloads from url, extracts filename from url or content disposition
+    Download from url, extracts filename from url or content disposition.
+
     Returns original fname, sanitized one and content of file
     Or None, None, None
     """
@@ -77,9 +78,11 @@ def parse_date(s):
 
 class CSVDownloadClient(object):
     """
-    Class to quickly export google spreadsheet into CSV and download it
+    Class to quickly export google spreadsheet into CSV and download it.
+
     Currently not in use
     """
+
     def __init__(self, auth_key=getattr(settings, "GAUTH_CREDENTIALS", None)):
         super(CSVDownloadClient, self).__init__()
         self.auth_key = auth_key
@@ -108,9 +111,8 @@ class CSVDownloadClient(object):
 def get_spreadsheet(auth_key=getattr(settings, "GAUTH_CREDENTIALS", None),
                     spreadsheet=getattr(settings, "SPREADSHEET_ID", None)):
     """
-    Helper to authenticate on google drive and obtain spreadsheet object
+    Helper to authenticate on google drive and obtain spreadsheet object.
     """
-
     credentials = SignedJwtAssertionCredentials(
         auth_key['client_email'], auth_key['private_key'],
         ['https://spreadsheets.google.com/feeds'])
@@ -295,14 +297,26 @@ def parse_family_member(s):
         return None
 
 
-def render_date(date, date_details):
-    if not date:
+def render_date(dt, date_details):
+    if not dt:
         return ""
 
     if date_details == 0:
-        return formats.date_format(date, "SHORT_DATE_FORMAT")
+        return formats.date_format(dt, "SHORT_DATE_FORMAT")
     elif date_details == 1:
         return formats.date_format(
-            date, "MONTH_YEAR_DATE_FORMAT")
+            dt, "MONTH_YEAR_DATE_FORMAT")
     elif date_details == 2:
-        return formats.date_format(date, "YEAR_DATE_FORMAT")
+        return formats.date_format(dt, "YEAR_DATE_FORMAT")
+
+
+def mangle_date(dt):
+    """
+    Return the date with month and day swapped when possible.
+
+    Or original date otherwise
+    """
+    try:
+        return date(dt.year, dt.day, dt.month)
+    except (ValueError, AttributeError):
+        return dt
