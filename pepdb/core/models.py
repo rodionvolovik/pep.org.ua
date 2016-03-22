@@ -77,7 +77,7 @@ class Person(models.Model):
         blank=True)
 
     reputation_assets = RedactorField(
-        "Майно", blank=True)
+        "Статки", blank=True)
 
     reputation_sanctions = RedactorField(
         "Наявність санкцій", blank=True)

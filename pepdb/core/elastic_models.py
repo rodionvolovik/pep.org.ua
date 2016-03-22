@@ -63,7 +63,7 @@ class Company(DocType, RangeRelevantEntitiesMixin):
     name_suggest = Completion(preserve_separators=False)
     name_suggest_en = Completion(preserve_separators=False)
 
-    translated_name = TranslatedField("name", "name_en")
+    translated_name = TranslatedField("name_uk", "name_en")
 
     class Meta:
         index = 'peps'
