@@ -111,8 +111,6 @@
     }
 
     #send-form {
-        height: 470px;
-        bottom: -470px;
         max-width: 100%;
     }
 
@@ -159,11 +157,6 @@
         height: 260px;
     }
 
-    #send-form {
-        height: 490px;
-        bottom: -490px;
-    }
-
     #send-form .form-group {
         margin-bottom: 5px;
     }
@@ -197,11 +190,6 @@
         height: 180px;
     }
 
-    #send-form {
-        height: 510px;
-        bottom: -510px;
-    }
-
     #send-form .form-group {
         margin-bottom: 15px;
     }
@@ -209,3 +197,15 @@
 }
 
 @media (min-width: @min-lg) {}
+
+@media (max-width: @min-mobile) {
+    #send-form {
+        height: 450px;
+        bottom: -450px;
+
+        .form-control {
+            max-height: 40px;
+            max-width: 280px;
+        }
+    }
+}

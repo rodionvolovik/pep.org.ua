@@ -443,6 +443,14 @@ h1 {
     -o-transition: all 1s ease;
     -ms-transition: all 1s ease;
     transition: all 1s ease;
+
+    height: 510px;
+    bottom: -510px;
+
+    .g-recaptcha {
+        transform: scale(0.75);
+        transform-origin: top left;
+    }
 }
 
 #send-form.open {
@@ -535,6 +543,7 @@ ul.errorlist {
     padding-right: 5px;
 }
 
+
 #declarations table {
     border: none;
 }
@@ -578,4 +587,9 @@ td.decl-familyincome {
 .richtext img,
 .rich-text img {
     cursor: pointer;
+}
+
+#data-send-form {
+    max-width: 800px;
+    margin: 0 auto;
 }
