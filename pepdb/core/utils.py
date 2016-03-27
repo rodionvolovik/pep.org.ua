@@ -307,7 +307,6 @@ def render_date(dt, date_details):
         return formats.date_format(
             dt, "MONTH_YEAR_DATE_FORMAT")
     elif date_details == 2:
-<<<<<<< HEAD
         return formats.date_format(dt, "YEAR_DATE_FORMAT")
 
 
@@ -321,10 +320,7 @@ def mangle_date(dt):
         return date(dt.year, dt.day, dt.month)
     except (ValueError, AttributeError):
         return dt
-=======
-        return formats.date_format(date, "YEAR_DATE_FORMAT")
 
 
 def lookup_term(s):
     return s.lower().strip(" *.,")
->>>>>>> WIP
