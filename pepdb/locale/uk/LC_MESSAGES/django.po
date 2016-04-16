@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-25 13:21+0200\n"
+"POT-Creation-Date: 2016-03-27 01:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -74,315 +74,315 @@ msgstr ""
 msgid "Ваш імейл або телефон"
 msgstr ""
 
-#: core/models.py:104
+#: core/models.py:106
 msgid "Національний публічний діяч"
 msgstr ""
 
-#: core/models.py:105
+#: core/models.py:107
 msgid "Іноземний публічний діяч"
 msgstr ""
 
-#: core/models.py:107
+#: core/models.py:109
 msgid "Діяч, що виконуює значні функції в міжнародній організації"
 msgstr ""
 
-#: core/models.py:108
+#: core/models.py:110
 msgid "Пов'язана особа"
 msgstr ""
 
-#: core/models.py:109
+#: core/models.py:111
 msgid "Близька особа"
 msgstr ""
 
-#: core/models.py:117
+#: core/models.py:119
 msgid "Неприйнятно високий"
 msgstr ""
 
-#: core/models.py:118
+#: core/models.py:120
 msgid "Високий"
 msgstr ""
 
-#: core/models.py:119
+#: core/models.py:121
 msgid "Середній"
 msgstr ""
 
-#: core/models.py:120
+#: core/models.py:122
 msgid "Низький"
 msgstr ""
 
-#: core/models.py:479 core/models.py:480
+#: core/models.py:517 core/models.py:518
 msgid "чоловік"
 msgstr ""
 
-#: core/models.py:479 core/models.py:480
+#: core/models.py:517 core/models.py:518
 msgid "дружина"
 msgstr ""
 
-#: core/models.py:481
+#: core/models.py:519
 msgid "чоловік/дружина"
 msgstr ""
 
-#: core/models.py:482 core/models.py:485 core/models.py:486 core/models.py:487
+#: core/models.py:520 core/models.py:523 core/models.py:524 core/models.py:525
 msgid "батько"
 msgstr ""
 
-#: core/models.py:482 core/models.py:483 core/models.py:484 core/models.py:485
+#: core/models.py:520 core/models.py:521 core/models.py:522 core/models.py:523
 msgid "син"
 msgstr ""
 
-#: core/models.py:482 core/models.py:483 core/models.py:484 core/models.py:486
+#: core/models.py:520 core/models.py:521 core/models.py:522 core/models.py:524
 msgid "дочка"
 msgstr ""
 
-#: core/models.py:482 core/models.py:483 core/models.py:484 core/models.py:487
+#: core/models.py:520 core/models.py:521 core/models.py:522 core/models.py:525
 msgid "син/дочка"
 msgstr ""
 
-#: core/models.py:483 core/models.py:485 core/models.py:486 core/models.py:487
+#: core/models.py:521 core/models.py:523 core/models.py:524 core/models.py:525
 msgid "мати"
 msgstr ""
 
-#: core/models.py:484 core/models.py:485 core/models.py:486 core/models.py:487
+#: core/models.py:522 core/models.py:523 core/models.py:524 core/models.py:525
 msgid "батько/мати"
 msgstr ""
 
-#: core/models.py:488 core/models.py:490 core/models.py:491
+#: core/models.py:526 core/models.py:528 core/models.py:529
 msgid "вітчим"
 msgstr ""
 
-#: core/models.py:488 core/models.py:489 core/models.py:490
+#: core/models.py:526 core/models.py:527 core/models.py:528
 msgid "пасинок"
 msgstr ""
 
-#: core/models.py:488 core/models.py:489 core/models.py:491
+#: core/models.py:526 core/models.py:527 core/models.py:529
 msgid "падчерка"
 msgstr ""
 
-#: core/models.py:489 core/models.py:490 core/models.py:491
+#: core/models.py:527 core/models.py:528 core/models.py:529
 msgid "мачуха"
 msgstr ""
 
-#: core/models.py:492 core/models.py:493
+#: core/models.py:530 core/models.py:531
 msgid "рідний брат"
 msgstr ""
 
-#: core/models.py:492 core/models.py:493
+#: core/models.py:530 core/models.py:531
 msgid "рідна сестра"
 msgstr ""
 
-#: core/models.py:494 core/models.py:498 core/models.py:499
+#: core/models.py:532 core/models.py:536 core/models.py:537
 msgid "дід"
 msgstr ""
 
-#: core/models.py:494 core/models.py:495 core/models.py:498
+#: core/models.py:532 core/models.py:533 core/models.py:536
 msgid "внук"
 msgstr ""
 
-#: core/models.py:494 core/models.py:495 core/models.py:499
+#: core/models.py:532 core/models.py:533 core/models.py:537
 msgid "внучка"
 msgstr ""
 
-#: core/models.py:495 core/models.py:498 core/models.py:499
+#: core/models.py:533 core/models.py:536 core/models.py:537
 msgid "баба"
 msgstr ""
 
-#: core/models.py:496 core/models.py:500 core/models.py:501
+#: core/models.py:534 core/models.py:538 core/models.py:539
 msgid "прадід"
 msgstr ""
 
-#: core/models.py:496 core/models.py:497 core/models.py:500
+#: core/models.py:534 core/models.py:535 core/models.py:538
 msgid "правнук"
 msgstr ""
 
-#: core/models.py:496 core/models.py:497 core/models.py:501
+#: core/models.py:534 core/models.py:535 core/models.py:539
 msgid "правнучка"
 msgstr ""
 
-#: core/models.py:497 core/models.py:500 core/models.py:501
+#: core/models.py:535 core/models.py:538 core/models.py:539
 msgid "прабаба"
 msgstr ""
 
-#: core/models.py:502 core/models.py:504 core/models.py:505
+#: core/models.py:540 core/models.py:542 core/models.py:543
 msgid "зять"
 msgstr ""
 
-#: core/models.py:502 core/models.py:505
+#: core/models.py:540 core/models.py:543
 msgid "теща"
 msgstr ""
 
-#: core/models.py:502 core/models.py:504
+#: core/models.py:540 core/models.py:542
 msgid "тесть"
 msgstr ""
 
-#: core/models.py:503 core/models.py:506 core/models.py:507
+#: core/models.py:541 core/models.py:544 core/models.py:545
 msgid "невістка"
 msgstr ""
 
-#: core/models.py:503 core/models.py:506
+#: core/models.py:541 core/models.py:544
 msgid "свекор"
 msgstr ""
 
-#: core/models.py:503 core/models.py:507
+#: core/models.py:541 core/models.py:545
 msgid "свекруха"
 msgstr ""
 
-#: core/models.py:508 core/models.py:509
+#: core/models.py:546 core/models.py:547
 msgid "усиновлювач"
 msgstr ""
 
-#: core/models.py:508 core/models.py:509
+#: core/models.py:546 core/models.py:547
 msgid "усиновлений"
 msgstr ""
 
-#: core/models.py:510 core/models.py:513
+#: core/models.py:548 core/models.py:551
 msgid "опікун чи піклувальник"
 msgstr ""
 
-#: core/models.py:511 core/models.py:512
+#: core/models.py:549 core/models.py:550
 msgid "особа, яка перебуває під опікою або піклуванням"
 msgstr ""
 
-#: core/models.py:514 core/models.py:515
+#: core/models.py:552 core/models.py:553
 msgid "особи, які спільно проживають"
 msgstr ""
 
-#: core/models.py:516 core/models.py:517
+#: core/models.py:554 core/models.py:555
 msgid "пов'язані спільним побутом і мають взаємні права та обов'язки"
 msgstr ""
 
-#: core/models.py:518
+#: core/models.py:556
 msgid "ділові зв'язки"
 msgstr ""
 
-#: core/models.py:519
+#: core/models.py:557
 msgid "особисті зв'язки"
 msgstr ""
 
-#: core/models.py:880
+#: core/models.py:915
 msgid "Власник"
 msgstr ""
 
-#: core/models.py:881
+#: core/models.py:916
 msgid "Співвласник"
 msgstr ""
 
-#: core/models.py:882
+#: core/models.py:917
 msgid "Споріднена"
 msgstr ""
 
-#: core/models.py:883
+#: core/models.py:918
 msgid "Кредитор (фінансовий партнер)"
 msgstr ""
 
-#: core/models.py:884
+#: core/models.py:919
 msgid "Надавач професійних послуг"
 msgstr ""
 
-#: core/models.py:885
+#: core/models.py:920
 msgid "Клієнт"
 msgstr ""
 
-#: core/models.py:886
+#: core/models.py:921
 msgid "Виконавець"
 msgstr ""
 
-#: core/models.py:887
+#: core/models.py:922
 msgid "Замовник"
 msgstr ""
 
-#: core/models.py:888
+#: core/models.py:923
 msgid "Підрядник"
 msgstr ""
 
-#: core/models.py:889
+#: core/models.py:924
 msgid "Субпідрядник"
 msgstr ""
 
-#: core/models.py:890
+#: core/models.py:925
 msgid "Постачальник"
 msgstr ""
 
-#: core/models.py:891
+#: core/models.py:926
 msgid "Орендар"
 msgstr ""
 
-#: core/models.py:892
+#: core/models.py:927
 msgid "Орендодавець"
 msgstr ""
 
-#: core/models.py:893
+#: core/models.py:928
 msgid "Контрагент"
 msgstr ""
 
-#: core/models.py:894
+#: core/models.py:929
 msgid "Правонаступник"
 msgstr ""
 
-#: core/models.py:895
+#: core/models.py:930
 msgid "Правовласник"
 msgstr ""
 
-#: core/models.py:896
+#: core/models.py:931
 msgid "Материнська компанія"
 msgstr ""
 
-#: core/models.py:897
+#: core/models.py:932
 msgid "Дочірня компанія"
 msgstr ""
 
-#: core/models.py:898
+#: core/models.py:933
 msgid "Член наглядового органу)"
 msgstr ""
 
-#: core/models.py:940
+#: core/models.py:975
 msgid "Народився(-лась)"
 msgstr ""
 
-#: core/models.py:941
+#: core/models.py:976
 msgid "Зареєстрований(-а)"
 msgstr ""
 
-#: core/models.py:942
+#: core/models.py:977
 msgid "Проживав(-ла)"
 msgstr ""
 
-#: core/models.py:943
+#: core/models.py:978
 msgid "Громадянин(-ка)"
 msgstr ""
 
-#: core/models.py:944
+#: core/models.py:979
 msgid "Має зареєстрований бізнес"
 msgstr ""
 
-#: core/models.py:945
+#: core/models.py:980
 msgid "Має нерухомість"
 msgstr ""
 
-#: core/models.py:946 core/models.py:978
+#: core/models.py:981 core/models.py:1013
 msgid "Під санкціями"
 msgstr ""
 
-#: core/models.py:977
+#: core/models.py:1012
 msgid "Зареєстрована"
 msgstr ""
 
-#: core/models.py:1070
+#: core/models.py:1105
 msgid "Про кого"
 msgstr ""
 
-#: core/models.py:1072
+#: core/models.py:1107
 msgid "Інформація"
 msgstr ""
 
-#: core/models.py:1074
+#: core/models.py:1109
 msgid "Підтвердження"
 msgstr ""
 
-#: core/models.py:1076
+#: core/models.py:1111
 msgid "Контакти"
 msgstr ""
 
-#: core/models.py:1077
+#: core/models.py:1112
 msgid "Прочитано"
 msgstr ""
 
@@ -408,6 +408,10 @@ msgstr ""
 
 #: core/templates/base.jinja:78
 msgid "Зворотній зв'язок"
+msgstr ""
+
+#: core/templates/base.jinja:121
+msgid "Надіслати інформацію"
 msgstr ""
 
 #: core/templates/company.jinja:25 core/templates/countries.jinja:14
@@ -635,6 +639,10 @@ msgstr ""
 
 #: core/templates/person.jinja:257
 msgid "Доходи сім'ї"
+msgstr ""
+
+#: core/templates/person.jinja:266 core/templates/person.jinja.py:267
+msgid "UAH"
 msgstr ""
 
 #: core/templates/person.jinja:268
