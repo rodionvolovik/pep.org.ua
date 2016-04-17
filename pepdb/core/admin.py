@@ -218,6 +218,9 @@ class PersonAdmin(TranslationAdmin):
         (u'Непублічна інформація', {
             'fields': ['passport_id', 'passport_reg', 'tax_payer_id',
                        'registration', 'id_number']}),
+
+        (u'SEO', {
+            'fields': ['title', 'description']}),
     ]
 
     def change_view(self, request, object_id, form_url='', extra_context=None):

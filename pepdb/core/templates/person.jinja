@@ -14,6 +14,7 @@
     {% endif %}
 {% endblock %}
 
+{% block page_description %}{% if person.description %}{{ person.description }}{% endif %}{% endblock %}
 
 {% block content %}
 {% set related_persons = person.all_related_persons %}
