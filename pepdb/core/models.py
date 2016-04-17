@@ -125,6 +125,9 @@ class Person(models.Model):
         ),
         max_length=6, default="low")
 
+    title = models.CharField(max_length=255, blank=True)
+    description = models.TextField(blank=True)
+
     hash = models.CharField("Хеш", max_length=40, blank=True)
 
     @staticmethod

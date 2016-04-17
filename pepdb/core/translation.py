@@ -14,7 +14,8 @@ class DocumentTranslationOptions(TranslationOptions):
 class PersonTranslationOptions(TranslationOptions):
     fields = ('last_name', 'first_name', 'patronymic', 'wiki', 'city_of_birth',
               'reputation_assets', 'reputation_sanctions', 'reputation_crimes',
-              'reputation_manhunt', 'reputation_convictions',)
+              'reputation_manhunt', 'reputation_convictions',
+              'title', 'description')
 
 
 class CompanyTranslationOptions(TranslationOptions):
