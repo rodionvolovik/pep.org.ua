@@ -868,7 +868,6 @@ class Company(models.Model):
                 "from_person__tax_payer_id",
                 "from_person__id_number",
                 "from_person__reputation_assets",
-                "from_person__reputation_sanctions",
                 "from_person__reputation_crimes",
                 "from_person__reputation_manhunt",
                 "from_person__reputation_convictions",
@@ -881,11 +880,12 @@ class Company(models.Model):
         res = {
             "managers": [],
             "founders": [],
-            # "business": [],
-            "all": []
+            "sanctions": [],
+            "rest": []
         }
 
         for rtp, p, rel in related_persons:
+            add_to_rest = True
             p.rtype = rtp
             p.connection = rel
 
@@ -895,13 +895,21 @@ class Company(models.Model):
                     "член правління", "член ради", "член", "директор",
                     "підписант", "номінальний директор", "керуючий"]:
                 res["managers"].append(p)
+
+                add_to_rest = False
             elif rtp.lower() in [
                     "засновники", "засновник/учасник",
                     "колишній засновник/учасник", "бенефіціарний власник",
                     "номінальний власник"]:
                 res["founders"].append(p)
+                add_to_rest = False
 
-            res["all"].append(p)
+            if p.reputation_sanctions:
+                res["sanctions"].append(p)
+                add_to_rest = False
+
+            if add_to_rest:
+                res["rest"].append(p)
 
         return res
 
@@ -918,8 +926,10 @@ class Company(models.Model):
             p.rtype = rtp
             p.connection = rel
 
-            res[rtp].append(p)
-            res["all"].append(p)
+            if rtp == "registered_in":
+                res[rtp].append(p)
+            else:
+                res["rest"].append(p)
 
         return res
 
@@ -1063,6 +1073,9 @@ class Country(models.Model):
     def autocomplete_search_fields():
         return ("name_en__icontains", "name_uk__icontains")
 
+    def get_absolute_url(self):
+        return reverse("countries", kwargs={"country_id": self.iso2})
+
     class Meta:
         verbose_name = "Країна/юрісдикція"
         verbose_name_plural = "Країни/юрісдикції"
@@ -1116,6 +1129,9 @@ class Ua2EnDictionary(models.Model):
     class Meta:
         verbose_name = "Переклад англійською"
         verbose_name_plural = "Переклади англійською"
+        unique_together = [
+            ["term", "translation"],
+        ]
 
 
 class FeedbackMessage(models.Model):
