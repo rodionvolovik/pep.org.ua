@@ -29,19 +29,19 @@
         <aside id="profile-nav" role="complementary" class="col-sm-2 hidden-xs">
             <ul id="side-profilemenu">
                 <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-info"></i><span>{{ _("Дані") }}</span></a></li>
-                {% if related_persons["founders"] or company.other_founders or company.other_owners %}
+                {% if related_persons.founders or company.other_founders or company.other_owners %}
                 <li><a href="#founders" class="btn btn-transp trans"><i class="fa fa-male"></i><span>{{ _("Засновники") }}</span></a></li>
                 {% endif %}
 
-                {% if related_persons["managers"] or company.other_managers %}
+                {% if related_persons.managers or company.other_managers %}
                 <li><a href="#managers" class="btn btn-transp trans"><i class="fa fa-users"></i><span>{{ _("Керівництво") }}</span></a></li>
                 {% endif %}
 
-                {% if related_persons["rest"] or related_countries["rest"] %}
+                {% if related_persons.rest or related_countries.rest %}
                 <li><a href="#connections" class="btn btn-transp trans"><i class="fa fa-heart"></i><span>{{ _("Зв'язки") }}</span></a></li>
                 {% endif %}
 
-                {% if company.wiki or company.sanctions or related_persons["sanctions"] %}
+                {% if company.wiki or company.sanctions or related_persons.sanctions %}
                 <li><a href="#dossier" class="btn btn-transp trans"><i class="fa fa-briefcase"></i><span>{{ _("Досьє") }}</span></a></li>
                 {% endif %}
 
@@ -110,11 +110,11 @@
                     </div>
                 </div>
             </div>
-            {% if related_persons["founders"] or company.other_founders %}
+            {% if related_persons.founders or company.other_founders or company.other_owners %}
                 <div id="founders" class="sub box">
                     <h3>{{ _("Засновники:") }}</h3>
                     <div class="printWrap">
-                        {{ render_company_persons(related_persons["founders"], "Founders") }}
+                        {{ render_company_persons(related_persons.founders, "Founders") }}
 
                         {% if company.other_founders %}
                             <h4>{{ _("Інші засновники") }}</h4>
@@ -128,17 +128,17 @@
                 </div>
             {% endif %}
 
-            {% if related_persons["managers"] or company.other_managers %}
+            {% if related_persons.managers or company.other_managers %}
                 <div id="managers" class="sub box">
                     <h3>{{ _("Керівництво:") }}</h3>
                     <div class="printWrap">
-                        {{ render_company_persons(related_persons["managers"], "Managers") }}
+                        {{ render_company_persons(related_persons.managers, "Managers") }}
                         {{ company.other_managers|richtext }}
                     </div>
                 </div>
             {% endif %}
 
-            {% if related_persons["rest"] or related_countries["rest"] %}
+            {% if related_persons.rest or related_countries.rest %}
                 <div id="connections" class="sub box">
                     <h3>{{ _("Зв'язки:") }}</h3>
                     <div class="printWrap">
@@ -190,18 +190,18 @@
             {% endif %}
 
 
-            {% if company.wiki or company.sanctions or related_persons["sanctions"] %}
+            {% if company.wiki or company.sanctions or related_persons.sanctions %}
                 <div id="dossier" class="sub box">
                     <h3>{{ _("Досьє:") }}</h3>
                     <div class="printWrap">
                         {% if company.wiki %}
                             {{ company.wiki|richtext }}
                         {% endif %}
-                        {% if company.sanctions or related_persons["sanctions"]  %}
+                        {% if company.sanctions or related_persons.sanctions  %}
                             <h4>{{ _("Санкції") }}</h4>
                             {{ company.sanctions|richtext }}
 
-                            {{ render_company_persons(related_persons["sanctions"], "Sanctions") }}
+                            {{ render_company_persons(related_persons.sanctions, "Sanctions") }}
                         {% endif %}
                     </div>
                 </div>
