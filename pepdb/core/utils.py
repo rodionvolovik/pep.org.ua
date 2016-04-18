@@ -323,4 +323,7 @@ def mangle_date(dt):
 
 
 def lookup_term(s):
+    if s is None:
+        return None
+
     return s.lower().strip(" *.,")
