@@ -9,15 +9,15 @@
                     </div>
                     <div class="modal-body">
                         {% if connection.date_established %}
-                            <p><b>{{ _("Зв'язок почався: ") }}</b>{{ connection.date_established }}</p>
+                            <p><b>{{ _("Зв'язок почався: ") }}</b>{{ connection.date_established_human }}</p>
                         {% endif %}
                                             
                         {% if connection.date_finished %}
-                            <p><b>{{ _("Зв'язок скінчився: ") }}</b>{{ connection.date_finished }}</p>
+                            <p><b>{{ _("Зв'язок скінчився: ") }}</b>{{ connection.date_finished_human }}</p>
                         {% endif %}
                                             
                         {% if connection.date_cofirmed %}
-                            <p><b>{{ _("Підтверджено: ") }}</b>{{ connection.date_confirmed }}</p>
+                            <p><b>{{ _("Підтверджено: ") }}</b>{{ connection.date_confirmed_human }}</p>
                         {% endif %}
 
                         {% if connection.proof_title or connection.proof %}
@@ -55,7 +55,7 @@
 {% endmacro %}
 
 {% macro render_related_person(person, type) %}
-    <li itemprop="{% if type == "family" %}relatedTo{% else %}knows{% endif %}" itemscope itemtype="http://schema.org/Person">
+    <li itemprop="{% if type == "family" %}relatedTo{% elif type == "worked" %}employee{% else %}knows{% endif %}" itemscope itemtype="http://schema.org/Person">
         <a href="{{ person.get_absolute_url() }}" itemprop="url">
             <span class="{% if person.is_pep %}is_pep {% endif %}name-pill" itemprop="name">
                 <span itemprop="familyName">{{ person.last_name }}</span> <span itemprop="givenName">{{ person.first_name }}</span> <span itemprop="additionalName">{{ person.patronymic }}</span>
@@ -65,7 +65,7 @@
         {% if person.dob %}<meta itemprop="birthDate" content="{{ person.dob }} "/>{% endif %}
 
         {% set last_workplace = person.translated_last_workplace %}
-        {% if last_workplace %}
+        {% if last_workplace and type != "worked" %}
         <a href="{{ url("company_details", company_id=last_workplace.company_id) }}" itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ last_workplace.company }}</span></a>,
         <span itemprop="jobTitle">{{ last_workplace.position }}</span>
         {% endif %}
@@ -78,4 +78,29 @@
         {% endif %}
         {{ render_connection(person.connection, "modalPerson-{}".format(person.pk)) }}
     </li>
+{% endmacro %}
+
+{% macro render_company_persons(persons, prefix) %}
+    {% for person in persons %}
+        <div class="panel panel-default">
+            <div class="panel-body" itemscope itemtype="http://schema.org/Person" itemprop="affiliation">
+                <a href="{{ person.get_absolute_url() }}"><span itemprop="name">{{ person }}</span></a>
+                {% set last_workplace = person.translated_last_workplace %}
+                {% if last_workplace and last_workplace.company not in [company.name, company.short_name] %}<br/>
+                <a href="{{ url("company_details", company_id=last_workplace.company_id) }}" itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ last_workplace.company }}</span></a>,
+                <span itemprop="jobTitle">{{ last_workplace.position }}</span>
+                {% endif %}
+            </div>
+            <div class="panel-footer">
+                {{ person.connection.relationship_type }}
+                {% if person.connection.has_additional_info %}
+                <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modal{{ prefix }}-{{ loop.index }}">
+                    <i class="fa fa-info-circle info-gray"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        {{ render_connection(person.connection, "modal{}-{}".format(prefix, loop.index)) }}
+    {% endfor %}
 {% endmacro %}

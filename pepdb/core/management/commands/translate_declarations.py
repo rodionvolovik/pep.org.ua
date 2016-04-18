@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 from django.core.management.base import BaseCommand
 from core.models import Declaration, Ua2EnDictionary
+from core.utils import lookup_term
 
 
 class Command(BaseCommand):
@@ -11,16 +12,16 @@ class Command(BaseCommand):
         en_translations = {}
 
         for t in Ua2EnDictionary.objects.exclude(translation=""):
-            en_translations[t.term.lower()] = t.translation
+            en_translations[lookup_term(t.term)] = t.translation
 
         for p in Declaration.objects.filter(confirmed="a").all():
-            if p.region_uk.lower() in en_translations:
-                p.region_en = en_translations[p.region_uk.lower()]
+            if lookup_term(p.region_uk) in en_translations:
+                p.region_en = en_translations[lookup_term(p.region_uk)]
 
-            if p.position_uk.lower() in en_translations:
-                p.position_en = en_translations[p.position_uk.lower()]
+            if lookup_term(p.position_uk) in en_translations:
+                p.position_en = en_translations[lookup_term(p.position_uk)]
 
-            if p.office.lower() in en_translations:
-                p.office_en = en_translations[p.office_uk.lower()]
+            if lookup_term(p.office_uk) in en_translations:
+                p.office_en = en_translations[lookup_term(p.office_uk)]
 
             p.save()

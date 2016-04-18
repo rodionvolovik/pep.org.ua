@@ -332,7 +332,7 @@ def company_details(request, company_id):
         context["filename"] = company.pk
 
     context["feedback_form_override"] = FeedbackForm(initial={
-        "company": unicode(company.name)
+        "person": unicode(company.name)
     })
 
     return context

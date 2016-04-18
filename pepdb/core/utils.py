@@ -320,3 +320,7 @@ def mangle_date(dt):
         return date(dt.year, dt.day, dt.month)
     except (ValueError, AttributeError):
         return dt
+
+
+def lookup_term(s):
+    return s.lower().strip(" *.,")

@@ -1,5 +1,5 @@
 {% extends "base.jinja" %}
-{% from "macros/_connections.jinja" import render_connection with context %}
+{% from "macros/_connections.jinja" import render_connection, render_company_persons, render_related_person with context %}
 {% block body_class %}not-front profile-page company-profile page{% endblock %}
 
 {% block page_title %}{{ company.name }} {% endblock %}
@@ -29,19 +29,19 @@
         <aside id="profile-nav" role="complementary" class="col-sm-2 hidden-xs">
             <ul id="side-profilemenu">
                 <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-info"></i><span>{{ _("Дані") }}</span></a></li>
-                {% if related_persons["founders"] or company.other_founders %}
+                {% if related_persons.founders or company.other_founders or company.other_owners %}
                 <li><a href="#founders" class="btn btn-transp trans"><i class="fa fa-male"></i><span>{{ _("Засновники") }}</span></a></li>
                 {% endif %}
 
-                {% if related_persons["managers"] or company.other_managers %}
+                {% if related_persons.managers or company.other_managers %}
                 <li><a href="#managers" class="btn btn-transp trans"><i class="fa fa-users"></i><span>{{ _("Керівництво") }}</span></a></li>
                 {% endif %}
 
-                {#% if related_persons["all"] or related_countries %}
-                <li><a href="#managers" class="btn btn-transp trans"><i class="fa fa-heart"></i><span>{{ _("Зв'язки") }}</span></a></li>
-                {% endif %#}
+                {% if related_persons.rest or related_countries.rest %}
+                <li><a href="#connections" class="btn btn-transp trans"><i class="fa fa-heart"></i><span>{{ _("Зв'язки") }}</span></a></li>
+                {% endif %}
 
-                {% if company.wiki or company.sanctions %}
+                {% if company.wiki or company.sanctions or related_persons.sanctions %}
                 <li><a href="#dossier" class="btn btn-transp trans"><i class="fa fa-briefcase"></i><span>{{ _("Досьє") }}</span></a></li>
                 {% endif %}
 
@@ -67,6 +67,12 @@
                             <tr>
                                 <td>{{ _("ЄДРПОУ") }} </td>
                                 <td><strong>{{ company.edrpou }}</strong></td>
+                            </tr>
+                            {% endif %}
+                            {% if company.founded %}
+                            <tr>
+                                <td>{{ _("Дата створення") }} </td>
+                                <td><strong>{{ company.founded_human }}</strong></td>
                             </tr>
                             {% endif %}
                             {% if related_countries.registered_in %}
@@ -104,83 +110,101 @@
                     </div>
                 </div>
             </div>
-            {% if related_persons["founders"] or company.other_founders %}
+            {% if related_persons.founders or company.other_founders or company.other_owners %}
                 <div id="founders" class="sub box">
                     <h3>{{ _("Засновники:") }}</h3>
                     <div class="printWrap">
-                        {% for founder in related_persons["founders"] %}
-                            <div class="panel panel-default">
-                                <div class="panel-body" itemscope itemtype="http://schema.org/Person" itemprop="affiliation">
-                                    <a href="{{ founder.get_absolute_url() }}"><span itemprop="name">{{ founder }}</span></a>
-                                    {% set last_workplace = founder.translated_last_workplace %}
-                                    {% if last_workplace and last_workplace.company not in [company.name, company.short_name] %}<br/>
-                                    <a href="{{ url("company_details", company_id=last_workplace.company_id) }}" itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ last_workplace.company }}</span></a>,
-                                    <span itemprop="jobTitle">{{ last_workplace.position }}</span>
-                                    {% endif %}
-                                </div>
-                                <div class="panel-footer">
-                                    {{ founder.connection.relationship_type }}
-                                    {% if founder.connection.has_additional_info %}
-                                    <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalFounders-{{ loop.index }}">
-                                        <i class="fa fa-info-circle info-gray"></i>
-                                    </a>
-                                    {% endif %}
-                                </div>
-                            </div>
+                        {{ render_company_persons(related_persons.founders, "Founders") }}
 
-                            {{ render_connection(founder.connection, "modalFounders-{}".format(loop.index)) }}
-                        {% endfor %}
-
-                        {{ company.other_founders|richtext }}
+                        {% if company.other_founders %}
+                            <h4>{{ _("Інші засновники") }}</h4>
+                            {{ company.other_founders|richtext }}
+                        {% endif %}
+                        {% if company.other_owners %}
+                            <h4>{{ _("Інші власники") }}</h4>
+                            {{ company.other_owners|richtext }}
+                        {% endif %}
                     </div>
                 </div>
             {% endif %}
 
-            {% if related_persons["managers"] or company.other_managers %}
+            {% if related_persons.managers or company.other_managers %}
                 <div id="managers" class="sub box">
                     <h3>{{ _("Керівництво:") }}</h3>
                     <div class="printWrap">
-                        {% for manager in related_persons["managers"] %}
-                            <div class="panel panel-default">
-                                <div class="panel-body" itemscope itemtype="http://schema.org/Person" itemprop="affiliation">
-                                    <a href="{{ manager.get_absolute_url() }}"><span itemprop="name">{{ manager }}</span></a>
-                                    {% set last_workplace = manager.translated_last_workplace %}
-                                    {% if last_workplace and last_workplace.company not in [company.name, company.short_name] %}<br/>
-                                    <a href="{{ url("company_details", company_id=last_workplace.company_id) }}" itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ last_workplace.company }}</span></a>,
-                                    <span itemprop="jobTitle">{{ last_workplace.position }}</span>
-                                    {% endif %}
-                                </div>
-                                <div class="panel-footer">
-                                    {{ manager.connection.relationship_type }}
-                                    {% if manager.connection.has_additional_info %}
-                                    <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalManagers-{{ loop.index }}">
-                                        <i class="fa fa-info-circle info-gray"></i>
-                                    </a>
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            {{ render_connection(manager.connection, "modalManagers-{}".format(loop.index)) }}
-                        {% endfor %}
-
+                        {{ render_company_persons(related_persons.managers, "Managers") }}
                         {{ company.other_managers|richtext }}
                     </div>
                 </div>
             {% endif %}
 
-            {% if company.sanctions or company.wiki %}
-            <div id="dossier" class="sub box">
-                <h3>{{ _("Досьє:") }}</h3>
-                <div class="printWrap">
-                    {% if company.wiki %}
-                        {{ company.wiki|richtext }}
-                    {% endif %}
-                    {% if company.sanctions %}
-                        <h4>{{ _("Санкції") }}</h4>
-                        {{ company.sanctions|richtext }}
-                    {% endif %}
+            {% if related_persons.rest or related_countries.rest %}
+                <div id="connections" class="sub box">
+                    <h3>{{ _("Зв'язки:") }}</h3>
+                    <div class="printWrap">
+                        <div class="tree">
+                            <ul>
+                                <li>
+                                    <span><i class="fa"></i> {{ company.name }}</span>
+                                    <ul>
+                                        {% if related_persons.rest %}
+                                        <li>
+                                            <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Пов'язані особи") }}</span>
+                                            <ul class="h">
+                                                {% for rp in related_persons.rest %}
+                                                    {{ render_related_person(rp, "worked") }}
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                        {% endif %}
+                                        {% if related_countries.rest %}
+                                        <li>
+                                            <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Пов'язані країни") }}</span>
+                                            <ul class="h">
+                                                {% for country in related_countries.rest %}
+                                                    <li>
+                                                        <a href="{{ country.get_absolute_url() }}">
+                                                            <span class="name-pill">
+                                                                {{ country.name }}
+                                                            </span>
+                                                        </a> &ndash;
+                                                        {% if country.rtype %}{{ _(country.connection.get_relationship_type_display()) }},{% endif %}
+
+                                                        {% if country.connection.has_additional_info %}
+                                                            <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalCountry-{{ country.pk }}">
+                                                               <i class="fa fa-info-circle info-gray"></i>
+                                                            </a>
+                                                        {% endif %}
+                                                        {{ render_connection(country.connection, "modalCountry-{}".format(country.pk)) }}
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
+
+
+            {% if company.wiki or company.sanctions or related_persons.sanctions %}
+                <div id="dossier" class="sub box">
+                    <h3>{{ _("Досьє:") }}</h3>
+                    <div class="printWrap">
+                        {% if company.wiki %}
+                            {{ company.wiki|richtext }}
+                        {% endif %}
+                        {% if company.sanctions or related_persons.sanctions  %}
+                            <h4>{{ _("Санкції") }}</h4>
+                            {{ company.sanctions|richtext }}
+
+                            {{ render_company_persons(related_persons.sanctions, "Sanctions") }}
+                        {% endif %}
+                    </div>
+                </div>
             {% endif %}
 
             {% if company.bank_name %}
