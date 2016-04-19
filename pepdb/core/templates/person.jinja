@@ -18,7 +18,7 @@
 
 {% block content %}
 {% set related_persons = person.all_related_persons %}
-{% set assets, related_companies = person.related_companies %}
+{% set assets, related_companies = person.all_related_companies %}
 {% set workplaces = person.workplaces %}
 <div class="container" itemscope itemtype="http://schema.org/Person">
     <div class="row">

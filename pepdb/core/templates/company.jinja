@@ -29,11 +29,15 @@
         <aside id="profile-nav" role="complementary" class="col-sm-2 hidden-xs">
             <ul id="side-profilemenu">
                 <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-info"></i><span>{{ _("Дані") }}</span></a></li>
-                {% if related_persons.founders or company.other_founders or company.other_owners %}
+                {% if related_persons.founders or
+                   (company.other_founders_en and LANGUAGE_CODE == "en") or (company.other_owners_en and LANGUAGE_CODE == "en") or 
+                   (company.other_founders_uk and LANGUAGE_CODE == "uk") or (company.other_owners_uk and LANGUAGE_CODE == "uk") %}
                 <li><a href="#founders" class="btn btn-transp trans"><i class="fa fa-male"></i><span>{{ _("Засновники") }}</span></a></li>
                 {% endif %}
 
-                {% if related_persons.managers or company.other_managers %}
+                {% if related_persons.managers or
+                    (company.other_managers_en and LANGUAGE_CODE == "en") or
+                    (company.other_managers_uk and LANGUAGE_CODE == "uk") %}
                 <li><a href="#managers" class="btn btn-transp trans"><i class="fa fa-users"></i><span>{{ _("Керівництво") }}</span></a></li>
                 {% endif %}
 
@@ -41,11 +45,13 @@
                 <li><a href="#connections" class="btn btn-transp trans"><i class="fa fa-heart"></i><span>{{ _("Зв'язки") }}</span></a></li>
                 {% endif %}
 
-                {% if company.wiki or company.sanctions or related_persons.sanctions %}
+                {% if (company.wiki_en and LANGUAGE_CODE == "en") or (company.sanctions_en and LANGUAGE_CODE == "en") or
+                    (company.wiki_uk and LANGUAGE_CODE == "uk") or (company.sanctions_uk and LANGUAGE_CODE == "uk") or
+                    related_persons.sanctions %}
                 <li><a href="#dossier" class="btn btn-transp trans"><i class="fa fa-briefcase"></i><span>{{ _("Досьє") }}</span></a></li>
                 {% endif %}
 
-                {% if company.bank_name %}
+                {% if (company.bank_name_en and LANGUAGE_CODE == "en") or (company.bank_name_uk and LANGUAGE_CODE == "uk") %}
                 <li><a href="#bank" class="btn btn-transp trans"><i class="fa fa-money"></i><span>{{ _("Фінансова інформація") }}</span></a></li>
                 {% endif %}
             </ul>
@@ -100,40 +106,61 @@
                                 </strong></td>
                             </tr>
                             {% endif %}
-                            {% if company.other_recipient %}
+                            {% if company.other_recipient_en and LANGUAGE_CODE == "en" %}
                             <tr>
                                 <td>{{ _("Бенефіціарний власник") }} </td>
-                                <td><strong>{{ company.other_recipient }}</strong></td>
+                                <td><strong>{{ company.other_recipient_en }}</strong></td>
                             </tr>
-                            {% endif %}                            
+                            {% elif company.other_recipient_uk and LANGUAGE_CODE == "uk" %}
+                            <tr>
+                                <td>{{ _("Бенефіціарний власник") }} </td>
+                                <td><strong>{{ company.other_recipient_uk }}</strong></td>
+                            </tr>
+                            {% endif %}
                         </table>
                     </div>
                 </div>
             </div>
-            {% if related_persons.founders or company.other_founders or company.other_owners %}
+            {% if related_persons.founders or
+               (company.other_founders_en and LANGUAGE_CODE == "en") or (company.other_owners_en and LANGUAGE_CODE == "en") or 
+               (company.other_founders_uk and LANGUAGE_CODE == "uk") or (company.other_owners_uk and LANGUAGE_CODE == "uk") %}
                 <div id="founders" class="sub box">
                     <h3>{{ _("Засновники:") }}</h3>
                     <div class="printWrap">
                         {{ render_company_persons(related_persons.founders, "Founders") }}
 
-                        {% if company.other_founders %}
+                        {% if company.other_founders_en and LANGUAGE_CODE == "en" %}
                             <h4>{{ _("Інші засновники") }}</h4>
-                            {{ company.other_founders|richtext }}
+                            {{ company.other_founders_en|richtext }}
+                        {% elif company.other_founders_uk and LANGUAGE_CODE == "uk" %}
+                            <h4>{{ _("Інші засновники") }}</h4>
+                            {{ company.other_founders_uk|richtext }}
                         {% endif %}
-                        {% if company.other_owners %}
+
+                        {% if company.other_owners_en and LANGUAGE_CODE == "en" %}
                             <h4>{{ _("Інші власники") }}</h4>
-                            {{ company.other_owners|richtext }}
+                            {{ company.other_owners_en|richtext }}
+                        {% elif company.other_owners_uk and LANGUAGE_CODE == "uk" %}
+                            <h4>{{ _("Інші власники") }}</h4>
+                            {{ company.other_owners_uk|richtext }}
                         {% endif %}
                     </div>
                 </div>
             {% endif %}
 
-            {% if related_persons.managers or company.other_managers %}
+            {% if related_persons.managers or
+                (company.other_managers_en and LANGUAGE_CODE == "en") or
+                (company.other_managers_uk and LANGUAGE_CODE == "uk") %}
                 <div id="managers" class="sub box">
                     <h3>{{ _("Керівництво:") }}</h3>
                     <div class="printWrap">
                         {{ render_company_persons(related_persons.managers, "Managers") }}
-                        {{ company.other_managers|richtext }}
+
+                        {% if LANGUAGE_CODE == "en" %}
+                            {{ company.other_managers_en|richtext }}
+                        {% elif LANGUAGE_CODE == "uk" %}
+                            {{ company.other_managers_uk|richtext }}
+                        {% endif %}
                     </div>
                 </div>
             {% endif %}
@@ -190,16 +217,25 @@
             {% endif %}
 
 
-            {% if company.wiki or company.sanctions or related_persons.sanctions %}
+            {% if (company.wiki_en and LANGUAGE_CODE == "en") or (company.sanctions_en and LANGUAGE_CODE == "en") or
+                (company.wiki_uk and LANGUAGE_CODE == "uk") or (company.sanctions_uk and LANGUAGE_CODE == "uk") or
+                related_persons.sanctions %}
                 <div id="dossier" class="sub box">
                     <h3>{{ _("Досьє:") }}</h3>
                     <div class="printWrap">
-                        {% if company.wiki %}
-                            {{ company.wiki|richtext }}
+                        {% if company.wiki_en and LANGUAGE_CODE == "en" %}
+                            {{ company.wiki_en|richtext }}
+                        {% elif company.wiki_uk and LANGUAGE_CODE == "uk" %}
+                            {{ company.wiki_uk|richtext }}
                         {% endif %}
-                        {% if company.sanctions or related_persons.sanctions  %}
+                        {% if (company.sanctions_en and LANGUAGE_CODE == "en") or (company.sanctions_uk and LANGUAGE_CODE == "uk") or related_persons.sanctions %}
                             <h4>{{ _("Санкції") }}</h4>
-                            {{ company.sanctions|richtext }}
+
+                            {% if company.sanctions_en and LANGUAGE_CODE == "en" %}
+                                {{ company.sanctions_en|richtext }}
+                            {% elif company.sanctions_uk and LANGUAGE_CODE == "uk" %}
+                                {{ company.sanctions_uk|richtext }}
+                            {% endif %}
 
                             {{ render_company_persons(related_persons.sanctions, "Sanctions") }}
                         {% endif %}
@@ -207,11 +243,15 @@
                 </div>
             {% endif %}
 
-            {% if company.bank_name %}
+            {% if (company.bank_name_en and LANGUAGE_CODE == "en") or (company.bank_name_uk and LANGUAGE_CODE == "uk") %}
                 <div id="bank" class="sub box">
                     <h3>{{ _("Фінансова інформація:") }}</h3>
                     <div class="printWrap">
-                        {{ company.bank_name|richtext }}
+                        {% if company.bank_name_en and LANGUAGE_CODE == "en" %}
+                            {{ company.bank_name_en|richtext }}
+                        {% elif company.bank_name_uk and LANGUAGE_CODE == "uk" %}
+                            {{ company.bank_name_uk|richtext }}
+                        {% endif %}
                     </div>
                 </div>
             {% endif %}

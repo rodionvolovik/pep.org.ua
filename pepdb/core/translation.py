@@ -4,26 +4,28 @@ from core.models import (
 
 
 class CountryTranslationOptions(TranslationOptions):
-    fields = ('name',)
+    fields = ("name",)
 
 
 class DocumentTranslationOptions(TranslationOptions):
-    fields = ('name',)
+    fields = ("name",)
 
 
 class PersonTranslationOptions(TranslationOptions):
-    fields = ('last_name', 'first_name', 'patronymic', 'wiki', 'city_of_birth',
-              'reputation_assets', 'reputation_sanctions', 'reputation_crimes',
-              'reputation_manhunt', 'reputation_convictions',
-              'title', 'description')
+    fields = ("last_name", "first_name", "patronymic", "wiki", "city_of_birth",
+              "reputation_assets", "reputation_sanctions", "reputation_crimes",
+              "reputation_manhunt", "reputation_convictions",
+              "title", "description")
 
 
 class CompanyTranslationOptions(TranslationOptions):
-    fields = ('name', 'short_name', )
+    fields = ("name", "short_name", "city", "street", "appt", "wiki",
+              "other_founders", "other_recipient", "other_owners",
+              "other_managers", "bank_name", "sanctions")
 
 
 class Person2CompanyTranslationOptions(TranslationOptions):
-    fields = ('relationship_type',)
+    fields = ("relationship_type",)
 
 
 class DeclarationTranslationOptions(TranslationOptions):

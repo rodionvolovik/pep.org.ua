@@ -251,9 +251,8 @@ class Person(models.Model):
                 "Контролер",
             ))
 
-    # TODO: ooooups!
     @property
-    def related_companies(self):
+    def all_related_companies(self):
         companies = self.person2company_set.select_related(
             "to_company").filter(is_employee=False)
 
