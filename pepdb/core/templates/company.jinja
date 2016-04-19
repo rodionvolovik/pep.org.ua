@@ -71,7 +71,11 @@
                         <table class="table table-condensed">
                             {% if company.edrpou %}
                             <tr>
-                                <td>{{ _("ЄДРПОУ") }} </td>
+                                {% if related_countries.registered_in and related_countries.registered_in[0].iso2 != "UA" %}
+                                    <td>{{ _("Реєстраційний №") }} </td>
+                                {% else %}
+                                    <td>{{ _("ЄДРПОУ") }} </td>
+                                {% endif %}
                                 <td><strong>{{ company.edrpou }}</strong></td>
                             </tr>
                             {% endif %}
