@@ -104,3 +104,23 @@
         {{ render_connection(person.connection, "modal{}-{}".format(prefix, loop.index)) }}
     {% endfor %}
 {% endmacro %}
+
+{% macro render_company_companies(companies, prefix) %}
+    {% for company in companies %}
+        <div class="panel panel-default">
+            <div class="panel-body" itemscope itemtype="http://schema.org/Organization" itemprop="affiliation">
+                <a href="{{ company.get_absolute_url() }}"><span itemprop="name">{{ company }}</span></a>
+            </div>
+            <div class="panel-footer">
+                {{ company.connection.relationship_type }}
+                {% if company.connection.has_additional_info %}
+                <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modal{{ prefix }}-{{ loop.index }}">
+                    <i class="fa fa-info-circle info-gray"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        {{ render_connection(company.connection, "modal{}-{}".format(prefix, loop.index)) }}
+    {% endfor %}
+{% endmacro %}

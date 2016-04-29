@@ -932,6 +932,51 @@ class Company(models.Model):
 
         return res
 
+    @property
+    def all_related_companies(self):
+        related_companies = [
+            (i.relationship_type, i.to_company, i)
+            for i in self.to_companies.select_related("to_company").defer(
+                "to_company__wiki",
+                "to_company__other_founders",
+                "to_company__other_recipient",
+                "to_company__other_owners",
+                "to_company__other_managers",
+                "to_company__bank_name",
+                "to_company__sanctions",
+            )
+        ] + [
+            (i.reverse_relationship_type, i.from_company, i)
+            for i in self.from_companies.select_related("from_company").defer(
+                "from_company__wiki",
+                "from_company__other_founders",
+                "from_company__other_recipient",
+                "from_company__other_owners",
+                "from_company__other_managers",
+                "from_company__bank_name",
+                "from_company__sanctions",
+            )
+        ]
+
+        res = {
+            "founders": [],
+            "rest": [],
+            "all": []
+        }
+
+        for rtp, p, rel in related_companies:
+            p.rtype = rtp
+            p.connection = rel
+
+            if rtp in ["Засновник", "Співзасновник"]:
+                res["founders"].append(p)
+            else:
+                res["rest"].append(p)
+
+            res["all"].append(p)
+
+        return res
+
     class Meta:
         verbose_name = "Юрідична особа"
         verbose_name_plural = "Юрідичні особи"
@@ -942,6 +987,8 @@ class Company2Company(AbstractRelationship):
         _("Власник"),
         _("Співвласник"),
         _("Споріднена"),
+        _("Засновник"),
+        _("Співзасновник"),
         _("Кредитор (фінансовий партнер)"),
         _("Надавач професійних послуг"),
         _("Клієнт"),
@@ -960,6 +1007,30 @@ class Company2Company(AbstractRelationship):
         _("Член наглядового органу)")
     ]
 
+    _relationships_mapping = {
+        _("Власник"): _("Підконтрольна"),
+        _("Співвласник"): _("Підконтрольна"),
+        _("Споріднена"): _("Споріднена"),
+        _("Засновник"): _("Підконтрольна"),
+        _("Співзасновник"): _("Підконтрольна"),
+        _("Кредитор (фінансовий партнер)"): _("Боржник, фінансовий партнер"),
+        _("Надавач професійних послуг"): _("Отримувач професійних послуг"),
+        _("Клієнт"): _("Надавач товарів/послуг"),
+        _("Виконавець"): _("Замовник"),
+        _("Замовник"): _("Виконавець"),
+        _("Підрядник"): _("Замовник"),
+        _("Субпідрядник"): _("Підрядник"),
+        _("Постачальник"): _("Отримувач/покупець"),
+        _("Орендар"): _("Орендодавець"),
+        _("Орендодавець"): _("Орендар"),
+        _("Контрагент"): _("Контрагент"),
+        _("Правонаступник"): _("Попередник"),
+        _("Правовласник"): _("Об'єкт правовласності"),
+        _("Материнська компанія"): _("Дочірня компанія"),
+        _("Дочірня компанія"): _("Материнська компанія"),
+        _("Член наглядового органу)"): _("Підконтрольна")
+    }
+
     from_company = models.ForeignKey("Company", related_name="to_companies")
     to_company = models.ForeignKey("Company", related_name="from_companies")
 
@@ -972,6 +1043,10 @@ class Company2Company(AbstractRelationship):
 
     equity_part = models.FloatField(
         "Частка власності (відсотки)", blank=True, null=True)
+
+    @property
+    def reverse_relationship_type(self):
+        return self._relationships_mapping.get(self.relationship_type)
 
     def to_dict(self):
         return {

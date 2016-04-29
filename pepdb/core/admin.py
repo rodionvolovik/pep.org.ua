@@ -179,6 +179,9 @@ class Company2CompanyInline(admin.TabularInline):
 
 
 class Company2CompanyBackInline(admin.TabularInline):
+    verbose_name = u"Зворотній зв'язок з іншою компанією"
+    verbose_name_plural = u"Зворотні зв'язки з іншими компаніями"
+
     model = Company2Company
     fk_name = "to_company"
     extra = 0

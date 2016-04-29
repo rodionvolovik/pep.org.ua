@@ -1,5 +1,5 @@
 {% extends "base.jinja" %}
-{% from "macros/_connections.jinja" import render_connection, render_company_persons, render_related_person with context %}
+{% from "macros/_connections.jinja" import render_connection, render_company_persons, render_related_person, render_company_companies with context %}
 {% block body_class %}not-front profile-page company-profile page{% endblock %}
 
 {% block page_title %}{{ company.name }} {% endblock %}
@@ -16,6 +16,7 @@
 {% block content %}
 {% set related_persons = company.all_related_persons %}
 {% set related_countries = company.all_related_countries %}
+{% set related_companies = company.all_related_companies %}
 
 <div class="container" itemscope itemtype="http://schema.org/Organization">
     <div class="row">
@@ -29,7 +30,7 @@
         <aside id="profile-nav" role="complementary" class="col-sm-2 hidden-xs">
             <ul id="side-profilemenu">
                 <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-info"></i><span>{{ _("Дані") }}</span></a></li>
-                {% if related_persons.founders or
+                {% if related_persons.founders or related_companies.founders or
                    (company.other_founders_en and LANGUAGE_CODE == "en") or (company.other_owners_en and LANGUAGE_CODE == "en") or 
                    (company.other_founders_uk and LANGUAGE_CODE == "uk") or (company.other_owners_uk and LANGUAGE_CODE == "uk") %}
                 <li><a href="#founders" class="btn btn-transp trans"><i class="fa fa-male"></i><span>{{ _("Засновники") }}</span></a></li>
@@ -41,7 +42,7 @@
                 <li><a href="#managers" class="btn btn-transp trans"><i class="fa fa-users"></i><span>{{ _("Керівництво") }}</span></a></li>
                 {% endif %}
 
-                {% if related_persons.rest or related_countries.rest %}
+                {% if related_persons.rest or related_countries.rest or related_companies.rest %}
                 <li><a href="#connections" class="btn btn-transp trans"><i class="fa fa-heart"></i><span>{{ _("Зв'язки") }}</span></a></li>
                 {% endif %}
 
@@ -125,12 +126,14 @@
                     </div>
                 </div>
             </div>
-            {% if related_persons.founders or
+            {% if related_persons.founders or related_companies.founders or
                (company.other_founders_en and LANGUAGE_CODE == "en") or (company.other_owners_en and LANGUAGE_CODE == "en") or 
                (company.other_founders_uk and LANGUAGE_CODE == "uk") or (company.other_owners_uk and LANGUAGE_CODE == "uk") %}
                 <div id="founders" class="sub box">
                     <h3>{{ _("Засновники:") }}</h3>
                     <div class="printWrap">
+                        {{ render_company_companies(related_companies.founders, "Companies") }}
+
                         {{ render_company_persons(related_persons.founders, "Founders") }}
 
                         {% if company.other_founders_en and LANGUAGE_CODE == "en" %}
@@ -169,7 +172,7 @@
                 </div>
             {% endif %}
 
-            {% if related_persons.rest or related_countries.rest %}
+            {% if related_persons.rest or related_countries.rest or related_companies.rest %}
                 <div id="connections" class="sub box">
                     <h3>{{ _("Зв'язки:") }}</h3>
                     <div class="printWrap">
@@ -199,7 +202,7 @@
                                                                 {{ country.name }}
                                                             </span>
                                                         </a> &ndash;
-                                                        {% if country.rtype %}{{ _(country.connection.get_relationship_type_display()) }},{% endif %}
+                                                        {% if country.rtype %}{{ _(country.connection.get_relationship_type_display()) }}{% endif %}
 
                                                         {% if country.connection.has_additional_info %}
                                                             <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalCountry-{{ country.pk }}">
@@ -212,7 +215,30 @@
                                             </ul>
                                         </li>
                                         {% endif %}
-                                    </ul>
+                                        {% if related_companies.rest %}
+                                        <li>
+                                            <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Пов'язані компанії") }}</span>
+                                            <ul class="h">
+                                                {% for company in related_companies.rest %}
+                                                    <li>
+                                                        <a href="{{ company.get_absolute_url() }}">
+                                                            <span class="name-pill">
+                                                                {{ company.name }}
+                                                            </span>
+                                                        </a> &ndash;
+                                                        {% if company.rtype %}{{ _(company.rtype) }}{% endif %}
+
+                                                        {% if company.connection.has_additional_info %}
+                                                            <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalCompany-{{ company.pk }}">
+                                                               <i class="fa fa-info-circle info-gray"></i>
+                                                            </a>
+                                                        {% endif %}
+                                                        {{ render_connection(company.connection, "modalCompany-{}".format(company.pk)) }}
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                        {% endif %}                                    </ul>
                                 </li>
                             </ul>
                         </div>
