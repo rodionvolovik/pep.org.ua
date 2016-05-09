@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-30 01:58+0300\n"
+"POT-Creation-Date: 2016-05-09 03:01+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,15 +44,15 @@ msgstr "Profiles of close associates and family members"
 msgid "Головна"
 msgstr "Main page"
 
-#: core/admin.py:247
+#: core/admin.py:259
 msgid "Наявність перекладу"
 msgstr "Translation availability"
 
-#: core/admin.py:254
+#: core/admin.py:266
 msgid "Немає"
 msgstr "No"
 
-#: core/admin.py:255
+#: core/admin.py:267
 msgid "Є"
 msgstr "Yes"
 
@@ -344,7 +344,7 @@ msgstr "Member of the supervisory authority"
 #: core/models.py:1011 core/models.py:1012 core/models.py:1014
 #: core/models.py:1015 core/models.py:1031
 msgid "Підконтрольна"
-msgstr ""
+msgstr "Controlled by"
 
 #: core/models.py:1016
 msgid "Боржник, фінансовий партнер"
@@ -355,26 +355,20 @@ msgid "Отримувач професійних послуг"
 msgstr "Professional Services Provider"
 
 #: core/models.py:1018
-#, fuzzy
-#| msgid "Надавач професійних послуг"
 msgid "Надавач товарів/послуг"
-msgstr "Professional Services Provider"
+msgstr "Provider of goods / services"
 
 #: core/models.py:1023
 msgid "Отримувач/покупець"
-msgstr ""
+msgstr "Recipient / Buyer"
 
 #: core/models.py:1027
-#, fuzzy
-#| msgid "Підрядник"
 msgid "Попередник"
-msgstr "Сontract holder"
+msgstr "Predecessor"
 
 #: core/models.py:1028
-#, fuzzy
-#| msgid "Правовласник"
 msgid "Об'єкт правовласності"
-msgstr "Stakeholder"
+msgstr "Object of property rights"
 
 #: core/models.py:1077
 msgid "Народився(-лась)"
@@ -427,6 +421,56 @@ msgstr "Contacts"
 #: core/models.py:1220
 msgid "Прочитано"
 msgstr "Read"
+
+#: core/models.py:1321
+msgid "Загальна сума сукупного доходу, гривні"
+msgstr ""
+
+#: core/models.py:1322
+msgid "Дарунки, призи, виграші"
+msgstr ""
+
+#: core/models.py:1323
+#, fuzzy
+#| msgid "Персональні зв'язки"
+msgid "Земельні ділянки"
+msgstr "Personal connections"
+
+#: core/models.py:1324
+#, fuzzy
+#| msgid "ділові зв'язки"
+msgid "Житлові будинки"
+msgstr "business relationships"
+
+#: core/models.py:1325
+msgid "Квартири"
+msgstr ""
+
+#: core/models.py:1326
+msgid "Інше нерухоме майно"
+msgstr ""
+
+#: core/models.py:1327
+#, fuzzy
+#| msgid "Юридичні особи"
+msgid "Транспортні засоби"
+msgstr "Legal entities"
+
+#: core/models.py:1328
+msgid "Вклади у банках"
+msgstr ""
+
+#: core/models.py:1329
+#, fuzzy
+#| msgid "Фінансова інформація"
+msgid "Фінансові зобов’язання"
+msgstr "Financial information"
+
+#: core/models.py:1330
+#, fuzzy
+#| msgid "Інші власники"
+msgid "Інші активи"
+msgstr "Other co-owners"
 
 #: core/templates/_feedback_form.jinja:44
 msgid "Надіслати"

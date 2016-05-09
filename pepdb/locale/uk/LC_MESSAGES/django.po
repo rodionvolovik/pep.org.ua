@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-30 01:58+0300\n"
+"POT-Creation-Date: 2016-05-09 03:01+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,15 +46,15 @@ msgstr ""
 msgid "Головна"
 msgstr ""
 
-#: core/admin.py:247
+#: core/admin.py:259
 msgid "Наявність перекладу"
 msgstr ""
 
-#: core/admin.py:254
+#: core/admin.py:266
 msgid "Немає"
 msgstr ""
 
-#: core/admin.py:255
+#: core/admin.py:267
 msgid "Є"
 msgstr ""
 
@@ -422,6 +422,46 @@ msgstr ""
 
 #: core/models.py:1220
 msgid "Прочитано"
+msgstr ""
+
+#: core/models.py:1321
+msgid "Загальна сума сукупного доходу, гривні"
+msgstr ""
+
+#: core/models.py:1322
+msgid "Дарунки, призи, виграші"
+msgstr ""
+
+#: core/models.py:1323
+msgid "Земельні ділянки"
+msgstr ""
+
+#: core/models.py:1324
+msgid "Житлові будинки"
+msgstr ""
+
+#: core/models.py:1325
+msgid "Квартири"
+msgstr ""
+
+#: core/models.py:1326
+msgid "Інше нерухоме майно"
+msgstr ""
+
+#: core/models.py:1327
+msgid "Транспортні засоби"
+msgstr ""
+
+#: core/models.py:1328
+msgid "Вклади у банках"
+msgstr ""
+
+#: core/models.py:1329
+msgid "Фінансові зобов’язання"
+msgstr ""
+
+#: core/models.py:1330
+msgid "Інші активи"
 msgstr ""
 
 #: core/templates/_feedback_form.jinja:44

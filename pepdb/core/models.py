@@ -1293,3 +1293,50 @@ class Declaration(models.Model):
     class Meta:
         verbose_name = "Декларація"
         verbose_name_plural = "Декларації"
+
+
+class DeclarationExtra(models.Model):
+    person = models.ForeignKey("Person")
+
+    date_confirmed = models.DateField(
+        "Дата", blank=True, null=True, db_index=True)
+
+    date_confirmed_details = models.IntegerField(
+        "точність",
+        choices=(
+            (0, "Точна дата"),
+            (1, "Рік та місяць"),
+            (2, "Тільки рік"),
+        ),
+        default=0)
+
+    @property
+    def date_confirmed_human(self):
+        return render_date(self.date_confirmed,
+                           self.date_confirmed_details)
+
+    section = models.IntegerField(
+        "Розділ декларації",
+        choices=(
+            (0, _("Загальна сума сукупного доходу, гривні")),
+            (1, _("Дарунки, призи, виграші")),
+            (2, _("Земельні ділянки")),
+            (3, _("Житлові будинки")),
+            (4, _("Квартири")),
+            (5, _("Інше нерухоме майно")),
+            (6, _("Транспортні засоби")),
+            (7, _("Вклади у банках")),
+            (8, _("Фінансові зобов’язання")),
+            (9, _("Інші активи")),
+        ),
+        default=0,
+        db_index=True
+    )
+
+    note = RedactorField("Текст")
+    address = RedactorField("Адреса", blank=True)
+    country = models.ForeignKey("Country", blank=True)
+
+    class Meta:
+        verbose_name = "Додаткова інформація про статки"
+        verbose_name_plural = "Додаткова інформація про статки"

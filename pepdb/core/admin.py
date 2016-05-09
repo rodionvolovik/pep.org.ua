@@ -17,12 +17,12 @@ from django.utils.encoding import force_str
 from django.utils.translation import ugettext_lazy as _
 
 from grappelli_modeltranslation.admin import (
-    TranslationAdmin, TranslationTabularInline, TranslationStackedInline)
+    TranslationAdmin, TranslationStackedInline)
 
 from core.models import (
     Country, Person, Company, Person2Person, Document, Person2Country,
     Person2Company, Company2Company, Company2Country, Ua2RuDictionary,
-    Ua2EnDictionary, FeedbackMessage, Declaration)
+    Ua2EnDictionary, FeedbackMessage, Declaration, DeclarationExtra)
 
 
 def make_published(modeladmin, request, queryset):
@@ -191,9 +191,21 @@ class Company2CompanyBackInline(admin.TabularInline):
               "proof_title", "proof"]
 
 
+class DeclarationExtraInline(admin.TabularInline):
+    verbose_name = u"Додаткова інформація про статки"
+    verbose_name_plural = u"Додаткова інформація про статки"
+
+    model = DeclarationExtra
+    extra = 1
+    ordering = ("section", "date_confirmed",)    
+    fields = ["date_confirmed", "date_confirmed_details", "section", "note",
+              "address", "country"]
+
+
 class PersonAdmin(TranslationAdmin):
     inlines = (Person2PersonInline, Person2PersonBackInline,
-               Person2CountryInline, Person2CompanyInline)
+               Person2CountryInline, Person2CompanyInline,
+               DeclarationExtraInline)
 
     list_display = ("last_name_uk", "first_name_uk", "patronymic_uk",
                     "is_pep", "dob", "dob_details", "type_of_official",
