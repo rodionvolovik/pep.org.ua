@@ -172,6 +172,14 @@ $(function() {
         e.preventDefault();
         window.print();
     });
+    
+    $("body").on("click", ".trigger-hidden-row", function(e) {
+        var $this = $(this),
+            $row = $this.parents("tr").next(".additional_hidden");
+            
+       $this.toggleClass("fa-plus-square fa-minus-square");
+       $row.toggleClass("hidden");
+    });
 
     /* smooth scrolling sections */
     $('a[href*=#]:not([href=#])').click(function() {
