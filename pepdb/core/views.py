@@ -117,7 +117,7 @@ def search(request, sources=("persons", "related", "companies")):
         companies = ElasticCompany.search().query(
             "multi_match", query=query,
             operator="and",
-            fields=["short_name_en", "short_name", "name_en", "name"])
+            fields=["short_name_en", "short_name_uk", "name_en", "name_uk"])
 
         # Special case when we were looking for one exact person and found it.
         if companies.count() == 1:
@@ -170,7 +170,7 @@ def _search_person(request):
 
 def _search_company(request):
     query = request.GET.get("q", "")
-    _fields = ["name", "short_name", "name_en", "short_name_en",
+    _fields = ["name_uk", "short_name_uk", "name_en", "short_name_en",
                "related_persons.person_uk", "related_persons.person_en",
                "other_founders", "other_recipient", "other_owners",
                "other_managers", "bank_name"]
