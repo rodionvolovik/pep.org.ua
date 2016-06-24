@@ -6,7 +6,6 @@ from django.utils import translation
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
 from django.db.models import Count, F
-from django.template.defaultfilters import truncatewords
 
 from elasticsearch_dsl.query import Q
 from translitua import translit
@@ -94,10 +93,13 @@ def suggest(request):
 
 
 def search(request, sources=("persons", "related", "companies")):
-    params = {}
-
     query = request.GET.get("q", "")
     is_exact = request.GET.get("is_exact", "") == "on"
+
+    params = {
+        "query": query,
+        "sources": sources
+    }
 
     if is_exact:
         persons = ElasticPerson.search().query(
