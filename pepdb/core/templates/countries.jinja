@@ -42,7 +42,7 @@
                                 </li>
                             {% endif %}
                             {% if companies %}
-                                <li role="presentation" class="">
+                                <li role="presentation" class="{% if not persons %}active{% endif %}">
                                     <a href="#y" role="tab" id="yuriki" data-toggle="tab" aria-controls="profile"
                                        aria-expanded="false">{{ _("Юридичні особи") }} <span class="badge">{{ companies.paginator.count }}</span></a>
                                 </li>
