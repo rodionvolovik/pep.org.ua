@@ -273,7 +273,8 @@ def person_details(request, person_id):
         person.last_name_uk, person.first_name_uk, person.patronymic_uk)
 
     if is_cyr(full_name):
-        context["filename"] = translit(full_name.lower().replace(" ", "_"))
+        context["filename"] = translit(
+            full_name.lower().strip().replace(" ", "_").replace("\n", ""))
     else:
         context["filename"] = person.pk
 
@@ -329,7 +330,8 @@ def company_details(request, company_id):
 
     if is_cyr(company.name_uk):
         context["filename"] = translit(
-            company.name_uk.lower().replace(" ", "_"))
+            company.name_uk.lower().strip().replace(
+                " ", "_").replace("\n", ""))
     else:
         context["filename"] = company.pk
 
