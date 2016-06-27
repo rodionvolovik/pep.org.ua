@@ -10,11 +10,27 @@
             <ol class="breadcrumb">
                 <li><a href="{{ url("wagtail_serve", "") }}">{{ _("Головна") }}</a></li>
                 <li class="active">{{ _("Результати пошуку") }}</li>
-                <li class="active">{{ _("Публічні діячі") }}</li>
+                <li class="active">
+                    {% if sources == ("persons", ) %}
+                    {{ _("Фізичні особи") }}
+                    {% elif sources == ("companies", ) %}
+                    {{ _("Юридичні особи") }}
+                    {% elif sources == ("related", ) %}
+                    {{ _("Пов'язані особи") }}
+                    {% else %}
+                    {{ _("Публічні діячі") }}
+                    {% endif %}
+                </li>
+                {% if query %}
+                <li class="active">«{{ query }}»</li>
+                {% endif %}
             </ol> 
         </div>
 
         <section id="search-results">
+            {% if not persons and not companies and not related_persons %}
+            <h2 class="text-center">{{ _("На жаль, пошук не дав результатів") }}</h2>
+            {% endif %}
             {% if persons %}
                 <h2 class="text-center">{{ _("Фізичні особи") }}</h2>
                 {% for p in persons %}

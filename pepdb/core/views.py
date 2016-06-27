@@ -6,7 +6,6 @@ from django.utils import translation
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
 from django.db.models import Count, F
-from django.template.defaultfilters import truncatewords
 
 from elasticsearch_dsl.query import Q
 from translitua import translit
@@ -94,10 +93,13 @@ def suggest(request):
 
 
 def search(request, sources=("persons", "related", "companies")):
-    params = {}
-
     query = request.GET.get("q", "")
     is_exact = request.GET.get("is_exact", "") == "on"
+
+    params = {
+        "query": query,
+        "sources": sources
+    }
 
     if is_exact:
         persons = ElasticPerson.search().query(
@@ -117,7 +119,7 @@ def search(request, sources=("persons", "related", "companies")):
         companies = ElasticCompany.search().query(
             "multi_match", query=query,
             operator="and",
-            fields=["short_name_en", "short_name", "name_en", "name"])
+            fields=["short_name_en", "short_name_uk", "name_en", "name_uk"])
 
         # Special case when we were looking for one exact person and found it.
         if companies.count() == 1:
@@ -170,7 +172,7 @@ def _search_person(request):
 
 def _search_company(request):
     query = request.GET.get("q", "")
-    _fields = ["name", "short_name", "name_en", "short_name_en",
+    _fields = ["name_uk", "short_name_uk", "name_en", "short_name_en",
                "related_persons.person_uk", "related_persons.person_en",
                "other_founders", "other_recipient", "other_owners",
                "other_managers", "bank_name"]
@@ -271,7 +273,8 @@ def person_details(request, person_id):
         person.last_name_uk, person.first_name_uk, person.patronymic_uk)
 
     if is_cyr(full_name):
-        context["filename"] = translit(full_name.lower().replace(" ", "_"))
+        context["filename"] = translit(
+            full_name.lower().strip().replace(" ", "_").replace("\n", ""))
     else:
         context["filename"] = person.pk
 
@@ -327,7 +330,8 @@ def company_details(request, company_id):
 
     if is_cyr(company.name_uk):
         context["filename"] = translit(
-            company.name_uk.lower().replace(" ", "_"))
+            company.name_uk.lower().strip().replace(
+                " ", "_").replace("\n", ""))
     else:
         context["filename"] = company.pk
 
