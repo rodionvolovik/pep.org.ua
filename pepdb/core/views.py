@@ -121,7 +121,7 @@ def search(request, sources=("persons", "related", "companies")):
             operator="and",
             fields=["short_name_en", "short_name_uk", "name_en", "name_uk"])
 
-        # Special case when we were looking for one exact person and found it.
+        # Special case when we were looking for one exact company and found it.
         if companies.count() == 1:
             company = companies.execute()[0]
 
