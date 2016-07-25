@@ -287,14 +287,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                
+                                {% for declaration in declarations %}
                                     <tr>
-                                        <td class="decl-year">2011</td>
+                                        <td class="decl-year">{{ declaration.source.intro.declaration_year }}</td>
                                         <td class="decl-income">50</td>
                                         <td class="decl-familyincome">60</td>
-                                        <td class="decl-download print-hidden"><a href="#" title="{{ _("Відкрити декларацію") }}" target="_blank"><i class="fa fa-file-text-o"></i></a></td>
+                                        <td class="decl-download print-hidden"><a href="{{ declaration.url }}" title="{{ _("Відкрити декларацію") }}" target="_blank"><i class="fa fa-file-text-o"></i></a></td>
                                     </tr>
-                             
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>

@@ -6,6 +6,7 @@ import datetime
 from collections import OrderedDict, defaultdict
 
 from django.db import models
+from django.conf import settings
 from django.db.models import Q
 from django.db.models.functions import Coalesce, Value
 from django.contrib.auth.models import User
@@ -341,6 +342,16 @@ class Person(models.Model):
     def parsed_names(self):
         return filter(None, self.names.split("\n"))
 
+    @property
+    def full_name(self):
+        return ("%s %s %s" % (self.first_name, self.patronymic,
+                              self.last_name)).replace("  ", " ")
+
+    @property
+    def full_name_en(self):
+        return ("%s %s %s" % (self.first_name_en, self.patronymic_en,
+                              self.last_name_en)).replace("  ", " ")
+
     def to_dict(self):
         """
         Convert Person model to an indexable presentation for ES.
@@ -380,12 +391,9 @@ class Person(models.Model):
 
         d["type_of_official"] = self.get_type_of_official_display()
         d["risk_category"] = self.get_risk_category_display()
-        d["full_name"] = ("%s %s %s" % (self.first_name, self.patronymic,
-                                        self.last_name)).replace("  ", " ")
+        d["full_name"] = self.full_name
 
-        d["full_name_en"] = ("%s %s %s" % (
-            self.first_name_en, self.patronymic_en,
-            self.last_name_en)).replace("  ", " ")
+        d["full_name_en"] = self.full_name_en
 
         def generate_suggestions(last_name, first_name, patronymic):
             if not last_name:
@@ -427,6 +435,10 @@ class Person(models.Model):
         url = self.get_absolute_url()
         deactivate()
         return url
+
+    @property
+    def url_uk(self):
+        return settings.SITE_URL + self.localized_url("uk")
 
     def save(self, *args, **kwargs):
         if not self.first_name_en:
@@ -858,6 +870,10 @@ class Company(models.Model):
         return url
 
     @property
+    def url_uk(self):
+        return settings.SITE_URL + self.localized_url("uk")
+
+    @property
     def all_related_persons(self):
         related_persons = [
             (i.relationship_type_uk, i.from_person, i)
@@ -1155,6 +1171,16 @@ class Country(models.Model):
 
     def get_absolute_url(self):
         return reverse("countries", kwargs={"country_id": self.iso2})
+
+    def localized_url(self, locale):
+        activate(locale)
+        url = self.get_absolute_url()
+        deactivate()
+        return url
+
+    @property
+    def url_uk(self):
+        return settings.SITE_URL + self.localized_url("uk")
 
     class Meta:
         verbose_name = "Країна/юрісдикція"

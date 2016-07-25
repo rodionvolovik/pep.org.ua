@@ -78,3 +78,4 @@ pepdb/core/static/bower_components/
 Vagrantfile
 pep.txt
 pep.ppk
+pepdb/neo4j_out/
