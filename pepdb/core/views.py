@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 from operator import itemgetter
+from datetime import datetime
 from cStringIO import StringIO
 from django.http import (
     JsonResponse, HttpResponseForbidden, HttpResponse, HttpResponseBadRequest)
@@ -390,7 +391,7 @@ def export_persons(request, fmt):
     ).save()
 
     if fmt == "json":
-        return JsonResponse(data, safe=False)
+        response = JsonResponse(data, safe=False)
 
     if fmt == "xml":
         fp = StringIO()
@@ -403,9 +404,15 @@ def export_persons(request, fmt):
         xim.finish_exporting()
         payload = fp.getvalue()
         fp.close()
-        return HttpResponse(
+        response = HttpResponse(
             payload,
             content_type="application/xhtml+xml")
+
+    response['Content-Disposition'] = (
+        'attachment; filename=peps_{:%Y%m%d_%H%M}.{}'.format(
+            datetime.now(), fmt))
+
+    return response
 
 
 def encrypted_redirect(request, enc, model):
