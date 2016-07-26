@@ -9,13 +9,13 @@ from string import capwords
 from datetime import datetime, date
 
 from django.conf import settings
-from django.utils import formats
+from django.core.urlresolvers import reverse
+from django.utils import formats, translation
 
-from oauth2client.client import SignedJwtAssertionCredentials
+import gspread
 from dateutil import parser
 from rfc6266 import parse_requests_response
-from django.utils import translation
-import gspread
+from oauth2client.client import SignedJwtAssertionCredentials
 
 
 def expand_gdrive_download_url(url):
@@ -327,3 +327,19 @@ def lookup_term(s):
         return None
 
     return s.lower().strip(" *.,")
+
+
+def blacklist(dct, fields):
+    return {
+        k: v for k, v in dct.items() if k not in fields
+    }
+
+
+def add_encrypted_url(dct, user, url):
+    dct["url"] = settings.SITE_URL + reverse(
+        url, args=[
+            settings.SYMMETRIC_ENCRYPTOR.encrypt(
+                b"%s|%s" % (user.pk, dct["id"]))
+        ])
+
+    return dct

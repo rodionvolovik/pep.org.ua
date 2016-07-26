@@ -18,6 +18,7 @@ SITE_URL = "http://pep.org.ua"
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '*37e&4-qi$f+paw#=me8opo$uk7y%d$c@crd++q89$4y!g$p!e'
+FERNET_SECRET_KEY = 'FVoBKGUZrvoqhsfafhV-XGnG0igLdMJSN1pxrTjQIFk='
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -292,3 +293,8 @@ except ImportError:
 # Init Elasticsearch connections
 from elasticsearch_dsl import connections
 connections.connections.configure(**ELASTICSEARCH_CONNECTIONS)
+
+
+# Init fernet instance
+from cryptography.fernet import Fernet
+SYMMETRIC_ENCRYPTOR = Fernet('FVoBKGUZrvoqhsfafhV-XGnG0igLdMJSN1pxrTjQIFk=')

@@ -448,6 +448,10 @@ class Person(models.Model):
             ["last_name", "first_name"],
         ]
 
+        permissions = (
+            ("export_persons", "Can export the dataset"),
+        )
+
 
 class AbstractRelationship(models.Model):
     date_established = models.DateField(
@@ -1346,3 +1350,19 @@ class DeclarationExtra(models.Model):
     class Meta:
         verbose_name = "Додаткова інформація про статки"
         verbose_name_plural = "Додаткова інформація про статки"
+
+
+class ActionLog(models.Model):
+    user = models.ForeignKey(User, verbose_name="Користувач")
+    action = models.CharField(verbose_name="Дія", max_length=30)
+    timestamp = models.DateTimeField(
+        verbose_name="Дата та час", auto_now_add=True)
+    details = models.TextField(verbose_name="Деталі", blank=True)
+
+    class Meta:
+        verbose_name = "Дія користувача"
+        verbose_name_plural = "Дії користувачів"
+
+        index_together = [
+            ["user", "action", "timestamp"],
+        ]
