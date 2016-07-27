@@ -370,6 +370,10 @@ class Person(models.Model):
         d["related_companies"] = [
             i.to_company_dict()
             for i in self.person2company_set.select_related("to_company")]
+        d["declarations"] = [
+            i.to_dict()
+            for i in Declaration.objects.filter(person=self, confirmed="a")
+        ]
 
         d["photo"] = self.photo.name if self.photo else ""
         d["date_of_birth"] = self.date_of_birth
@@ -1298,6 +1302,17 @@ class Declaration(models.Model):
     person = models.ForeignKey("Person", default=None)
     relatives_populated = models.BooleanField(
         "Родина була внесена до БД", default=False, db_index=True)
+
+    def to_dict(self):
+        d = model_to_dict(self, fields=[
+            "year", "position_uk", "office_uk", "region_uk",
+            "position_en", "office_en", "region_en", "url"
+        ])
+
+        d["income"] = self.source["income"]['5'].get("value")
+        d["family_income"] = self.source["income"]['5'].get("family")
+
+        return d
 
     @property
     def family(self):
