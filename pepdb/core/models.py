@@ -348,9 +348,15 @@ class Person(models.Model):
         d = model_to_dict(self, fields=[
             "id", "last_name", "first_name", "patronymic", "dob",
             "last_name_en", "first_name_en", "patronymic_en",
-            "dob_details", "city_of_birth", "is_pep", "wiki",
-            "reputation_sanctions", "reputation_convictions",
-            "reputation_crimes", "reputation_manhunt", "names"])
+            "dob_details", "is_pep",
+            "wiki_uk", "wiki_en",
+            "city_of_birth_uk", "city_of_birth_en",
+            "reputation_sanctions_uk", "reputation_sanctions_en",
+            "reputation_convictions_uk", "reputation_convictions_en",
+            "reputation_assets_uk", "reputation_assets_en",
+            "reputation_crimes_uk", "reputation_crimes_en",
+            "reputation_manhunt_uk", "reputation_manhunt_en",
+        ])
 
         d["related_persons"] = [
             i.to_dict()
@@ -598,6 +604,10 @@ class Person2Person(AbstractRelationship):
         Convert link between two persons into indexable presentation.
         """
         return {
+            "date_established": self.date_established_human,
+            "date_finished": self.date_finished_human,
+            "date_confirmed": self.date_confirmed_human,
+
             "relationship_type": self.to_relationship_type,
             "is_pep": self.to_person.is_pep,
             "person_uk": "%s %s %s" % (
@@ -615,6 +625,10 @@ class Person2Person(AbstractRelationship):
         Convert back link between two persons to indexable presentation.
         """
         return {
+            "date_established": self.date_established_human,
+            "date_finished": self.date_finished_human,
+            "date_confirmed": self.date_confirmed_human,
+
             "relationship_type": self.from_relationship_type,
             "is_pep": self.from_person.is_pep,
             "person_uk": "%s %s %s" % (
@@ -689,8 +703,14 @@ class Person2Company(AbstractRelationship):
         return {
             "relationship_type_uk": self.relationship_type_uk,
             "relationship_type_en": self.relationship_type_en,
-            "state_company": self.to_company.state_company,
 
+            "date_established": self.date_established_human,
+            "date_finished": self.date_finished_human,
+            "date_confirmed": self.date_confirmed_human,
+
+            "to_company_is_state": self.to_company.state_company,
+            "to_company_edrpou": self.to_company.edrpou,
+            "to_company_founded": self.to_company.founded_human,
             "to_company_uk": self.to_company.name_uk,
             "to_company_short_uk": self.to_company.short_name_uk,
             "to_company_en": self.to_company.name_en,
@@ -701,6 +721,10 @@ class Person2Company(AbstractRelationship):
         return {
             "relationship_type_uk": self.relationship_type_uk,
             "relationship_type_en": self.relationship_type_en,
+            "date_established": self.date_established_human,
+            "date_finished": self.date_finished_human,
+            "date_confirmed": self.date_confirmed_human,
+
             "is_pep": self.from_person.is_pep,
             "person_uk": "%s %s %s" % (
                 self.from_person.first_name_uk,
@@ -1060,6 +1084,9 @@ class Company2Company(AbstractRelationship):
 
     def to_dict(self):
         return {
+            "date_established": self.date_established_human,
+            "date_finished": self.date_finished_human,
+            "date_confirmed": self.date_confirmed_human,
             "relationship_type": self.relationship_type,
             "state_company": self.to_company.state_company,
             "company": self.to_company.name
@@ -1067,6 +1094,9 @@ class Company2Company(AbstractRelationship):
 
     def to_dict_reverse(self):
         return {
+            "date_established": self.date_established_human,
+            "date_finished": self.date_finished_human,
+            "date_confirmed": self.date_confirmed_human,
             "relationship_type": self.relationship_type,
             "state_company": self.from_company.state_company,
             "company": self.from_company.name
@@ -1102,6 +1132,9 @@ class Person2Country(AbstractRelationship):
 
     def to_dict(self):
         return {
+            "date_established": self.date_established_human,
+            "date_finished": self.date_finished_human,
+            "date_confirmed": self.date_confirmed_human,
             "relationship_type": self.relationship_type,
             "to_country_en": self.to_country.name_en,
             "to_country_uk": self.to_country.name_uk
@@ -1130,6 +1163,9 @@ class Company2Country(AbstractRelationship):
 
     def to_dict(self):
         return {
+            "date_established": self.date_established_human,
+            "date_finished": self.date_finished_human,
+            "date_confirmed": self.date_confirmed_human,
             "relationship_type": self.relationship_type,
             "to_country_en": self.to_country.name_en,
             "to_country_uk": self.to_country.name_uk
