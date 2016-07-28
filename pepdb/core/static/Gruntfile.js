@@ -7,8 +7,7 @@ module.exports = function(grunt) {
         options: {
           compress: false,
           yuicompress: false,
-          optimization: 2,
-          dumpLineNumbers: 'comments'
+          optimization: 2
         },
         files: {
           "css/style.css": "css/less/main.less" // destination file and source file

@@ -46,12 +46,13 @@ urlpatterns = i18n_patterns(
     url(r'^person/(?P<person_id>\d+)$', 'core.views.person_details',
         name='person_details'),
 
-    url(r'^company/(?P<company_id>\d+)$$', 'core.views.company_details',
+    url(r'^company/(?P<company_id>\d+)$', 'core.views.company_details',
         name='company_details'),
 
     # Aux pages
     url(r'^feedback', TemplateView.as_view(template_name="feedback.jinja"),
         name="feedback"),
+
     url(r'', include(wagtail_urls)),
 )
 
@@ -75,6 +76,18 @@ urlpatterns += [
 
     url(r'^cms/', include(wagtailadmin_urls)),
     url(r'^wg_search/', include(wagtailsearch_urls)),
+
+    # PEP dataset
+    url(r'^opendata/persons/(?P<fmt>(json|xml))',
+        'core.views.export_persons',
+        name='export_persons'),
+
+    # Short encrypted urls
+    url(r'^p/(?P<enc>.*)',
+        'core.views.encrypted_redirect',
+        name='encrypted_person_redirect',
+        kwargs={"model": "Person"}),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if "debug_toolbar" in settings.INSTALLED_APPS:

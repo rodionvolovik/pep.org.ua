@@ -22,7 +22,8 @@ from grappelli_modeltranslation.admin import (
 from core.models import (
     Country, Person, Company, Person2Person, Document, Person2Country,
     Person2Company, Company2Company, Company2Country, Ua2RuDictionary,
-    Ua2EnDictionary, FeedbackMessage, Declaration, DeclarationExtra)
+    Ua2EnDictionary, FeedbackMessage, Declaration, DeclarationExtra,
+    ActionLog)
 
 
 def make_published(modeladmin, request, queryset):
@@ -514,6 +515,14 @@ class DeclarationAdmin(admin.ModelAdmin):
     actions = [populate_relatives]
 
 
+class ActionLogAdmin(admin.ModelAdmin):
+    list_display = ("user", "action", "timestamp", "details")
+    ordering = ("-timestamp",)
+
+    def has_add_permission(self, request):
+        return False
+
+
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(Country, CountryAdmin)
@@ -522,3 +531,4 @@ admin.site.register(Ua2RuDictionary, Ua2RuDictionaryAdmin)
 admin.site.register(Ua2EnDictionary, Ua2EnDictionaryAdmin)
 admin.site.register(FeedbackMessage, FeedbackAdmin)
 admin.site.register(Declaration, DeclarationAdmin)
+admin.site.register(ActionLog, ActionLogAdmin)

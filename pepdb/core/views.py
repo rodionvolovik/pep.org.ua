@@ -1,20 +1,28 @@
 from __future__ import unicode_literals
 from operator import itemgetter
-
-from django.http import JsonResponse
+from datetime import datetime
+from cStringIO import StringIO
+from django.http import (
+    JsonResponse, HttpResponseForbidden, HttpResponse, HttpResponseBadRequest)
 from django.utils import translation
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
+from django.apps import apps
 from django.db.models import Count, F
 
 from elasticsearch_dsl.query import Q
 from translitua import translit
+from cryptography.fernet import InvalidToken
 
-from core.models import Person, Declaration, Country, Company
+from core.models import Person, Declaration, Country, Company, ActionLog
 from core.pdf import pdf_response
-from core.utils import is_cyr
+from core.utils import is_cyr, blacklist, add_encrypted_url
 from core.paginator import paginated_search
 from core.forms import FeedbackForm
+from core.auth import logged_in_or_basicauth
+from core.api import XmlItemExporter
+from django.conf import settings
 
 from core.elastic_models import (
     Person as ElasticPerson,
@@ -121,7 +129,7 @@ def search(request, sources=("persons", "related", "companies")):
             operator="and",
             fields=["short_name_en", "short_name_uk", "name_en", "name_uk"])
 
-        # Special case when we were looking for one exact person and found it.
+        # Special case when we were looking for one exact company and found it.
         if companies.count() == 1:
             company = companies.execute()[0]
 
@@ -265,6 +273,7 @@ def person_details(request, person_id):
     person = get_object_or_404(Person, pk=person_id)
     context = {
         "person": person,
+        "query": "",
         "declarations": Declaration.objects.filter(
             person=person, confirmed="a").order_by("year")
     }
@@ -356,3 +365,84 @@ def send_feedback(request):
     return render(request, "_feedback_form.jinja", {
         "feedback_form_override": form
     })
+
+
+@logged_in_or_basicauth()
+def export_persons(request, fmt):
+    if not request.user.has_perm("core.export_persons"):
+        return HttpResponseForbidden()
+
+    data = [
+        blacklist(
+            add_encrypted_url(
+                p.to_dict(), request.user, "encrypted_person_redirect"),
+            [
+                "full_name_suggest_en", "dob_details", "dob",
+                "full_name_suggest", "id", "last_job_id", "risk_category"
+            ]
+        )
+        for p in ElasticPerson.search().scan()
+    ]
+
+    ActionLog(
+        user=request.user,
+        action="download_dataset",
+        details=fmt
+    ).save()
+
+    if fmt == "json":
+        response = JsonResponse(data, safe=False)
+
+    if fmt == "xml":
+        fp = StringIO()
+        xim = XmlItemExporter(fp)
+        xim.start_exporting()
+
+        for item in data:
+            xim.export_item(item)
+
+        xim.finish_exporting()
+        payload = fp.getvalue()
+        fp.close()
+        response = HttpResponse(
+            payload,
+            content_type="application/xhtml+xml")
+
+    response['Content-Disposition'] = (
+        'attachment; filename=peps_{:%Y%m%d_%H%M}.{}'.format(
+            datetime.now(), fmt))
+
+    return response
+
+
+def encrypted_redirect(request, enc, model):
+    try:
+        decrypted = settings.SYMMETRIC_ENCRYPTOR.decrypt(bytes(enc))
+        user_id, obj_id = map(int, decrypted.split("|"))
+    except (InvalidToken, ValueError):
+        return HttpResponseBadRequest()
+
+    try:
+        user = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        return HttpResponseForbidden()
+
+    log_rec = ActionLog(
+        user=user,
+        action="view_person"
+    )
+
+    model = apps.get_model('core', model)
+    try:
+        obj = model.objects.get(pk=obj_id)
+    except model.DoesNotExist:
+        log_rec.details = "ID: %s" % obj_id
+        log_rec.save()
+        return HttpResponseForbidden()
+
+    log_rec.details = str(obj)
+    log_rec.save()
+
+    return redirect(
+        obj.get_absolute_url()
+    )
