@@ -113,7 +113,7 @@ def search(request, sources=("persons", "related", "companies")):
         persons = ElasticPerson.search().query(
             "multi_match", query=query,
             operator="and",
-            fields=["full_name", "names"])
+            fields=["full_name", "names", "full_name_en"])
 
         # Special case when we were looking for one exact person and found it.
         if persons.count() == 1:
@@ -152,7 +152,7 @@ def search(request, sources=("persons", "related", "companies")):
 
 def _search_person(request):
     query = request.GET.get("q", "")
-    _fields = ["full_name", "names"]
+    _fields = ["full_name", "names", "full_name_en"]
 
     if query:
         persons = ElasticPerson.search().query(
@@ -171,6 +171,7 @@ def _search_person(request):
                 fields=_fields)
 
             persons = persons.filter("term", is_pep=True)
+
     else:
         persons = ElasticPerson.search().query('match_all')
         persons = persons.filter("term", is_pep=True)

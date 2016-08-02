@@ -359,7 +359,7 @@ class Person(models.Model):
         d = model_to_dict(self, fields=[
             "id", "last_name", "first_name", "patronymic", "dob",
             "last_name_en", "first_name_en", "patronymic_en",
-            "dob_details", "is_pep",
+            "dob_details", "is_pep", "names",
             "wiki_uk", "wiki_en",
             "city_of_birth_uk", "city_of_birth_en",
             "reputation_sanctions_uk", "reputation_sanctions_en",

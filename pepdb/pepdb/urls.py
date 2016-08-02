@@ -8,6 +8,7 @@ from django.contrib import admin
 from wagtail.wagtailcore import urls as wagtail_urls
 from wagtail.wagtailadmin import urls as wagtailadmin_urls
 from wagtail.wagtailsearch import urls as wagtailsearch_urls
+from wagtail.wagtaildocs import urls as wagtaildocs_urls
 
 from core.sitemaps import (
     MainXML, PersonXML, StaticXML, CompanyXML, CountriesXML)
@@ -53,6 +54,8 @@ urlpatterns = i18n_patterns(
     url(r'^feedback', TemplateView.as_view(template_name="feedback.jinja"),
         name="feedback"),
 
+
+    url(r'^documents/', include(wagtaildocs_urls)),
     url(r'', include(wagtail_urls)),
 )
 
