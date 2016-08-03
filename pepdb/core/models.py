@@ -462,6 +462,10 @@ class Person(models.Model):
 
         super(Person, self).save(*args, **kwargs)
 
+    def declarations_extra_fields(self):
+        for decl in self.declaration_extras:
+            pass
+
     class Meta:
         verbose_name = "Фізична особа"
         verbose_name_plural = "Фізичні особи"
@@ -1383,7 +1387,7 @@ class Declaration(models.Model):
 
 
 class DeclarationExtra(models.Model):
-    person = models.ForeignKey("Person")
+    person = models.ForeignKey("Person", related_name="declaration_extras")
 
     date_confirmed = models.DateField(
         "Дата", blank=True, null=True, db_index=True)
