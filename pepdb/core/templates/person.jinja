@@ -260,7 +260,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for declaration in declarations %}
+                                {% for declaration in declarations if "income" in declaration.source %}
                                     <tr>
                                         <td class="decl-year">{{ declaration.source.intro.declaration_year }}</td>
                                         <td class="decl-position"><span itemscope="" itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ declaration.office }}</span></span>, {{ declaration.position }}</td>
@@ -287,7 +287,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for declaration in declarations %}
+                                {% for declaration in declarations if "income" in declaration.source %}
                                     <tr>
                                         <td class="decl-year">{{ declaration.source.intro.declaration_year }}</td>
                                         <td class="decl-income">{{ _("UAH") }} {{ declaration.source.income['11'].value|curformat() }}</td>
@@ -311,7 +311,7 @@
                                 <th class="decl-familyincome">{{ _("Площа в сім'ї") }}</th>
                                 <th class="decl-download">&nbsp;</th>
                             </tr>
-                            {% for declaration in declarations %}
+                            {% for declaration in declarations if "estate" in declaration.source %}
                             <tr>
                                 <td class="decl-year">{{ declaration.source.intro.declaration_year }}</td>
                                 <!--td class="decl-year">2011 <i class="fa fa-plus-square trigger-hidden-row"></i></td!-->
@@ -369,7 +369,7 @@
                                 <th class="decl-familyincome">{{ _("Площа в сім'ї") }}</th>
                                 <th class="decl-download">&nbsp;</th>
                             </tr>
-                            {% for declaration in declarations %}
+                            {% for declaration in declarations if "estate" in declaration.source %}
                             <tr>
                                 <td class="decl-year">{{ declaration.source.intro.declaration_year }}</td>
                                 <td>
@@ -400,7 +400,7 @@
                                 <th class="decl-familyincome">{{ _("Площа в сім'ї") }}</th>
                                 <th class="decl-download">&nbsp;</th>
                             </tr>
-                            {% for declaration in declarations %}
+                            {% for declaration in declarations if "estate" in declaration.source %}
                             <tr>
                                 <td class="decl-year">{{ declaration.source.intro.declaration_year }}</td>
                                 <td class="decl-income">
@@ -431,7 +431,7 @@
                                 <th class="decl-familyincome">{{ _("Площа в сім'ї") }}</th>
                                 <th class="decl-download">&nbsp;</th>
                             </tr>
-                            {% for declaration in declarations %}
+                            {% for declaration in declarations if "estate" in declaration.source %}
                             <tr>
                                 <td class="decl-year">{{ declaration.source.intro.declaration_year }}</td>
                                 <td>
@@ -452,7 +452,7 @@
                         </table>
                     </div>
                 </div>
-                <h3>{{ _("Вклади у банках:") }}</h3>
+                <h3>{{ _("Вклади в банках:") }}</h3>
                 <div class="printWrap">
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered" >
@@ -465,19 +465,19 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for declaration in declarations %}
+                                {% for declaration in declarations if "banks" in declaration.source %}
                                 <tr>
                                     <td class="decl-year">{{ declaration.source.intro.declaration_year }}</td>
                                     <!--td class="decl-year">2011 <i class="fa fa-plus-square trigger-hidden-row"></i></td!-->
                                     <td class="decl-income">
                                         {% for account in declaration.source.banks["45"] if account.sum %}
-                                            {{ account.sum|curformat() }} {{ _(account.sum_units or "грн") }}{% if not loop.last %}, {% endif %}
+                                            {{ _(account.sum_units or "UAH") }} {{ account.sum|curformat() }} {% if not loop.last %}, {% endif %}
                                         {% else %}—
                                         {% endfor %}
                                     </td>
                                     <td class="decl-familyincome">
                                         {% for account in declaration.source.estate["51"] if account.sum %}
-                                            {{ account.sum|curformat() }} {{ _(account.sum_units or "грн") }}{% if not loop.last %}, {% endif %}
+                                            {{ _(account.sum_units or "UAH") }} {{ account.sum|curformat() }} {% if not loop.last %}, {% endif %}
                                         {% else %}—
                                         {% endfor %}
                                     </td>
@@ -502,7 +502,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for declaration in declarations %}
+                                {% for declaration in declarations if "liabilities" in declaration.source %}
                                 <tr>
                                     <td class="decl-year">{{ declaration.source.intro.declaration_year }}</td>
                                     <td class="decl-income">
@@ -546,7 +546,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for declaration in declarations %}
+                                {% for declaration in declarations if "vehicle" in declaration.source %}
                                 <tr>
                                     <td class="decl-year">{{ declaration.source.intro.declaration_year }}</td>
                                     <td>

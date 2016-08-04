@@ -464,8 +464,8 @@ msgid "Транспортні засоби"
 msgstr "Vehicles"
 
 #: core/models.py:1419
-msgid "Вклади у банках"
-msgstr "Deposits in banks"
+msgid "Вклади в банках"
+msgstr "Bank deposits"
 
 #: core/models.py:1420
 msgid "Фінансові зобов’язання"
@@ -787,7 +787,7 @@ msgstr "Open declaration"
 
 #: core/templates/person.jinja:277
 msgid "Дарунки, призи, виграші:"
-msgstr "Gifts, prizes, winningsL"
+msgstr "Gifts, prizes, winnings:"
 
 #: core/templates/person.jinja:284
 msgid "Cума в декларанта"
@@ -825,8 +825,8 @@ msgid "Інше нерухоме майно:"
 msgstr "Other real estate:"
 
 #: core/templates/person.jinja:455
-msgid "Вклади у банках:"
-msgstr "Deposits in banks:"
+msgid "Вклади в банках:"
+msgstr "Bank deposits:"
 
 #: core/templates/person.jinja:462 core/templates/person.jinja.py:499
 msgid "Сума в декларанта"

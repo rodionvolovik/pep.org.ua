@@ -1032,8 +1032,8 @@ class Company(models.Model):
         return res
 
     class Meta:
-        verbose_name = "Юрідична особа"
-        verbose_name_plural = "Юрідичні особи"
+        verbose_name = "Юридична особа"
+        verbose_name_plural = "Юридичні особи"
 
 
 class Company2Company(AbstractRelationship):
