@@ -6,6 +6,10 @@
     padding-bottom: 0;
     background-color: transparent;
     
+    .navbar-nav {
+        margin-top: -7px;
+    }
+    
     .navbar-brand {
         font-size: 26px;
         font-family: 'arsenalbold';
@@ -48,68 +52,91 @@
     }
     
     .navbar-nav > li {
-        margin-right: 15px;
-        text-transform: uppercase;
+        margin-right: 20px;
         
         @media (min-width: @min-md) {
-            margin-right: 35px;
+            margin-right: 30px;
         }
         
         a {
             color: #333333;
-            text-transform: uppercase;
+            font-weight: 700;
             padding: 0;
+            text-align: center;
             
-            display: inline-block;
+            
+            i {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
 
-            
-            @media (min-width: @min-sm) {
-                text-indent: -9999px;
-                width: 30px;
-                height: 22px;
-                background:url(../images/menu.png) no-repeat;
-                -webkit-transition: all 0.25s ease;
-                -moz-transition: all 0.25s ease;
-                -o-transition: all 0.25s ease;
-                -ms-transition: all 0.25s ease;
-                transition: all 0.25s ease; 
+                @media (min-width: @min-sm) {
+                    width: 30px;
+                    height: 22px;
+                    background:url(../images/menu.png) no-repeat;
+                    -webkit-transition: all 0.25s ease;
+                    -moz-transition: all 0.25s ease;
+                    -o-transition: all 0.25s ease;
+                    -ms-transition: all 0.25s ease;
+                    transition: all 0.25s ease; 
+                }
+            }
                 
-                &.home-item {
+            &.home-item {
+                i {
                     background-position: 0 0;
-                    
-                    &:hover {
+                }
+                        
+                &:hover {
+                    i {
                         background-position: 0 -22px;
                     }
                 }
+            }
             
-                &.countries-item {
+            &.countries-item {
+                i {
                     background-position: -30px 0;
+                }
                     
-                    &:hover {
+                &:hover {
+                    i {
                         background-position: -30px -22px;
                     }
                 }
+            }
             
-                &.qa-item {
+            &.qa-item {
+                i {
                     background-position: -60px 0;
+                }
                     
-                    &:hover {
+                &:hover {
+                    i {
                         background-position: -60px -22px;
                     }
                 }
+            }
             
-                &.feedback-item {
+            &.feedback-item {
+                i {
                     background-position: -90px 0;
+                }
                     
-                    &:hover {
+                &:hover {
+                    i {
                         background-position: -90px -22px;
                     }
                 }
+            }
                 
-                &.data-item {
+            &.data-item {
+                i {
                     background-position: -120px 0;
+                }
                     
-                    &:hover {
+                &:hover {
+                    i {
                         background-position: -120px -22px;
                     }
                 }
