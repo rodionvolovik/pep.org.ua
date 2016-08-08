@@ -554,6 +554,11 @@ tr.additional_hidden > td {
   line-height: 28px;
   padding: 0 15px;
 }
+@media (min-width: 768px) {
+  #navbar .navbar-brand {
+    margin-top: 7px;
+  }
+}
 #navbar .navbar-brand span {
   font-size: 16px;
 }
@@ -576,6 +581,24 @@ tr.additional_hidden > td {
   }
   #navbar .navbar-collapse li.edit-page {
     margin-left: 15px;
+  }
+  #navbar .navbar-collapse .nav {
+    margin-top: 0;
+  }
+  #navbar .navbar-collapse .nav li a {
+    text-align: left;
+    text-transform: uppercase;
+    font-weight: normal;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+}
+@media (min-width: 768px) {
+  #navbar .navbar-collapse {
+    padding-left: 0;
+    padding-right: 0;
+    margin-top: 10px;
+    margin-bottom: 10px;
   }
 }
 #navbar .navbar-nav > li {
@@ -735,7 +758,6 @@ tr.additional_hidden > td {
 #navbar .antac-logo {
   float: right;
   height: 40px;
-  margin-top: -8px;
   display: none;
 }
 #navbar .antac-logo img {

@@ -20,6 +20,10 @@
         height: 40px;
         line-height: 28px;
         padding: 0 15px;
+        
+        @media (min-width: @min-sm) {
+            margin-top: 7px;
+        }
     
         span {
             font-size: 16px;
@@ -48,6 +52,25 @@
             li.edit-page {
                 margin-left: 15px;
             }
+            
+            .nav {
+                margin-top: 0;
+            }
+            
+            .nav li a {
+                text-align: left;
+                text-transform: uppercase;
+                font-weight: normal;
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+        }
+        
+        @media (min-width: @min-sm) {
+            padding-left: 0;
+            padding-right: 0;
+            margin-top: 10px;
+            margin-bottom: 10px;
         }
     }
     
@@ -63,7 +86,6 @@
             font-weight: 700;
             padding: 0;
             text-align: center;
-            
             
             i {
                 display: block;
@@ -260,7 +282,6 @@
     .antac-logo {
         float: right;
         height: 40px;
-        margin-top: -8px;
         display: none;
         
         img {
