@@ -668,8 +668,10 @@ tr.additional_hidden > td {
 #navbar .navbar-nav > li.active a {
   background-color: #e7e7e7;
 }
-#navbar .navbar-nav > li.edit-page a {
+#navbar .navbar-nav > li.edit-page i {
   background: none;
+}
+#navbar .navbar-nav > li.edit-page a {
   text-indent: 0;
   font-size: 23px;
   color: #f42d33;
