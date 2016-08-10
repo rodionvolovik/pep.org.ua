@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-04 01:04+0300\n"
+"POT-Creation-Date: 2016-08-08 14:53+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,9 +40,9 @@ msgid "Профілів пов'язаних та близьких осіб"
 msgstr ""
 
 #: cms_pages/templates/cms_pages/static_page.jinja:18
-#: core/templates/base.jinja:83 core/templates/company.jinja:25
-#: core/templates/countries.jinja:12 core/templates/feedback.jinja:9
-#: core/templates/person.jinja:27 core/templates/search.jinja:11
+#: core/templates/company.jinja:25 core/templates/countries.jinja:12
+#: core/templates/feedback.jinja:9 core/templates/person.jinja:27
+#: core/templates/search.jinja:11
 msgid "Головна"
 msgstr ""
 
@@ -489,19 +489,23 @@ msgstr ""
 msgid "Перемкнути :)"
 msgstr ""
 
-#: core/templates/base.jinja:84 core/templates/countries.jinja:19
-msgid "Пошук по країнам"
+#: core/templates/base.jinja:83
+msgid "Домівка"
+msgstr ""
+
+#: core/templates/base.jinja:84
+msgid "Країни"
 msgstr ""
 
 #: core/templates/base.jinja:85
-msgid "Питання та відповіді"
+msgid "Про реєстр"
 msgstr ""
 
 #: core/templates/base.jinja:86
-msgid "Зворотній зв'язок"
+msgid "Повідомити"
 msgstr ""
 
-#: core/templates/base.jinja:87 core/templates/company.jinja:32
+#: core/templates/base.jinja:87
 msgid "Дані"
 msgstr ""
 
@@ -512,6 +516,10 @@ msgstr ""
 #: core/templates/company.jinja:26 core/templates/countries.jinja:14
 #: core/templates/person.jinja:28 core/templates/search.jinja:21
 msgid "Публічні діячі"
+msgstr ""
+
+#: core/templates/company.jinja:32
+msgid "Дані юридичної особи"
 msgstr ""
 
 #: core/templates/company.jinja:36
@@ -618,6 +626,10 @@ msgstr ""
 
 #: core/templates/countries.jinja:13 core/templates/search.jinja:12
 msgid "Результати пошуку"
+msgstr ""
+
+#: core/templates/countries.jinja:19
+msgid "Пошук по країнам"
 msgstr ""
 
 #: core/templates/countries.jinja:23 core/templates/countries.jinja.py:27
@@ -825,7 +837,7 @@ msgid "Інше нерухоме майно:"
 msgstr ""
 
 #: core/templates/person.jinja:455
-msgid "Вклади у банках:"
+msgid "Вклади в банках:"
 msgstr ""
 
 #: core/templates/person.jinja:462 core/templates/person.jinja.py:499

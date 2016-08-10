@@ -29,7 +29,7 @@
         </div>
         <aside id="profile-nav" role="complementary" class="col-sm-2 hidden-xs">
             <ul id="side-profilemenu">
-                <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-info"></i><span>{{ _("Дані") }}</span></a></li>
+                <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-info"></i><span>{{ _("Дані юридичної особи") }}</span></a></li>
                 {% if related_persons.founders or related_companies.founders or
                    (company.other_founders_en and LANGUAGE_CODE == "en") or (company.other_owners_en and LANGUAGE_CODE == "en") or 
                    (company.other_founders_uk and LANGUAGE_CODE == "uk") or (company.other_owners_uk and LANGUAGE_CODE == "uk") %}

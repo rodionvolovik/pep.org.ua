@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-04 01:04+0300\n"
+"POT-Creation-Date: 2016-08-08 14:53+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,9 +38,9 @@ msgid "Профілів пов'язаних та близьких осіб"
 msgstr "Profiles of close associates and family members"
 
 #: cms_pages/templates/cms_pages/static_page.jinja:18
-#: core/templates/base.jinja:83 core/templates/company.jinja:25
-#: core/templates/countries.jinja:12 core/templates/feedback.jinja:9
-#: core/templates/person.jinja:27 core/templates/search.jinja:11
+#: core/templates/company.jinja:25 core/templates/countries.jinja:12
+#: core/templates/feedback.jinja:9 core/templates/person.jinja:27
+#: core/templates/search.jinja:11
 msgid "Головна"
 msgstr "Main page"
 
@@ -464,7 +464,7 @@ msgid "Транспортні засоби"
 msgstr "Vehicles"
 
 #: core/models.py:1419
-msgid "Вклади в банках"
+msgid "Вклади у банках"
 msgstr "Bank deposits"
 
 #: core/models.py:1420
@@ -487,21 +487,25 @@ msgstr "Thank you for your message"
 msgid "Перемкнути :)"
 msgstr "Switch"
 
-#: core/templates/base.jinja:84 core/templates/countries.jinja:19
-msgid "Пошук по країнам"
-msgstr "Country search"
+#: core/templates/base.jinja:83
+msgid "Домівка"
+msgstr "Home"
+
+#: core/templates/base.jinja:84
+msgid "Країни"
+msgstr "Countries"
 
 #: core/templates/base.jinja:85
-msgid "Питання та відповіді"
-msgstr "Questions and answers"
+msgid "Про реєстр"
+msgstr "About"
 
 #: core/templates/base.jinja:86
-msgid "Зворотній зв'язок"
-msgstr "Contact us"
+msgid "Повідомити"
+msgstr "Feedback"
 
-#: core/templates/base.jinja:87 core/templates/company.jinja:32
+#: core/templates/base.jinja:87
 msgid "Дані"
-msgstr "Legal entity basic data"
+msgstr "Data"
 
 #: core/templates/base.jinja:129
 msgid "Надіслати інформацію"
@@ -511,6 +515,10 @@ msgstr "Contact us"
 #: core/templates/person.jinja:28 core/templates/search.jinja:21
 msgid "Публічні діячі"
 msgstr "Politically Exposed Persons"
+
+#: core/templates/company.jinja:32
+msgid "Дані юридичної особи"
+msgstr "Legal entity basic data"
 
 #: core/templates/company.jinja:36
 msgid "Засновники"
@@ -617,6 +625,10 @@ msgstr "Financial information:"
 #: core/templates/countries.jinja:13 core/templates/search.jinja:12
 msgid "Результати пошуку"
 msgstr "Search results"
+
+#: core/templates/countries.jinja:19
+msgid "Пошук по країнам"
+msgstr "Country search"
 
 #: core/templates/countries.jinja:23 core/templates/countries.jinja.py:27
 msgid "Усі країни"
@@ -883,6 +895,12 @@ msgstr "Ukrainian"
 #: pepdb/settings.py:163
 msgid "English"
 msgstr "English"
+
+#~ msgid "Питання та відповіді"
+#~ msgstr "Questions and answers"
+
+#~ msgid "Зворотній зв'язок"
+#~ msgstr "Contact us"
 
 #~ msgid "Сума в сім’ї"
 #~ msgstr "Household (family) total"
