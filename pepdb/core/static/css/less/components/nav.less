@@ -48,6 +48,9 @@
         @media (max-width: @max-xs) {
             width: 100%;
             margin-left: 0;
+            float: none;
+            margin: 0;
+            border: none;
             
             li.edit-page {
                 margin-left: 15px;
@@ -60,7 +63,6 @@
             .nav li a {
                 text-align: left;
                 text-transform: uppercase;
-                font-weight: normal;
                 padding-top: 10px;
                 padding-bottom: 10px;
             }
@@ -296,6 +298,30 @@
             display: block;
         }
     }
+}
+
+.not-front {
+    #navbar {
+        .navbar-collapse {
+            @media (min-width: @min-sm) and (max-width: 1024px) {
+                clear: both;
+                float: left !important;
+                margin-top: 20px;
+            }
+        }
+        
+        .regularSearch {
+            @media (min-width: @min-sm) {
+                margin-top: 10px;
+            }
+        }
+        
+        .navbar-brand {
+            @media (min-width: @min-sm) {
+                margin-top: 17px;
+            }
+        }
+    } 
 }
 
 
