@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-11 00:57+0300\n"
+"POT-Creation-Date: 2016-08-11 02:10+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -884,6 +884,22 @@ msgstr "Associated legal entities:"
 msgid "Можливо ви шукали:"
 msgstr "Maybe you were looking for:"
 
+#: core/templates/person.jinja:741
+msgid "meters"
+msgstr "sq. m"
+
+#: core/templates/person.jinja:742
+msgid "gectars"
+msgstr "hectars"
+
+#: core/templates/person.jinja:743
+msgid "sotok"
+msgstr "ares"
+
+#: core/templates/person.jinja:744
+msgid "м²"
+msgstr "sq. m"
+
 #: core/templates/search.jinja:32
 msgid "На жаль, пошук не дав результатів"
 msgstr "Your search gave no results"
@@ -895,18 +911,6 @@ msgstr "Ukrainian"
 #: pepdb/settings.py:163
 msgid "English"
 msgstr "English"
-
-msgid "м²"
-msgstr "sq. m"
-
-msgid "meters"
-msgstr "sq. m"
-
-msgid "gectars"
-msgstr "hectars"
-
-msgid "sotok"
-msgstr "ares"
 
 #~ msgid "Питання та відповіді"
 #~ msgstr "Questions and answers"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-11 00:57+0300\n"
+"POT-Creation-Date: 2016-08-11 02:10+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -884,6 +884,22 @@ msgstr ""
 msgid "Можливо ви шукали:"
 msgstr ""
 
+#: core/templates/person.jinja:741
+msgid "meters"
+msgstr "м²"
+
+#: core/templates/person.jinja:742
+msgid "gectars"
+msgstr "га"
+
+#: core/templates/person.jinja:743
+msgid "sotok"
+msgstr "соток"
+
+#: core/templates/person.jinja:744
+msgid "м²"
+msgstr ""
+
 #: core/templates/search.jinja:32
 msgid "На жаль, пошук не дав результатів"
 msgstr ""
@@ -895,12 +911,3 @@ msgstr ""
 #: pepdb/settings.py:163
 msgid "English"
 msgstr ""
-
-msgid "meters"
-msgstr "м²"
-
-msgid "gectars"
-msgstr "га"
-
-msgid "sotok"
-msgstr "соток"
