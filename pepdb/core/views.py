@@ -10,6 +10,8 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.apps import apps
 from django.db.models import Count, F
+from django.conf import settings
+from django.views.decorators.cache import never_cache
 
 from elasticsearch_dsl.query import Q
 from translitua import translit
@@ -22,7 +24,7 @@ from core.paginator import paginated_search
 from core.forms import FeedbackForm
 from core.auth import logged_in_or_basicauth
 from core.api import XmlItemExporter
-from django.conf import settings
+
 
 from core.elastic_models import (
     Person as ElasticPerson,
@@ -369,6 +371,7 @@ def send_feedback(request):
 
 
 @logged_in_or_basicauth()
+@never_cache
 def export_persons(request, fmt):
     if not request.user.has_perm("core.export_persons"):
         return HttpResponseForbidden()
@@ -412,6 +415,8 @@ def export_persons(request, fmt):
     response['Content-Disposition'] = (
         'attachment; filename=peps_{:%Y%m%d_%H%M}.{}'.format(
             datetime.now(), fmt))
+
+    response['Content-Length'] = len(response.content)
 
     return response
 
