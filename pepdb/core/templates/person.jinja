@@ -476,7 +476,7 @@
                                         {% endfor %}
                                     </td>
                                     <td class="decl-familyincome">
-                                        {% for account in declaration.source.estate["51"] if account.sum %}
+                                        {% for account in declaration.source.banks["51"] if account.sum %}
                                             {{ _(account.sum_units or "UAH") }} {{ account.sum|curformat() }} {% if not loop.last %}, {% endif %}
                                         {% else %}—
                                         {% endfor %}
