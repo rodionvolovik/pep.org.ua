@@ -50,6 +50,10 @@ urlpatterns = i18n_patterns(
     url(r'^company/(?P<company_id>\d+)$', 'core.views.company_details',
         name='company_details'),
 
+    # WS to feed graph ui
+    url(r'connections/(?P<model>[a-zA-Z]+)/(?P<obj_id>[0-9]+)',
+        'core.views.connections', name="connections"),
+
     # Aux pages
     url(r'^feedback', TemplateView.as_view(template_name="feedback.jinja"),
         name="feedback"),

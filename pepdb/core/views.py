@@ -3,7 +3,8 @@ from operator import itemgetter
 from datetime import datetime
 from cStringIO import StringIO
 from django.http import (
-    JsonResponse, HttpResponseForbidden, HttpResponse, HttpResponseBadRequest)
+    JsonResponse, HttpResponseForbidden, HttpResponse, HttpResponseBadRequest,
+    HttpResponseNotFound)
 from django.utils import translation
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
@@ -444,7 +445,7 @@ def encrypted_redirect(request, enc, model):
     except model.DoesNotExist:
         log_rec.details = "ID: %s" % obj_id
         log_rec.save()
-        return HttpResponseForbidden()
+        return HttpResponseNotFound()
 
     log_rec.details = str(obj)
     log_rec.save()
@@ -452,3 +453,17 @@ def encrypted_redirect(request, enc, model):
     return redirect(
         obj.get_absolute_url()
     )
+
+
+def connections(request, model, obj_id):
+    if model.lower() not in ("person", "country", "company"):
+        return HttpResponseBadRequest()
+
+    model = apps.get_model('core', model)
+
+    try:
+        obj = model.objects.get(pk=obj_id)
+    except model.DoesNotExist:
+        return HttpResponseNotFound()
+
+    return JsonResponse(obj.get_node_info(True))

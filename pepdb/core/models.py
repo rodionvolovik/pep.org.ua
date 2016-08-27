@@ -27,6 +27,21 @@ from core.utils import (
     parse_fullname, parse_family_member, RELATIONS_MAPPING, render_date,
     lookup_term)
 
+
+class AbstractNode(object):
+    def get_node_info(self, with_connections=False):
+        t = type(self)
+        if t._deferred:
+            t = t.__base__
+
+        return {
+            "pk": self.pk,
+            "model": t._meta.model_name,
+            "kind": "",
+            "description": "",
+            "connections": []
+        }
+
 # to_*_dict methods are used to convert two main entities that we have, Person
 # and Company into document indexable by ElasticSearch.
 # Links between Persons, Person and Company, Companies, Person and Country,
@@ -37,7 +52,7 @@ from core.utils import (
 # to_dict/to_dict_reverse because same link provides info to both persons.
 
 
-class Person(models.Model):
+class Person(models.Model, AbstractNode):
     last_name = models.CharField("Прізвище", max_length=40)
     first_name = models.CharField("Ім'я", max_length=40)
     patronymic = models.CharField("По-батькові", max_length=40, blank=True)
@@ -254,6 +269,8 @@ class Person(models.Model):
 
     @property
     def all_related_companies(self):
+        # TODO: unify output format with all_related_persons
+        # TODO: adjust name to reflect that it's only a subset of companies
         companies = self.person2company_set.select_related(
             "to_company").filter(is_employee=False)
 
@@ -465,6 +482,52 @@ class Person(models.Model):
     def declarations_extra_fields(self):
         for decl in self.declaration_extras:
             pass
+
+    def get_node_info(self, with_connections=False):
+        res = super(Person, self).get_node_info(with_connections)
+        res["name"] = self.full_name
+
+        last_workplace = self.translated_last_workplace
+        if last_workplace:
+            res["description"] = "{position} @ {company}".format(
+                **last_workplace)
+        res["kind"] = unicode(
+            ugettext_lazy(self.get_type_of_official_display() or ""))
+
+        if with_connections:
+            connections = []
+
+            # Because of a complicated logic here we are piggybacking on
+            # existing method that handles both directions of relations
+            for p in self.all_related_persons["all"]:
+                connections.append({
+                    "relation": unicode(ugettext_lazy(p.rtype)),
+                    "node": p.get_node_info(False),
+                    "model": p.connection._meta.model_name,
+                    "pk": p.connection.pk
+                })
+
+            companies = self.person2company_set.select_related("to_company")
+            for c in companies:
+                connections.append({
+                    "relation": unicode(c.relationship_type),
+                    "node": c.to_company.get_node_info(False),
+                    "model": c._meta.model_name,
+                    "pk": c.pk
+                })
+
+            countries = self.person2country_set.select_related("to_country")
+            for c in countries:
+                connections.append({
+                    "relation": unicode(c.relationship_type),
+                    "node": c.to_country.get_node_info(False),
+                    "model": c._meta.model_name,
+                    "pk": c.pk
+                })
+
+            res["connections"] = connections
+
+        return res
 
     class Meta:
         verbose_name = "Фізична особа"
@@ -771,7 +834,7 @@ class Person2Company(AbstractRelationship):
         verbose_name_plural = "Зв'язки з компаніями/установами"
 
 
-class Company(models.Model):
+class Company(models.Model, AbstractNode):
     name = models.CharField("Повна назва", max_length=512)
     short_name = models.CharField("Скорочена назва", max_length=50,
                                   blank=True)
@@ -1031,6 +1094,52 @@ class Company(models.Model):
 
         return res
 
+    def get_node_info(self, with_connections=False):
+        res = super(Company, self).get_node_info(with_connections)
+        res["name"] = self.name
+        res["description"] = self.edrpou
+        res["kind"] = unicode(
+            ugettext_lazy("Державна компанія чи установа")
+            if self.state_company else
+            ugettext_lazy("Приватна компанія")
+        )
+
+        if with_connections:
+            connections = []
+
+            persons = self.all_related_persons
+            for k in persons.values():
+                for p in k:
+                    connections.append({
+                        "relation": unicode(ugettext_lazy(p.rtype)),
+                        "node": p.get_node_info(False),
+                        "model": p.connection._meta.model_name,
+                        "pk": p.connection.pk
+                    })
+
+            # Because of a complicated logic here we are piggybacking on
+            # existing method that handles both directions of relations
+            for c in self.all_related_companies["all"]:
+                connections.append({
+                    "relation": unicode(ugettext_lazy(c.rtype)),
+                    "node": c.get_node_info(False),
+                    "model": c.connection._meta.model_name,
+                    "pk": c.connection.pk
+                })
+
+            countries = self.from_countries.select_related("to_country")
+            for c in countries:
+                connections.append({
+                    "relation": unicode(c.relationship_type),
+                    "node": c.to_country.get_node_info(False),
+                    "model": c._meta.model_name,
+                    "pk": c.pk
+                })
+
+            res["connections"] = connections
+
+        return res
+
     class Meta:
         verbose_name = "Юридична особа"
         verbose_name_plural = "Юридичні особи"
@@ -1204,7 +1313,7 @@ class Company2Country(AbstractRelationship):
         verbose_name_plural = "Зв'язки з країнами"
 
 
-class Country(models.Model):
+class Country(models.Model, AbstractNode):
     name = models.CharField("Назва", max_length=100)
     iso2 = models.CharField("iso2 код", max_length=2, blank=True)
     iso3 = models.CharField("iso3 код", max_length=3, blank=True)
@@ -1233,6 +1342,35 @@ class Country(models.Model):
     class Meta:
         verbose_name = "Країна/юрісдикція"
         verbose_name_plural = "Країни/юрісдикції"
+
+    def get_node_info(self, with_connections=False):
+        res = super(Country, self).get_node_info(with_connections)
+        res["name"] = self.name
+
+        if with_connections:
+            connections = []
+
+            persons = self.person2country_set.select_related("from_person")
+            for p in persons:
+                connections.append({
+                    "relation": unicode(p.relationship_type),
+                    "node": p.from_person.get_node_info(False),
+                    "model": p._meta.model_name,
+                    "pk": p.pk
+                })
+
+            companies = self.company2country_set.select_related("from_company")
+            for c in companies:
+                connections.append({
+                    "relation": unicode(c.relationship_type),
+                    "node": c.from_company.get_node_info(False),
+                    "model": c._meta.model_name,
+                    "pk": c.pk
+                })
+
+            res["connections"] = connections
+
+        return res
 
 
 class Document(models.Model):
