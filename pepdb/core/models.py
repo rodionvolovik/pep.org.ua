@@ -37,6 +37,13 @@ class AbstractNode(object):
         return {
             "pk": self.pk,
             "model": t._meta.model_name,
+            "details": reverse(
+                "connections",
+                kwargs={
+                    "model": t._meta.model_name,
+                    "obj_id": self.pk
+                }
+            ),
             "kind": "",
             "description": "",
             "connections": []
@@ -1111,7 +1118,7 @@ class Company(models.Model, AbstractNode):
             for k in persons.values():
                 for p in k:
                     connections.append({
-                        "relation": unicode(ugettext_lazy(p.rtype)),
+                        "relation": p.connection.relationship_type,
                         "node": p.get_node_info(False),
                         "model": p.connection._meta.model_name,
                         "pk": p.connection.pk
@@ -1130,7 +1137,8 @@ class Company(models.Model, AbstractNode):
             countries = self.from_countries.select_related("to_country")
             for c in countries:
                 connections.append({
-                    "relation": unicode(c.relationship_type),
+                    "relation": unicode(
+                        ugettext_lazy(c.get_relationship_type_display())),
                     "node": c.to_country.get_node_info(False),
                     "model": c._meta.model_name,
                     "pk": c.pk
@@ -1353,7 +1361,8 @@ class Country(models.Model, AbstractNode):
             persons = self.person2country_set.select_related("from_person")
             for p in persons:
                 connections.append({
-                    "relation": unicode(p.relationship_type),
+                    "relation": unicode(
+                        ugettext_lazy(p.get_relationship_type_display())),
                     "node": p.from_person.get_node_info(False),
                     "model": p._meta.model_name,
                     "pk": p.pk
@@ -1362,7 +1371,8 @@ class Country(models.Model, AbstractNode):
             companies = self.company2country_set.select_related("from_company")
             for c in companies:
                 connections.append({
-                    "relation": unicode(c.relationship_type),
+                    "relation": unicode(
+                        ugettext_lazy(c.get_relationship_type_display())),
                     "node": c.from_company.get_node_info(False),
                     "model": c._meta.model_name,
                     "pk": c.pk

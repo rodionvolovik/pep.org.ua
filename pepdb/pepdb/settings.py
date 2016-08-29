@@ -214,7 +214,9 @@ PIPELINE_CSS = {
             'css/ripples.min.css',
             'css/animate.css',
             'bower_components/featherlight/src/featherlight.css',
+            'css/vis.css',
             'css/style.css',
+            'css/graph.css',
         ),
         'output_filename': 'css/merged.css',
         'extra_context': {
@@ -244,7 +246,9 @@ PIPELINE_JS = {
             "bower_components/featherlight/src/featherlight.js",
             "bower_components/jquery.nicescroll/jquery.nicescroll.min.js",
             "js/ripples.min.js",
+            "js/vis-network.min.js",
             "js/pep.js",
+            "js/graph.js",
         ),
         'output_filename': 'js/merged.js',
     }
