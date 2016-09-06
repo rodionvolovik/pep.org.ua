@@ -1188,6 +1188,39 @@ tr.additional_hidden > td {
   display: block;
   text-transform: none;
 }
+.load-pep-modal-tree {
+  display: block;
+  position: relative;
+  cursor: pointer;
+}
+.load-pep-modal-tree img {
+  width: 100%;
+  height: auto;
+  opacity: 0.7;
+}
+.load-pep-modal-tree i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 50px;
+  display: inline-block;
+  cursor: pointer;
+}
+#pep-graph-tree .modal-dialog {
+  width: 95%;
+  height: 95%;
+}
+@media (min-width: 768px) {
+  #pep-graph-tree .modal-dialog {
+    width: 90%;
+    height: 90%;
+  }
+}
+#pep-graph-tree .modal-dialog .modal-content {
+  height: auto;
+  min-height: 100%;
+}
 .b-a {
   border: 1px solid #dee5e7;
 }

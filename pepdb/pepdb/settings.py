@@ -213,6 +213,7 @@ PIPELINE_CSS = {
             'bower_components/bootstrap/dist/css/bootstrap.min.css',
             'css/ripples.min.css',
             'css/animate.css',
+            'css/font-awesome.min.css',
             'bower_components/featherlight/src/featherlight.css',
             'css/vis.css',
             'css/style.css',

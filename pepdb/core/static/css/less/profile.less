@@ -314,3 +314,42 @@
     display: block;
     text-transform: none;
 }
+
+.load-pep-modal-tree {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    
+    img {
+        width: 100%;
+        height: auto;
+        opacity: 0.7;
+    }
+    
+    i {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 50px;
+        display: inline-block;
+        cursor: pointer;
+    }
+}
+
+#pep-graph-tree {
+    .modal-dialog {
+        width: 95%;
+        height: 95%;
+        
+        @media (min-width: @min-sm) {
+            width: 90%;
+            height: 90%;
+        }
+        
+        .modal-content {
+            height: auto;
+            min-height: 100%;
+        }
+    }
+}

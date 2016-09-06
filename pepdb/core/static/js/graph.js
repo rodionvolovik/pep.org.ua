@@ -213,6 +213,7 @@ $(function() {
                 nodes: nodes,
                 edges: edges
             },
+            // TODO:  init with groups like at view-source:http://visjs.org/examples/network/exampleApplications/nodeLegend.html
             network = new vis.Network(container.get(0), data, options),
             url = container.data("url");
 
@@ -226,4 +227,8 @@ $(function() {
         expand_network(url);
         window.network = network;
     }
+    
+    $('#pep-graph-tree').on('shown.bs.modal', function () {
+        network.fit(); //TODO:  100% height
+    })
 });
