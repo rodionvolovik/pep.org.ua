@@ -6,8 +6,18 @@ $(function() {
             return obj.model + ":" + obj.pk
         }
 
-        function get_color(level) {
-            return lighten_hex("#03A9F4", 10 * level);
+        function get_color(model, level) {
+            var base_color = "#03A9F4";
+
+            switch (model) {
+                case "company":
+                    base_color = "#FF00FF";
+                break;
+                case "country":
+                    base_color = "#FFFF00";
+                break;
+            }
+            return lighten_hex(base_color, 10 * level);
         }
 
         function sign(x) {
@@ -133,14 +143,14 @@ $(function() {
                     title: node.name + "<br/>" + node.description,
                     value: 1,
                     level: 1,
-                    color: get_color(1),
+                    color: get_color(node.model, 1),
                     _node: node
                 }
 
                 if (typeof(parent) !== "undefined") {
                     subnode.level = parent.level + 1;
                     subnode.parent = parent;
-                    subnode.color = get_color(parent.level + 1);
+                    subnode.color = get_color(node.model, parent.level + 1);
                     node_spawn = get_spawn_position(parent.id);
                     subnode.x = node_spawn[0];
                     subnode.y = node_spawn[1];
@@ -166,6 +176,7 @@ $(function() {
                         title: edge.relation,
                         level: subnode.level,
                         selectionWidth: 2,
+                        color: "#000000",
                         hoverWidth: 0
                     });
                 }
@@ -177,6 +188,12 @@ $(function() {
 
         function expand_network(url, node) {
             $.get(url, function(data) {
+                if (typeof(node) !== "undefined"
+                    && data.connections.length > 50) {
+                    if (!window.confirm("This will add more than 50 nodes. Are you sure?")) {
+                        return;
+                    }
+                }
                 add_node(data, node);
             });
         }
