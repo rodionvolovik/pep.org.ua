@@ -21,27 +21,19 @@
                         {% endif %}
 
                         {% if connection.proof_title or connection.proof %}
-                            {% set proofs = connection.proof.split(", ") %}
+                            {% set proofs = connection.proofs.all().select_related("proof_document") %}
                             <p>
                                 <b>{{ _("Доказ зв'язку: ") }}</b>
-                                {% if proofs|length <= 1 %}
-                                    {% if connection.proof %}
-                                        <a href="{{ connection.proof }}" target="_blank">
-                                    {% endif %}
-                                    {% if LANGUAGE_CODE == "en" %}
-                                        {{ _("Посилання") }}
-                                    {% else %}
-                                        {{ connection.proof_title|default(_("Посилання"), true) }}
-                                    {% endif %}
-                                    {% if connection.proof %}
-                                        </a>
-                                    {% endif %}
-                                {% else %}
-                                    {% set comma = joiner(", ") %}
-                                    {% for proof in proofs -%}
-                                        {{ comma() }}<a href="{{ proof }}" target="_blank">{{ _("Посилання") }}</a>
-                                    {%- endfor %}
-                                {% endif %}
+                                {% set comma = joiner(", ") %}
+                                {% for proof in proofs -%}
+                                    {{ comma() }}<a href="{% if proof.proof %}{{ proof.proof }}{% else %}{{ proof.proof_document.doc.url }}{% endif%}" target="_blank">
+                                        {% if LANGUAGE_CODE == "en" %}
+                                            {{ _("Посилання") }}
+                                        {% else %}
+                                            {{ proof.proof_title|default(_("Посилання"), true) }}
+                                        {% endif %}
+                                    </a>
+                                {%- endfor %}
                             </p>
                         {% endif %}
                     </div>

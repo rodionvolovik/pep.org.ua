@@ -10,6 +10,10 @@ from django.conf import settings
 from django.db.models import Q
 from django.db.models.functions import Coalesce, Value
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+
 from django.forms.models import model_to_dict
 from django.core.urlresolvers import reverse
 
@@ -535,6 +539,7 @@ class AbstractRelationship(models.Model):
         "Назва доказу зв'язку", blank=True,
         help_text="Наприклад: склад ВР 7-го скликання")
     proof = models.TextField("Посилання на доказ зв'язку", blank=True)
+    proofs = GenericRelation("RelationshipProof")
 
     @property
     def has_additional_info(self):
@@ -1447,3 +1452,18 @@ class ActionLog(models.Model):
         index_together = [
             ["user", "action", "timestamp"],
         ]
+
+
+class RelationshipProof(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    proof_title = models.TextField(
+        "Назва доказу зв'язку", blank=True,
+        help_text="Наприклад: склад ВР 7-го скликання")
+
+    proof_document = models.ForeignKey(
+        Document, verbose_name="Документ-доказ зв'язку",
+        default=None, null=True)
+    proof = models.TextField("або посилання на доказ зв'язку", blank=True)
