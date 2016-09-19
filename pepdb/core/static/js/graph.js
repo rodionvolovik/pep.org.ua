@@ -19,23 +19,6 @@ $(function() {
             }
             return lighten_hex(base_color, 10 * level);
         }
-        
-        function get_shape(model, level) {
-            var shape;
-
-            switch (model) {
-                case "company":
-                    shape = "square";
-                break;
-                case "country":
-                    shape = "triangle";
-                break;
-                default:
-                    shape = "dot";
-                break;
-            }
-            return shape;
-        }
 
         function sign(x) {
             if (Math.sign) {
@@ -161,7 +144,6 @@ $(function() {
                     value: 1,
                     level: 1,
                     color: get_color(node.model, 1),
-                    shape: get_shape(node.model, 1),
                     _node: node
                 }
 
@@ -169,7 +151,6 @@ $(function() {
                     subnode.level = parent.level + 1;
                     subnode.parent = parent;
                     subnode.color = get_color(node.model, parent.level + 1);
-                    subnode.shape = get_shape(node.model, parent.level + 1);
                     node_spawn = get_spawn_position(parent.id);
                     subnode.x = node_spawn[0];
                     subnode.y = node_spawn[1];
@@ -219,31 +200,26 @@ $(function() {
 
         var options = {
                 autoResize: true,
-                
                 nodes: {
                     shape: 'dot',
-                    
-                    scaling: { 
-                        min: 5,
+                    scaling: {
+                        min: 20,
                         max: 30,
-                        
-                        label: { 
-                            min: 3, 
-                            max: 20, 
-                            drawThreshold: 10, 
-                            maxVisible: 15
+                        label: {
+                            min: 10,
+                            max: 15,
+                            drawThreshold: 9,
+                            maxVisible: 20 
                         }
                     },
-                    
                     font: {
-                        size: 3, 
-                        face: 'arsenalregular'
+                        size: 10,
+                        face: 'Helvetica Neue, Helvetica, Arial'
                     }
                 },
-                
                 interaction: {
                     hover: true,
-                    hoverConnectedEdges: false,
+                    hoverConnectedEdges: true,
                     selectConnectedEdges: true,
                 },
             },
@@ -269,22 +245,7 @@ $(function() {
         window.network = network;
     }
     
-    function modalBodyHeight (modalTarget) {
-        var modal = $(modalTarget);
-        modalheight = modal.find('.modal-content').height();
-        headerheight = modal.find('.modal-content .modal-header').height();
-        bodyHeight = modalheight - headerheight;
-        
-        modal.find('.modal-content .modal-body').css("height", bodyHeight + "px");
-    }
-    
     $('#pep-graph-tree').on('shown.bs.modal', function () {
-        modalBodyHeight ('#pep-graph-tree');
-        network.fit();
-    });
-    
-    $(window).resize(function() {
-        modalBodyHeight ('#pep-graph-tree');
-        network.fit();
-    });
+        network.fit(); //TODO:  100% height
+    })
 });
