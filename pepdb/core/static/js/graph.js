@@ -19,7 +19,23 @@ $(function() {
             }
             return lighten_hex(base_color, 10 * level);
         }
+        
+        function get_shape(model, level) {
+            var shape;
 
+            switch (model) {
+                case "company":
+                    shape = "square";
+                break;
+                case "country":
+                    shape = "triangle";
+                break;
+                default:
+                    shape = "dot";
+                break;
+            }
+            return shape;
+        }
         function sign(x) {
             if (Math.sign) {
                 return Math.sign(x);
@@ -144,6 +160,7 @@ $(function() {
                     value: 1,
                     level: 1,
                     color: get_color(node.model, 1),
+                    shape: get_shape(node.model, 1),
                     _node: node
                 }
 
@@ -151,6 +168,7 @@ $(function() {
                     subnode.level = parent.level + 1;
                     subnode.parent = parent;
                     subnode.color = get_color(node.model, parent.level + 1);
+                    subnode.shape = get_shape(node.model, parent.level + 1);
                     node_spawn = get_spawn_position(parent.id);
                     subnode.x = node_spawn[0];
                     subnode.y = node_spawn[1];
@@ -176,7 +194,7 @@ $(function() {
                         title: edge.relation,
                         level: subnode.level,
                         selectionWidth: 2,
-                        color: "#000000",
+                        color: "#ccc",
                         hoverWidth: 0
                     });
                 }
@@ -203,18 +221,18 @@ $(function() {
                 nodes: {
                     shape: 'dot',
                     scaling: {
-                        min: 20,
+                        min: 5,
                         max: 30,
                         label: {
-                            min: 10,
-                            max: 15,
-                            drawThreshold: 9,
-                            maxVisible: 20 
+                            min: 3,
+                            max: 20,
+                            drawThreshold: 10,
+                            maxVisible: 15 
                         }
                     },
                     font: {
-                        size: 10,
-                        face: 'Helvetica Neue, Helvetica, Arial'
+                        size: 5,
+                        face: 'arsenalregular'
                     }
                 },
                 interaction: {
@@ -230,7 +248,6 @@ $(function() {
                 nodes: nodes,
                 edges: edges
             },
-            // TODO:  init with groups like at view-source:http://visjs.org/examples/network/exampleApplications/nodeLegend.html
             network = new vis.Network(container.get(0), data, options),
             url = container.data("url");
 
@@ -245,7 +262,23 @@ $(function() {
         window.network = network;
     }
     
+    function modalBodyHeight (modalTarget) {
+        var modal = $(modalTarget),
+            modalheight = modal.find('.modal-dialog').height(),
+            headerheight = modal.find('.modal-header').height(),
+            bodyHeight = modalheight - headerheight;
+            modal.find('.modal-body').css("height", bodyHeight + "px");
+    }
+    
     $('#pep-graph-tree').on('shown.bs.modal', function () {
-        network.fit(); //TODO:  100% height
-    })
+        modalBodyHeight ('#pep-graph-tree');
+        $('#graphme').css('height', '100%');
+        network.redraw();
+        network.fit();
+    });
+    
+    $(window).resize(function() {
+        modalBodyHeight ('#pep-graph-tree');
+        network.fit();
+    });
 });
