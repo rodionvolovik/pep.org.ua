@@ -11,7 +11,7 @@ $(function() {
 
             switch (model) {
                 case "company":
-                    base_color = "#FF00FF";
+                    base_color = "#4fd645";
                 break;
                 case "country":
                     base_color = "#FFFF00";
@@ -25,10 +25,10 @@ $(function() {
 
             switch (model) {
                 case "company":
-                    shape = "square";
+                    shape = "diamond";
                 break;
                 case "country":
-                    shape = "triangle";
+                    shape = "database";
                 break;
                 default:
                     shape = "dot";
@@ -159,8 +159,8 @@ $(function() {
                     title: node.name + "<br/>" + node.description,
                     value: 1,
                     level: 1,
-                    color: get_color(node.model, 1),
-                    shape: get_shape(node.model, 1),
+                    color: '#ffcc01',
+                    shape: 'star',
                     _node: node
                 }
 
