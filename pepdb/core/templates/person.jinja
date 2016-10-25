@@ -94,7 +94,7 @@
                         <table class="table table-condensed">
                             {% if person.type_of_official %}
                             <tr>
-                                <td>{{ _("Категорія ПЕП") }} </td>
+                                <td>{{ _("Категорія") }} </td>
                                 <td><strong>{{ _(person.get_type_of_official_display()) }}</strong></td>
                             </tr>
                             {% endif %}
@@ -132,11 +132,12 @@
                     </div>
                 </div>
                 
+                {% if "graph" in request.GET %}
                 <a class="load-pep-modal-tree" data-toggle="modal" data-target="#pep-graph-tree">
                     <img src="https://dl.dropboxusercontent.com/u/1637697/skitch.png" /><!-- TODO: somehow generate image-preview from data -->
                     <i class="fa fa-search-plus"></i>
                 </a>
-                
+
                 <div class="modal fade" id="pep-graph-tree" tabindex="-1" role="dialog" aria-labelledby="pep-graph-tree-label">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
@@ -150,6 +151,7 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
                
             </div>
 

@@ -260,25 +260,25 @@ $(function() {
 
         expand_network(url);
         window.network = network;
+
+        function modalBodyHeight (modalTarget) {
+            var modal = $(modalTarget),
+                modalheight = modal.find('.modal-dialog').height(),
+                headerheight = modal.find('.modal-header').height(),
+                bodyHeight = modalheight - headerheight;
+                modal.find('.modal-body').css("height", bodyHeight + "px");
+        }
+        
+        $('#pep-graph-tree').on('shown.bs.modal', function () {
+            modalBodyHeight ('#pep-graph-tree');
+            $('#graphme').css('height', '100%');
+            network.redraw();
+            network.fit();
+        });
+        
+        $(window).resize(function() {
+            modalBodyHeight('#pep-graph-tree');
+            network.fit();
+        });
     }
-    
-    function modalBodyHeight (modalTarget) {
-        var modal = $(modalTarget),
-            modalheight = modal.find('.modal-dialog').height(),
-            headerheight = modal.find('.modal-header').height(),
-            bodyHeight = modalheight - headerheight;
-            modal.find('.modal-body').css("height", bodyHeight + "px");
-    }
-    
-    $('#pep-graph-tree').on('shown.bs.modal', function () {
-        modalBodyHeight ('#pep-graph-tree');
-        $('#graphme').css('height', '100%');
-        network.redraw();
-        network.fit();
-    });
-    
-    $(window).resize(function() {
-        modalBodyHeight ('#pep-graph-tree');
-        network.fit();
-    });
 });
