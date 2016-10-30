@@ -215,8 +215,12 @@ class Command(BaseCommand):
                                 doc_instance.doc.save(
                                     doc_san_name, ContentFile(doc_content))
                                 doc_instance.save()
+                            else:
+                                self.stdout.write(
+                                    'Cannot download file {}'.format(doc))
 
-                        first_doc_name = doc_instance.name_uk
+                        if doc_instance:
+                            first_doc_name = doc_instance.name_uk
 
                         docs_downloaded.append(doc_instance.doc.url)
 
