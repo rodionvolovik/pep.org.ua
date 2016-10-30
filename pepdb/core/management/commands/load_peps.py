@@ -221,8 +221,7 @@ class Command(BaseCommand):
 
                         if doc_instance:
                             first_doc_name = doc_instance.name_uk
-
-                        docs_downloaded.append(doc_instance.doc.url)
+                            docs_downloaded.append(doc_instance.doc.url)
 
                 # Now let's setup links between person and companies
                 links = Person2Company.objects.filter(
