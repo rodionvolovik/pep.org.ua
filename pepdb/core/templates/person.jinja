@@ -339,13 +339,13 @@
                                 <!--td class="decl-year">2011 <i class="fa fa-plus-square trigger-hidden-row"></i></td!-->
                                 <td>
                                     {% for space in declaration.source.estate["23"] if space.space %}
-                                        {{ space.space }} {{ _(space.space_units) or _("м²") }}{% if not loop.last %}, {% endif %}
+                                        {{ space.space|spaceformat }} {{ _(space.space_units) or _("м²") }}{% if not loop.last %}, {% endif %}
                                     {% else %}—
                                     {% endfor %}
                                 </td>
                                 <td>
                                     {% for space in declaration.source.estate["29"] if space.space %}
-                                        {{ space.space }} {{ _(space.space_units) or _("м²") }}{% if not loop.last %}, {% endif %}
+                                        {{ space.space|spaceformat }} {{ _(space.space_units) or _("м²") }}{% if not loop.last %}, {% endif %}
                                     {% else %}—
                                     {% endfor %}
                                 </td>
@@ -396,13 +396,13 @@
                                 <td class="decl-year">{{ declaration.source.intro.declaration_year }}</td>
                                 <td>
                                     {% for space in declaration.source.estate["24"] if space.space %}
-                                        {{ space.space }} {{ _(space.space_units) or _("м²") }}{% if not loop.last %}, {% endif %}
+                                        {{ space.space|spaceformat }} {{ _(space.space_units) or _("м²") }}{% if not loop.last %}, {% endif %}
                                     {% else %}—
                                     {% endfor %}
                                 </td>
                                 <td>
                                     {% for space in declaration.source.estate["30"] if space.space %}
-                                        {{ space.space }} {{ _(space.space_units) or _("м²") }}{% if not loop.last %}, {% endif %}
+                                        {{ space.space|spaceformat }} {{ _(space.space_units) or _("м²") }}{% if not loop.last %}, {% endif %}
                                     {% else %}—
                                     {% endfor %}
                                 </td>
@@ -427,13 +427,13 @@
                                 <td class="decl-year">{{ declaration.source.intro.declaration_year }}</td>
                                 <td class="decl-income">
                                     {% for space in declaration.source.estate["25"] if space.space %}
-                                        {{ space.space }} {{ _(space.space_units) or _("м²") }}{% if not loop.last %}, {% endif %}
+                                        {{ space.space|spaceformat }} {{ _(space.space_units) or _("м²") }}{% if not loop.last %}, {% endif %}
                                     {% else %}—
                                     {% endfor %}
                                 </td>
                                 <td class="decl-familyincome">
                                     {% for space in declaration.source.estate["31"] if space.space %}
-                                        {{ space.space }} {{ _(space.space_units) or _("м²") }}{% if not loop.last %}, {% endif %}
+                                        {{ space.space|spaceformat }} {{ _(space.space_units) or _("м²") }}{% if not loop.last %}, {% endif %}
                                     {% else %}—
                                     {% endfor %}
                                 </td>
@@ -458,13 +458,13 @@
                                 <td class="decl-year">{{ declaration.source.intro.declaration_year }}</td>
                                 <td>
                                     {% for space in declaration.source.estate["28"] if space.space %}
-                                        {{ space.space }} {{ _(space.space_units) or _("м²") }}{% if not loop.last %}, {% endif %}
+                                        {{ space.space|spaceformat }} {{ _(space.space_units) or _("м²") }}{% if not loop.last %}, {% endif %}
                                     {% else %}—
                                     {% endfor %}
                                 </td>
                                 <td>
                                     {% for space in declaration.source.estate["34"] if space.space %}
-                                        {{ space.space }} {{ _(space.space_units) or _("м²") }}{% if not loop.last %}, {% endif %}
+                                        {{ space.space|spaceformat }} {{ _(space.space_units) or _("м²") }}{% if not loop.last %}, {% endif %}
                                     {% else %}—
                                     {% endfor %}
                                 </td>

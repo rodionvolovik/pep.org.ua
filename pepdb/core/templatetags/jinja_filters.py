@@ -48,3 +48,15 @@ def curformat(value):
             return value
     else:
         return mark_safe('<i class="i-value-empty">—</i>')
+
+
+@library.filter
+def spaceformat(value):
+    try:
+        return '{:,.2f}'.format(
+            float(value.replace(',', '.'))).rstrip("0").rstrip(".")
+    except ValueError:
+        if value.startswith("."):
+            return "0" + value
+        else:
+            return value
