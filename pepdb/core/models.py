@@ -1478,6 +1478,9 @@ class Declaration(models.Model):
         db_index=True)
     fuzziness = models.IntegerField("Відстань", default=0)
     person = models.ForeignKey("Person", default=None)
+    nacp_declaration = models.BooleanField(
+        "Декларація НАЗК", default=False, db_index=True)
+
     relatives_populated = models.BooleanField(
         "Родина була внесена до БД", default=False, db_index=True)
 

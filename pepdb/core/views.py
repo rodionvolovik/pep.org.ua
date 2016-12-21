@@ -279,6 +279,7 @@ def person_details(request, person_id):
         "person": person,
         "query": "",
         "declarations": Declaration.objects.filter(
+            nacp_declaration=False,
             person=person, confirmed="a").order_by("year")
     }
 

@@ -198,7 +198,7 @@ class DeclarationExtraInline(admin.TabularInline):
 
     model = DeclarationExtra
     extra = 1
-    ordering = ("section", "date_confirmed",)    
+    ordering = ("section", "date_confirmed",)
     fields = ["date_confirmed", "date_confirmed_details", "section", "note",
               "address", "country"]
 
@@ -432,6 +432,15 @@ class DeclarationAdmin(admin.ModelAdmin):
 
             if rel_id:
                 relative = Person.objects.get(pk=rel_id)
+
+                # TODO: reuse is_initial helper
+                if len(relative.first_name_uk) < 3:
+                    relative.first_name_uk = first_name
+
+                if len(relative.patronymic_uk) < 3:
+                    relative.patronymic_uk = patronymic
+
+                relative.save()
             else:
                 relative = Person.objects.create(
                     first_name_uk=first_name,
@@ -457,13 +466,15 @@ class DeclarationAdmin(admin.ModelAdmin):
                 # )
 
             _, created = Person2Person.objects.update_or_create(
+                defaults=dict(
+                    declaration=declaration,
+                    proof=declaration.url + "?source",
+                    proof_title=(
+                        "Декларація за %s рік" % declaration.year),
+                ),
                 from_person=base_person,
                 to_person=relative,
                 from_relationship_type=relation_from,
-                declaration=declaration,
-                proof=declaration.url + "?source",
-                proof_title=(
-                    "Декларація за %s рік" % declaration.year),
                 to_relationship_type=relation_to
             )
             if created:

@@ -128,8 +128,11 @@
 
                     parent.find(".rel_id").val(el.data("id"));
                     parent.find(".last_name_input").val(el.data("last_name"));
-                    parent.find(".first_name_input").val(el.data("first_name"));
-                    parent.find(".patronymic_input").val(el.data("patronymic"));
+
+                    if (el.data("first_name").length > 2)
+                        parent.find(".first_name_input").val(el.data("first_name"));
+                    if (el.data("patronymic").length > 2)
+                        parent.find(".patronymic_input").val(el.data("patronymic"));
                 });
             });
         })(django.jQuery);
