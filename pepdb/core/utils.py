@@ -343,3 +343,7 @@ def add_encrypted_url(dct, user, url):
         ])
 
     return dct
+
+
+def is_initial(s):
+    return len(s) == 1 or s.endswith(".")

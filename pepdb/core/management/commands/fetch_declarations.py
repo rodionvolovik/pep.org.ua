@@ -7,10 +7,8 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 
 from core.models import Person, Declaration
+from core.utils import is_initial
 
-
-def is_initial(s):
-    return len(s) == 1 or s.endswith(".")
 
 
 class Command(BaseCommand):

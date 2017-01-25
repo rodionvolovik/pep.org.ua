@@ -68,6 +68,7 @@ INSTALLED_APPS = (
     'qartez',
     'captcha',
     'core',
+    'tasks',
 )
 
 MIDDLEWARE_CLASSES = (
