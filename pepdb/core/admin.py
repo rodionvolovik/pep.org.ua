@@ -53,6 +53,10 @@ class Person2PersonInline(admin.StackedInline):
         'fk': ['to_person'],
     }
 
+    def get_queryset(self, request):
+        qs = super(Person2PersonInline, self).get_queryset(request)
+        return qs.select_related("to_person")
+
 
 class Person2PersonBackInline(admin.StackedInline):
     verbose_name = u"Зворотній зв'язок з іншою персоною"
@@ -64,7 +68,17 @@ class Person2PersonBackInline(admin.StackedInline):
 
     inline_classes = ('grp-collapse grp-open',)
 
-    fields = [("from_person", "from_relationship_type"),
+    raw_id_fields = ('from_person',)
+    autocomplete_lookup_fields = {
+        'fk': ['from_person'],
+    }
+
+    def get_queryset(self, request):
+        qs = super(Person2PersonBackInline, self).get_queryset(request)
+        return qs.select_related("from_person")
+
+    fields = [
+              ("from_person", "from_relationship_type"),
               "to_relationship_type",
               ("date_established", "date_established_details"),
               ("date_finished", "date_finished_details"),
@@ -143,6 +157,10 @@ class Person2CompanyInline(TranslationStackedInline):
         }
         js = ("js/init_autocompletes.js",)
 
+    def get_queryset(self, request):
+        qs = super(Person2CompanyInline, self).get_queryset(request)
+        return qs.select_related("to_company")
+
 
 class Company2PersonInline(TranslationStackedInline):
     verbose_name = u"Зв'язок з іншою персоною"
@@ -164,6 +182,10 @@ class Company2PersonInline(TranslationStackedInline):
         'fk': ['from_person'],
     }
 
+    def get_queryset(self, request):
+        qs = super(Company2PersonInline, self).get_queryset(request)
+        return qs.select_related("from_person")
+
 
 class Company2CompanyInline(admin.TabularInline):
     model = Company2Company
@@ -178,6 +200,10 @@ class Company2CompanyInline(admin.TabularInline):
         'fk': ['to_company'],
     }
 
+    def get_queryset(self, request):
+        qs = super(Company2CompanyInline, self).get_queryset(request)
+        return qs.select_related("to_company")
+
 
 class Company2CompanyBackInline(admin.TabularInline):
     verbose_name = u"Зворотній зв'язок з іншою компанією"
@@ -190,6 +216,15 @@ class Company2CompanyBackInline(admin.TabularInline):
     fields = ["relationship_type", "from_company", "date_established",
               "date_finished", "date_confirmed", "equity_part",
               "proof_title", "proof"]
+
+    raw_id_fields = ('from_company',)
+    autocomplete_lookup_fields = {
+        'fk': ['from_company'],
+    }
+
+    def get_queryset(self, request):
+        qs = super(Company2CompanyBackInline, self).get_queryset(request)
+        return qs.select_related("from_company")
 
 
 class DeclarationExtraInline(admin.TabularInline):
@@ -204,9 +239,13 @@ class DeclarationExtraInline(admin.TabularInline):
 
 
 class PersonAdmin(TranslationAdmin):
-    inlines = (Person2PersonInline, Person2PersonBackInline,
-               Person2CountryInline, Person2CompanyInline,
-               DeclarationExtraInline)
+    inlines = (
+        Person2PersonInline,
+        Person2PersonBackInline,
+        Person2CountryInline,
+        Person2CompanyInline,
+        DeclarationExtraInline
+    )
 
     list_display = ("last_name_uk", "first_name_uk", "patronymic_uk",
                     "is_pep", "dob", "dob_details", "type_of_official",
