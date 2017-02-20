@@ -947,7 +947,7 @@ class Company(models.Model, AbstractNode):
             {"input": x} for x in suggestions
         ]
 
-        d["name_suggest_output"] = d["short_name"] or d["name"]
+        d["name_suggest_output"] = d["short_name_uk"] or d["name_uk"]
         d["name_suggest_output_en"] = d["short_name_en"] or d["name_en"]
 
         d["_id"] = d["id"]

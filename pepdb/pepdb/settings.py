@@ -68,6 +68,7 @@ INSTALLED_APPS = (
     'qartez',
     'captcha',
     'core',
+    'raven.contrib.django.raven_compat',
 )
 
 MIDDLEWARE_CLASSES = (
