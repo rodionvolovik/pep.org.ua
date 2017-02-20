@@ -159,11 +159,12 @@ class TranslatedField(object):
         self.en_field = en_field
 
     def __get__(self, instance, owner):
+
         if translation.get_language() == 'en':
-            return (getattr(instance, self.en_field) or
-                    getattr(instance, self.ua_field))
+            return (getattr(instance, self.en_field, "") or
+                    getattr(instance, self.ua_field, ""))
         else:
-            return getattr(instance, self.ua_field)
+            return getattr(instance, self.ua_field, "")
 
 
 VALID_POSITIONS = [
@@ -343,3 +344,15 @@ def add_encrypted_url(dct, user, url):
         ])
 
     return dct
+
+
+def unique(source):
+    """
+    Returns unique values from the list preserving order of initial list.
+    :param source: An iterable.
+    :type source: list
+    :returns: List with unique values.
+    :rtype: list
+    """
+    seen = set()
+    return [seen.add(x) or x for x in source if x not in seen]
