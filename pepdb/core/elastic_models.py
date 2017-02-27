@@ -7,9 +7,9 @@ class RangeRelevantEntitiesMixin(object):
         hl = getattr(self.meta, "highlight", None)
 
         if hl is not None:
-            hl_uk = hl.get("related_persons.person_uk", [])
+            hl_uk = getattr(hl, "related_persons.person_uk", [])
 
-            hl_en = hl.get("related_persons.person_en", [])
+            hl_en = getattr(hl, "related_persons.person_en", [])
         else:
             hl_en = []
             hl_uk = []
@@ -18,7 +18,7 @@ class RangeRelevantEntitiesMixin(object):
         peps = []
         rest = []
 
-        for p in self.related_persons:
+        for p in getattr(self, "related_persons", []):
             if p.person_uk in hl_uk:
                 highlighted.append(p)
             elif p.person_en in hl_en:
@@ -42,7 +42,6 @@ class Person(DocType, RangeRelevantEntitiesMixin):
     """Person document."""
 
     full_name_suggest = Completion(preserve_separators=False)
-    full_name_suggest_en = Completion(preserve_separators=False)
 
     translated_first_name = TranslatedField("first_name", "first_name_en")
     translated_last_name = TranslatedField("last_name", "last_name_en")
@@ -61,7 +60,6 @@ class Company(DocType, RangeRelevantEntitiesMixin):
     """Person document."""
 
     name_suggest = Completion(preserve_separators=False)
-    name_suggest_en = Completion(preserve_separators=False)
 
     translated_name = TranslatedField("name_uk", "name_en")
 

@@ -434,9 +434,18 @@ class Person(models.Model, AbstractNode):
                 return []
 
             return [
-                " ".join([last_name, first_name, patronymic]),
-                " ".join([first_name, patronymic, last_name]),
-                " ".join([first_name, last_name])
+                {
+                    "input": " ".join([last_name, first_name, patronymic]),
+                    "weight": 5,
+                },
+                {
+                    "input": " ".join([first_name, patronymic, last_name]),
+                    "weight": 2,
+                },
+                {
+                    "input": " ".join([first_name, last_name]),
+                    "weight": 2,
+                }
             ]
 
         input_variants = [generate_suggestions(
@@ -447,15 +456,7 @@ class Person(models.Model, AbstractNode):
             self.parsed_names
         ))
 
-        d["full_name_suggest"] = {
-            "input": list(chain.from_iterable(input_variants)),
-            "output": d["full_name"]
-        }
-
-        d["full_name_suggest_en"] = {
-            "input": list(chain.from_iterable(input_variants)),
-            "output": d["full_name_en"]
-        }
+        d["full_name_suggest"] = list(chain.from_iterable(input_variants))
 
         d["_id"] = d["id"]
 
@@ -942,15 +943,12 @@ class Company(models.Model, AbstractNode):
                 variant = [variant[i]] + variant[:i] + variant[i + 1:]
                 suggestions.append(" ".join(variant))
 
-        d["name_suggest"] = {
-            "input": suggestions,
-            "output": d["short_name_uk"] or d["name_uk"]
-        }
+        d["name_suggest"] = [
+            {"input": x} for x in suggestions
+        ]
 
-        d["name_suggest_en"] = {
-            "input": suggestions,
-            "output": d["short_name_en"] or d["name_en"]
-        }
+        d["name_suggest_output"] = d["short_name_uk"] or d["name_uk"]
+        d["name_suggest_output_en"] = d["short_name_en"] or d["name_en"]
 
         d["_id"] = d["id"]
 

@@ -20,7 +20,7 @@ from cryptography.fernet import InvalidToken
 
 from core.models import Person, Declaration, Country, Company, ActionLog
 from core.pdf import pdf_response
-from core.utils import is_cyr, blacklist, add_encrypted_url
+from core.utils import is_cyr, blacklist, add_encrypted_url, unique
 from core.paginator import paginated_search
 from core.forms import FeedbackForm
 from core.auth import logged_in_or_basicauth
@@ -34,25 +34,27 @@ from core.elastic_models import (
 
 def suggest(request):
     if translation.get_language() == "en":
-        field = "full_name_suggest_en"
-        company_field = "name_suggest_en"
+        field = "full_name_en"
+        company_field = "name_suggest_output_en"
     else:
-        field = "full_name_suggest"
-        company_field = "name_suggest"
+        field = "full_name"
+        company_field = "name_suggest_output"
 
     def assume(q, fuzziness):
         results = []
 
         search = ElasticPerson.search()\
+            .source(['full_name_suggest', field])\
+            .params(size=0)\
             .suggest(
                 'name',
                 q,
                 completion={
-                    'field': field,
+                    'field': "full_name_suggest",
                     'size': 10,
                     'fuzzy': {
                         'fuzziness': fuzziness,
-                        'unicode_aware': 1
+                        'unicode_aware': True
                     }
                 }
         )
@@ -62,15 +64,17 @@ def suggest(request):
             results += res.suggest['name'][0]['options']
 
         search = ElasticCompany.search()\
+            .source(['name_suggest', company_field])\
+            .params(size=0)\
             .suggest(
                 'name',
                 q,
                 completion={
-                    'field': company_field,
+                    'field': "name_suggest",
                     'size': 5,
                     'fuzzy': {
                         'fuzziness': fuzziness,
-                        'unicode_aware': 1
+                        'unicode_aware': True
                     }
                 }
         )
@@ -79,12 +83,15 @@ def suggest(request):
         if res.success:
             results += res.suggest['name'][0]['options']
 
-        results = sorted(results, key=itemgetter("score"), reverse=True)
+        results = sorted(results, key=itemgetter("_score"), reverse=True)
 
         if results:
-            return [val['text'] for val in results]
+            return unique(
+                getattr(val._source, company_field, "") or getattr(val._source, field, "")
+                for val in results
+            )
         else:
-            []
+            return []
 
     q = request.GET.get('q', '').strip()
 
