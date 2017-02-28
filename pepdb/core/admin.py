@@ -569,6 +569,8 @@ class ActionLogAdmin(admin.ModelAdmin):
     list_display = ("user", "action", "timestamp", "details")
     ordering = ("-timestamp",)
 
+    list_filter = ("user", "action", )
+
     def has_add_permission(self, request):
         return False
 

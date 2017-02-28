@@ -1,0 +1,17 @@
+<a href="{{ url("person_details", person_id=person.id) }}" target="_blank">{{ person.full_name }}</a> {% if person.date_of_birth %}, {{ person.date_of_birth }} {% endif %}<br />
+{% if person.last_job_title or person.last_workplace %}
+{{ person.last_job_title }} @ {{ person.last_workplace }} <br/>
+{% endif %}
+{% if person.related_persons %}
+<strong>Родина та пов'язані особи:</strong> <br/>
+{% for rp in person.related_persons[:10] %}
+    {{ rp.person_uk }}, {{ rp.relationship_type }} <br/>
+{% endfor %}
+{% endif %}
+
+{% if person.related_companies %}
+<strong>Юр. особи:</strong> <br/>
+{% for rc in person.related_companies[:10] %}
+    {{ rc.to_company_uk }}, {{ rc.relationship_type_uk }} <br/>
+{% endfor %}
+{% endif %}

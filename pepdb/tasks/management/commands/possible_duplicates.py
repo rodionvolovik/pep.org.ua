@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-
 from django.core.management.base import BaseCommand
 from django.conf import settings
 
@@ -9,6 +8,8 @@ from collections import defaultdict
 from core.models import Person
 from core.utils import is_initial
 from tasks.models import PersonDeduplication
+from Levenshtein import jaro
+from itertools import combinations
 
 
 class Command(BaseCommand):
@@ -36,8 +37,9 @@ class Command(BaseCommand):
         grouped_by_fullname = defaultdict(list)
         grouped_by_shortenedname = defaultdict(list)
 
+        # First pass: exact matches by full name (even if those are given with initials)
         for l in all_persons:
-            if l["has_initials"] == "True":
+            if l["has_initials"]:
                 grouped_by_shortenedname[l["key"]].append(l["pk"])
             else:
                 grouped_by_fullname[l["fullname"]].append(l["pk"])
@@ -57,9 +59,13 @@ class Command(BaseCommand):
 
         mixed_grouping = defaultdict(list)
 
-        # Second pass
+        # Second pass: initials vs full names
         for l in all_persons:
-            if l["pk"] not in spoiled_ids:
+            if l["pk"] not in spoiled_ids and l["has_initials"]:
+                mixed_grouping[l["key"]].append(l["pk"])
+
+        for l in all_persons:
+            if l["pk"] not in spoiled_ids and not l["has_initials"] and l["key"] in mixed_grouping:
                 mixed_grouping[l["key"]].append(l["pk"])
 
         for k, v in mixed_grouping.items():
@@ -71,4 +77,23 @@ class Command(BaseCommand):
             PersonDeduplication(
                 person1_id=chunk[0],
                 person2_id=chunk[1],
+                person1_json=Person.objects.get(pk=chunk[0]).to_dict(),
+                person2_json=Person.objects.get(pk=chunk[1]).to_dict(),
             ).save()
+
+        candidates_for_fuzzy = [
+            l for l in all_persons
+            if l["pk"] not in spoiled_ids and not l["has_initials"]
+        ]
+
+        fuzzy_chunks = []
+        for a, b in combinations(candidates_for_fuzzy, 2):
+            score = jaro(a["fullname"], b["fullname"])
+            if score > 0.93:
+                PersonDeduplication(
+                    person1_id=a["pk"],
+                    person2_id=b["pk"],
+                    fuzzy=True,
+                    person1_json=Person.objects.get(pk=a["pk"]).to_dict(),
+                    person2_json=Person.objects.get(pk=b["pk"]).to_dict(),
+                ).save()
