@@ -194,7 +194,7 @@ def _search_company(request):
     _fields = ["name_uk", "short_name_uk", "name_en", "short_name_en",
                "related_persons.person_uk", "related_persons.person_en",
                "other_founders", "other_recipient", "other_owners",
-               "other_managers", "bank_name"]
+               "other_managers", "bank_name", "edrpou"]
 
     if query:
         companies = ElasticCompany.search().query(

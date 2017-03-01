@@ -52,4 +52,4 @@ class Command(BaseCommand):
 
                     portion = []
 
-            bulk(es, portion)        
+            bulk(es, portion)

@@ -1,0 +1,9 @@
+<a href="{{ url("company_details", company_id=company.id) }}" target="_blank">{{ company.name_uk|safe }}</a>{% if company.edrpou %}, {{ company.edrpou }}{% endif %}{% if company.short_name_uk %} ({{ company.short_name_uk|safe }}){% endif %}
+
+{% if company.heads %}
+<br/>
+<strong>Пов'язані особи:</strong> <br/>
+{% for head in company.heads[:10] %}
+    {{ head }} <br/>
+{% endfor %}
+{% endif %}

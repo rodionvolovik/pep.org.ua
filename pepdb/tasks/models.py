@@ -13,7 +13,10 @@ class AbstractTask(models.Model):
         blank=True, null=True)
 
     timestamp = models.DateTimeField(
-        verbose_name="Дата та час", auto_now_add=True)
+        verbose_name="Створено", auto_now_add=True)
+
+    last_modified = models.DateTimeField(
+        verbose_name="Змінено", auto_now=True, null=True)
 
     class Meta:
         abstract = True
@@ -51,3 +54,28 @@ class PersonDeduplication(AbstractTask):
         unique_together = [
             ["person1_id", "person2_id"],
         ]
+
+
+class CompanyMatching(AbstractTask):
+    STATUS_CHOICES = (
+        ("p", "Не перевірено"),
+        ("m", "Виконано"),
+    )
+
+    status = models.CharField(
+        "Статус",
+        max_length=1,
+        choices=STATUS_CHOICES,
+        default="p",
+        db_index=True
+    )
+
+    company_json = JSONField(verbose_name="Компанія", null=True)
+    candidates_json = JSONField(verbose_name="Кандідати", null=True)
+    edrpou_match = models.CharField(
+        "Знайдена компанія", max_length=15, null=True, blank=True)
+    company_id = models.IntegerField(null=True)
+
+    class Meta:
+        verbose_name = "Результати пошуку компанії"
+        verbose_name_plural = "Результати пошуку компаній"

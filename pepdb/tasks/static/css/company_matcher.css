@@ -1,0 +1,29 @@
+.match {
+    color: #426B37;
+    text-decoration: none;
+    border-bottom: 1px dotted;
+}
+
+.company_match {
+    margin-bottom: 5px;
+}
+
+.company_match input {
+    display: block;
+    float: left;
+    margin-bottom: 20px;
+    margin-right: 10px;
+}
+
+.company_match label {
+    display: block;
+}
+
+.company_match input:checked + span {
+    color: black;
+}
+
+.no-match {
+    border-top: 1px solid silver;
+    padding-top: 5px;
+}
