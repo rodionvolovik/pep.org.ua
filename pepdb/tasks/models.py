@@ -34,7 +34,7 @@ class PersonDeduplication(AbstractTask):
 
     status = models.CharField(
         "Статус",
-        max_length=1,
+        max_length=2,
         choices=STATUS_CHOICES,
         default="p",
         db_index=True
