@@ -30,6 +30,7 @@ class PersonDeduplication(AbstractTask):
         ("-", "---------------"),   # That's a shame, I know
         ("d1", "Видалити першу"),
         ("d2", "Видалити другу"),
+        ("dd", "Видалити всі"),
     )
 
     status = models.CharField(
