@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.core.management.base import BaseCommand
+from django.db.utils import IntegrityError
 from django.conf import settings
 
 from collections import defaultdict
@@ -74,12 +75,15 @@ class Command(BaseCommand):
                 chunks_to_review.append(v)
 
         for chunk in chunks_to_review:
-            PersonDeduplication(
-                person1_id=chunk[0],
-                person2_id=chunk[1],
-                person1_json=Person.objects.get(pk=chunk[0]).to_dict(),
-                person2_json=Person.objects.get(pk=chunk[1]).to_dict(),
-            ).save()
+            try:
+                PersonDeduplication(
+                    person1_id=chunk[0],
+                    person2_id=chunk[1],
+                    person1_json=Person.objects.get(pk=chunk[0]).to_dict(),
+                    person2_json=Person.objects.get(pk=chunk[1]).to_dict(),
+                ).save()
+            except IntegrityError:
+                pass
 
         candidates_for_fuzzy = [
             l for l in all_persons
@@ -90,10 +94,13 @@ class Command(BaseCommand):
         for a, b in combinations(candidates_for_fuzzy, 2):
             score = jaro(a["fullname"], b["fullname"])
             if score > 0.93:
-                PersonDeduplication(
-                    person1_id=a["pk"],
-                    person2_id=b["pk"],
-                    fuzzy=True,
-                    person1_json=Person.objects.get(pk=a["pk"]).to_dict(),
-                    person2_json=Person.objects.get(pk=b["pk"]).to_dict(),
-                ).save()
+                try:
+                    PersonDeduplication(
+                        person1_id=a["pk"],
+                        person2_id=b["pk"],
+                        fuzzy=True,
+                        person1_json=Person.objects.get(pk=a["pk"]).to_dict(),
+                        person2_json=Person.objects.get(pk=b["pk"]).to_dict(),
+                    ).save()
+                except IntegrityError:
+                    pass
