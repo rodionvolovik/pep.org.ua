@@ -12,11 +12,12 @@ class PersonDeduplicationAdmin(admin.ModelAdmin):
         "person2",
         "timestamp",
         "fuzzy",
-        "status"
+        "status",
+        "applied"
     )
 
     list_editable = ("status",)
-    list_filter = ("status", "fuzzy")
+    list_filter = ("status", "fuzzy", "applied")
 
     ordering = ("timestamp",)
 

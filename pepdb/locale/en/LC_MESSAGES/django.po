@@ -866,7 +866,7 @@ msgstr "Declarant's vehicles"
 
 #: core/templates/person.jinja:566
 msgid "Авто в сім'ї"
-msgstr "Household (family) vehiclea"
+msgstr "Household (family) vehicles"
 
 #: core/templates/person.jinja:611
 msgid "Родина та близькі особи"

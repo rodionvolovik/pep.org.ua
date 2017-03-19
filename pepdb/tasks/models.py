@@ -44,6 +44,7 @@ class PersonDeduplication(AbstractTask):
     person1_id = models.IntegerField(null=True)
     person2_id = models.IntegerField(null=True)
     fuzzy = models.BooleanField(default=False, db_index=True)
+    applied = models.BooleanField(default=False, db_index=True)
 
     person1_json = JSONField(verbose_name="Персона 1", null=True)
     person2_json = JSONField(verbose_name="Персона 2", null=True)

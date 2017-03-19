@@ -1530,6 +1530,9 @@ class Declaration(models.Model):
 
         return res
 
+    def __unicode__(self):
+        return "%s %s" % (self.person, self.declaration_id)
+
     class Meta:
         verbose_name = "Декларація"
         verbose_name_plural = "Декларації"
