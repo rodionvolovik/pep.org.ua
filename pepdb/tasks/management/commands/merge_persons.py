@@ -75,9 +75,21 @@ class Command(BaseCommand):
                 self.stdout.write("\tskipping")
 
             if task.status in ["d1", "dd"]:
+                if task.status == "d1":
+                    self.stdout.write(
+                        "\tkeeping {}".format(
+                            task.person2_id)
+                    )
+
                 _delete_person(task, task.person1_id)
 
             if task.status in ["d2", "dd"]:
+                if task.status == "d2":
+                    self.stdout.write(
+                        "\tkeeping {}".format(
+                            task.person1_id)
+                    )
+
                 _delete_person(task, task.person2_id)
 
             if task.status == "m":
@@ -174,7 +186,7 @@ class Command(BaseCommand):
                             p2p.from_person_id = master.pk
                             p2p.save()
                     else:
-                        self.stdout.write("\ignoring link {}".format(p2p))
+                        self.stdout.write("\tignoring link {}".format(p2p))
 
                 for p2p in Person2Person.objects.filter(
                         to_person_id=donor.pk):
@@ -188,7 +200,7 @@ class Command(BaseCommand):
                             p2p.to_person_id = master.pk
                             p2p.save()
                     else:
-                        self.stdout.write("\ignoring link {}".format(p2p))
+                        self.stdout.write("\tignoring link {}".format(p2p))
 
                 # Merging declarations
                 for decl in Declaration.objects.filter(
