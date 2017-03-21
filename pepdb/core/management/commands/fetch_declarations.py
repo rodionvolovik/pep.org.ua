@@ -14,7 +14,7 @@ from core.utils import is_initial
 
 class Command(BaseCommand):
     help = ('Loads declarations for PEPs in db')
-    TASKS_PER_BATCH = 25
+    TASKS_PER_BATCH = 500
 
     def add_declaration(self, person, decl, fuzziness, batch):
         try:
