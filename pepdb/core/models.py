@@ -1482,6 +1482,8 @@ class Declaration(models.Model):
     relatives_populated = models.BooleanField(
         "Родина була внесена до БД", default=False, db_index=True)
 
+    batch_number = models.IntegerField("Номер теки", default=0, db_index=True)
+
     def to_dict(self):
         d = model_to_dict(self, fields=[
             "year", "position_uk", "office_uk", "region_uk",

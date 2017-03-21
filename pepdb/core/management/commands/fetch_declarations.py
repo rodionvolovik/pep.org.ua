@@ -5,6 +5,7 @@ import requests
 
 from django.core.management.base import BaseCommand
 from django.conf import settings
+from django.db.models import Max
 
 from core.models import Person, Declaration
 from core.utils import is_initial
@@ -13,8 +14,9 @@ from core.utils import is_initial
 
 class Command(BaseCommand):
     help = ('Loads declarations for PEPs in db')
+    TASKS_PER_BATCH = 25
 
-    def add_declaration(self, person, decl, fuzziness):
+    def add_declaration(self, person, decl, fuzziness, batch):
         try:
             _ = Declaration.objects.get(declaration_id=decl["id"])
             self.stdout.write(
@@ -36,12 +38,6 @@ class Command(BaseCommand):
             if decl["intro"]["doc_type"] != "Щорічна":
                 return
 
-            subr = requests.get(
-                "https://public-api.nazk.gov.ua/v1/declaration/%s" % (
-                    decl["id"].replace("nacp_", "")
-                ), verify=False).json()
-
-            decl["nacp_response"] = subr
             Declaration.objects.create(
                 declaration_id=decl["id"],
                 person=person,
@@ -54,6 +50,7 @@ class Command(BaseCommand):
                     "region": decl["general"]["post"]["region"],
                     "year": decl["intro"]["declaration_year"],
                     "source": decl,
+                    "batch_number": batch,                    
                     "nacp_declaration": True,
                     "url": "https://declarations.com.ua/declaration/%s" % (
                         decl["id"]),
@@ -76,13 +73,21 @@ class Command(BaseCommand):
                     "region": decl["general"]["post"]["region"],
                     "year": decl["intro"]["declaration_year"],
                     "source": decl,
+                    "batch_number": batch,
                     "url": "https://declarations.com.ua/declaration/%s" % (
                         decl["id"]),
                     "fuzziness": fuzziness
                 }
             )
 
+        return True
+
     def handle(self, *args, **options):
+        max_batch = Declaration.objects.aggregate(mx=Max("batch_number"))
+
+        current_batch = max_batch.get("mx", 0) + 1
+        task_number = 0
+
         for person in Person.objects.all():
             full_name = ("%s %s %s" % (person.first_name, person.patronymic,
                                        person.last_name)).replace("  ", " ")
@@ -104,4 +109,12 @@ class Command(BaseCommand):
             self.stdout.write(full_name)
 
             for decl in subr["results"]["object_list"]:
-                self.add_declaration(person, decl, subr["fuzziness"])
+                res = self.add_declaration(
+                    person,
+                    decl,
+                    subr["fuzziness"],
+                    current_batch + task_number // self.TASKS_PER_BATCH
+                )
+
+                if res:
+                    task_number += 1

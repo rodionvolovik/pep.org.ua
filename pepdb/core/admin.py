@@ -552,7 +552,7 @@ class DeclarationAdmin(admin.ModelAdmin):
 
     list_display = (
         "fullname_pep", "fullname_decl", "position_pep", "position_decl",
-        "region", "year", "family_table", "confirmed", "fuzziness")
+        "region", "year", "family_table", "confirmed", "fuzziness", "batch_number")
 
     search_fields = [
         'last_name', "first_name", "patronymic",
@@ -560,7 +560,7 @@ class DeclarationAdmin(admin.ModelAdmin):
         'person__patronymic_uk']
 
     list_editable = ("confirmed",)
-    list_filter = ("confirmed", "relatives_populated", )
+    list_filter = ("confirmed", "relatives_populated", "batch_number")
 
     actions = [populate_relatives]
 
