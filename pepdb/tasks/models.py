@@ -61,6 +61,7 @@ class PersonDeduplication(AbstractTask):
 class CompanyMatching(AbstractTask):
     STATUS_CHOICES = (
         ("p", "Не перевірено"),
+        ("r", "Потребує додаткової перевірки"),
         ("m", "Виконано"),
     )
 
