@@ -407,7 +407,11 @@ class Person(models.Model, AbstractNode):
             for i in self.person2company_set.select_related("to_company")]
         d["declarations"] = [
             i.to_dict()
-            for i in Declaration.objects.filter(person=self, confirmed="a")
+            for i in Declaration.objects.filter(
+                person=self,
+                confirmed="a",
+                nacp_declaration=False
+            )
         ]
 
         d["photo"] = self.photo.name if self.photo else ""
