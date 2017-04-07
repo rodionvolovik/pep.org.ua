@@ -405,11 +405,13 @@ class DeclarationAdmin(admin.ModelAdmin):
     fullname_decl.allow_tags = True
 
     def fullname_pep(self, obj):
-        return ("%s %s %s" % (
+        return ('<a href="%s" target="_blank">%s %s %s</a>' % (
+            reverse("person_details", kwargs={"person_id": obj.person_id}),
             obj.person.last_name_uk, obj.person.first_name_uk,
             obj.person.patronymic_uk,
         )).replace("  ", " ").strip()
     fullname_pep.short_description = 'ПІБ з БД PEP'
+    fullname_pep.allow_tags = True
     fullname_pep.admin_order_field = 'person__last_name_uk'
 
     def position_decl(self, obj):
@@ -551,7 +553,7 @@ class DeclarationAdmin(admin.ModelAdmin):
     list_select_related = ("person", )
 
     list_display = (
-        "fullname_pep", "fullname_decl", "position_pep", "position_decl",
+        "pk", "fullname_pep", "fullname_decl", "position_pep", "position_decl",
         "region", "year", "family_table", "confirmed", "fuzziness", "batch_number")
 
     search_fields = [
