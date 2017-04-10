@@ -404,6 +404,19 @@ class DeclarationAdmin(admin.ModelAdmin):
     fullname_decl.admin_order_field = 'last_name'
     fullname_decl.allow_tags = True
 
+    def approve(self, request, queryset):
+        queryset.update(confirmed="a")
+    approve.short_description = "Опублікувати"
+
+    def reject(self, request, queryset):
+        queryset.update(confirmed="r")
+    reject.short_description = "Відхилити"
+
+    def doublecheck(self, request, queryset):
+        queryset.update(confirmed="c")
+    doublecheck.short_description = "На повторну перевірку"
+
+
     def fullname_pep(self, obj):
         return ('<a href="%s" target="_blank">%s %s %s</a>' % (
             reverse("person_details", kwargs={"person_id": obj.person_id}),
@@ -564,7 +577,7 @@ class DeclarationAdmin(admin.ModelAdmin):
     list_editable = ("confirmed",)
     list_filter = ("confirmed", "relatives_populated", "batch_number")
 
-    actions = [populate_relatives]
+    actions = [populate_relatives, approve, reject, doublecheck]
 
 
 class ActionLogAdmin(admin.ModelAdmin):
