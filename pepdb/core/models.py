@@ -877,6 +877,7 @@ class Company(models.Model, AbstractNode):
     city = models.CharField("Місто", max_length=255, blank=True)
     street = models.CharField("Вулиця", max_length=100, blank=True)
     appt = models.CharField("№ будинку, офісу", max_length=50, blank=True)
+    raw_address = models.TextField('"Сира" адреса', blank=True)
 
     wiki = RedactorField("Вікі-стаття", blank=True)
 

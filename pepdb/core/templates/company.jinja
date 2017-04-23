@@ -92,21 +92,24 @@
                                 <td><strong>{{ related_countries.registered_in|first }}</strong></td>
                             </tr>
                             {% endif %}
-                            {% if company.zip_code or company.city or company.street or company.appt %}
+                            {% if company.zip_code or company.city or company.street or company.appt or company.raw_address %}
                             <tr>
                                 <td>{{ _("Адреса") }} </td>
                                 <td><strong>
                                     {% if company.zip_code -%}
-                                    {{ company.zip_code }}, 
+                                        {{ company.zip_code }}, 
                                     {%- endif %}
                                     {% if company.city -%}
-                                    {{ company.city }}, 
+                                        {{ company.city }}, 
                                     {%- endif %}
                                     {% if company.street -%}
-                                    {{ company.street }}, 
+                                        {{ company.street }}, 
                                     {%- endif %}
                                     {% if company.appt -%}
-                                    {{ company.appt }}
+                                        {{ company.appt }}
+                                    {%- endif %}
+                                    {% if company.raw_address -%}
+                                        {{ company.raw_address }}
                                     {%- endif %}
                                 </strong></td>
                             </tr>
