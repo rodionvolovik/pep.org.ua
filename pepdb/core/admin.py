@@ -521,7 +521,10 @@ class DeclarationAdmin(admin.ModelAdmin):
 
             _, created = Person2Person.objects.update_or_create(
                 defaults=dict(
+                    # TODO: Use declarations field instead
                     declaration=declaration,
+
+                    # TODO: support for multiple proofs
                     proof=declaration.url + "?source",
                     proof_title=(
                         "Декларація за %s рік" % declaration.year),

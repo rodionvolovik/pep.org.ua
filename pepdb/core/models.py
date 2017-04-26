@@ -12,6 +12,7 @@ from django.db.models.functions import Coalesce, Value
 from django.contrib.auth.models import User
 from django.forms.models import model_to_dict
 from django.core.urlresolvers import reverse
+from django.contrib.postgres.fields import ArrayField
 
 # Strange bug related to babel
 from django.utils.translation import ugettext_noop as _
@@ -688,6 +689,13 @@ class Person2Person(AbstractRelationship):
     declaration = models.ForeignKey(
         "Declaration", blank=True, null=True,
         verbose_name="Декларація, що підтверджує зв'язок")
+
+    declarations = ArrayField(
+        models.IntegerField(),
+        verbose_name="Декларації, що підтверджують зв'язок",
+        null=True,
+        blank=True
+    )
 
     def __unicode__(self):
         return "%s (%s) -> %s (%s)" % (
