@@ -189,7 +189,7 @@
                                             <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Пов'язані особи") }}</span>
                                             <ul class="h">
                                                 {% for rp in related_persons.rest %}
-                                                    {{ render_related_person(rp, "worked") }}
+                                                    {{ render_related_person(rp, "worked", for_company=True) }}
                                                 {% endfor %}
                                             </ul>
                                         </li>

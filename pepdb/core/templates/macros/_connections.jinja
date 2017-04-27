@@ -54,14 +54,19 @@
    {% endif %}
 {% endmacro %}
 
-{% macro render_related_person(person, type) %}
+{% macro render_related_person(person, type, for_company=False) %}
     <li itemprop="{% if type == "family" %}relatedTo{% elif type == "worked" %}employee{% else %}knows{% endif %}" itemscope itemtype="http://schema.org/Person">
         <a href="{{ person.get_absolute_url() }}" itemprop="url">
             <span class="{% if person.is_pep %}is_pep {% endif %}name-pill" itemprop="name">
                 <span itemprop="familyName">{{ person.last_name }}</span> <span itemprop="givenName">{{ person.first_name }}</span> <span itemprop="additionalName">{{ person.patronymic }}</span>
             </span>
         </a> &ndash;
-        {% if person.rtype %}{{ _(person.rtype) }},{% endif %}
+
+        {% if for_company %}
+            {{ person.connection.relationship_type }}
+        {% else %}
+            {% if person.rtype %}{{ _(person.rtype) }},{% endif %}
+        {% endif %}
         {% if person.connection.has_additional_info %}
             <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalPerson-{{ person.pk }}">
                <i class="fa fa-info-circle info-gray"></i>
