@@ -270,10 +270,6 @@ class PersonAdmin(TranslationAdmin):
             'fields': ['reputation_sanctions', 'reputation_crimes',
                        'reputation_manhunt', 'reputation_convictions']}),
 
-        (u'Непублічна інформація', {
-            'fields': ['passport_id', 'passport_reg', 'tax_payer_id',
-                       'registration', 'id_number']}),
-
         (u'SEO', {
             'fields': ['title', 'description']}),
     ]

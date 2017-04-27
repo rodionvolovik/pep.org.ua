@@ -23,11 +23,6 @@ FIELDS_TO_UPDATE = [
     "photo",
     "dob",
     "city_of_birth",
-    "registration",
-    "passport_id",
-    "passport_reg",
-    "tax_payer_id",
-    "id_number",
 ]
 
 class Command(BaseCommand):

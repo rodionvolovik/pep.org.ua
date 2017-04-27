@@ -83,24 +83,10 @@ class Person(models.Model, AbstractNode):
 
     city_of_birth = models.CharField(
         "Місто народження", max_length=100, blank=True)
-    registration = models.TextField(
-        "Офіційне місце реєстрації (внутрішне поле)", blank=True)
 
     related_countries = models.ManyToManyField(
         "Country", verbose_name="Пов'язані країни",
         through="Person2Country", related_name="people")
-
-    passport_id = models.CharField(
-        "Паспорт або інший документ (внутрішне поле)", max_length=20,
-        blank=True)
-    passport_reg = models.TextField(
-        "Дата видачі та орган (внутрішне поле)", blank=True)
-    tax_payer_id = models.CharField(
-        "Номер картки платника податків (внутрішне поле)", max_length=30,
-        blank=True)
-    id_number = models.CharField(
-        "Ідентифікаційний номер (внутрішне поле)", max_length=10,
-        blank=True)
 
     reputation_assets = RedactorField(
         "Статки", blank=True)
@@ -308,10 +294,6 @@ class Person(models.Model, AbstractNode):
         related_persons = [
             (i.to_relationship_type, i.from_relationship_type, i.to_person, i)
             for i in self.to_persons.select_related("to_person").defer(
-                "to_person__passport_id",
-                "to_person__passport_reg",
-                "to_person__tax_payer_id",
-                "to_person__id_number",
                 "to_person__reputation_assets",
                 "to_person__reputation_sanctions",
                 "to_person__reputation_crimes",
@@ -325,10 +307,6 @@ class Person(models.Model, AbstractNode):
             (i.from_relationship_type, i.to_relationship_type,
              i.from_person, i)
             for i in self.from_persons.select_related("from_person").defer(
-                "from_person__passport_id",
-                "from_person__passport_reg",
-                "from_person__tax_payer_id",
-                "from_person__id_number",
                 "from_person__reputation_assets",
                 "from_person__reputation_sanctions",
                 "from_person__reputation_crimes",
@@ -995,10 +973,6 @@ class Company(models.Model, AbstractNode):
         related_persons = [
             (i.relationship_type_uk, i.from_person, i)
             for i in self.from_persons.select_related("from_person").defer(
-                "from_person__passport_id",
-                "from_person__passport_reg",
-                "from_person__tax_payer_id",
-                "from_person__id_number",
                 "from_person__reputation_assets",
                 "from_person__reputation_crimes",
                 "from_person__reputation_manhunt",
