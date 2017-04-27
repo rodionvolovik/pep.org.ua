@@ -934,6 +934,12 @@ class Company(models.Model, AbstractNode):
                 variant = [variant[i]] + variant[:i] + variant[i + 1:]
                 suggestions.append(" ".join(variant))
 
+        if self.edrpou:
+            suggestions.append(self.edrpou.lstrip("0"))
+
+            if self.edrpou.isdigit():
+                suggestions.append(self.edrpou.rjust(8, "0"))
+
         d["name_suggest"] = [
             {"input": x} for x in suggestions
         ]

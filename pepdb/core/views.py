@@ -79,6 +79,8 @@ def suggest(request):
                 }
         )
 
+        # TODO: Investigate, completion doesn't work with numbers
+
         res = search.execute()
         if res.success:
             results += res.suggest['name'][0]['options']

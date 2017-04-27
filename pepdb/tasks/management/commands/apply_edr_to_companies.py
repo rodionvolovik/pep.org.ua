@@ -118,6 +118,7 @@ class Command(BaseCommand):
 
             for r in res[:1]:
                 parsed = self.parse_address(r.location)
+                r.edrpou = r.edrpou.rjust(8, "0")
 
                 if parsed:
                     skip = False
@@ -171,23 +172,24 @@ class Command(BaseCommand):
                         self.stdout.write("=======\n\n")
                         continue
 
-                    if company.edrpou and company.edrpou != r.edrpou:
-                        self.stdout.write(
-                            "Replacing edrpou %s with %s for company %s, %s" % (
-                                company.edrpou,
-                                r.edrpou,
-                                company.name,
-                                company.id
-                            )
-                        )
-
                     company.zip_code = zip_code
                     company.city = city
                     company.street = street
                     company.appt = appt
-                    company.edrpou = r.edrpou
                 else:
                     company.raw_address = r.location
+
+                if company.edrpou and company.edrpou != r.edrpou:
+                    self.stdout.write(
+                        "Replacing edrpou %s with %s for company %s, %s" % (
+                            company.edrpou,
+                            r.edrpou,
+                            company.name,
+                            company.id
+                        )
+                    )
+
+                company.edrpou = r.edrpou
 
                 if options["real_run"]:
                     company.save()
