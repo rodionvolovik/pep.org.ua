@@ -574,7 +574,8 @@ class DeclarationAdmin(admin.ModelAdmin):
                  for x in family if x] +
                 ["</table>"])
 
-        return ""
+        return ("<strong>Родини нема</strong>"
+                if obj.relatives_populated else "")
 
     family_table.short_description = 'Родина'
     family_table.allow_tags = True

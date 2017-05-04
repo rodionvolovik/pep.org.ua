@@ -1473,7 +1473,7 @@ class Declaration(models.Model):
         "Декларація НАЗК", default=False, db_index=True)
 
     relatives_populated = models.BooleanField(
-        "Родина була внесена до БД", default=False, db_index=True)
+        "Родини немає, або вже внесена до БД", default=False, db_index=True)
 
     batch_number = models.IntegerField("Номер теки", default=0, db_index=True)
 

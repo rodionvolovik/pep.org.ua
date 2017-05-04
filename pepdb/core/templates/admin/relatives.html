@@ -136,15 +136,11 @@
                     if (el.data("patronymic").length > parent.find(".patronymic_input").val().length)
                         parent.find(".patronymic_input").val(el.data("patronymic"));
 
-
-                    var is_reverse = (el.data("reverse") == "True");
-
                     if (el.data("from").length) {
-                        grandparent.find(is_reverse ? ".relation_to" : ".relation_from").val(el.data("from"));
+                        grandparent.find(".relation_from").val(el.data("from"));
                     }
-
                     if (el.data("to").length) {
-                        grandparent.find(is_reverse ? ".relation_from" : ".relation_to").val(el.data("to"));
+                        grandparent.find(".relation_to").val(el.data("to"));
                     }
                 });
             });
