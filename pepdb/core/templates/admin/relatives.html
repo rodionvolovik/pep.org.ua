@@ -124,15 +124,28 @@
                 $(".suggest-link").on("click", function(e) {
                     e.preventDefault();
                     var el = $(this),
-                        parent = el.closest("td");
+                        parent = el.closest("td")
+                        grandparent = parent.closest("tr");
 
-                    parent.find(".rel_id").val(el.data("id"));
+                    parent.find(".rcpt_id").val(el.data("id"));
+                    parent.find(".rel_id").val(el.data("rel_id"));
                     parent.find(".last_name_input").val(el.data("last_name"));
 
-                    if (el.data("first_name").length > 2)
+                    if (el.data("first_name").length > parent.find(".first_name_input").val().length)
                         parent.find(".first_name_input").val(el.data("first_name"));
-                    if (el.data("patronymic").length > 2)
+                    if (el.data("patronymic").length > parent.find(".patronymic_input").val().length)
                         parent.find(".patronymic_input").val(el.data("patronymic"));
+
+
+                    var is_reverse = (el.data("reverse") == "True");
+
+                    if (el.data("from").length) {
+                        grandparent.find(is_reverse ? ".relation_to" : ".relation_from").val(el.data("from"));
+                    }
+
+                    if (el.data("to").length) {
+                        grandparent.find(is_reverse ? ".relation_from" : ".relation_to").val(el.data("to"));
+                    }
                 });
             });
         })(django.jQuery);
@@ -161,13 +174,14 @@
                             <input type="checkbox" name="iswear" value="{{ r.pk }}_{{ forloop.counter }}" checked />
                         </td>
                         <td>
+                            <a href="{{ r.person.get_absolute_url }}" target="_blank">
                             {{ r.person.last_name_uk }}
                             {{ r.person.first_name_uk }}
-                            {{ r.person.patronymic_uk }},<br/>
+                            {{ r.person.patronymic_uk }}</a>,<br/>
                             {{ r.person.last_workplace.company }}, {{ r.person.last_workplace.position }}
                         </td>
                         <td>
-                            <select name="person_{{ r.pk }}_{{ forloop.counter }}_relation_from" style="width: 150px">
+                            <select name="person_{{ r.pk }}_{{ forloop.counter }}_relation_from" style="width: 150px" class="relation_from">
                             <option value=""></option>
                             {% for rel in relations %}
                                 <option value="{{ rel }}">{{ rel }}</option>
@@ -175,31 +189,44 @@
                             </select>
                         </td>
                         <td>
+                            <input type="hidden" name="person_{{ r.pk }}_{{ forloop.counter }}_rcpt_id" value="" class="rcpt_id" />
                             <input type="hidden" name="person_{{ r.pk }}_{{ forloop.counter }}_rel_id" value="" class="rel_id" />
                             <input type="hidden" name="person_{{ r.pk }}_{{ forloop.counter }}_declaration_id" value="{{ r.pk }}" />
                             <input type="text" name="person_{{ r.pk }}_{{ forloop.counter }}_last_name" value="{{ member.last_name }}" style="margin-bottom: 4px!important" class="last_name_input"/>
                             <input type="text" name="person_{{ r.pk }}_{{ forloop.counter }}_first_name" value="{{ member.first_name }}" style="margin-bottom: 4px!important" class="first_name_input"/>
                             <input type="text" name="person_{{ r.pk }}_{{ forloop.counter }}_patronymic" value="{{ member.patronymic }}" style="margin-bottom: 4px!important" class="patronymic_input"/>
-                            {% if member|suggest %}
+                            {% if member|suggest:r.person.id %}
                                 <br />
-                                Вже є в БД PEP:
+                                <strong>Вже є в БД PEP:</strong>
                                 <ul>
-                                {% for suggestions in member|suggest %}
+                                {% for rcpt in member|suggest:r.person.id %}
                                     <li>
                                         <a href="#"
                                             class="suggest-link"
-                                            data-last_name="{{ suggestions.last_name_uk }}"
-                                            data-first_name="{{ suggestions.first_name_uk }}"
-                                            data-patronymic="{{ suggestions.patronymic_uk }}"
-                                            data-id="{{ suggestions.id }}">
-                                            {{ suggestions.last_name_uk }} {{ suggestions.first_name_uk }} {{ suggestions.patronymic_uk }},
-                                            {{ suggestions.last_workplace.company }}, {{ suggestions.last_workplace.position }}
-                                        </a> {{ suggestions.last_workplace.company }}, {{ suggestions.last_workplace.position }}
+                                            data-from="{{ rcpt.from }}"
+                                            data-rel_id="{{ rcpt.rel_id }}"
+                                            data-reverse="{{ rcpt.reverse }}"
+                                            data-to="{{ rcpt.to }}"
+                                            data-last_name="{{ rcpt.subject.last_name_uk }}"
+                                            data-first_name="{{ rcpt.subject.first_name_uk }}"
+                                            data-patronymic="{{ rcpt.subject.patronymic_uk }}"
+                                            data-id="{{ rcpt.subject.id }}">
+                                            {{ rcpt.subject.last_name_uk }} {{ rcpt.subject.first_name_uk }} {{ rcpt.subject.patronymic_uk }},
+                                            {% if rcpt.rel_id %}
+                                                <strong {% if rcpt.reverse %}style="color: red;"{% endif %}>Зв'язок ({{ rcpt.from }}->{{ rcpt.to }}) вже встановлено</strong>
+                                            {% endif %}
+                                        </a><br />
+                                            {% if rcpt.subject.last_workplace.company %}
+                                                {{ rcpt.subject.last_workplace.company }},
+                                            {% endif %}
+                                            {% if rcpt.subject.last_workplace.position %}
+                                                {{ rcpt.subject.last_workplace.position }}
+                                            {% endif %}
 
-                                        {% for rel in suggestions.all_related_persons.all %}
-                                            <br />
-                                            {% if rel.reverse_rtype %}{{ rel.reverse_rtype }},{% endif %}
+                                        {% for rel in rcpt.subject.all_related_persons.family %}
+                                            {% if rel.reverse_rtype %}{{ rel.reverse_rtype }} до {% endif %}
                                             {{ rel.last_name_uk }} {{ rel.first_name_uk }} {{ rel.patronymic_uk }}
+                                            <br />
                                         {% endfor %}
                                     </li>
                                 {% endfor %}
@@ -207,7 +234,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            <select name="person_{{ r.pk }}_{{ forloop.counter }}_relation_to" style="width: 150px">
+                            <select name="person_{{ r.pk }}_{{ forloop.counter }}_relation_to" style="width: 150px" class="relation_to">
                             {% for rel in relations %}
                             <option value="{{ rel }}" {% if rel == member.mapped %}selected="selected"{% endif %}>{{ rel }}</option>
                             {% endfor %}

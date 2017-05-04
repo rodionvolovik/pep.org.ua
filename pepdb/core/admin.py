@@ -459,6 +459,9 @@ class DeclarationAdmin(admin.ModelAdmin):
         persons_created = 0
         connections_created = 0
 
+        persons_updated = 0
+        connections_updated = 0
+
         for rec_id in request.POST.getlist('iswear'):
             last_name = request.POST.get("person_%s_last_name" % rec_id)
             first_name = request.POST.get("person_%s_first_name" % rec_id)
@@ -478,24 +481,22 @@ class DeclarationAdmin(admin.ModelAdmin):
             base_person = Person.objects.get(pk=base_person_id)
             declaration = Declaration.objects.get(pk=declaration_id)
 
+            rcpt_id = request.POST.get("person_%s_rcpt_id" % rec_id)
             rel_id = request.POST.get("person_%s_rel_id" % rec_id)
 
-            if rel_id:
-                relative = Person.objects.get(pk=rel_id)
+            if rcpt_id:
+                relative = Person.objects.get(pk=int(rcpt_id))
 
-                # TODO: reuse is_initial helper
-                if len(relative.first_name_uk) < 3:
-                    relative.first_name_uk = first_name
+                relative.first_name_uk = first_name
+                relative.patronymic_uk = patronymic
 
-                if len(relative.patronymic_uk) < 3:
-                    relative.patronymic_uk = patronymic
-
+                persons_updated += 1
                 relative.save()
             else:
                 relative = Person.objects.create(
                     first_name_uk=first_name,
-                    last_name_uk=last_name,
                     patronymic_uk=patronymic,
+                    last_name_uk=last_name,
                     type_of_official=5,
                     is_pep=False
                 )
@@ -506,31 +507,43 @@ class DeclarationAdmin(admin.ModelAdmin):
                 relative.dob_details = dob_details
                 relative.save()
 
-                # relative, _ = Person.objects.get_or_create(
-                #     first_name_uk__iexact=first_name,
-                #     last_name_uk__iexact=last_name,
-                #     patronymic_uk__iexact=patronymic,
-                #     defaults={
-                #         "is_pep": False
-                #     }
-                # )
+            if rel_id:
+                relation = Person2Person.objects.get(pk=int(rel_id))
 
-            _, created = Person2Person.objects.update_or_create(
-                defaults=dict(
-                    # TODO: Use declarations field instead
+                relation.declarations = list(
+                    set((relation.declarations or []) + [declaration_id])
+                )
+
+                relation.proof = ", ".join(
+                    set(
+                        relation.proof.split(", ") +
+                        [declaration.url + "?source"]
+                    )
+                )
+
+                if relation.from_person_id == base_person.pk:
+                    relation.from_relationship_type = relation_from
+                    relation.to_relationship_type = relation_to
+                else:
+                    relation.from_relationship_type = relation_to
+                    relation.to_relationship_type = relation_from
+
+                relation.save()
+
+                connections_updated += 1
+            else:
+                Person2Person.objects.create(
                     declaration=declaration,
-
-                    # TODO: support for multiple proofs
+                    declarations=[declaration.pk],
                     proof=declaration.url + "?source",
                     proof_title=(
                         "Декларація за %s рік" % declaration.year),
-                ),
-                from_person=base_person,
-                to_person=relative,
-                from_relationship_type=relation_from,
-                to_relationship_type=relation_to
-            )
-            if created:
+                    from_person=base_person,
+                    to_person=relative,
+                    from_relationship_type=relation_from,
+                    to_relationship_type=relation_to
+                )
+
                 connections_created += 1
 
             declaration.relatives_populated = True
@@ -539,6 +552,10 @@ class DeclarationAdmin(admin.ModelAdmin):
         self.message_user(
             request, "%s осіб та %s зв'язків було створено." % (
                 persons_created, connections_created))
+
+        self.message_user(
+            request, "%s осіб та %s зв'язків було оновлено." % (
+                persons_updated, connections_updated))
 
         if request.POST.get("redirect_back"):
             return redirect(request.POST.get("redirect_back"))
