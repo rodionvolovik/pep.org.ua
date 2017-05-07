@@ -72,4 +72,14 @@ class Command(BaseCommand):
             person.names = self.transliterate(
                 person.last_name, person.first_name, person.patronymic)
 
+            person.first_name = person.first_name.strip()
+            person.last_name = person.last_name.strip()
+            person.patronymic = person.patronymic.strip()
+
+            if len(person.first_name) == 1:
+                person.first_name += "."
+
+            if len(person.patronymic) == 1:
+                person.patronymic += "."
+
             person.save()
