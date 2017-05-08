@@ -237,7 +237,8 @@
                             </select> {{ member.relation }}
                         </td>
                         <td>
-                            <input class="vDateField" id="id_person_{{ r.pk }}_{{ forloop.counter }}_dob" name="person_{{ r.pk }}_{{ forloop.counter }}_dob" size="10" type="text" style="margin-bottom: 9px!important" /><br/>
+                            {% if member.dob %}{{ member.dob }} <br/><br/>{% endif %}
+                            <input class="vDateField" id="id_person_{{ r.pk }}_{{ forloop.counter }}_dob" name="person_{{ r.pk }}_{{ forloop.counter }}_dob" size="10" type="text" style="margin-bottom: 9px!important" value="{{ member.dob }}" /><br/>
                             <select name="person_{{ r.pk }}_{{ forloop.counter }}_dob_details">
                                 <option value="0">Точна дата</option>
                                 <option value="1">Рік та місяць</option>

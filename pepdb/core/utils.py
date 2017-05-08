@@ -141,6 +141,15 @@ def parse_fullname(person_name):
     last_name = ""
     first_name = ""
     patronymic = ""
+    dob = ""
+
+    numeric_chunks = list(
+        filter(lambda x: re.search("\d+\.?", x), chunks)
+    )
+
+    chunks = list(
+        filter(lambda x: re.search("\d+\.?", x) is None, chunks)
+    )
 
     if len(chunks) == 2:
         last_name = title(chunks[0])
@@ -150,7 +159,10 @@ def parse_fullname(person_name):
         first_name = title(chunks[-2])
         patronymic = title(chunks[-1])
 
-    return last_name, first_name, patronymic
+    if numeric_chunks:
+        dob = "".join(numeric_chunks)
+
+    return last_name, first_name, patronymic, dob
 
 
 class TranslatedField(object):

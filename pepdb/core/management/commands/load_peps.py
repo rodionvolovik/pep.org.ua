@@ -101,7 +101,7 @@ class Command(BaseCommand):
 
             # Now let's search for the person
             if person_name:
-                last_name, first_name, patronymic = parse_fullname(person_name)
+                last_name, first_name, patronymic, _ = parse_fullname(person_name)
 
                 if not last_name:
                     continue

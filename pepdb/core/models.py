@@ -1520,8 +1520,8 @@ class Declaration(models.Model):
             res[i]["mapped"] = RELATIONS_MAPPING.get(
                 r["relation"].lower(), "особи, які спільно проживають")
 
-            res[i]["last_name"], res[i]["first_name"], res[i]["patronymic"] = \
-                parse_fullname(r["name"])
+            (res[i]["last_name"], res[i]["first_name"], res[i]["patronymic"],
+                res[i]["dob"]) = parse_fullname(r["name"])
 
         return res
 
