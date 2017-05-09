@@ -412,7 +412,7 @@ class Person(models.Model, AbstractNode):
 
         d["full_name_en"] = self.full_name_en
 
-        def generate_suggestions(last_name, first_name, patronymic):
+        def generate_suggestions(last_name, first_name, patronymic, *args):
             if not last_name:
                 return []
 
