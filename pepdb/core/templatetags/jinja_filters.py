@@ -25,6 +25,9 @@ def updated_querystring(request, params):
 
 @library.filter
 def curformat(value):
+    if not isinstance(value, basestring):
+        value = unicode(value)
+
     if value and value != "0":
         currency = ""
         if "$" in value:

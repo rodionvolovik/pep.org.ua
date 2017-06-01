@@ -1528,6 +1528,49 @@ class Declaration(models.Model):
     def __unicode__(self):
         return "%s %s" % (self.person, self.declaration_id)
 
+    def get_income(self):
+        resp = {
+            "year": self.year,
+            "position": self.position,
+            "office": self.office,
+            "url": self.url,
+            "income_of_declarant": _("Не зазначено"),
+            "income_of_family": _("Не зазначено"),
+            "expenses_of_declarant": _("Не зазначено"),
+        }
+
+        if self.nacp_declaration:
+            resp["income_of_declarant"] = 0
+            resp["income_of_family"] = 0
+            resp["expenses_of_declarant"] = 0
+
+            for income in self.source["nacp_orig"]["step_11"].values():
+                try:
+                    person = income.get("person", "1")
+                    income_size = float(income.get("sizeIncome", "0"))
+
+                    if person == "1":
+                        resp["income_of_declarant"] += income_size
+                    else:
+                        resp["income_of_family"] += income_size
+                except ValueError:
+                    pass
+
+            for expense in self.source["nacp_orig"]["step_14"].values():
+                try:
+                    expense_amount = float(expense.get("costAmount", "0"))
+                    resp["expenses_of_declarant"] += expense_amount
+                except ValueError:
+                    pass
+        else:
+            resp["expenses_of_declarant"] = _("Не зазначалось")
+
+            if "income" in self.source:
+                resp["income_of_declarant"] = self.source["income"]['5']["value"]
+                resp["income_of_family"] = self.source["income"]['5']["family"]
+
+        return resp
+
     class Meta:
         verbose_name = "Декларація"
         verbose_name_plural = "Декларації"
