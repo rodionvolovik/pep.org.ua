@@ -18,18 +18,23 @@ class Command(BaseCommand):
 
     def add_declaration(self, person, decl, fuzziness, batch):
         try:
-            _ = Declaration.objects.get(declaration_id=decl["id"])
+            _ = Declaration.objects.get(declaration_id=decl["id"], person_id=person.pk)
             self.stdout.write(
-                "Declaration %s already exists" % decl["id"]
+                "Declaration %s for user %s already exists" % (decl["id"], person)
             )
             return
         except Declaration.MultipleObjectsReturned:
             self.stdout.write(
-                "Declaration %s already exists too many times" % decl["id"]
+                "Declaration %s for user %s already exists too many times" % (decl["id"], person)
             )
             return
         except Declaration.DoesNotExist:
             pass
+
+        if "ft_src" in decl:
+            del decl["ft_src"]
+        if "index_card" in decl:
+            del decl["index_card"]
 
         if decl["id"].startswith("nacp_"):
             if "nacp_src" in decl:
@@ -50,7 +55,7 @@ class Command(BaseCommand):
                     "region": decl["general"]["post"]["region"],
                     "year": decl["intro"]["declaration_year"],
                     "source": decl,
-                    "batch_number": batch,                    
+                    "batch_number": batch,
                     "nacp_declaration": True,
                     "url": "https://declarations.com.ua/declaration/%s" % (
                         decl["id"]),
@@ -58,9 +63,6 @@ class Command(BaseCommand):
                 }
             )
         else:
-            if "ft_src" in decl:
-                del decl["ft_src"]
-
             Declaration.objects.create(
                 declaration_id=decl["id"],
                 person=person,
@@ -104,7 +106,7 @@ class Command(BaseCommand):
                 settings.DECLARATIONS_ENDPOINT, params={
                     "q": full_name,
                     "format": "json"
-                }, verify=False).json()
+                }, verify=False, timeout=60).json()
 
             self.stdout.write(full_name)
 
