@@ -1570,7 +1570,7 @@ class Declaration(models.Model):
             resp["income_of_family"] = 0
             resp["expenses_of_declarant"] = 0
 
-            for income in self.source["nacp_orig"]["step_11"].values():
+            for income in self.source["nacp_orig"].get("step_11", {}).values():
                 try:
                     person = income.get("person", "1")
                     income_size = float(income.get("sizeIncome", "0"))
@@ -1582,7 +1582,7 @@ class Declaration(models.Model):
                 except ValueError:
                     pass
 
-            for expense in self.source["nacp_orig"]["step_14"].values():
+            for expense in self.source["nacp_orig"].get("step_14", {}).values():
                 try:
                     expense_amount = float(expense.get("costAmount", "0"))
                     resp["expenses_of_declarant"] += expense_amount
