@@ -291,8 +291,7 @@ def person_details(request, person_id):
             nacp_declaration=False,
             person=person, confirmed="a").order_by("year"),
 
-        "all_declarations": Declaration.objects.filter(
-            person=person, confirmed="a").order_by("year")
+        "all_declarations": person.get_declarations()
     }
 
     full_name = "%s %s %s" % (

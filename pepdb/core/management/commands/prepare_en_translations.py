@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.core.management.base import BaseCommand
+from django.db.utils import IntegrityError
 from core.models import Declaration, Ua2EnDictionary
 from core.utils import lookup_term
 
@@ -32,6 +33,10 @@ class Command(BaseCommand):
         for x in [not_translated_regions, not_translated_positions,
                   not_translated_offices]:
             for term in x:
-                Ua2EnDictionary.objects.create(
-                    term=term
-                )
+                try:
+                    Ua2EnDictionary.objects.create(
+                        term=term
+                    )
+                except IntegrityError:
+                    # No need to turn alarm on, if the value is already in db
+                    pass

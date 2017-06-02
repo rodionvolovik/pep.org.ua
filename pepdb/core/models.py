@@ -474,6 +474,32 @@ class Person(models.Model, AbstractNode):
         for decl in self.declaration_extras:
             pass
 
+    def get_declarations(self):
+        decls = Declaration.objects.filter(
+            person=self, confirmed="a").order_by("year")
+
+        corrected = []
+        res = []
+        # Filtering out original declarations, if there are
+        # also corrected one
+        for d in decls:
+            if not d.nacp_declaration:
+                continue
+
+            if d.source["intro"].get("corrected"):
+                corrected.append(
+                    (d.year, d.source["intro"].get("doc_type"))
+                )
+
+        for d in decls:
+            if d.nacp_declaration and not d.source["intro"].get("corrected"):
+                if (d.year, d.source["intro"].get("doc_type")) in corrected:
+                    continue
+
+            res.append(d)
+
+        return res
+
     def get_node_info(self, with_connections=False):
         res = super(Person, self).get_node_info(with_connections)
         res["name"] = self.full_name
@@ -483,7 +509,7 @@ class Person(models.Model, AbstractNode):
             res["description"] = "{position} @ {company}".format(
                 **last_workplace)
         res["kind"] = unicode(
-            ugettext_lazy(self.get_type_of_official_display() or ""))
+            ugettext_lazy(self.get_type_of_official_display()) or "")
 
         if with_connections:
             connections = []
@@ -1534,9 +1560,9 @@ class Declaration(models.Model):
             "position": self.position,
             "office": self.office,
             "url": self.url,
-            "income_of_declarant": _("Не зазначено"),
-            "income_of_family": _("Не зазначено"),
-            "expenses_of_declarant": _("Не зазначено"),
+            "income_of_declarant": ugettext_lazy("Не зазначено"),
+            "income_of_family": ugettext_lazy("Не зазначено"),
+            "expenses_of_declarant": ugettext_lazy("Не зазначено"),
         }
 
         if self.nacp_declaration:
@@ -1563,7 +1589,7 @@ class Declaration(models.Model):
                 except ValueError:
                     pass
         else:
-            resp["expenses_of_declarant"] = _("Не зазначалось")
+            resp["expenses_of_declarant"] = ugettext_lazy("Не зазначалось")
 
             if "income" in self.source:
                 resp["income_of_declarant"] = self.source["income"]['5']["value"]
