@@ -1743,3 +1743,8 @@ tr.additional_hidden > td {
     max-width: 280px;
   }
 }
+
+.tooltip-hilite {
+  font-weight: bold;
+  text-decoration: underline;
+}

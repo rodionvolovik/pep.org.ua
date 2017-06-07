@@ -1569,31 +1569,173 @@ class Declaration(models.Model):
             resp["income_of_declarant"] = 0
             resp["income_of_family"] = 0
             resp["expenses_of_declarant"] = 0
+            if isinstance(self.source["nacp_orig"].get("step_11"), dict):
+                for income in self.source["nacp_orig"]["step_11"].values():
+                    try:
+                        person = income.get("person", "1")
+                        income_size = float(income.get("sizeIncome", "0"))
 
-            for income in self.source["nacp_orig"].get("step_11", {}).values():
-                try:
-                    person = income.get("person", "1")
-                    income_size = float(income.get("sizeIncome", "0"))
+                        if person == "1":
+                            resp["income_of_declarant"] += income_size
+                        else:
+                            resp["income_of_family"] += income_size
+                    except ValueError:
+                        pass
 
-                    if person == "1":
-                        resp["income_of_declarant"] += income_size
-                    else:
-                        resp["income_of_family"] += income_size
-                except ValueError:
-                    pass
-
-            for expense in self.source["nacp_orig"].get("step_14", {}).values():
-                try:
-                    expense_amount = float(expense.get("costAmount", "0"))
-                    resp["expenses_of_declarant"] += expense_amount
-                except ValueError:
-                    pass
+            if isinstance(self.source["nacp_orig"].get("step_14"), dict):
+                for expense in self.source["nacp_orig"]["step_14"].values():
+                    try:
+                        expense_amount = float(expense.get("costAmount", "0"))
+                        resp["expenses_of_declarant"] += expense_amount
+                    except ValueError:
+                        pass
         else:
             resp["expenses_of_declarant"] = ugettext_lazy("Не зазначалось")
 
             if "income" in self.source:
-                resp["income_of_declarant"] = self.source["income"]['5']["value"]
-                resp["income_of_family"] = self.source["income"]['5']["family"]
+                resp["income_of_declarant"] = self.source["income"]['5'].get(
+                    "value", ugettext_lazy("Не зазначено"))
+                resp["income_of_family"] = self.source["income"]['5'].get(
+                    "family", ugettext_lazy("Не зазначено"))
+
+        return resp
+
+    def get_assets(self):
+        resp = {
+            "year": self.year,
+            "url": self.url,
+            "nacp_declaration": self.nacp_declaration,
+            "cash": {
+                "declarant": {
+                    "USD": 0.,
+                    "UAH": 0.,
+                    "EUR": 0.,
+                    "OTH": [],
+                },
+                "family": {
+                    "USD": 0.,
+                    "UAH": 0.,
+                    "EUR": 0.,
+                    "OTH": [],
+                }
+            },
+            "accounts": {
+                "declarant": {
+                    "USD": 0.,
+                    "UAH": 0.,
+                    "EUR": 0.,
+                    "OTH": [],
+                    "banks": set(),
+                },
+                "family": {
+                    "USD": 0.,
+                    "UAH": 0.,
+                    "EUR": 0.,
+                    "OTH": [],
+                    "banks": set(),
+                }
+            },
+            "misc": {
+                "declarant": {
+                    "USD": 0.,
+                    "UAH": 0.,
+                    "EUR": 0.,
+                    "OTH": [],
+                },
+                "family": {
+                    "USD": 0.,
+                    "UAH": 0.,
+                    "EUR": 0.,
+                    "OTH": [],
+                }
+            }
+        }
+
+        if self.nacp_declaration:
+            data = self.source["nacp_orig"]
+
+            if isinstance(data.get("step_12"), dict):
+                for cash_rec in data["step_12"].values():
+                    if isinstance(cash_rec, dict):
+                        k = "misc"
+                        rec_type = cash_rec.get("objectType", "").lower()
+                        owner = "declarant" if cash_rec.get("person", "1") == "1" else "family"
+                        amount = float(cash_rec.get("sizeAssets", "0") or "0")
+
+                        currency = cash_rec.get("assetsCurrency", "UAH").upper()
+
+                        if rec_type == "кошти, розміщені на банківських рахунках":
+                            bank_name = cash_rec.get("organization_ua_company_name") or \
+                                cash_rec.get("organization_ukr_company_name", "")
+
+                            bank_name = bank_name.strip()
+                            k = "accounts"
+                            resp[k][owner]["banks"].add(bank_name)
+                        elif rec_type == "готівкові кошти":
+                            k = "cash"
+
+                        if currency in ("UAH", "USD", "EUR"):
+                            resp[k][owner][currency] += amount
+                        else:
+                            resp[k][owner]["OTH"].append(
+                                {"amount": amount, "currency": currency}
+                            )
+        else:
+            for d_key, k in (("45", "declarant"), ("51", "family")):
+                for a in self.source.get("banks", {}).get(d_key, []):
+                    try:
+                        currency = a.get("sum_units", "UAH") or "UAH"
+                        amount = a.get("sum", 0.)
+                        if currency == "грн":
+                            currency = "UAH"
+
+                        if currency in ("UAH", "USD", "EUR"):
+                            resp["accounts"][k][currency] += float(amount)
+                        else:
+                            resp["accounts"][k]["OTH"].append(
+                                {"amount": float(amount), "currency": currency}
+                            )
+                    except ValueError:
+                        continue
+
+        return resp
+
+    def get_gifts(self):
+        resp = {
+            "year": self.year,
+            "url": self.url,
+            "gifts_of_declarant": ugettext_lazy("Не зазначено"),
+            "gifts_of_family": ugettext_lazy("Не зазначено"),
+        }
+
+        if self.nacp_declaration:
+            resp["gifts_of_declarant"] = 0
+            resp["gifts_of_family"] = 0
+            if isinstance(self.source["nacp_orig"].get("step_11"), dict):
+                for income in self.source["nacp_orig"]["step_11"].values():
+                    try:
+                        rec_type = income.get("objectType", "").lower()
+                        if rec_type not in [
+                                "подарунок у негрошовій формі", "подарунок у грошовій формі",
+                                "благодійна допомога", "приз"]:
+                            continue
+
+                        person = income.get("person", "1")
+                        income_size = float(income.get("sizeIncome", "0"))
+
+                        if person == "1":
+                            resp["gifts_of_declarant"] += income_size
+                        else:
+                            resp["gifts_of_family"] += income_size
+                    except ValueError:
+                        pass
+        else:
+            if "income" in self.source:
+                resp["gifts_of_declarant"] = self.source["income"]['11'].get(
+                    "value", ugettext_lazy("Не зазначено"))
+
+                resp["gifts_of_family"] = self.source["income"]['11'].get(
+                    "family", ugettext_lazy("Не зазначено"))
 
         return resp
 

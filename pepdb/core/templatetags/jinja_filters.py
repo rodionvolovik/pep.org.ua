@@ -28,7 +28,7 @@ def curformat(value):
     if not isinstance(value, basestring):
         value = unicode(value)
 
-    if value and value != "0":
+    if value and value != "0" and value != "0.0":
         currency = ""
         if "$" in value:
             value = value.replace("$", "")

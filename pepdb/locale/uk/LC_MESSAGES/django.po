@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-02 21:34+0300\n"
+"POT-Creation-Date: 2017-06-06 11:37+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -449,47 +449,47 @@ msgstr ""
 msgid "Не зазначено"
 msgstr ""
 
-#: core/models.py:1592
+#: core/models.py:1593
 msgid "Не зазначалось"
 msgstr ""
 
-#: core/models.py:1628
+#: core/models.py:1729
 msgid "Загальна сума сукупного доходу, гривні"
 msgstr ""
 
-#: core/models.py:1629
+#: core/models.py:1730
 msgid "Дарунки, призи, виграші"
 msgstr ""
 
-#: core/models.py:1630
+#: core/models.py:1731
 msgid "Земельні ділянки"
 msgstr ""
 
-#: core/models.py:1631
+#: core/models.py:1732
 msgid "Житлові будинки"
 msgstr ""
 
-#: core/models.py:1632
+#: core/models.py:1733
 msgid "Квартири"
 msgstr ""
 
-#: core/models.py:1633
+#: core/models.py:1734
 msgid "Інше нерухоме майно"
 msgstr ""
 
-#: core/models.py:1634
+#: core/models.py:1735
 msgid "Транспортні засоби"
 msgstr ""
 
-#: core/models.py:1635
+#: core/models.py:1736
 msgid "Вклади у банках"
 msgstr ""
 
-#: core/models.py:1636
+#: core/models.py:1737
 msgid "Фінансові зобов’язання"
 msgstr ""
 
-#: core/models.py:1637
+#: core/models.py:1738
 msgid "Інші активи"
 msgstr ""
 
@@ -497,11 +497,11 @@ msgstr ""
 msgid "Дані з декларації про доходи:"
 msgstr ""
 
-#: core/templates/_declaration.jinja:8 core/templates/_declaration.jinja:37
-#: core/templates/_declaration.jinja:63 core/templates/_declaration.jinja:121
-#: core/templates/_declaration.jinja:152 core/templates/_declaration.jinja:183
-#: core/templates/_declaration.jinja:215 core/templates/_declaration.jinja:252
-#: core/templates/_declaration.jinja:296
+#: core/templates/_declaration.jinja:8 core/templates/_declaration.jinja:67
+#: core/templates/_declaration.jinja:198 core/templates/_declaration.jinja:224
+#: core/templates/_declaration.jinja:282 core/templates/_declaration.jinja:313
+#: core/templates/_declaration.jinja:344 core/templates/_declaration.jinja:377
+#: core/templates/_declaration.jinja:421
 msgid "Рік"
 msgstr ""
 
@@ -514,9 +514,10 @@ msgid "Доходи декларанта"
 msgstr ""
 
 #: core/templates/_declaration.jinja:10 core/templates/_declaration.jinja:11
-#: core/templates/_declaration.jinja:12 core/templates/_declaration.jinja:47
-#: core/templates/_declaration.jinja:48 core/templates/_declaration.jinja:268
-#: core/templates/_declaration.jinja:279
+#: core/templates/_declaration.jinja:12 core/templates/_declaration.jinja:69
+#: core/templates/_declaration.jinja:73 core/templates/_declaration.jinja:208
+#: core/templates/_declaration.jinja:209 core/templates/_declaration.jinja:393
+#: core/templates/_declaration.jinja:404
 msgid "UAH"
 msgstr ""
 
@@ -528,74 +529,130 @@ msgstr ""
 msgid "Витрати та інші правочини декларанта"
 msgstr ""
 
-#: core/templates/_declaration.jinja:19 core/templates/_declaration.jinja:49
-#: core/templates/_declaration.jinja:84 core/templates/_declaration.jinja:141
-#: core/templates/_declaration.jinja:172 core/templates/_declaration.jinja:203
-#: core/templates/_declaration.jinja:238 core/templates/_declaration.jinja:283
-#: core/templates/_declaration.jinja:322
+#: core/templates/_declaration.jinja:19 core/templates/_declaration.jinja:83
+#: core/templates/_declaration.jinja:210 core/templates/_declaration.jinja:245
+#: core/templates/_declaration.jinja:302 core/templates/_declaration.jinja:333
+#: core/templates/_declaration.jinja:364 core/templates/_declaration.jinja:408
+#: core/templates/_declaration.jinja:447
 msgid "Відкрити декларацію"
 msgstr ""
 
 #: core/templates/_declaration.jinja:31
+msgid "Грошові активи:"
+msgstr ""
+
+#: core/templates/_declaration.jinja:44
+msgid ""
+"Суб’єкт декларування повинен задекларувати: готівкові кошти, кошти, "
+"розміщені на банківських рахунках, внески до кредитних спілок та інших "
+"небанківських фінансових установ, у тому числі до інститутів спільного "
+"інвестування, кошти, позичені суб’єктом декларування або членом його сім’ї "
+"третім особам, активи у дорогоцінних (банківських) металах, інше."
+msgstr ""
+
+#: core/templates/_declaration.jinja:47
+msgid ""
+"Не підлягають декларуванню наявні грошові активи (у тому числі готівкові "
+"кошти, кошти, розміщені на банківських рахунках, внески до кредитних спілок "
+"та інших небанківських фінансових установ, кошти, позичені третім особам) та "
+"активи у дорогоцінних (банківських) металах, сукупна вартість яких не "
+"перевищує 50 прожиткових мінімумів, встановленних для працездатних осіб на 1 "
+"січня звітного року."
+msgstr ""
+
+#: core/templates/_declaration.jinja:51
+#: core/templates/macros/_connections.jinja:49
+msgid "Закрити"
+msgstr ""
+
+#: core/templates/_declaration.jinja:63
+msgid "Декларант"
+msgstr ""
+
+#: core/templates/_declaration.jinja:64
+msgid "Родина"
+msgstr ""
+
+#: core/templates/_declaration.jinja:68
+msgid "Вид активу"
+msgstr ""
+
+#: core/templates/_declaration.jinja:70 core/templates/_declaration.jinja:74
+msgid "USD"
+msgstr ""
+
+#: core/templates/_declaration.jinja:71 core/templates/_declaration.jinja:75
+msgid "EUR"
+msgstr ""
+
+#: core/templates/_declaration.jinja:72 core/templates/_declaration.jinja:76
+#: core/templates/_declaration.jinja:154
+msgid "Інше"
+msgstr ""
+
+#: core/templates/_declaration.jinja:87
+msgid "Вклади"
+msgstr ""
+
+#: core/templates/_declaration.jinja:121
+msgid "Готівка"
+msgstr ""
+
+#: core/templates/_declaration.jinja:192
 msgid "Дарунки, призи, виграші:"
 msgstr ""
 
-#: core/templates/_declaration.jinja:38
+#: core/templates/_declaration.jinja:199
 msgid "Cума в декларанта"
 msgstr ""
 
-#: core/templates/_declaration.jinja:39 core/templates/_declaration.jinja:217
-#: core/templates/_declaration.jinja:254
+#: core/templates/_declaration.jinja:200 core/templates/_declaration.jinja:379
 msgid "Сума в сім'ї"
 msgstr ""
 
-#: core/templates/_declaration.jinja:58
+#: core/templates/_declaration.jinja:219
 msgid "Земельні ділянки:"
 msgstr ""
 
-#: core/templates/_declaration.jinja:64 core/templates/_declaration.jinja:122
-#: core/templates/_declaration.jinja:153 core/templates/_declaration.jinja:184
+#: core/templates/_declaration.jinja:225 core/templates/_declaration.jinja:283
+#: core/templates/_declaration.jinja:314 core/templates/_declaration.jinja:345
 msgid "Площа в декларанта"
 msgstr ""
 
-#: core/templates/_declaration.jinja:65 core/templates/_declaration.jinja:123
-#: core/templates/_declaration.jinja:154 core/templates/_declaration.jinja:185
+#: core/templates/_declaration.jinja:226 core/templates/_declaration.jinja:284
+#: core/templates/_declaration.jinja:315 core/templates/_declaration.jinja:346
 msgid "Площа в сім'ї"
 msgstr ""
 
-#: core/templates/_declaration.jinja:116
+#: core/templates/_declaration.jinja:277
 msgid "Житлові будинки:"
 msgstr ""
 
-#: core/templates/_declaration.jinja:147
+#: core/templates/_declaration.jinja:308
 msgid "Квартири:"
 msgstr ""
 
-#: core/templates/_declaration.jinja:178
+#: core/templates/_declaration.jinja:339
 msgid "Інше нерухоме майно:"
 msgstr ""
 
-#: core/templates/_declaration.jinja:209
-msgid "Вклади в банках:"
-msgstr ""
-
-#: core/templates/_declaration.jinja:216 core/templates/_declaration.jinja:253
-msgid "Сума в декларанта"
-msgstr ""
-
-#: core/templates/_declaration.jinja:246
+#: core/templates/_declaration.jinja:371
 msgid "Фінансові зобов’язання:"
 msgstr ""
 
-#: core/templates/_declaration.jinja:290
+#: core/templates/_declaration.jinja:378
+msgid "Сума в декларанта"
+msgstr ""
+
+#: core/templates/_declaration.jinja:415
 msgid "Транспортні засоби:"
 msgstr ""
 
-#: core/templates/_declaration.jinja:297
+#: core/templates/_declaration.jinja:422
 msgid "Авто в декларанта"
 msgstr ""
 
-#: core/templates/_declaration.jinja:298
+#: core/templates/_declaration.jinja:423
 msgid "Авто в сім'ї"
 msgstr ""
 
@@ -795,10 +852,6 @@ msgstr ""
 #: core/templates/macros/_connections.jinja:32
 #: core/templates/macros/_connections.jinja:42
 msgid "Посилання"
-msgstr ""
-
-#: core/templates/macros/_connections.jinja:49
-msgid "Закрити"
 msgstr ""
 
 #: core/templates/macros/_search.jinja:20 core/templates/person.jinja:103

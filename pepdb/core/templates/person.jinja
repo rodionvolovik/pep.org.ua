@@ -54,7 +54,7 @@
                 {% if workplaces %}
                 <li><a href="#workbefore" class="btn btn-transp trans"><i class="fa fa-wrench"></i><span>{{ _("Кар'єра") }}</span></a></li>
                 {% endif %}
-                {% if declarations %}
+                {% if all_declarations %}
                     <li><a href="#declarations" class="btn btn-transp trans"><i class="fa fa-file-text-o"></i><span>{{ _("Декларації") }}</span></a></li>
                 {% endif %}
                 {% if related_persons.all %}
@@ -266,7 +266,7 @@
             </div>
             {% endif %}
             
-            {% if declarations %}
+            {% if all_declarations %}
                 {% include "_declaration.jinja" %}
             {% endif %}
             
