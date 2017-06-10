@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-06 11:37+0300\n"
+"POT-Creation-Date: 2017-06-10 23:31+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -444,6 +444,8 @@ msgid "Прочитано"
 msgstr "Read"
 
 #: core/models.py:1563 core/models.py:1564 core/models.py:1565
+#: core/models.py:1597 core/models.py:1599 core/models.py:1707
+#: core/models.py:1708 core/models.py:1735 core/models.py:1738
 msgid "Не зазначено"
 msgstr "Not specified"
 
@@ -451,43 +453,43 @@ msgstr "Not specified"
 msgid "Не зазначалось"
 msgstr "Not applicable"
 
-#: core/models.py:1729
+#: core/models.py:1806
 msgid "Загальна сума сукупного доходу, гривні"
 msgstr "Total amount of aggregate income (UAH)"
 
-#: core/models.py:1730
+#: core/models.py:1807
 msgid "Дарунки, призи, виграші"
 msgstr "Gifts, prizes, winnings"
 
-#: core/models.py:1731
+#: core/models.py:1808
 msgid "Земельні ділянки"
 msgstr "Land"
 
-#: core/models.py:1732
+#: core/models.py:1809
 msgid "Житлові будинки"
 msgstr "Residential buildings"
 
-#: core/models.py:1733
+#: core/models.py:1810
 msgid "Квартири"
 msgstr "Apartments"
 
-#: core/models.py:1734
+#: core/models.py:1811
 msgid "Інше нерухоме майно"
 msgstr "Other real estate"
 
-#: core/models.py:1735
+#: core/models.py:1812
 msgid "Транспортні засоби"
 msgstr "Vehicles"
 
-#: core/models.py:1736
+#: core/models.py:1813
 msgid "Вклади у банках"
 msgstr "Bank deposits"
 
-#: core/models.py:1737
+#: core/models.py:1814
 msgid "Фінансові зобов’язання"
 msgstr "Financial liabilities"
 
-#: core/models.py:1738
+#: core/models.py:1815
 msgid "Інші активи"
 msgstr "Other assets"
 
@@ -496,10 +498,10 @@ msgid "Дані з декларації про доходи:"
 msgstr "Income declaration:"
 
 #: core/templates/_declaration.jinja:8 core/templates/_declaration.jinja:67
-#: core/templates/_declaration.jinja:198 core/templates/_declaration.jinja:224
-#: core/templates/_declaration.jinja:282 core/templates/_declaration.jinja:313
-#: core/templates/_declaration.jinja:344 core/templates/_declaration.jinja:377
-#: core/templates/_declaration.jinja:421
+#: core/templates/_declaration.jinja:219 core/templates/_declaration.jinja:268
+#: core/templates/_declaration.jinja:304 core/templates/_declaration.jinja:362
+#: core/templates/_declaration.jinja:393 core/templates/_declaration.jinja:424
+#: core/templates/_declaration.jinja:458
 msgid "Рік"
 msgstr "Year"
 
@@ -513,9 +515,9 @@ msgstr "Declarant's income"
 
 #: core/templates/_declaration.jinja:10 core/templates/_declaration.jinja:11
 #: core/templates/_declaration.jinja:12 core/templates/_declaration.jinja:69
-#: core/templates/_declaration.jinja:73 core/templates/_declaration.jinja:208
-#: core/templates/_declaration.jinja:209 core/templates/_declaration.jinja:393
-#: core/templates/_declaration.jinja:404
+#: core/templates/_declaration.jinja:73 core/templates/_declaration.jinja:220
+#: core/templates/_declaration.jinja:221 core/templates/_declaration.jinja:282
+#: core/templates/_declaration.jinja:289
 msgid "UAH"
 msgstr "UAH"
 
@@ -528,10 +530,10 @@ msgid "Витрати та інші правочини декларанта"
 msgstr "Expenses and other transactions of the declarant"
 
 #: core/templates/_declaration.jinja:19 core/templates/_declaration.jinja:83
-#: core/templates/_declaration.jinja:210 core/templates/_declaration.jinja:245
-#: core/templates/_declaration.jinja:302 core/templates/_declaration.jinja:333
-#: core/templates/_declaration.jinja:364 core/templates/_declaration.jinja:408
-#: core/templates/_declaration.jinja:447
+#: core/templates/_declaration.jinja:228 core/templates/_declaration.jinja:277
+#: core/templates/_declaration.jinja:325 core/templates/_declaration.jinja:382
+#: core/templates/_declaration.jinja:413 core/templates/_declaration.jinja:444
+#: core/templates/_declaration.jinja:484
 msgid "Відкрити декларацію"
 msgstr "Open declaration"
 
@@ -546,7 +548,8 @@ msgid ""
 "небанківських фінансових установ, у тому числі до інститутів спільного "
 "інвестування, кошти, позичені суб’єктом декларування або членом його сім’ї "
 "третім особам, активи у дорогоцінних (банківських) металах, інше."
-msgstr "Declaring entity have to declare: cash, funds deposited on bank accounts, contributions to credit unions and other non-banking financial institutions, including collective investment institutions, funds lent by declaring entity or a member of his/her family to third parties, assets in precious metals, other."
+msgstr ""
+"Declaring entity should declare: cash, funds deposited on bank accounts, contributions to credit unions and other non-banking financial institutions, including collective investment institutions, funds lent by declaring entity or a member of his/her family to third parties, assets in precious metals, other."
 
 #: core/templates/_declaration.jinja:47
 msgid ""
@@ -556,9 +559,11 @@ msgid ""
 "активи у дорогоцінних (банківських) металах, сукупна вартість яких не "
 "перевищує 50 прожиткових мінімумів, встановленних для працездатних осіб на 1 "
 "січня звітного року."
-msgstr "Available cash assets (including cash, funds deposited on bank accounts, contributions to credit unions and other non-banking financial institutions, contributions to credit unions and other non-banking financial institutions, funds lent to third parties) and assets in precious metals the aggregate value of which does not exceed 50 minimum subsistence levels estimated for able-bodied persons for the 1 of January of the reporting year are not a subject of declaration."
+msgstr ""
+"Available cash assets (including cash, funds deposited on bank accounts, contributions to credit unions and other non-banking financial institutions, funds lent to third parties) and assets in precious metals the aggregate value of which does not exceed 50 minimum subsistence levels estimated for able-bodied persons for the 1 of January of the reporting year are not a subject of declaration."
 
-#: core/templates/_declaration.jinja:51
+#: core/templates/_declaration.jinja:51 core/templates/_declaration.jinja:209
+#: core/templates/_declaration.jinja:258
 #: core/templates/macros/_connections.jinja:49
 msgid "Закрити"
 msgstr "Close"
@@ -600,57 +605,94 @@ msgstr "Cash"
 msgid "Дарунки, призи, виграші:"
 msgstr "Gifts, prizes, winnings:"
 
-#: core/templates/_declaration.jinja:199
+#: core/templates/_declaration.jinja:205
+msgid ""
+"Подарунки у формі грошових коштів ​повинні зазначатися, якщо розмір таких "
+"подарунків, отриманих від однієї особи (групи осіб) протягом року,​ перевищує "
+"5 прожиткових мінімумів, встановленних для працездатних осіб на 1 січня "
+"звітного року. Подарун​ок​ у формі, іншій ніж грошові кошти​ (рухоме майно, "
+"нерухомість тощо)​, зазначається​, якщо ​вартість так​ого​ подарунк​у перевищує 5 "
+"прожиткових мінімумів, встановленних для працездатних осіб на 1 січня "
+"звітного року. Зазначення інформації про подарунок не виключає обов'язок "
+"вказати відповідне майно в інших розділах декларації, наприклад, у розділах "
+"про цінне рухоме майно, нерухоме майно, цінні папери тощо."
+msgstr "Gifts in the form of cash should be indicated if the amount of such gifts received from one person (group of persons) during the year exceeds 5 minimum subsistence levels estimated for able-bodied persons for the 1 of January of the reporting year. Gift in a form other than cash (movables, real estate, etc.) is indicated if the value of such gift exceeds 5 minimum subsistence levels estimated for able-bodied persons for the 1 of January of the reporting year. Indication of information about the gift does not exclude the obligation to indicate the corresponding property in other sections of the declaration, for example, in sections on movable valuables, real estate, securities, etc."
+
+#: core/templates/_declaration.jinja:220
 msgid "Cума в декларанта"
 msgstr "Declarant's total"
 
-#: core/templates/_declaration.jinja:200 core/templates/_declaration.jinja:379
+#: core/templates/_declaration.jinja:221 core/templates/_declaration.jinja:270
 msgid "Сума в сім'ї"
 msgstr "Household (family) total"
 
-#: core/templates/_declaration.jinja:219
-msgid "Земельні ділянки:"
-msgstr "Land:"
-
-#: core/templates/_declaration.jinja:225 core/templates/_declaration.jinja:283
-#: core/templates/_declaration.jinja:314 core/templates/_declaration.jinja:345
-msgid "Площа в декларанта"
-msgstr "Declarant's floor space total"
-
-#: core/templates/_declaration.jinja:226 core/templates/_declaration.jinja:284
-#: core/templates/_declaration.jinja:315 core/templates/_declaration.jinja:346
-msgid "Площа в сім'ї"
-msgstr "Household (family) floor space total"
-
-#: core/templates/_declaration.jinja:277
-msgid "Житлові будинки:"
-msgstr "Residential buildings:"
-
-#: core/templates/_declaration.jinja:308
-msgid "Квартири:"
-msgstr "Apartments:"
-
-#: core/templates/_declaration.jinja:339
-msgid "Інше нерухоме майно:"
-msgstr "Other real estate:"
-
-#: core/templates/_declaration.jinja:371
+#: core/templates/_declaration.jinja:238
 msgid "Фінансові зобов’язання:"
 msgstr "Financial liabilities:"
 
-#: core/templates/_declaration.jinja:378
+#: core/templates/_declaration.jinja:251
+msgid ""
+"Суб’єкт декларування повинен задекларувати: отримані кредити, отримані "
+"позики, зобов’язання за договорами лізингу, розмір сплачених коштів в "
+"рахунок основної суми позики (кредиту) та процентів за позикою (кредитом), "
+"зобов’язання за договорами страхування та недержавного пенсійного "
+"забезпечення, кошти, позичені суб’єкту декларування або члену його сім’ї "
+"іншими особами, несплачені податкові зобов’язання, інше."
+msgstr ""
+"Declaring entity should declare: received credits, received loans, obligations under leasing agreements, the amount of funds paid as the principal amount of loan (credit) and interest on loan (credit), obligations under insurance contracts and non-state pension provision, funds lent to declaring entity or to his/her family member by other persons, unpaid tax liabilities, etc."
+
+#: core/templates/_declaration.jinja:254
+msgid ""
+"Інформація зазначається, лише якщо розмір зобов’язання перевищує 50 "
+"прожиткових мінімумів, встановленних для працездатних осіб на 1 січня "
+"звітного року. Якщо розмір зобов’язання не перевищує 50 прожиткових "
+"мінімумів, встановленних для працездатних осіб на 1 січня звітного року, "
+"зазначається лише загальний розмір такого фінансового зобов’язання "
+"(наприклад, якщо розмір сплачених коштів в рахунок основної суми позики "
+"(кредиту) у звітному році не перевищує 50 прожиткових мінімумів, "
+"встановленних для працездатних осіб на 1 січня звітного року, то "
+"зазначається лише загальний розмір позики (кредиту))."
+msgstr "Information is indicated only if the amount of liability exceeds 50 minimum subsistence levels estimated for able-bodied persons for the 1 of January of the reporting year. if the amount of liability does not exceed 50 minimum subsistence levels estimated for able-bodied persons for the 1 of January of the reporting year only overall amount of such liability is indicated (for example, if the amount of funds paid as the principal amount of loan (credit) in the reporting year does not exceed 50 minimum subsistence levels estimated for able-bodied persons for the 1 of January of the reporting year than only overall amount of loan (credit) is indicated)."
+
+#: core/templates/_declaration.jinja:269
 msgid "Сума в декларанта"
 msgstr "Declarant's total"
 
-#: core/templates/_declaration.jinja:415
+#: core/templates/_declaration.jinja:299
+msgid "Земельні ділянки:"
+msgstr "Land:"
+
+#: core/templates/_declaration.jinja:305 core/templates/_declaration.jinja:363
+#: core/templates/_declaration.jinja:394 core/templates/_declaration.jinja:425
+msgid "Площа в декларанта"
+msgstr "Declarant's floor space total"
+
+#: core/templates/_declaration.jinja:306 core/templates/_declaration.jinja:364
+#: core/templates/_declaration.jinja:395 core/templates/_declaration.jinja:426
+msgid "Площа в сім'ї"
+msgstr "Household (family) floor space total"
+
+#: core/templates/_declaration.jinja:357
+msgid "Житлові будинки:"
+msgstr "Residential buildings:"
+
+#: core/templates/_declaration.jinja:388
+msgid "Квартири:"
+msgstr "Apartments:"
+
+#: core/templates/_declaration.jinja:419
+msgid "Інше нерухоме майно:"
+msgstr "Other real estate:"
+
+#: core/templates/_declaration.jinja:452
 msgid "Транспортні засоби:"
 msgstr "Vehicles:"
 
-#: core/templates/_declaration.jinja:422
+#: core/templates/_declaration.jinja:459
 msgid "Авто в декларанта"
 msgstr "Declarant's vehicles"
 
-#: core/templates/_declaration.jinja:423
+#: core/templates/_declaration.jinja:460
 msgid "Авто в сім'ї"
 msgstr "Household (family) vehicles"
 

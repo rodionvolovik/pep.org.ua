@@ -1739,6 +1739,42 @@ class Declaration(models.Model):
 
         return resp
 
+    def get_liabilities(self):
+        resp = {
+            "year": self.year,
+            "url": self.url,
+            "liabilities_of_declarant": defaultdict(float),
+            "liabilities_of_family": defaultdict(float),
+        }
+
+        if self.nacp_declaration:
+            if isinstance(self.source["nacp_orig"].get("step_13"), dict):
+                for liability in self.source["nacp_orig"]["step_13"].values():
+                    try:
+                        person = liability.get("person", "1")
+                        liability_amount = float(liability.get("sizeObligation", "0"))
+                        currency = liability.get("currency", "UAH") or "UAH"
+
+                        if person == "1":
+                            resp["liabilities_of_declarant"][currency] += liability_amount
+                        else:
+                            resp["liabilities_of_family"][currency] += liability_amount
+                    except ValueError:
+                        pass
+        else:
+            if "liabilities" in self.source:
+                for field in ["54", "55", "56", "57", "58", "59"]:
+                    if field in self.source["liabilities"]:
+                        resp["liabilities_of_declarant"]["UAH"] += float(
+                            self.source["liabilities"][field].get("sum", 0))
+
+                for field in ["60", "61", "62", "63", "64"]:
+                    if field in self.source["liabilities"]:
+                        resp["liabilities_of_family"]["UAH"] += float(
+                            self.source["liabilities"][field].get("sum", 0))
+
+        return resp
+
     class Meta:
         verbose_name = "Декларація"
         verbose_name_plural = "Декларації"

@@ -234,6 +234,67 @@
             </table>
         </div>
     </div>
+    <h3>
+        {{ _("Фінансові зобов’язання:") }}
+        <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#support-liabilities">
+            <i class="fa fa-info-circle info-gray"></i>
+        </a>
+    </h3>
+    <div class="modalConnectionBox modal fade" id="support-liabilities" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        {{ _("Суб’єкт декларування повинен задекларувати: отримані кредити, отримані позики, зобов’язання за договорами лізингу, розмір сплачених коштів в рахунок основної суми позики (кредиту) та процентів за позикою (кредитом), зобов’язання за договорами страхування та недержавного пенсійного забезпечення, кошти, позичені суб’єкту декларування або члену його сім’ї іншими особами, несплачені податкові зобов’язання, інше.") }}
+                    </p>
+                    <p>
+                        {{ _("Інформація зазначається, лише якщо розмір зобов’язання перевищує 50 прожиткових мінімумів, встановленних для працездатних осіб на 1 січня звітного року. Якщо розмір зобов’язання не перевищує 50 прожиткових мінімумів, встановленних для працездатних осіб на 1 січня звітного року, зазначається лише загальний розмір такого фінансового зобов’язання (наприклад, якщо розмір сплачених коштів в рахунок основної суми позики (кредиту) у звітному році не перевищує 50 прожиткових мінімумів, встановленних для працездатних осіб на 1 січня звітного року, то зазначається лише загальний розмір позики (кредиту)).") }}
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ _("Закрити") }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="printWrap">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered" >
+                <thead>
+                    <tr>
+                        <th class="decl-year">{{ _("Рік") }}</th>
+                        <th class="decl-income">{{ _("Сума в декларанта") }}</th>
+                        <th class="decl-familyincome">{{ _("Сума в сім'ї") }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for declaration in all_declarations %}
+                        {% set liability = declaration.get_liabilities() %}
+                        <tr>
+                            <td class="decl-year"><a href="{{ liability.url }}" title="{{ _("Відкрити декларацію") }}" target="_blank">{{ liability.year }}</td>
+                            <td class="decl-income">
+                                {% for currency, amount in liability.liabilities_of_declarant.items() %}
+                                    {{ _(currency) }} {{ amount|curformat() }}<br/>
+                                {% else %}
+                                    {{ _("UAH") }} {{ 0|curformat() }}
+                                {% endfor %}
+                            </td>
+                            <td class="decl-familyincome">
+                                {% for currency, amount in liability.liabilities_of_family.items() %}
+                                    {{ _(currency) }} {{ amount|curformat() }}<br/>
+                                {% else %}
+                                    {{ _("UAH") }} {{ 0|curformat() }}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
     {% if declarations %}
         <h3>{{ _("Земельні ділянки:") }}</h3>
         <div class="printWrap">
@@ -387,50 +448,7 @@
             </div>
         </div>
 
-        <h3>{{ _("Фінансові зобов’язання:") }}</h3>
-        <div class="printWrap">
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered" >
-                    <thead>
-                        <tr>
-                            <th class="decl-year">{{ _("Рік") }}</th>
-                            <th class="decl-income">{{ _("Сума в декларанта") }}</th>
-                            <th class="decl-familyincome">{{ _("Сума в сім'ї") }}</th>
-                            <th class="decl-download"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for declaration in declarations if "liabilities" in declaration.source %}
-                        <tr>
-                            <td class="decl-year">{{ declaration.source.intro.declaration_year }}</td>
-                            <td class="decl-income">
-                                {% set sum = 0.0 %}
-                                {% for field in ["54", "55", "56", "57", "58", "59"] %}
-                                    {% set sum = sum + declaration.source.liabilities[field].sum|float + declaration.source.liabilities[field].sum_foreign|float %}
 
-                                    {% if loop.last %}
-                                        {{ _("UAH") }} {{ sum }}
-                                    {% endif %}
-                                {% endfor %}
-                            </td>
-                            <td class="decl-familyincome">
-                                {% set sum = 0 %}
-                                {% for field in ["60", "61", "62", "63", "64"] %}
-                                    {% set sum = sum + declaration.source.liabilities[field].sum|float + declaration.source.liabilities
-                                    [field].sum_foreign|float %}
-
-                                    {% if loop.last %}
-                                        {{ _("UAH") }} {{ sum }}
-                                    {% endif %}
-                                {% endfor %}
-                            </td>
-                            <td class="decl-download print-hidden"><a href="{{ declaration.url }}" title="{{ _("Відкрити декларацію") }}" target="_blank"><i class="fa fa-file-text-o"></i></a></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
         <h3>{{ _("Транспортні засоби:") }}</h3>
         <div class="printWrap">
             <div class="table-responsive">

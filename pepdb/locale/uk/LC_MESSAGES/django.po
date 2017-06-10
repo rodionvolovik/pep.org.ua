@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-06 11:37+0300\n"
+"POT-Creation-Date: 2017-06-10 23:31+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -446,6 +446,8 @@ msgid "Прочитано"
 msgstr ""
 
 #: core/models.py:1563 core/models.py:1564 core/models.py:1565
+#: core/models.py:1597 core/models.py:1599 core/models.py:1707
+#: core/models.py:1708 core/models.py:1735 core/models.py:1738
 msgid "Не зазначено"
 msgstr ""
 
@@ -453,43 +455,43 @@ msgstr ""
 msgid "Не зазначалось"
 msgstr ""
 
-#: core/models.py:1729
+#: core/models.py:1806
 msgid "Загальна сума сукупного доходу, гривні"
 msgstr ""
 
-#: core/models.py:1730
+#: core/models.py:1807
 msgid "Дарунки, призи, виграші"
 msgstr ""
 
-#: core/models.py:1731
+#: core/models.py:1808
 msgid "Земельні ділянки"
 msgstr ""
 
-#: core/models.py:1732
+#: core/models.py:1809
 msgid "Житлові будинки"
 msgstr ""
 
-#: core/models.py:1733
+#: core/models.py:1810
 msgid "Квартири"
 msgstr ""
 
-#: core/models.py:1734
+#: core/models.py:1811
 msgid "Інше нерухоме майно"
 msgstr ""
 
-#: core/models.py:1735
+#: core/models.py:1812
 msgid "Транспортні засоби"
 msgstr ""
 
-#: core/models.py:1736
+#: core/models.py:1813
 msgid "Вклади у банках"
 msgstr ""
 
-#: core/models.py:1737
+#: core/models.py:1814
 msgid "Фінансові зобов’язання"
 msgstr ""
 
-#: core/models.py:1738
+#: core/models.py:1815
 msgid "Інші активи"
 msgstr ""
 
@@ -498,10 +500,10 @@ msgid "Дані з декларації про доходи:"
 msgstr ""
 
 #: core/templates/_declaration.jinja:8 core/templates/_declaration.jinja:67
-#: core/templates/_declaration.jinja:198 core/templates/_declaration.jinja:224
-#: core/templates/_declaration.jinja:282 core/templates/_declaration.jinja:313
-#: core/templates/_declaration.jinja:344 core/templates/_declaration.jinja:377
-#: core/templates/_declaration.jinja:421
+#: core/templates/_declaration.jinja:219 core/templates/_declaration.jinja:268
+#: core/templates/_declaration.jinja:304 core/templates/_declaration.jinja:362
+#: core/templates/_declaration.jinja:393 core/templates/_declaration.jinja:424
+#: core/templates/_declaration.jinja:458
 msgid "Рік"
 msgstr ""
 
@@ -515,9 +517,9 @@ msgstr ""
 
 #: core/templates/_declaration.jinja:10 core/templates/_declaration.jinja:11
 #: core/templates/_declaration.jinja:12 core/templates/_declaration.jinja:69
-#: core/templates/_declaration.jinja:73 core/templates/_declaration.jinja:208
-#: core/templates/_declaration.jinja:209 core/templates/_declaration.jinja:393
-#: core/templates/_declaration.jinja:404
+#: core/templates/_declaration.jinja:73 core/templates/_declaration.jinja:220
+#: core/templates/_declaration.jinja:221 core/templates/_declaration.jinja:282
+#: core/templates/_declaration.jinja:289
 msgid "UAH"
 msgstr ""
 
@@ -530,10 +532,10 @@ msgid "Витрати та інші правочини декларанта"
 msgstr ""
 
 #: core/templates/_declaration.jinja:19 core/templates/_declaration.jinja:83
-#: core/templates/_declaration.jinja:210 core/templates/_declaration.jinja:245
-#: core/templates/_declaration.jinja:302 core/templates/_declaration.jinja:333
-#: core/templates/_declaration.jinja:364 core/templates/_declaration.jinja:408
-#: core/templates/_declaration.jinja:447
+#: core/templates/_declaration.jinja:228 core/templates/_declaration.jinja:277
+#: core/templates/_declaration.jinja:325 core/templates/_declaration.jinja:382
+#: core/templates/_declaration.jinja:413 core/templates/_declaration.jinja:444
+#: core/templates/_declaration.jinja:484
 msgid "Відкрити декларацію"
 msgstr ""
 
@@ -560,7 +562,8 @@ msgid ""
 "січня звітного року."
 msgstr ""
 
-#: core/templates/_declaration.jinja:51
+#: core/templates/_declaration.jinja:51 core/templates/_declaration.jinja:209
+#: core/templates/_declaration.jinja:258
 #: core/templates/macros/_connections.jinja:49
 msgid "Закрити"
 msgstr ""
@@ -602,57 +605,93 @@ msgstr ""
 msgid "Дарунки, призи, виграші:"
 msgstr ""
 
-#: core/templates/_declaration.jinja:199
+#: core/templates/_declaration.jinja:205
+msgid ""
+"Подарунки у формі грошових коштів ​повинні зазначатися, якщо розмір таких "
+"подарунків, отриманих від однієї особи (групи осіб) протягом року,​ перевищує "
+"5 прожиткових мінімумів, встановленних для працездатних осіб на 1 січня "
+"звітного року. Подарун​ок​ у формі, іншій ніж грошові кошти​ (рухоме майно, "
+"нерухомість тощо)​, зазначається​, якщо ​вартість так​ого​ подарунк​у перевищує 5 "
+"прожиткових мінімумів, встановленних для працездатних осіб на 1 січня "
+"звітного року. Зазначення інформації про подарунок не виключає обов'язок "
+"вказати відповідне майно в інших розділах декларації, наприклад, у розділах "
+"про цінне рухоме майно, нерухоме майно, цінні папери тощо."
+msgstr ""
+
+#: core/templates/_declaration.jinja:220
 msgid "Cума в декларанта"
 msgstr ""
 
-#: core/templates/_declaration.jinja:200 core/templates/_declaration.jinja:379
+#: core/templates/_declaration.jinja:221 core/templates/_declaration.jinja:270
 msgid "Сума в сім'ї"
 msgstr ""
 
-#: core/templates/_declaration.jinja:219
-msgid "Земельні ділянки:"
-msgstr ""
-
-#: core/templates/_declaration.jinja:225 core/templates/_declaration.jinja:283
-#: core/templates/_declaration.jinja:314 core/templates/_declaration.jinja:345
-msgid "Площа в декларанта"
-msgstr ""
-
-#: core/templates/_declaration.jinja:226 core/templates/_declaration.jinja:284
-#: core/templates/_declaration.jinja:315 core/templates/_declaration.jinja:346
-msgid "Площа в сім'ї"
-msgstr ""
-
-#: core/templates/_declaration.jinja:277
-msgid "Житлові будинки:"
-msgstr ""
-
-#: core/templates/_declaration.jinja:308
-msgid "Квартири:"
-msgstr ""
-
-#: core/templates/_declaration.jinja:339
-msgid "Інше нерухоме майно:"
-msgstr ""
-
-#: core/templates/_declaration.jinja:371
+#: core/templates/_declaration.jinja:238
 msgid "Фінансові зобов’язання:"
 msgstr ""
 
-#: core/templates/_declaration.jinja:378
+#: core/templates/_declaration.jinja:251
+msgid ""
+"Суб’єкт декларування повинен задекларувати: отримані кредити, отримані "
+"позики, зобов’язання за договорами лізингу, розмір сплачених коштів в "
+"рахунок основної суми позики (кредиту) та процентів за позикою (кредитом), "
+"зобов’язання за договорами страхування та недержавного пенсійного "
+"забезпечення, кошти, позичені суб’єкту декларування або члену його сім’ї "
+"іншими особами, несплачені податкові зобов’язання, інше."
+msgstr ""
+
+#: core/templates/_declaration.jinja:254
+msgid ""
+"Інформація зазначається, лише якщо розмір зобов’язання перевищує 50 "
+"прожиткових мінімумів, встановленних для працездатних осіб на 1 січня "
+"звітного року. Якщо розмір зобов’язання не перевищує 50 прожиткових "
+"мінімумів, встановленних для працездатних осіб на 1 січня звітного року, "
+"зазначається лише загальний розмір такого фінансового зобов’язання "
+"(наприклад, якщо розмір сплачених коштів в рахунок основної суми позики "
+"(кредиту) у звітному році не перевищує 50 прожиткових мінімумів, "
+"встановленних для працездатних осіб на 1 січня звітного року, то "
+"зазначається лише загальний розмір позики (кредиту))."
+msgstr ""
+
+#: core/templates/_declaration.jinja:269
 msgid "Сума в декларанта"
 msgstr ""
 
-#: core/templates/_declaration.jinja:415
+#: core/templates/_declaration.jinja:299
+msgid "Земельні ділянки:"
+msgstr ""
+
+#: core/templates/_declaration.jinja:305 core/templates/_declaration.jinja:363
+#: core/templates/_declaration.jinja:394 core/templates/_declaration.jinja:425
+msgid "Площа в декларанта"
+msgstr ""
+
+#: core/templates/_declaration.jinja:306 core/templates/_declaration.jinja:364
+#: core/templates/_declaration.jinja:395 core/templates/_declaration.jinja:426
+msgid "Площа в сім'ї"
+msgstr ""
+
+#: core/templates/_declaration.jinja:357
+msgid "Житлові будинки:"
+msgstr ""
+
+#: core/templates/_declaration.jinja:388
+msgid "Квартири:"
+msgstr ""
+
+#: core/templates/_declaration.jinja:419
+msgid "Інше нерухоме майно:"
+msgstr ""
+
+#: core/templates/_declaration.jinja:452
 msgid "Транспортні засоби:"
 msgstr ""
 
-#: core/templates/_declaration.jinja:422
+#: core/templates/_declaration.jinja:459
 msgid "Авто в декларанта"
 msgstr ""
 
-#: core/templates/_declaration.jinja:423
+#: core/templates/_declaration.jinja:460
 msgid "Авто в сім'ї"
 msgstr ""
 
