@@ -1752,7 +1752,7 @@ class Declaration(models.Model):
                 for liability in self.source["nacp_orig"]["step_13"].values():
                     try:
                         person = liability.get("person", "1")
-                        liability_amount = float(liability.get("sizeObligation", "0"))
+                        liability_amount = float(liability.get("sizeObligation", "0") or 0)
                         currency = liability.get("currency", "UAH") or "UAH"
 
                         if person == "1":
@@ -1766,12 +1766,12 @@ class Declaration(models.Model):
                 for field in ["54", "55", "56", "57", "58", "59"]:
                     if field in self.source["liabilities"]:
                         resp["liabilities_of_declarant"]["UAH"] += float(
-                            self.source["liabilities"][field].get("sum", 0))
+                            self.source["liabilities"][field].get("sum", 0) or 0)
 
                 for field in ["60", "61", "62", "63", "64"]:
                     if field in self.source["liabilities"]:
                         resp["liabilities_of_family"]["UAH"] += float(
-                            self.source["liabilities"][field].get("sum", 0))
+                            self.source["liabilities"][field].get("sum", 0) or 0)
 
         return resp
 
