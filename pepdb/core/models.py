@@ -1765,13 +1765,19 @@ class Declaration(models.Model):
             if "liabilities" in self.source:
                 for field in ["54", "55", "56", "57", "58", "59"]:
                     if field in self.source["liabilities"]:
-                        resp["liabilities_of_declarant"]["UAH"] += float(
-                            (self.source["liabilities"][field].get("sum", "0") or "0").replace(",", "."))
+                        try:
+                            resp["liabilities_of_declarant"]["UAH"] += float(
+                                (self.source["liabilities"][field].get("sum", "0") or "0").replace(",", "."))
+                        except (ValueError, UnicodeEncodeError):
+                            pass
 
                 for field in ["60", "61", "62", "63", "64"]:
                     if field in self.source["liabilities"]:
-                        resp["liabilities_of_family"]["UAH"] += float(
-                            (self.source["liabilities"][field].get("sum", "0") or "0").replace(",", "."))
+                        try:
+                            resp["liabilities_of_family"]["UAH"] += float(
+                                (self.source["liabilities"][field].get("sum", "0") or "0").replace(",", "."))
+                        except (ValueError, UnicodeEncodeError):
+                            pass
 
         return resp
 
