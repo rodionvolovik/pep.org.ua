@@ -14,7 +14,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # For stupid sitemaps
-SITE_URL = "http://pep.org.ua"
+SITE_URL = "https://pep.org.ua"
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '*37e&4-qi$f+paw#=me8opo$uk7y%d$c@crd++q89$4y!g$p!e'
