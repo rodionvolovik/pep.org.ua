@@ -1766,12 +1766,12 @@ class Declaration(models.Model):
                 for field in ["54", "55", "56", "57", "58", "59"]:
                     if field in self.source["liabilities"]:
                         resp["liabilities_of_declarant"]["UAH"] += float(
-                            self.source["liabilities"][field].get("sum", 0) or 0)
+                            (self.source["liabilities"][field].get("sum", "0") or "0").replace(",", "."))
 
                 for field in ["60", "61", "62", "63", "64"]:
                     if field in self.source["liabilities"]:
                         resp["liabilities_of_family"]["UAH"] += float(
-                            self.source["liabilities"][field].get("sum", 0) or 0)
+                            (self.source["liabilities"][field].get("sum", "0") or "0").replace(",", "."))
 
         return resp
 
