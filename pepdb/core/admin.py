@@ -589,7 +589,12 @@ class DeclarationAdmin(admin.ModelAdmin):
     search_fields = [
         'last_name', "first_name", "patronymic",
         'person__last_name_uk', 'person__first_name_uk',
-        'person__patronymic_uk']
+        'person__patronymic_uk', 'declaration_id']
+
+    raw_id_fields = ('person',)
+    autocomplete_lookup_fields = {
+        'fk': ['person'],
+    }
 
     list_editable = ("confirmed",)
     list_filter = ("confirmed", "relatives_populated", "batch_number")

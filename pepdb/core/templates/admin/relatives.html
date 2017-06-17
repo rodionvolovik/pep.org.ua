@@ -8,6 +8,11 @@
 <!-- STYLESHEETS -->
 {% block stylesheets %}
     {{ block.super }}
+    <style type="text/css">
+        .suggest-link.selected {
+            color: purple;
+        }
+    </style>
 {% endblock %}
 
 <!-- JAVASCRIPTS -->
@@ -130,6 +135,8 @@
                     parent.find(".rcpt_id").val(el.data("id"));
                     parent.find(".rel_id").val(el.data("rel_id"));
                     parent.find(".last_name_input").val(el.data("last_name"));
+                    parent.find(".suggest-link").toggleClass("selected", false);
+                    el.toggleClass("selected", true);
 
                     if (el.data("first_name").length > parent.find(".first_name_input").val().length)
                         parent.find(".first_name_input").val(el.data("first_name"));
