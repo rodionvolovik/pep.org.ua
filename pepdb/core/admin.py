@@ -264,7 +264,7 @@ class PersonAdmin(TranslationAdmin):
 
         (u'Додаткова інформація', {
             'fields': ['wiki', 'reputation_assets', 'type_of_official',
-                       'risk_category', 'names']}),
+                       'risk_category', 'also_known_as', 'names']}),
 
         (u'Ділова репутація', {
             'fields': ['reputation_sanctions', 'reputation_crimes',

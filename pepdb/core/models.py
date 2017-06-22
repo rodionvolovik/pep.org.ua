@@ -112,6 +112,8 @@ class Person(models.Model, AbstractNode):
     wiki = RedactorField("Вікі-стаття", blank=True)
     names = models.TextField("Варіанти написання імені", blank=True)
 
+    also_known_as = models.TextField("Інші імена", blank=True)
+
     type_of_official = models.IntegerField(
         "Тип ПЕП",
         choices=(
@@ -459,14 +461,10 @@ class Person(models.Model, AbstractNode):
         return settings.SITE_URL + self.localized_url("uk")
 
     def save(self, *args, **kwargs):
-        if not self.first_name_en:
-            self.first_name_en = translitua(self.first_name_uk)
-
-        if not self.last_name_en:
-            self.last_name_en = translitua(self.last_name_uk)
-
-        if not self.patronymic_en:
-            self.patronymic_en = translitua(self.patronymic_uk)
+        self.first_name_en = translitua(self.first_name_uk)
+        self.last_name_en = translitua(self.last_name_uk)
+        self.patronymic_en = translitua(self.patronymic_uk)
+        self.also_known_as_en = translitua(self.also_known_as_uk)
 
         super(Person, self).save(*args, **kwargs)
 
