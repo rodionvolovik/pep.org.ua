@@ -54,11 +54,11 @@
                 {% if workplaces %}
                 <li><a href="#workbefore" class="btn btn-transp trans"><i class="fa fa-wrench"></i><span>{{ _("Кар'єра") }}</span></a></li>
                 {% endif %}
-                {% if all_declarations %}
-                    <li><a href="#declarations" class="btn btn-transp trans"><i class="fa fa-file-text-o"></i><span>{{ _("Декларації") }}</span></a></li>
-                {% endif %}
                 {% if related_persons.all %}
                 <li><a href="#connections" class="btn btn-transp trans"><i class="fa fa-heart"></i><span>{{ _("Зв'язки") }}</span></a></li>
+                {% endif %}
+                {% if all_declarations %}
+                    <li><a href="#declarations" class="btn btn-transp trans"><i class="fa fa-file-text-o"></i><span>{{ _("Декларації") }}</span></a></li>
                 {% endif %}
                 {% if LANGUAGE_CODE == "en" %}
                     {% if assets or person.reputation_assets_en %}
@@ -272,11 +272,7 @@
                 </div>
             </div>
             {% endif %}
-            
-            {% if all_declarations %}
-                {% include "_declaration.jinja" %}
-            {% endif %}
-            
+                        
             {% if related_persons.all %}
             <div id="connections" class="sub box">
                 <h3>{{ _("Зв'язки:") }}</h3>
@@ -322,6 +318,10 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
+
+            {% if all_declarations %}
+                {% include "_declaration.jinja" %}
             {% endif %}
 
             {% if LANGUAGE_CODE == "en" %}

@@ -258,13 +258,14 @@ class PersonAdmin(TranslationAdmin):
 
     fieldsets = [
         (u"Загальна інформація", {
-            'fields': ['last_name', 'first_name', 'patronymic', 'is_pep',
+            'fields': ['last_name', 'first_name', 'patronymic',
+                       'also_known_as', 'is_pep',
                        'photo', 'dob', 'dob_details', 'city_of_birth',
                        "publish"]}),
 
         (u'Додаткова інформація', {
             'fields': ['wiki', 'reputation_assets', 'type_of_official',
-                       'risk_category', 'also_known_as', 'names']}),
+                       'risk_category', 'names']}),
 
         (u'Ділова репутація', {
             'fields': ['reputation_sanctions', 'reputation_crimes',
