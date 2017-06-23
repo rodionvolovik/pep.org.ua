@@ -185,6 +185,10 @@ class Person(models.Model, AbstractNode):
 
         return qs
 
+    def _last_workplace_from_declaration(self):
+        return Declaration.objects.filter(person=self, confirmed="a").order_by(
+            "-nacp_declaration", "-year")[:1]
+
     @property
     def last_workplace(self):
         qs = self._last_workplace()
@@ -195,6 +199,15 @@ class Person(models.Model, AbstractNode):
                 "company_id": l.to_company.pk,
                 "position": l.relationship_type_uk
             }
+        else:
+            qs = self._last_workplace_from_declaration()
+            if qs:
+                d = qs[0]
+                return {
+                    "company": d.office_uk,
+                    "company_id": None,
+                    "position": d.position_uk
+                }
 
         return ""
 
@@ -210,6 +223,15 @@ class Person(models.Model, AbstractNode):
                 "company_id": l.to_company.pk,
                 "position": l.relationship_type_en
             }
+        else:
+            qs = self._last_workplace_from_declaration()
+            if qs:
+                d = qs[0]
+                return {
+                    "company": d.office_en,
+                    "company_id": None,
+                    "position": d.position_en
+                }
 
         return ""
 
@@ -225,6 +247,15 @@ class Person(models.Model, AbstractNode):
                 "company_id": l.to_company.pk,
                 "position": l.relationship_type
             }
+        else:
+            qs = self._last_workplace_from_declaration()
+            if qs:
+                d = qs[0]
+                return {
+                    "company": d.office,
+                    "company_id": None,
+                    "position": d.position
+                }
 
         return ""
 
@@ -461,10 +492,25 @@ class Person(models.Model, AbstractNode):
         return settings.SITE_URL + self.localized_url("uk")
 
     def save(self, *args, **kwargs):
-        self.first_name_en = translitua(self.first_name_uk)
-        self.last_name_en = translitua(self.last_name_uk)
-        self.patronymic_en = translitua(self.patronymic_uk)
-        self.also_known_as_en = translitua(self.also_known_as_uk)
+        if self.first_name_uk:
+            self.first_name_en = translitua(self.first_name_uk)
+        else:
+            self.first_name_en = ""
+
+        if self.last_name_uk:
+            self.last_name_en = translitua(self.last_name_uk)
+        else:
+            self.last_name_en = ""
+
+        if self.patronymic_uk:
+            self.patronymic_en = translitua(self.patronymic_uk)
+        else:
+            self.patronymic_en = ""
+
+        if self.also_known_as_uk:
+            self.also_known_as_en = translitua(self.also_known_as_uk)
+        else:
+            self.also_known_as_en = ""
 
         super(Person, self).save(*args, **kwargs)
 

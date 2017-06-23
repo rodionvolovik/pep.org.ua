@@ -125,7 +125,11 @@
                                 <td>{{ _("Остання посада") }}</td>
                                 <td>
                                     <strong>
-                                        <a href="{{ url("company_details", company_id=last_workplace.company_id) }}" itemprop="worksFor" itemscope itemtype="http://schema.org/Organization"><span itemprop="name">{{ last_workplace.company }}</span></a>, 
+                                        {% if last_workplace.company_id %}
+                                            <a href="{{ url("company_details", company_id=last_workplace.company_id) }}" itemprop="worksFor" itemscope itemtype="http://schema.org/Organization"><span itemprop="name">{{ last_workplace.company }}</span></a>,
+                                        {% else %}
+                                            <span itemprop="worksFor" itemscope itemtype="http://schema.org/Organization"><span itemprop="name">{{ last_workplace.company }}</span></span>,
+                                        {% endif %}
                                         <span itemprop="jobTitle">{{ last_workplace.position }}</span>
                                     </strong>
                                 </td>
