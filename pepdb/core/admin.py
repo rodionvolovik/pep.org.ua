@@ -431,12 +431,16 @@ class DeclarationAdmin(admin.ModelAdmin):
     def position_pep(self, obj):
         last_workplace = obj.person.last_workplace
         if last_workplace:
-            return "%s @ %s" % (obj.person.last_workplace["position"],
-                                obj.person.last_workplace["company"])
+            return '%s @ %s,<br/><span style="color: silver">%s</span>' % (
+                obj.person.last_workplace["position"],
+                obj.person.last_workplace["company"],
+                obj.person.get_type_of_official_display()
+            )
 
         return ""
 
     position_pep.short_description = 'Посада з БД PEP'
+    position_pep.allow_tags = True
 
     def get_urls(self):
         urls = super(DeclarationAdmin, self).get_urls()
