@@ -12,6 +12,10 @@
         .suggest-link.selected {
             color: purple;
         }
+
+        .indirect_pep {
+            background: lightgreen;
+        }
     </style>
 {% endblock %}
 
@@ -203,7 +207,7 @@
                                 <strong>Вже є в БД PEP:</strong>
                                 <ul>
                                 {% for rcpt in member|suggest:r.person.id %}
-                                    <li>
+                                    <li {% if rcpt.subject.type_of_official > 3 %}class="indirect_pep"{% endif %}>
                                         <a href="#"
                                             class="suggest-link"
                                             data-from="{{ rcpt.from }}"
