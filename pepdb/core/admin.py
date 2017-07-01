@@ -415,10 +415,11 @@ class DeclarationAdmin(admin.ModelAdmin):
 
 
     def fullname_pep(self, obj):
-        return ('<a href="%s" target="_blank">%s %s %s</a>' % (
+        return ('<a href="%s" target="_blank">%s %s %s</a><br/> %s' % (
             reverse("person_details", kwargs={"person_id": obj.person_id}),
             obj.person.last_name_uk, obj.person.first_name_uk,
             obj.person.patronymic_uk,
+            (obj.person.also_known_as_uk or "").replace("\n", " ,")
         )).replace("  ", " ").strip()
     fullname_pep.short_description = 'ПІБ з БД PEP'
     fullname_pep.allow_tags = True

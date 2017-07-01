@@ -102,21 +102,28 @@ class Command(BaseCommand):
 
                 continue
 
-            subr = requests.get(
-                settings.DECLARATIONS_ENDPOINT, params={
-                    "q": full_name,
-                    "format": "json"
-                }, verify=False, timeout=60).json()
+            names_to_retrieve = [full_name]
 
-            self.stdout.write(full_name)
+            if person.also_known_as_uk:
+                names_to_retrieve += list(
+                    filter(None, person.also_known_as_uk.split("\n")))
 
-            for decl in subr["results"]["object_list"]:
-                res = self.add_declaration(
-                    person,
-                    decl,
-                    subr["fuzziness"],
-                    current_batch + task_number // self.TASKS_PER_BATCH
-                )
+            for full_name_to_ret in names_to_retrieve:
+                subr = requests.get(
+                    settings.DECLARATIONS_ENDPOINT, params={
+                        "q": full_name_to_ret,
+                        "format": "json"
+                    }, verify=False, timeout=60).json()
 
-                if res:
-                    task_number += 1
+                self.stdout.write(full_name_to_ret)
+
+                for decl in subr["results"]["object_list"]:
+                    res = self.add_declaration(
+                        person,
+                        decl,
+                        subr["fuzziness"],
+                        current_batch + task_number // self.TASKS_PER_BATCH
+                    )
+
+                    if res:
+                        task_number += 1
