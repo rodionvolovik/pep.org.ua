@@ -287,7 +287,7 @@ class CompanyAdmin(TranslationAdmin):
     def management(self, obj):
         managers = obj.all_related_persons["managers"]
         return "<br/>".join([
-            str(person) for person in managers
+            unicode(person) for person in managers
         ])
     management.allow_tags = True
 
