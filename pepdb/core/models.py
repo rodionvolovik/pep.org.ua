@@ -918,6 +918,28 @@ class Company(models.Model, AbstractNode):
         ),
         default=0)
 
+    status = models.IntegerField(
+        "Поточний стан",
+        choices=(
+            (1, _("зареєстровано")),
+            (2, _("припинено")),
+            (3, _("в стані припинення")),
+            (4, _("зареєстровано, свідоцтво про державну реєстрацію недійсне")),
+            (5, _("порушено справу про банкрутство")),
+            (6, _("порушено справу про банкрутство (санація)")),
+        ),
+        default=1
+    )
+    closed_on = models.DateField("Дата припинення", blank=True, null=True)
+    closed_on_details = models.IntegerField(
+        "Дата припинення: точність",
+        choices=(
+            (0, "Точна дата"),
+            (1, "Рік та місяць"),
+            (2, "Тільки рік"),
+        ),
+        default=0)
+
     @property
     def founded_human(self):
         return render_date(self.founded,
@@ -925,6 +947,9 @@ class Company(models.Model, AbstractNode):
 
     state_company = models.BooleanField(
         "Є державною установою", default=False)
+
+    legal_entitiy = models.BooleanField(
+        "Є юридичною особою", default=True)
 
     edrpou = models.CharField(
         "ЄДРПОУ/ідентифікаційний код", max_length=20, blank=True)
@@ -1208,6 +1233,11 @@ class Company(models.Model, AbstractNode):
             res["connections"] = connections
 
         return res
+
+    @property
+    def closed_on_human(self):
+        return render_date(self.closed_on,
+                           self.closed_on_details)
 
     class Meta:
         verbose_name = "Юридична особа"

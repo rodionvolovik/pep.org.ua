@@ -259,13 +259,12 @@ class PersonAdmin(TranslationAdmin):
     fieldsets = [
         (u"Загальна інформація", {
             'fields': ['last_name', 'first_name', 'patronymic',
-                       'also_known_as', 'is_pep',
+                       'also_known_as', 'is_pep', 'type_of_official',
                        'photo', 'dob', 'dob_details', 'city_of_birth',
-                       "publish"]}),
+                       'publish']}),
 
         (u'Додаткова інформація', {
-            'fields': ['wiki', 'reputation_assets', 'type_of_official',
-                       'risk_category', 'names']}),
+            'fields': ['wiki', 'reputation_assets', 'risk_category', 'names']}),
 
         (u'Ділова репутація', {
             'fields': ['reputation_sanctions', 'reputation_crimes',
@@ -285,9 +284,16 @@ class PersonAdmin(TranslationAdmin):
 
 
 class CompanyAdmin(TranslationAdmin):
+    def management(self, obj):
+        managers = obj.all_related_persons["managers"]
+        return "<br/>".join([
+            str(person) for person in managers
+        ])
+    management.allow_tags = True
+
     inlines = (Company2PersonInline, Company2CompanyInline,
                Company2CompanyBackInline, Company2CountryInline)
-    list_display = ("name_uk", "edrpou", "state_company", "publish")
+    list_display = ("name_uk", "edrpou", "state_company", "management")
     search_fields = ["name_uk", "short_name_uk", "edrpou"]
     actions = [make_published, make_unpublished]
 
