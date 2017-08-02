@@ -284,6 +284,11 @@ class PersonAdmin(TranslationAdmin):
 
 
 class CompanyAdmin(TranslationAdmin):
+    class Media:
+        css = {
+             'all': ('css/admin/company_admin.css',)
+        }
+
     def management(self, obj):
         managers = obj.all_related_persons["managers"]
         return "<br/>".join([
