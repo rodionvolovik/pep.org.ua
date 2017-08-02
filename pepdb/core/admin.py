@@ -287,13 +287,18 @@ class CompanyAdmin(TranslationAdmin):
     def management(self, obj):
         managers = obj.all_related_persons["managers"]
         return "<br/>".join([
-            unicode(person) for person in managers
+            '<a href="%s" target="_blank">%s</a>' % (
+                reverse("admin:core_person_change", args=(person.pk,)),
+                unicode(person)
+            ) for person in managers
         ])
     management.allow_tags = True
 
     inlines = (Company2PersonInline, Company2CompanyInline,
                Company2CompanyBackInline, Company2CountryInline)
-    list_display = ("name_uk", "edrpou", "state_company", "management")
+    list_display = ("pk", "name_uk", "edrpou", "state_company", "status",
+                    "management")
+    list_editable = ("name_uk", "edrpou", "state_company", "status")
     search_fields = ["name_uk", "short_name_uk", "edrpou"]
     actions = [make_published, make_unpublished]
 

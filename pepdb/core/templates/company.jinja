@@ -86,6 +86,23 @@
                                 <td><strong>{{ company.founded_human }}</strong></td>
                             </tr>
                             {% endif %}
+                            {% if company.status %}
+                            <tr>
+                                <td>{{ _("Поточний стан") }} </td>
+                                <td><strong>{{ _(company.get_status_display()) }}</strong></td>
+                            </tr>
+                            {% endif %}
+                            {% if company.closed_on %}
+                            <tr>
+                                <td>{{ _("Дата припинення") }} </td>
+                                <td><strong>{{ company.closed_on_human }}</strong></td>
+                            </tr>
+                            {% endif %}
+                            {% if not company.legal_entitiy %}
+                            <tr>
+                                <td colspan="2">{{ _("Не є окремою юридичною особою") }} </td>
+                            </tr>
+                            {% endif %}
                             {% if related_countries.registered_in %}
                             <tr>
                                 <td>{{ _("Країна") }} </td>
