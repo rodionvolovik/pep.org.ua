@@ -17,6 +17,8 @@ from dateutil import parser
 from rfc6266 import parse_requests_response
 from oauth2client.client import SignedJwtAssertionCredentials
 
+import logging
+logger = logging.getLogger(__name__)
 
 def expand_gdrive_download_url(url):
     """
@@ -372,3 +374,68 @@ def unique(source):
     """
     seen = set()
     return [seen.add(x) or x for x in source if x not in seen]
+
+
+def parse_address(location):
+    chunks = list(
+        map(unicode.strip, location.split(u",")))
+
+    zip_code = chunks[0].strip()
+    orig = location
+    city = ""
+    street = ""
+    appt = ""
+
+    try:
+        if len(chunks) == 3:
+            city = u", ".join([chunks[2], chunks[1]])
+
+        else:
+            if u"обл" in chunks[1].lower() or u"крим" in chunks[1].lower():
+                if u"район" in chunks[2].lower():
+                    city = u", ".join([chunks[3], chunks[2], chunks[1]])
+
+                    if len(chunks) > 4:
+                        street = chunks[4]
+
+                    if len(chunks) > 5:
+                        appt = chunks[5]
+                else:
+                    city = u", ".join([chunks[2], chunks[1]])
+                    if u"район" in chunks[3]:
+                        street = chunks[4]
+
+                        if len(chunks) > 5:
+                            appt = chunks[5]
+                    else:
+                        street = chunks[3]
+
+                        if len(chunks) > 4:
+                            appt = chunks[4]
+            else:
+                city = chunks[1]
+                street = chunks[3]
+                if len(chunks) > 4:
+                    appt = chunks[4]
+
+        if not zip_code.isdigit():
+            zip_code = ""
+
+        # Sanity check
+        if u"буд" in appt.lower() or appt == "" or appt.isdigit():
+            return (zip_code, city, street, appt)
+        else:
+            logger.error(
+                "Cannot parse %s, best results so far is %s" % (
+                    location,
+                    ", ".join([zip_code, city, street, appt])
+                )
+            )
+
+            return None
+    except IndexError:
+        logger.error(
+            "Cannot parse %s" % location
+        )
+
+        return None

@@ -35,16 +35,16 @@ class Command(BaseCommand):
 
             for i, row in enumerate(dr):
                 portion.append(EDRPOU(
-                    edrpou=row[u"Код_ЄДРПОУ"].lstrip("0"),
-                    location=row[u"Місцезнаходження"],
-                    company_profile=row[u"Основний_вид_діяльності"],
-                    head=row[u"ПІБ_керівника"],
-                    name=row[u"Найменування"],
-                    short_name=row[u"Скорочена_назва"],
-                    status=row[u"Стан"],
+                    edrpou=row[u"EDRPOU"].lstrip("0"),
+                    location=row[u"ADDRESS"],
+                    company_profile=row[u"KVED"],
+                    head=row[u"BOSS"],
+                    name=row[u"NAME"],
+                    short_name=row[u"SHORT_NAME"],
+                    status=row[u"STAN"],
                 ).to_dict(True))
 
-                if len(portion) >= 10000:
+                if len(portion) >= 50000:
                     bulk(es, portion)
 
                     self.stdout.write(

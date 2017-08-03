@@ -3,11 +3,11 @@ from __future__ import unicode_literals
 
 import datetime
 import json
-from unicodecsv import DictWriter
+from unicodecsv import DictWriter, DictReader
 from cStringIO import StringIO
 
 from django import forms
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.db.models import Q
 from django.conf import settings
 from django.conf.urls import url
@@ -30,6 +30,8 @@ from core.models import (
     Ua2EnDictionary, FeedbackMessage, Declaration, DeclarationExtra,
     ActionLog)
 
+from core.forms import EDRImportForm
+from core.utils import parse_address
 from tasks.elastic_models import EDRPOU
 
 
@@ -345,6 +347,132 @@ class CompanyAdmin(TranslationAdmin):
 
         return response
 
+    def edr_import(self, request):
+        if request.method == "GET":
+            return render(
+                request, "admin/company/edr_import.html",
+                {"form": EDRImportForm(initial={"is_state_companies": True})}
+            )
+        if request.method == "POST":
+            form = EDRImportForm(request.POST, request.FILES)
+
+            if not form.is_valid():
+                return render(
+                    request, "admin/company/edr_import.html",
+                    {"form": form}
+                )
+
+            created = 0
+            updated = 0
+            r = DictReader(request.FILES["csv"])
+
+            for entry in r:
+                if not entry["edrpou"]:
+                    self.message_user(
+                        request,
+                        "Не можу імпортувати юр. особу без ЄДРПОУ <%s>" %
+                        json.dumps(entry, ensure_ascii=False),
+                        level=messages.ERROR
+                    )
+                    continue
+
+                edrpou = entry["edrpou"].rjust(8, "0")
+                parsed = parse_address(entry["location"])
+
+                companies = list(Company.objects.filter(edrpou=edrpou))
+                if len(companies) > 1:
+                    self.message_user(
+                        request,
+                        "Не можу імпортувати юр. особу <%s>: в базі таких більше одної" %
+                        json.dumps(entry, ensure_ascii=False),
+                        level=messages.ERROR
+                    )
+                    continue
+
+                if not companies:
+                    company = Company(
+                        edrpou=edrpou,
+                        name_uk=entry["name"],
+                        short_name_uk=entry["short_name"]
+                    )
+                    created += 1
+                else:
+                    company = companies[0]
+                    updated += 1
+
+                if parsed:
+                    zip_code, city, street, appt = parsed
+
+                    if company.zip_code and company.zip_code != zip_code:
+                        self.message_user(
+                            request,
+                            "Не замінюю індекс %s на %s для компанії %s, %s" % (
+                                company.zip_code,
+                                zip_code,
+                                company.name,
+                                company.id
+                            ), level=messages.WARNING
+                        )
+
+                    company.zip_code = company.zip_code or zip_code
+
+                    if company.city_uk and company.city_uk != city:
+                        self.message_user(
+                            request,
+                            "Не замінюю місто %s на %s для компанії %s, %s" % (
+                                company.city_uk,
+                                city,
+                                company.name,
+                                company.id
+                            ), level=messages.WARNING
+                        )
+
+                    company.city_uk = company.city_uk or city
+
+                    if company.street_uk and company.street_uk != street:
+                        self.message_user(
+                            request,
+                            "Не замінюю вулицю %s на %s для компанії %s, %s" % (
+                                company.street_uk,
+                                street,
+                                company.name,
+                                company.id
+                            ), level=messages.WARNING
+                        )
+
+                    company.street_uk = company.street_uk or street
+
+                    if company.appt_uk and company.appt_uk != appt:
+                        self.message_user(
+                            request,
+                            "Не замінюю дім/квартиру %s на %s для компанії %s, %s" % (
+                                company.appt_uk,
+                                appt,
+                                company.name,
+                                company.id
+                            ), level=messages.WARNING
+                        )
+
+                    company.appt_uk = company.appt_uk or appt
+                else:
+                    company.raw_address = entry["location"]
+
+                for k, v in company._status_choices.items():
+                    if entry["status"].lower() == v:
+                        company.status = k
+                        break
+
+                company.state_company = form.cleaned_data.get(
+                    "is_state_companies", False)
+                company.save()
+
+            self.message_user(
+                request,
+                "Створено %s компаній, оновлено %s" % (created, updated)
+            )
+
+            return redirect(reverse("admin:core_company_changelist"))
+
     def get_urls(self):
         urls = super(CompanyAdmin, self).get_urls()
         extra_urls = [
@@ -352,6 +480,8 @@ class CompanyAdmin(TranslationAdmin):
                 name="edr_search"),
             url(r'^edr_export/$', self.admin_site.admin_view(self.edr_export),
                 name="edr_export"),
+            url(r'^edr_import/$', self.admin_site.admin_view(self.edr_import),
+                name="edr_import"),
         ]
         return extra_urls + urls
 

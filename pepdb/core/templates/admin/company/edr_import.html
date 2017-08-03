@@ -1,0 +1,23 @@
+{% extends "admin/base_site.html" %}
+{% load admin_misc %}
+{% block title %}Імпорт з ЄДР{{ block.super }}{% endblock %}
+
+<!-- LOADING -->
+{% load admin_static i18n admin_modify admin_urls grp_tags %}
+
+{% block content-class %}{% endblock %}
+
+<!-- CONTENT -->
+{% block content %}
+    <div class="grp-module">
+        <div class="grp-row">
+            <div class="l-2cr-fluid l-d-12">
+                <form method="POST" action="{% url 'admin:edr_import' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" value="Завантажити" class="grp-button grp-default" />
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -904,8 +904,18 @@ class Person2Company(AbstractRelationship):
 
 
 class Company(models.Model, AbstractNode):
+    _status_choices = {
+        0: _("інформація відсутня"),
+        1: _("зареєстровано"),
+        2: _("припинено"),
+        3: _("в стані припинення"),
+        4: _("зареєстровано, свідоцтво про державну реєстрацію недійсне"),
+        5: _("порушено справу про банкрутство"),
+        6: _("порушено справу про банкрутство (санація)"),
+    }
+
     name = models.CharField("Повна назва", max_length=512)
-    short_name = models.CharField("Скорочена назва", max_length=50,
+    short_name = models.CharField("Скорочена назва", max_length=100,
                                   blank=True)
 
     publish = models.BooleanField("Опублікувати", default=False)
@@ -921,15 +931,7 @@ class Company(models.Model, AbstractNode):
 
     status = models.IntegerField(
         "Поточний стан",
-        choices=(
-            (0, _("інформація відсутня")),
-            (1, _("зареєстровано")),
-            (2, _("припинено")),
-            (3, _("в стані припинення")),
-            (4, _("зареєстровано, свідоцтво про державну реєстрацію недійсне")),
-            (5, _("порушено справу про банкрутство")),
-            (6, _("порушено справу про банкрутство (санація)")),
-        ),
+        choices=_status_choices.items(),
         default=0
     )
     closed_on = models.DateField("Дата припинення", blank=True, null=True)
