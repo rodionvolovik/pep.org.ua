@@ -948,13 +948,13 @@ class Company(models.Model, AbstractNode):
                            self.founded_details)
 
     state_company = models.BooleanField(
-        "Є державною установою", default=False)
+        "Держаустанова", default=False)
 
-    legal_entitiy = models.BooleanField(
-        "Є юридичною особою", default=True)
+    legal_entity = models.BooleanField(
+        "Юрособа", default=True)
 
     edrpou = models.CharField(
-        "ЄДРПОУ/ідентифікаційний код", max_length=20, blank=True)
+        "ЄДРПОУ", max_length=20, blank=True)
 
     zip_code = models.CharField("Індекс", max_length=10, blank=True)
     city = models.CharField("Місто", max_length=255, blank=True)
