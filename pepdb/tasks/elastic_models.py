@@ -6,7 +6,7 @@ class EDRPOU(DocType):
 
     edrpou = Keyword(index=True)
     location = Text(index=True, analyzer='ukrainian')
-    company_profile = Text(index=True, analyzer='ukrainian')
+    company_profile = Text(index=True, analyzer='ukrainian', fields={'raw': Keyword(index=True)})
     head = Text(index=True, analyzer='ukrainian')
     name = Text(index=True, analyzer='ukrainian')
     short_name = Text(index=True, analyzer='ukrainian')

@@ -1,0 +1,81 @@
+{% extends "admin/base_site.html" %}
+{% load admin_misc %}
+{% block title %}Створити родичів{{ block.super }}{% endblock %}
+
+<!-- LOADING -->
+{% load admin_static i18n admin_modify admin_urls grp_tags %}
+
+{% block content-class %}{% endblock %}
+
+<!-- CONTENT -->
+{% block content %}
+    <div class="grp-module">
+        <div class="grp-row">
+            <div class="l-2cr-fluid l-d-12">
+                <aside class="c-1">
+                    <div id="search" class="g-d-12 g-d-f">
+                        <form method="GET" action="{% url 'admin:edr_search' %}">
+                            <input type="text" name="q" id="grp-changelist-search" class="grp-search-field" value="{% if query %}{{ query }}{% endif %}">
+                            <button type="submit" value="" class="grp-search-button"></button>
+                        </form>
+                    </div>
+                </aside>
+            </div>
+            {% if search_results %}
+                <form method="POST" action="{% url 'admin:edr_export' %}">
+                    {% csrf_token %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Експортувати</th>
+                                <th>ЄДРПОУ</th>
+                                <th>Назва</th>
+                                <th>Коротка назва</th>
+                                <th>Статус</th>
+                                <th>Керівник</th>
+                                <th>КВЕД</th>
+                                <th>Адреса</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in search_results %}
+                                <tr class="grp-row {% cycle 'grp-row-odd' 'grp-row-even' %}">
+                                    <td>
+                                        <input type="hidden" name="company_{{ r.pk }}_{{ forloop.counter }}_id" value="{{ r.edrpou }}" />
+                                        <input type="checkbox" name="iswear" value="{{ r.pk }}_{{ forloop.counter }}" checked />
+                                    </td>
+                                    <td>
+                                        {{ r.edrpou }}
+                                    </td>
+                                    <td>
+                                        {{ r.name }}
+                                    </td>
+                                    <td>
+                                        {{ r.short_name }}
+                                    </td>
+                                    <td>
+                                        {{ r.status }}
+                                    </td>
+                                    <td>
+                                        {{ r.head }}
+                                    </td>
+                                    <td>
+                                        {{ r.company_profile }}
+                                    </td>
+                                    <td>
+                                        {{ r.location }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <footer class="grp-module grp-submit-row grp-fixed-footer" id="submit">
+                        <ul>
+                            <li><input type="submit" value="Експортувати в CSV" name="_save" class="grp-button grp-default"></li>
+                        </ul>
+                    </footer>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

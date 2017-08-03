@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 import datetime
 import json
+from unicodecsv import DictWriter
+from cStringIO import StringIO
 
 from django import forms
 from django.contrib import admin
@@ -12,9 +14,12 @@ from django.conf.urls import url
 from django.shortcuts import redirect, render
 from django.core.urlresolvers import reverse
 from django.utils import formats
+from django.http import HttpResponse
 
 from django.utils.encoding import force_str
 from django.utils.translation import ugettext_lazy as _
+
+from elasticsearch_dsl.query import Q as ES_Q
 
 from grappelli_modeltranslation.admin import (
     TranslationAdmin, TranslationStackedInline)
@@ -24,6 +29,8 @@ from core.models import (
     Person2Company, Company2Company, Company2Country, Ua2RuDictionary,
     Ua2EnDictionary, FeedbackMessage, Declaration, DeclarationExtra,
     ActionLog)
+
+from tasks.elastic_models import EDRPOU
 
 
 def make_published(modeladmin, request, queryset):
@@ -284,10 +291,69 @@ class PersonAdmin(TranslationAdmin):
 
 
 class CompanyAdmin(TranslationAdmin):
+    change_list_template = "admin/company/change_list_template.html"
+
     class Media:
         css = {
             'all': ('css/admin/company_admin.css',)
         }
+
+    def edr_search(self, request):
+        query = request.GET.get("q")
+
+        s = None
+        if query:
+            s = EDRPOU.search().query(
+                ES_Q("multi_match", operator="and", query=query,
+                     fields=["name", "short_name", "edrpou", "head"])
+            )[:200].execute()
+
+        return render(
+            request, "admin/company/edr_search.html", {
+                "query": query,
+                "search_results": s
+            }
+        )
+
+    def edr_export(self, request):
+        data = []
+
+        for rec_id in request.POST.getlist('iswear'):
+            edrpou = request.POST.get("company_%s_id" % rec_id)
+            res = EDRPOU.search().query("term", edrpou=edrpou).execute()
+            if res:
+                data.append(res[0].to_dict())
+
+        if not data:
+            self.message_user(request, u"Нічого експортувати")
+            return redirect(reverse("admin:edr_search"))
+
+        fp = StringIO()
+        w = DictWriter(fp, fieldnames=data[0].keys())
+        w.writeheader()
+        w.writerows(data)
+        payload = fp.getvalue()
+        fp.close()
+
+        response = HttpResponse(payload, content_type="text/csv")
+
+        response['Content-Disposition'] = (
+            'attachment; filename=edr_{:%Y%m%d_%H%M}.csv'.format(
+                datetime.datetime.now()))
+
+        response['Content-Length'] = len(response.content)
+
+        return response
+
+    def get_urls(self):
+        urls = super(CompanyAdmin, self).get_urls()
+        extra_urls = [
+            url(r'^edr_search/$', self.admin_site.admin_view(self.edr_search),
+                name="edr_search"),
+            url(r'^edr_export/$', self.admin_site.admin_view(self.edr_export),
+                name="edr_export"),
+        ]
+        return extra_urls + urls
 
     def management(self, obj):
         managers = obj.all_related_persons["managers"]
