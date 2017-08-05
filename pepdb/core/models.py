@@ -831,6 +831,7 @@ class Person2Company(AbstractRelationship):
         "Секретар",
         "Керуючий",
         "Контролер",
+        "Клієнт",
     ]
 
     from_person = models.ForeignKey("Person")
@@ -845,6 +846,13 @@ class Person2Company(AbstractRelationship):
     is_employee = models.BooleanField(
         "Працює(-вав)",
         default=False
+    )
+
+    declarations = ArrayField(
+        models.IntegerField(),
+        verbose_name="Декларації, що підтверджують зв'язок",
+        null=True,
+        blank=True
     )
 
     def __unicode__(self):
