@@ -137,17 +137,25 @@ $(function() {
         .attr('title', 'Collapse this branch');
 
     $('.tree li.parent_li > span').on('click', function(e) {
-        var children = $(this).parent('li.parent_li').find(' > ul > li');
+        var children = $(this).parent('li.parent_li').find(' > ul > li'),
+            speed;
+
+        if (children.length > 100) {
+            speed = null;
+        }
+        else {
+            speed = "fast";
+        }
         
         if (children.is(":visible")) {
-            children.hide('fast');
+            children.hide(speed);
             $(this)
                 .attr('title', 'Expand this branch')
                 .find(' > i.faicon')
                 .addClass('fa-plus-square')
                 .removeClass('fa-minus-square');
         } else {
-            children.show('fast');
+            children.show(speed);
             $(this)
                 .attr('title', 'Collapse this branch')
                 .find(' > i.faicon')

@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 from datetime import date
 from django.core.management.base import BaseCommand
+from collections import defaultdict
 from unicodecsv import DictReader
 from core.models import Company, Person2Company, Declaration
 
@@ -10,13 +11,21 @@ class Command(BaseCommand):
     def find_bank(self, edrpou, name):
         if edrpou:
             if edrpou in self.edrpous_mapping:
-                return self.banks_dict[
+                return [self.banks_dict[
                     self.edrpous_mapping[self.edrpous_mapping[edrpou]]
-                ]
+                ]]
 
         if name in self.names_mapping:
-            return self.banks_dict[
-                self.edrpous_mapping[self.names_mapping[name]]
+            return [
+                self.banks_dict[code]
+                for code in self.names_mapping[name]
+            ]
+
+        stripped_name = name.strip('"\'')
+        if stripped_name in self.names_mapping:
+            return [
+                self.banks_dict[code]
+                for code in self.names_mapping[stripped_name]
             ]
 
         self.stderr.write(
@@ -28,7 +37,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.banks_dict = {}
         self.edrpous_mapping = {}
-        self.names_mapping = {}
+        self.names_mapping = defaultdict(set)
 
         # Reading mapping between edrpous of bank branches and
         # edrpou of main branch of the bank
@@ -43,7 +52,8 @@ class Command(BaseCommand):
             r = DictReader(fp)
 
             for bank in r:
-                self.names_mapping[bank["name"]] = bank["edrpou"]
+                self.names_mapping[bank["name"]].add(bank["edrpou"])
+                self.names_mapping[bank["name"].strip('"\'')].add(bank["edrpou"])
 
         with open("core/dicts/true_banks.csv", "r") as fp:
             r = DictReader(fp)
@@ -57,7 +67,6 @@ class Command(BaseCommand):
                         self.stderr.write("Cannot find bank with edrpou %s" % edrpou) 
                 else:
                     self.stderr.write("Bank %s has no edrpou" % bank["name"])
-
 
         successful = 0
         failed = 0
@@ -85,54 +94,55 @@ class Command(BaseCommand):
                         bank_edrpou = bank_edrpou.lstrip("0").strip()
 
                         if bank_name or bank_edrpou:
-                            bank = self.find_bank(bank_edrpou, bank_name)
-                            if bank is None:
+                            bank_matches = self.find_bank(bank_edrpou, bank_name)
+                            if bank_matches is None:
                                 failed += 1
                                 continue
 
-                            conns = Person2Company.objects.filter(
-                                from_person=d.person,
-                                to_company=bank,
-                                relationship_type="Клієнт")
+                            for bank in bank_matches:
+                                conns = Person2Company.objects.filter(
+                                    from_person=d.person,
+                                    to_company=bank,
+                                    relationship_type="Клієнт")
 
-                            last_day_of_year = date(int(d.year), 12, 31)
-                            if conns.count():
-                                conn = conns[0]
+                                last_day_of_year = date(int(d.year), 12, 31)
+                                if conns.count():
+                                    conn = conns[0]
 
-                                updated += 1
-                                if conn.date_confirmed:
-                                    if last_day_of_year > conn.date_confirmed:
+                                    updated += 1
+                                    if conn.date_confirmed:
+                                        if last_day_of_year > conn.date_confirmed:
+                                            conn.date_confirmed_details = 0
+                                            conn.date_confirmed = last_day_of_year
+                                    else:
                                         conn.date_confirmed_details = 0
                                         conn.date_confirmed = last_day_of_year
                                 else:
-                                    conn.date_confirmed_details = 0
-                                    conn.date_confirmed = last_day_of_year
-                            else:
-                                created += 1
-                                conn = Person2Company(
-                                    from_person=d.person,
-                                    to_company=bank,
-                                    relationship_type="Клієнт",
-                                    date_confirmed_details=0,
-                                    date_confirmed=last_day_of_year,
+                                    created += 1
+                                    conn = Person2Company(
+                                        from_person=d.person,
+                                        to_company=bank,
+                                        relationship_type="Клієнт",
+                                        date_confirmed_details=0,
+                                        date_confirmed=last_day_of_year,
+                                    )
+
+                                conn.declarations = list(
+                                    set(conn.declarations or []) |
+                                    set([d.pk])
                                 )
 
-                            conn.declarations = list(
-                                set(conn.declarations or []) |
-                                set([d.pk])
-                            )
+                                conn.proof_title = ", ".join(filter(None,
+                                    set(conn.proof_title.split(", ")) |
+                                    set(["Декларація за %s рік" % d.year])
+                                ))
 
-                            conn.proof_title = ", ".join(filter(None,
-                                set(conn.proof_title.split(", ")) |
-                                set(["Декларація за %s рік" % d.year])
-                            ))
+                                conn.proof = ", ".join(filter(None,
+                                    set(conn.proof.split(", ")) |
+                                    set([d.url + "?source"])
+                                ))
 
-                            conn.proof = ", ".join(filter(None,
-                                set(conn.proof.split(", ")) |
-                                set([d.url + "?source"])
-                            ))
-
-                            conn.save()
+                                conn.save()
 
                             successful += 1
 
