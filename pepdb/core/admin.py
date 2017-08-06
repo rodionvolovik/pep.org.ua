@@ -462,8 +462,9 @@ class CompanyAdmin(TranslationAdmin):
                         company.status = k
                         break
 
-                company.state_company = form.cleaned_data.get(
-                    "is_state_companies", False)
+                company.state_company = (company.state_company or form.cleaned_data.get(
+                    "is_state_companies", False))
+
                 company.save()
 
             self.message_user(
