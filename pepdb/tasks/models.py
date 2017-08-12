@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from core.models import Person
 from jsonfield import JSONField
+from django.contrib.postgres.fields import ArrayField
 
 
 class AbstractTask(models.Model):
@@ -74,7 +75,7 @@ class CompanyMatching(AbstractTask):
     )
 
     company_json = JSONField(verbose_name="Компанія", null=True)
-    candidates_json = JSONField(verbose_name="Кандідати", null=True)
+    candidates_json = JSONField(verbose_name="Кандидати", null=True)
     edrpou_match = models.CharField(
         "Знайдена компанія", max_length=15, null=True, blank=True)
     company_id = models.IntegerField(null=True)
@@ -82,3 +83,42 @@ class CompanyMatching(AbstractTask):
     class Meta:
         verbose_name = "Результати пошуку компанії"
         verbose_name_plural = "Результати пошуку компаній"
+
+
+class BeneficiariesMatching(AbstractTask):
+    STATUS_CHOICES = (
+        ("p", "Не перевірено"),
+        ("r", "Потребує перевірки"),
+        ("m", "Виконано"),
+    )
+
+    status = models.CharField(
+        "Статус",
+        max_length=1,
+        choices=STATUS_CHOICES,
+        default="p",
+        db_index=True
+    )
+
+    company_key = models.CharField(
+        "Ключ компанії", max_length=500, unique=True)
+
+    person = models.IntegerField("Власник в реєстрі PEP")
+    person_json = JSONField(verbose_name="Власник в реєстрі PEP", null=True)
+    is_family_member = models.BooleanField("Член родини")
+
+    declarations = ArrayField(
+        models.IntegerField(),
+        verbose_name="Декларації, що підтверджують зв'язок",
+        null=True,
+        blank=True
+    )
+
+    pep_company_information = JSONField("Записи компанії, згруповані разом")
+    candidates_json = JSONField(verbose_name="Кандидати на матчінг", null=True)
+    edrpou_match = models.CharField(
+        "Знайдена компанія", max_length=15, null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Бенефіціари компаній"
+        verbose_name_plural = "Бенефіціари компаній"

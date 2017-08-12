@@ -1,0 +1,9 @@
+<ul>
+{% for company in companies %}
+<li>
+{{ company.company_name }}{% if company.beneficial_owner_company_code %} ({{ company.beneficial_owner_company_code }}){% endif %}<br/>
+<small>{{ company.legalForm }}, {{ company.address }}</small>
+</li>
+
+{% endfor %}
+</ul>
