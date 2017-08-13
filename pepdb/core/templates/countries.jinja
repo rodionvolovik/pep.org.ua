@@ -24,7 +24,7 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu scrollable-menu nice-scroll" aria-labelledby="dropdownMenu">
-                        <li><a href="{{ url("countries") }}">{{ _("Усі країни") }}</a></li>
+                        <li><a href="{{ url("countries_home") }}">{{ _("Усі країни") }}</a></li>
                         <li role="separator" class="divider"></li>
                         {% for cntry in used_countries %}
                             <li><a href="{{ url("countries", country_id=cntry.iso2) }}">{{ cntry.name }}</a></li>
