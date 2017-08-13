@@ -16,7 +16,7 @@ oauth2client==1.4.12
 pyOpenSSL==0.15.1
 gspread==0.2.5
 WeasyPrint==0.24
-django-qartez==0.6
+-e git+https://github.com/barseghyanartur/django-qartez@master#egg=django-qartez
 django-recaptcha==1.0.4
 easy-thumbnails==2.4.1
 jsonfield==1.0.3

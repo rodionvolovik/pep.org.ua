@@ -4,7 +4,7 @@ from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
 from django.contrib import admin
-import django.contrib.sitemaps.views
+import django.contrib.sitemaps.views as sitemaps_views
 
 from wagtail.wagtailcore import urls as wagtail_urls
 from wagtail.wagtailadmin import urls as wagtailadmin_urls
@@ -70,15 +70,18 @@ urlpatterns = i18n_patterns(
 urlpatterns += [
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^_send_feedback', core.views.send_feedback, name="send_feedback"),
-    url(r'^sitemap.xml$', django.contrib.sitemaps.views.index,
+    url(r'^sitemap.xml$',
+        sitemaps_views.index,
         {'sitemaps': sitemaps}),
 
     url(r'^sitemap-(?P<section>.+).xml$',
-        django.contrib.sitemaps.views.sitemap,
+        sitemaps_views.sitemap,
         {
             'sitemaps': sitemaps,
             'template_name': 'qartez/rel_alternate_hreflang_sitemap.xml'
-        }),
+        },
+        name='django.contrib.sitemaps.views.sitemap'
+        ),
 
     url(r'^grappelli/', include('grappelli.urls')),  # grappelli urls
     url(r'^redactor/', include('redactor.urls')),

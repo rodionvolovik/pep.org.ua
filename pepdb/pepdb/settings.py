@@ -65,7 +65,7 @@ INSTALLED_APPS = (
     'wagtail.wagtailforms',
 
     'cms_pages',
-    # 'qartez',
+    'qartez',
     'captcha',
     'core',
     'tasks',

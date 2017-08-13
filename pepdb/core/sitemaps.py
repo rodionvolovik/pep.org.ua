@@ -3,7 +3,7 @@ from django.utils.translation import activate
 from django.db.models import Count, F
 from django.conf import settings
 
-from qartez import RelAlternateHreflangSitemap
+from qartez.sitemaps import RelAlternateHreflangSitemap
 
 from cms_pages.models import StaticPage
 from core.models import Person, Company, Country
