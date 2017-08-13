@@ -6,7 +6,8 @@ from django.core.management.base import BaseCommand
 
 from elasticsearch_dsl import Q
 
-from core.models import Declaration, Country, Person, Person2Person
+from core.models import Declaration, Country, Person
+from core.model.exc import CannotResolveRelativeException
 from tasks.elastic_models import EDRPOU
 from tasks.models import BeneficiariesMatching
 
@@ -357,70 +358,10 @@ class Command(BaseCommand):
         return matches[:candidates]
 
     def resolve_person(self, declaration, ownership):
-        data = declaration.source["nacp_orig"]
-        family = data.get("step_2")
-
-        if isinstance(family, dict):
-            family_id = ownership.get("person")
-
-            if not family_id or family_id not in family:
-                self.stderr.write("Cannot find person %s in the declaration %s" % (
-                    family_id, data.get("id")
-                ))
-                return
-
-            member = family[family_id]
-        else:
-            self.stderr.write("Cannot find family section in the declaration %s" % (
-                family_id, data.get("id")
-            ))
-            return
-
-        chunk1 = list(Person2Person.objects.filter(
-            from_person_id=declaration.person_id,
-            to_person__last_name_uk__iexact=member["lastname"].strip(),
-            to_person__first_name_uk__iexact=member["firstname"].strip(),
-            to_person__patronymic_uk__iexact=member["middlename"].strip()
-        )) + list(Person2Person.objects.filter(
-            from_person_id=declaration.person_id,
-            to_person__last_name_uk__iexact=member["lastname"].strip(),
-            to_person__first_name_uk__iexact=member["firstname"].strip(),
-            to_person__patronymic_uk__iexact=member["middlename"].strip().replace(
-                "івна", "іївна")
-        ))
-
-        chunk2 = list(Person2Person.objects.filter(
-            to_person_id=declaration.person_id,
-            from_person__last_name_uk__iexact=member["lastname"].strip(),
-            from_person__first_name_uk__iexact=member["firstname"].strip(),
-            from_person__patronymic_uk__iexact=member["middlename"].strip()
-        )) + list(Person2Person.objects.filter(
-            to_person_id=declaration.person_id,
-            from_person__last_name_uk__iexact=member["lastname"].strip(),
-            from_person__first_name_uk__iexact=member["firstname"].strip(),
-            from_person__patronymic_uk__iexact=member["middlename"].strip().replace(
-                "івна", "іївна")
-        ))
-
-        if len(set(chunk1)) + len(set(chunk2)) > 1:
-            self.stderr.write(
-                "Uh, oh, more than one connection between %s and %s %s %s" %
-                (declaration.person, member["lastname"], member["firstname"],
-                 member["middlename"])
-            )
-
-        for conn in chunk1:
-            return conn.to_person_id
-
-        for conn in chunk2:
-            return conn.from_person_id
-
-        self.stderr.write(
-            "Cannot find person %s %s %s for the declarant %s" % (
-                member["lastname"], member["firstname"], member["middlename"],
-                declaration.person
-            )
-        )
+        try:
+            return declaration.resolve_person(ownership.get("person")).pk
+        except CannotResolveRelativeException as e:
+            self.stderr.write(unicode(e))
 
     def retrieve_countries(self):
         self.countries_mapping = {}

@@ -79,3 +79,5 @@ Vagrantfile
 pep.txt
 pep.ppk
 pepdb/neo4j_out/
+.ipynb_checkpoints
+*.ipynb

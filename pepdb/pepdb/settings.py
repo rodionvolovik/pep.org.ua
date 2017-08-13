@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # For stupid sitemaps
@@ -29,6 +30,7 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
+SITE_ID = 1
 
 INSTALLED_APPS = (
     'grappelli',
@@ -41,6 +43,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
+    'django.contrib.sites',
 
     'redactor',
     'pipeline',
@@ -49,7 +52,6 @@ INSTALLED_APPS = (
     'django_jinja.contrib._easy_thumbnails',
 
     'easy_thumbnails',
-    'compressor',
     'taggit',
     'modelcluster',
 
@@ -65,7 +67,7 @@ INSTALLED_APPS = (
     'wagtail.wagtailforms',
 
     'cms_pages',
-    'qartez',
+    # 'qartez',
     'captcha',
     'core',
     'tasks',
@@ -118,7 +120,9 @@ TEMPLATES = [
                 "django_jinja.builtins.extensions.UrlsExtension",
                 "django_jinja.builtins.extensions.StaticFilesExtension",
                 "django_jinja.builtins.extensions.DjangoFiltersExtension",
-                "pipeline.jinja2.ext.PipelineExtension"
+                "pipeline.jinja2.PipelineExtension",
+                "wagtail.wagtailcore.jinja2tags.core",
+                "wagtail.wagtailimages.jinja2tags.images",
             ]
         }
     },
@@ -209,60 +213,58 @@ STATICFILES_FINDERS = (
     'pipeline.finders.PipelineFinder',
 )
 
-PIPELINE_CSS = {
-    'css_all': {
-        'source_filenames': (
-            'bower_components/bootstrap/dist/css/bootstrap.min.css',
-            'css/ripples.min.css',
-            'css/animate.css',
-            'css/font-awesome.min.css',
-            'bower_components/featherlight/src/featherlight.css',
-            'css/vis.css',
-            'css/style.css',
-            'css/graph.css',
-        ),
-        'output_filename': 'css/merged.css',
-        'extra_context': {
-            'media': 'screen,projection',
+PIPELINE = {
+    'COMPILERS': ('pipeline.compilers.sass.SASSCompiler',),
+    'SASS_ARGUMENTS': '-q',
+    'JS_COMPRESSOR': 'pipeline.compressors.uglifyjs.UglifyJSCompressor',
+    'STYLESHEETS': {
+        'css_all': {
+            'source_filenames': (
+                'bower_components/bootstrap/dist/css/bootstrap.min.css',
+                'css/ripples.min.css',
+                'css/animate.css',
+                'css/font-awesome.min.css',
+                'bower_components/featherlight/src/featherlight.css',
+                'css/vis.css',
+                'css/style.css',
+                'css/graph.css',
+            ),
+            'output_filename': 'css/merged.css',
+            'extra_context': {
+                'media': 'screen,projection',
+            },
+        },
+
+        'css_print': {
+            'source_filenames': (
+                'css/print.css',
+            ),
+            'output_filename': 'css/merged_print.css',
+            'extra_context': {
+                'media': 'print',
+            },
         },
     },
 
-    'css_print': {
-        'source_filenames': (
-            'css/print.css',
-        ),
-        'output_filename': 'css/merged_print.css',
-        'extra_context': {
-            'media': 'print',
-        },
-    },
-}
-
-
-PIPELINE_JS = {
-    'js_all': {
-        'source_filenames': (
-            "bower_components/jquery/dist/jquery.js",
-            "bower_components/bootstrap/dist/js/bootstrap.js",
-            "bower_components/bootstrap/js/tab.js",
-            "bower_components/bootstrap3-typeahead/bootstrap3-typeahead.js",
-            "bower_components/featherlight/src/featherlight.js",
-            "bower_components/jquery.nicescroll/jquery.nicescroll.min.js",
-            "js/ripples.min.js",
-            "js/vis-network.min.js",
-            "js/pep.js",
-            "js/graph.js",
-        ),
-        'output_filename': 'js/merged.js',
+    'JAVASCRIPT': {
+        'js_all': {
+            'source_filenames': (
+                "bower_components/jquery/dist/jquery.js",
+                "bower_components/bootstrap/dist/js/bootstrap.js",
+                "bower_components/bootstrap/js/tab.js",
+                "bower_components/bootstrap3-typeahead/bootstrap3-typeahead.js",
+                "bower_components/featherlight/src/featherlight.js",
+                "bower_components/jquery.nicescroll/jquery.nicescroll.min.js",
+                "js/ripples.min.js",
+                "js/vis-network.min.js",
+                "js/pep.js",
+                "js/graph.js",
+            ),
+            'output_filename': 'js/merged.js',
+        }
     }
 }
 
-PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.uglifyjs.UglifyJSCompressor'
-
-# django-compressor settings (for a fucking wagtail)
-COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', 'django_libsass.SassCompiler'),
-)
 
 LOGIN_URL = "/admin/login/"
 WAGTAIL_SITE_NAME = 'PEP'

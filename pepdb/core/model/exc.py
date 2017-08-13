@@ -1,0 +1,2 @@
+class CannotResolveRelativeException(Exception):
+    pass

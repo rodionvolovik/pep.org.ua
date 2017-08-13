@@ -4,7 +4,9 @@ from datetime import date
 from django.core.management.base import BaseCommand
 from collections import defaultdict
 from unicodecsv import DictReader
-from core.models import Company, Person2Company, Declaration
+
+from core.model.exc import CannotResolveRelativeException
+from core.models import Company, Person2Company, Declaration, Person
 
 
 class Command(BaseCommand):
@@ -81,8 +83,13 @@ class Command(BaseCommand):
                         continue
 
                     rec_type = cash_rec.get("objectType", "").lower()
+                    person = d.person
+
                     if cash_rec.get("person", "1") != "1":
-                        continue
+                        try:
+                            person = d.resolve_person(cash_rec.get("person"))
+                        except CannotResolveRelativeException as e:
+                            self.stderr.write(unicode(e))
 
                     if rec_type == "кошти, розміщені на банківських рахунках":
                         bank_name = cash_rec.get("organization_ua_company_name") or \
@@ -101,7 +108,7 @@ class Command(BaseCommand):
 
                             for bank in bank_matches:
                                 conns = Person2Company.objects.filter(
-                                    from_person=d.person,
+                                    from_person=person,
                                     to_company=bank,
                                     relationship_type="Клієнт")
 
@@ -120,7 +127,7 @@ class Command(BaseCommand):
                                 else:
                                     created += 1
                                     conn = Person2Company(
-                                        from_person=d.person,
+                                        from_person=person,
                                         to_company=bank,
                                         relationship_type="Клієнт",
                                         date_confirmed_details=0,
