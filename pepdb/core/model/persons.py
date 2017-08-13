@@ -9,8 +9,8 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_noop as _
 from django.utils.translation import ugettext_lazy, activate, deactivate
 from django.forms.models import model_to_dict
-from django.db.models.functions import Coalesce, Value
-from django.db.models import Q
+from django.db.models.functions import Coalesce
+from django.db.models import Q, Value
 
 from redactor.fields import RedactorField
 from translitua import translitua

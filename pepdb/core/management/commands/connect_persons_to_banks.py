@@ -85,73 +85,77 @@ class Command(BaseCommand):
                     rec_type = cash_rec.get("objectType", "").lower()
                     person = d.person
 
+                    if rec_type != "кошти, розміщені на банківських рахунках":
+                        continue
+
                     if cash_rec.get("person", "1") != "1":
                         try:
                             person = d.resolve_person(cash_rec.get("person"))
                         except CannotResolveRelativeException as e:
                             self.stderr.write(unicode(e))
+                            continue
 
-                    if rec_type == "кошти, розміщені на банківських рахунках":
-                        bank_name = cash_rec.get("organization_ua_company_name") or \
-                            cash_rec.get("organization_ukr_company_name", "")
+                    bank_name = cash_rec.get(
+                        "organization_ua_company_name") or \
+                        cash_rec.get("organization_ukr_company_name", "")
+                    bank_name = bank_name.lower().strip()
 
-                        bank_edrpou = cash_rec.get("organization_ua_company_code", "")
+                    bank_edrpou = cash_rec.get(
+                        "organization_ua_company_code", "")
+                    bank_edrpou = bank_edrpou.lstrip("0").strip()
 
-                        bank_name = bank_name.lower().strip()
-                        bank_edrpou = bank_edrpou.lstrip("0").strip()
+                    if bank_name or bank_edrpou:
+                        bank_matches = self.find_bank(bank_edrpou, bank_name)
+                        if bank_matches is None:
+                            failed += 1
+                            continue
 
-                        if bank_name or bank_edrpou:
-                            bank_matches = self.find_bank(bank_edrpou, bank_name)
-                            if bank_matches is None:
-                                failed += 1
-                                continue
+                        for bank in bank_matches:
+                            conns = Person2Company.objects.filter(
+                                from_person=person,
+                                to_company=bank,
+                                relationship_type="Клієнт")
 
-                            for bank in bank_matches:
-                                conns = Person2Company.objects.filter(
-                                    from_person=person,
-                                    to_company=bank,
-                                    relationship_type="Клієнт")
+                            last_day_of_year = date(int(d.year), 12, 31)
+                            if conns.count():
+                                conn = conns[0]
 
-                                last_day_of_year = date(int(d.year), 12, 31)
-                                if conns.count():
-                                    conn = conns[0]
-
-                                    updated += 1
-                                    if conn.date_confirmed:
-                                        if last_day_of_year > conn.date_confirmed:
-                                            conn.date_confirmed_details = 0
-                                            conn.date_confirmed = last_day_of_year
-                                    else:
+                                updated += 1
+                                if conn.date_confirmed:
+                                    if last_day_of_year > conn.date_confirmed:
                                         conn.date_confirmed_details = 0
                                         conn.date_confirmed = last_day_of_year
                                 else:
-                                    created += 1
-                                    conn = Person2Company(
-                                        from_person=person,
-                                        to_company=bank,
-                                        relationship_type="Клієнт",
-                                        date_confirmed_details=0,
-                                        date_confirmed=last_day_of_year,
-                                    )
-
-                                conn.declarations = list(
-                                    set(conn.declarations or []) |
-                                    set([d.pk])
+                                    conn.date_confirmed_details = 0
+                                    conn.date_confirmed = last_day_of_year
+                            else:
+                                created += 1
+                                conn = Person2Company(
+                                    from_person=person,
+                                    to_company=bank,
+                                    relationship_type="Клієнт",
+                                    date_confirmed_details=0,
+                                    date_confirmed=last_day_of_year,
                                 )
 
-                                conn.proof_title = ", ".join(filter(None,
-                                    set(conn.proof_title.split(", ")) |
-                                    set(["Декларація за %s рік" % d.year])
-                                ))
+                            conn.declarations = list(
+                                set(conn.declarations or []) |
+                                set([d.pk])
+                            )
 
-                                conn.proof = ", ".join(filter(None,
-                                    set(conn.proof.split(", ")) |
-                                    set([d.url + "?source"])
-                                ))
+                            conn.proof_title = ", ".join(filter(None,
+                                set(conn.proof_title.split(", ")) |
+                                set(["Декларація за %s рік" % d.year])
+                            ))
 
-                                conn.save()
+                            conn.proof = ", ".join(filter(None,
+                                set(conn.proof.split(", ")) |
+                                set([d.url + "?source"])
+                            ))
 
-                            successful += 1
+                            conn.save()
+
+                        successful += 1
 
         self.stdout.write(
             "Mapping failed: %s, mapping successful: %s" % (failed, successful)
