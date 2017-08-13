@@ -14,6 +14,7 @@ SHORT_DATE_FORMAT = 'm/d/Y'
 SHORT_DATETIME_FORMAT = 'm/d/Y P'
 FIRST_DAY_OF_WEEK = 0  # Sunday
 
+
 # The *_INPUT_FORMATS strings use the Python strftime format syntax,
 # see http://docs.python.org/library/datetime.html#strftime-strptime-behavior
 # Kept ISO formats as they are in first position
@@ -42,3 +43,6 @@ DATETIME_INPUT_FORMATS = (
 DECIMAL_SEPARATOR = '.'
 THOUSAND_SEPARATOR = ','
 NUMBER_GROUPING = 3
+
+YEAR_DATE_FORMAT = "Y"
+MONTH_YEAR_DATE_FORMAT = "m.Y"

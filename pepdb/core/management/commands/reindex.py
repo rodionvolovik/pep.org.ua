@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.core.management.base import BaseCommand
+from django.utils.translation import activate
+from django.conf import settings
+
 from elasticsearch_dsl import Index
 from elasticsearch.helpers import streaming_bulk
 from elasticsearch_dsl.connections import connections
@@ -19,6 +22,7 @@ class Command(BaseCommand):
             pass
 
     def handle(self, *args, **options):
+        activate(settings.LANGUAGE_CODE)
         conn = connections.get_connection('default')
 
         Index(ElasticPerson._doc_type.index).delete(ignore=404)
