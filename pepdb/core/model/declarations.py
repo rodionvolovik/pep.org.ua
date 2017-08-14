@@ -1,5 +1,6 @@
 # coding: utf-8
 from __future__ import unicode_literals
+import logging
 from collections import defaultdict
 
 from django.db import models
@@ -16,6 +17,8 @@ from core.utils import (
 
 from core.model.connections import Person2Person
 from core.model.exc import CannotResolveRelativeException
+
+logger = logging.getLogger(__name__)
 
 
 class Declaration(models.Model):
@@ -333,8 +336,24 @@ class Declaration(models.Model):
     def resolve_person(self, declaration_person_id):
         """
         Finds the relative mentioned in the declaration in 
-        PEP db
+        PEP db.
+        Returns person id and a flag set to true, if it was fuzzy
+        match
         """
+
+        def _is_fuzzy_match(declaration_rec, person_rec):
+            if (declaration_rec["lastname"].strip().lower() !=
+                    person_rec.last_name.strip().lower()):
+                return True
+            if (declaration_rec["firstname"].strip().lower() !=
+                    person_rec.first_name.strip().lower()):
+                return True
+            if (declaration_rec["middlename"].strip().lower() !=
+                    person_rec.patronymic.strip().lower()):
+                return True
+
+            return False
+
         data = self.source["nacp_orig"]
         family = data.get("step_2")
 
@@ -359,26 +378,24 @@ class Declaration(models.Model):
             to_person__last_name_uk__iexact=member["lastname"].strip(),
             to_person__first_name_uk__iexact=member["firstname"].strip(),
             to_person__patronymic_uk__iexact=member["middlename"].strip()
-        )) + list(Person2Person.objects.filter(
+        ).select_related("to_person")) + list(Person2Person.objects.filter(
             from_person_id=self.person_id,
-            to_person__last_name_uk__iexact=member["lastname"].strip(),
-            to_person__first_name_uk__iexact=member["firstname"].strip(),
-            to_person__patronymic_uk__iexact=member["middlename"].strip().replace(
-                "івна", "іївна")
-        ))
+            to_person__last_name_uk__trigram_similar=member["lastname"].strip(),
+            to_person__first_name_uk__trigram_similar=member["firstname"].strip(),
+            to_person__patronymic_uk__trigram_similar=member["middlename"].strip()
+        ).select_related("to_person"))
 
         chunk2 = list(Person2Person.objects.filter(
             to_person_id=self.person_id,
             from_person__last_name_uk__iexact=member["lastname"].strip(),
             from_person__first_name_uk__iexact=member["firstname"].strip(),
             from_person__patronymic_uk__iexact=member["middlename"].strip()
-        )) + list(Person2Person.objects.filter(
+        ).select_related("from_person")) + list(Person2Person.objects.filter(
             to_person_id=self.person_id,
-            from_person__last_name_uk__iexact=member["lastname"].strip(),
-            from_person__first_name_uk__iexact=member["firstname"].strip(),
-            from_person__patronymic_uk__iexact=member["middlename"].strip().replace(
-                "івна", "іївна")
-        ))
+            from_person__last_name_uk__trigram_similar=member["lastname"].strip(),
+            from_person__first_name_uk__trigram_similar=member["firstname"].strip(),
+            from_person__patronymic_uk__trigram_similar=member["middlename"].strip()
+        ).select_related("from_person"))
 
         if len(set(chunk1)) + len(set(chunk2)) > 1:
             raise CannotResolveRelativeException(
@@ -388,10 +405,25 @@ class Declaration(models.Model):
             )
 
         for conn in chunk1:
-            return conn.to_person
+            fuzzy_match = _is_fuzzy_match(member, conn.to_person)
+            if fuzzy_match:
+                logger.warning(
+                    "It was fuzzy match between %s %s %s and the declarant %s" % (
+                        member["lastname"], member["firstname"],
+                        member["middlename"], conn.to_person)
+                )
+            return conn.to_person, fuzzy_match
 
         for conn in chunk2:
-            return conn.from_person
+            fuzzy_match = _is_fuzzy_match(member, conn.from_person)
+            if fuzzy_match:
+                logger.warning(
+                    "It was fuzzy match between %s %s %s and the declarant %s" % (
+                        member["lastname"], member["firstname"],
+                        member["middlename"], conn.from_person)
+                )
+
+            return conn.from_person, fuzzy_match
 
         raise CannotResolveRelativeException(
             "Cannot find person %s %s %s for the declarant %s" % (

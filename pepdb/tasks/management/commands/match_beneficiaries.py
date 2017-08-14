@@ -359,7 +359,9 @@ class Command(BaseCommand):
 
     def resolve_person(self, declaration, ownership):
         try:
-            return declaration.resolve_person(ownership.get("person")).pk
+            person, _ = declaration.resolve_person(
+                ownership.get("person")).pk
+            return person
         except CannotResolveRelativeException as e:
             self.stderr.write(unicode(e))
 

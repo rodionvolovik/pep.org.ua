@@ -6,7 +6,7 @@ from collections import defaultdict
 from unicodecsv import DictReader
 
 from core.model.exc import CannotResolveRelativeException
-from core.models import Company, Person2Company, Declaration, Person
+from core.models import Company, Person2Company, Declaration
 
 
 class Command(BaseCommand):
@@ -36,6 +36,16 @@ class Command(BaseCommand):
 
         return None
 
+    def add_arguments(self, parser):
+        # Named (optional) arguments
+        parser.add_argument(
+            '--real_run',
+            action='store_true',
+            dest='real_run',
+            default=False,
+            help='Connect persons to banks for real',
+        )
+
     def handle(self, *args, **options):
         self.banks_dict = {}
         self.edrpous_mapping = {}
@@ -64,9 +74,11 @@ class Command(BaseCommand):
                 if bank["edrpou"]:
                     edrpou = bank["edrpou"]
                     try:
-                        self.banks_dict[edrpou] = Company.objects.get(edrpou=edrpou.rjust(8, "0"))
+                        self.banks_dict[edrpou] = Company.objects.get(
+                            edrpou=edrpou.rjust(8, "0"))
                     except Company.DoesNotExist:
-                        self.stderr.write("Cannot find bank with edrpou %s" % edrpou) 
+                        self.stderr.write(
+                            "Cannot find bank with edrpou %s" % edrpou)
                 else:
                     self.stderr.write("Bank %s has no edrpou" % bank["name"])
 
@@ -74,7 +86,8 @@ class Command(BaseCommand):
         failed = 0
         created = 0
         updated = 0
-        for d in Declaration.objects.filter(nacp_declaration=True, confirmed="a"):
+        for d in Declaration.objects.filter(
+                nacp_declaration=True, confirmed="a"):
             data = d.source["nacp_orig"]
 
             if isinstance(data.get("step_12"), dict):
@@ -90,7 +103,8 @@ class Command(BaseCommand):
 
                     if cash_rec.get("person", "1") != "1":
                         try:
-                            person = d.resolve_person(cash_rec.get("person"))
+                            person, _ = d.resolve_person(
+                                cash_rec.get("person"))
                         except CannotResolveRelativeException as e:
                             self.stderr.write(unicode(e))
                             continue
@@ -143,17 +157,20 @@ class Command(BaseCommand):
                                 set([d.pk])
                             )
 
-                            conn.proof_title = ", ".join(filter(None,
+                            conn.proof_title = ", ".join(filter(
+                                None,
                                 set(conn.proof_title.split(", ")) |
                                 set(["Декларація за %s рік" % d.year])
                             ))
 
-                            conn.proof = ", ".join(filter(None,
+                            conn.proof = ", ".join(filter(
+                                None,
                                 set(conn.proof.split(", ")) |
                                 set([d.url + "?source"])
                             ))
 
-                            conn.save()
+                            if options["real_run"]:
+                                conn.save()
 
                         successful += 1
 
