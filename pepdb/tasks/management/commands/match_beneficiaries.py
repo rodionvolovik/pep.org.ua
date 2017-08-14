@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 import re
 
 from django.core.management.base import BaseCommand
+from django.utils.translation import activate
+from django.conf import settings
 
 from elasticsearch_dsl import Q
 
@@ -360,8 +362,8 @@ class Command(BaseCommand):
     def resolve_person(self, declaration, ownership):
         try:
             person, _ = declaration.resolve_person(
-                ownership.get("person")).pk
-            return person
+                ownership.get("person"))
+            return person.pk
         except CannotResolveRelativeException as e:
             self.stderr.write(unicode(e))
 
@@ -422,6 +424,7 @@ class Command(BaseCommand):
         rec.save()
 
     def handle(self, *args, **options):
+        activate(settings.LANGUAGE_CODE)
         self.stdout.write("Matching records for countries")
         self.retrieve_countries()
         self.stdout.write("Retrieving beneficiary ownership information")
