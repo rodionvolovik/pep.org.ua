@@ -12,6 +12,7 @@ from django.forms.models import model_to_dict
 from redactor.fields import RedactorField
 
 from core.model.base import AbstractNode
+from core.model.translations import Ua2EnDictionary
 from core.utils import render_date
 
 # to_*_dict methods are used to convert two main entities that we have, Person
