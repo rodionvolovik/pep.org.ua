@@ -80,6 +80,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for person in Person.objects.all():
+            person.last_name_uk = person.last_name_uk or ""
+            person.first_name_uk = person.first_name_uk or ""
+            person.patronymic_uk = person.patronymic_uk or ""
+
             names = self.transliterate(
                 person.last_name_uk, person.first_name_uk,
                 person.patronymic_uk
