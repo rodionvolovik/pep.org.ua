@@ -80,7 +80,7 @@ class Company(models.Model, AbstractNode):
     edrpou = models.CharField(
         "ЄДРПОУ", max_length=20, blank=True)
 
-    zip_code = models.CharField("Індекс", max_length=10, blank=True)
+    zip_code = models.CharField("Індекс", max_length=20, blank=True)
     city = models.CharField("Місто", max_length=255, blank=True)
     street = models.CharField("Вулиця", max_length=100, blank=True)
     appt = models.CharField("№ будинку, офісу", max_length=50, blank=True)

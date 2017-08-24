@@ -30,6 +30,17 @@ class Command(BaseCommand):
                 for code in self.names_mapping[stripped_name]
             ]
 
+        if name in self.names_only_mapping:
+            try:
+                company = Company.objects.get(
+                    name_en__iexact=self.names_only_mapping[name])
+                return [company]
+            except Company.DoesNotExist:
+                self.stderr.write(
+                    "Cannot find company %s (%s) in db by name" % (
+                        name, edrpou)
+                )
+
         self.stderr.write(
             "Cannot find bank %s (%s) in mapping" % (name, edrpou)
         )
@@ -37,7 +48,6 @@ class Command(BaseCommand):
         return None
 
     def add_arguments(self, parser):
-        # Named (optional) arguments
         parser.add_argument(
             '--real_run',
             action='store_true',
@@ -49,6 +59,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.banks_dict = {}
         self.edrpous_mapping = {}
+        self.names_only_mapping = {}
         self.names_mapping = defaultdict(set)
 
         # Reading mapping between edrpous of bank branches and
@@ -58,6 +69,15 @@ class Command(BaseCommand):
 
             for bank in r:
                 self.edrpous_mapping[bank["edrpou_branch"]] = bank["edrpou_base"]
+
+        # Reading mapping between names of bank from declaration and
+        # their real names (foreign banks that has no edrpou)
+        with open("core/dicts/foreign_banks_mapping.csv", "r") as fp:
+            r = DictReader(fp)
+
+            for bank in r:
+                self.names_only_mapping[bank["name"]] = bank["real_name"]
+                self.names_only_mapping[bank["name"].strip('"\'')] = bank["real_name"]
 
         # Reading mapping between names of bank and it's edrpous
         with open("core/dicts/bank_names_mapping.csv", "r") as fp:

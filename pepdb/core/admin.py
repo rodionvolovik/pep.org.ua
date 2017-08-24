@@ -627,7 +627,6 @@ class DeclarationAdmin(admin.ModelAdmin):
         queryset.update(confirmed="c")
     doublecheck.short_description = "На повторну перевірку"
 
-
     def fullname_pep(self, obj):
         return ('<a href="%s" target="_blank">%s %s %s</a><br/> %s' % (
             reverse("person_details", kwargs={"person_id": obj.person_id}),
