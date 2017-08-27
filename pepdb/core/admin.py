@@ -32,6 +32,8 @@ from core.models import (
 
 from core.forms import EDRImportForm
 from core.utils import parse_address
+from core.importers.company import CompanyImporter
+from core.universal_loggers import MessagesLogger
 from tasks.elastic_models import EDRPOU
 
 
@@ -362,105 +364,20 @@ class CompanyAdmin(TranslationAdmin):
                     {"form": form}
                 )
 
-            created = 0
-            updated = 0
+            created_records = 0
+            updated_records = 0
             r = DictReader(request.FILES["csv"])
-
+            importer = CompanyImporter(MessagesLogger(request))
             for entry in r:
-                if not entry["edrpou"]:
-                    self.message_user(
-                        request,
-                        "Не можу імпортувати юр. особу без ЄДРПОУ <%s>" %
-                        json.dumps(entry, ensure_ascii=False),
-                        level=messages.ERROR
-                    )
+                company, created = importer.get_or_create_from_edr_record(entry)
+
+                if not company:
                     continue
 
-                edrpou = entry["edrpou"].rjust(8, "0")
-                parsed = parse_address(entry["location"])
-
-                companies = list(Company.objects.filter(edrpou=edrpou))
-                if len(companies) > 1:
-                    self.message_user(
-                        request,
-                        "Не можу імпортувати юр. особу <%s>: в базі таких більше одної" %
-                        json.dumps(entry, ensure_ascii=False),
-                        level=messages.ERROR
-                    )
-                    continue
-
-                if not companies:
-                    company = Company(
-                        edrpou=edrpou,
-                        name_uk=entry["name"],
-                        short_name_uk=entry["short_name"]
-                    )
-                    created += 1
+                if created:
+                    created_records += 1
                 else:
-                    company = companies[0]
-                    updated += 1
-
-                if parsed:
-                    zip_code, city, street, appt = parsed
-
-                    if company.zip_code and company.zip_code != zip_code:
-                        self.message_user(
-                            request,
-                            "Не замінюю індекс %s на %s для компанії %s, %s" % (
-                                company.zip_code,
-                                zip_code,
-                                company.name,
-                                company.id
-                            ), level=messages.WARNING
-                        )
-
-                    company.zip_code = company.zip_code or zip_code
-
-                    if company.city_uk and company.city_uk != city:
-                        self.message_user(
-                            request,
-                            "Не замінюю місто %s на %s для компанії %s, %s" % (
-                                company.city_uk,
-                                city,
-                                company.name,
-                                company.id
-                            ), level=messages.WARNING
-                        )
-
-                    company.city_uk = company.city_uk or city
-
-                    if company.street_uk and company.street_uk != street:
-                        self.message_user(
-                            request,
-                            "Не замінюю вулицю %s на %s для компанії %s, %s" % (
-                                company.street_uk,
-                                street,
-                                company.name,
-                                company.id
-                            ), level=messages.WARNING
-                        )
-
-                    company.street_uk = company.street_uk or street
-
-                    if company.appt_uk and company.appt_uk != appt:
-                        self.message_user(
-                            request,
-                            "Не замінюю дім/квартиру %s на %s для компанії %s, %s" % (
-                                company.appt_uk,
-                                appt,
-                                company.name,
-                                company.id
-                            ), level=messages.WARNING
-                        )
-
-                    company.appt_uk = company.appt_uk or appt
-                else:
-                    company.raw_address = entry["location"]
-
-                for k, v in company._status_choices.items():
-                    if entry["status"].lower() == v:
-                        company.status = k
-                        break
+                    updated_records += 1
 
                 company.state_company = (company.state_company or form.cleaned_data.get(
                     "is_state_companies", False))
@@ -469,7 +386,7 @@ class CompanyAdmin(TranslationAdmin):
 
             self.message_user(
                 request,
-                "Створено %s компаній, оновлено %s" % (created, updated)
+                "Створено %s компаній, оновлено %s" % (created_records, updated_records)
             )
 
             return redirect(reverse("admin:core_company_changelist"))

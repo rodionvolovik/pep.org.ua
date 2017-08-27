@@ -13,7 +13,8 @@ from redactor.fields import RedactorField
 
 from core.model.base import AbstractNode
 from core.model.translations import Ua2EnDictionary
-from core.utils import render_date, lookup_term
+from core.utils import render_date, lookup_term, parse_address
+
 
 # to_*_dict methods are used to convert two main entities that we have, Person
 # and Company into document indexable by ElasticSearch.
@@ -369,4 +370,3 @@ class Company(models.Model, AbstractNode):
     class Meta:
         verbose_name = "Юридична особа"
         verbose_name_plural = "Юридичні особи"
-
