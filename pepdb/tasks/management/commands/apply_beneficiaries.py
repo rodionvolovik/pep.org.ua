@@ -184,14 +184,14 @@ class Command(BaseCommand):
 
             successful += 1
 
-            self.stdout.write(
-                "Creation failed: %s, creation successful: %s" % (failed, successful)
-            )
-            self.stdout.write(
-                "Companies created: %s, companies updated: %s" %
-                (companies_created, companies_updated)
-            )
-            self.stdout.write(
-                "Connections created: %s, connections updated: %s" %
-                (connections_created, connections_updated)
-            )
+        self.stdout.write(
+            "Creation failed: %s, creation successful: %s" % (failed, successful)
+        )
+        self.stdout.write(
+            "Companies created: %s, companies updated: %s" %
+            (companies_created, companies_updated)
+        )
+        self.stdout.write(
+            "Connections created: %s, connections updated: %s" %
+            (connections_created, connections_updated)
+        )
