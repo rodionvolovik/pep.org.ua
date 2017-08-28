@@ -367,7 +367,7 @@ class CompanyAdmin(TranslationAdmin):
             created_records = 0
             updated_records = 0
             r = DictReader(request.FILES["csv"])
-            importer = CompanyImporter(MessagesLogger(request))
+            importer = CompanyImporter(logger=MessagesLogger(request))
             for entry in r:
                 company, created = importer.get_or_create_from_edr_record(entry)
 

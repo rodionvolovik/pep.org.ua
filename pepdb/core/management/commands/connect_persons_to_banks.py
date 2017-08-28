@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from datetime import date
 from django.core.management.base import BaseCommand
 from collections import defaultdict
 from unicodecsv import DictReader
 
 from core.model.exc import CannotResolveRelativeException
 from core.models import Company, Person2Company, Declaration
+from core.importers.person2company import Person2CompanyImporter
+from core.universal_loggers import PythonLogger
 
 
 class Command(BaseCommand):
@@ -61,6 +62,9 @@ class Command(BaseCommand):
         self.edrpous_mapping = {}
         self.names_only_mapping = {}
         self.names_mapping = defaultdict(set)
+        importer = Person2CompanyImporter(
+            logger=PythonLogger("cli_commands"))
+
 
         # Reading mapping between edrpous of bank branches and
         # edrpou of main branch of the bank
@@ -104,8 +108,8 @@ class Command(BaseCommand):
 
         successful = 0
         failed = 0
-        created = 0
-        updated = 0
+        created_records = 0
+        updated_records = 0
         for d in Declaration.objects.filter(
                 nacp_declaration=True, confirmed="a"):
             data = d.source["nacp_orig"]
@@ -145,49 +149,13 @@ class Command(BaseCommand):
                             continue
 
                         for bank in bank_matches:
-                            conns = Person2Company.objects.filter(
-                                from_person=person,
-                                to_company=bank,
-                                relationship_type="Клієнт")
+                            conn, created = importer.get_or_create_from_declaration(
+                                person, bank, "Клієнт", d)
 
-                            last_day_of_year = date(int(d.year), 12, 31)
-                            if conns.count():
-                                conn = conns[0]
-
-                                updated += 1
-                                if conn.date_confirmed:
-                                    if last_day_of_year > conn.date_confirmed:
-                                        conn.date_confirmed_details = 0
-                                        conn.date_confirmed = last_day_of_year
-                                else:
-                                    conn.date_confirmed_details = 0
-                                    conn.date_confirmed = last_day_of_year
+                            if created:
+                                created_records += 1
                             else:
-                                created += 1
-                                conn = Person2Company(
-                                    from_person=person,
-                                    to_company=bank,
-                                    relationship_type="Клієнт",
-                                    date_confirmed_details=0,
-                                    date_confirmed=last_day_of_year,
-                                )
-
-                            conn.declarations = list(
-                                set(conn.declarations or []) |
-                                set([d.pk])
-                            )
-
-                            conn.proof_title = ", ".join(filter(
-                                None,
-                                set(conn.proof_title.split(", ")) |
-                                set(["Декларація за %s рік" % d.year])
-                            ))
-
-                            conn.proof = ", ".join(filter(
-                                None,
-                                set(conn.proof.split(", ")) |
-                                set([d.url + "?source"])
-                            ))
+                                updated_records += 1
 
                             if options["real_run"]:
                                 conn.save()
@@ -199,5 +167,5 @@ class Command(BaseCommand):
         )
         self.stdout.write(
             "Connections created: %s, connections updated: %s" %
-            (created, updated)
+            (created_records, updated_records)
         )

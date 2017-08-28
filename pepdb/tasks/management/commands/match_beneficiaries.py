@@ -459,6 +459,6 @@ class Command(BaseCommand):
                     )
 
         self.stdout.write("Matching with EDR registry")
-        for ownership in BeneficiariesMatching.objects.all():
+        for ownership in BeneficiariesMatching.objects.all(status="p"):
             ownership.candidates_json = self.search_me(ownership)
             ownership.save()

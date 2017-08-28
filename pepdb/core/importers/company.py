@@ -10,16 +10,19 @@ from core.models import Company
 
 class CompanyImporter(object):
     def __init__(self, logger=NoOpLogger):
-        self.logger = logger
-
-    def get_or_create_from_edr_record(self, obj_dict, logger=NoOpLogger()):
         """
-        Kind of get_or_create method, to create or update company model
-        instance using data from EDR.
-
-        Returns Company instance and a created flag
         Accepts specially carved logger proxy to report problems
         to during the creation/update of the object.
+        """
+
+        self.logger = logger
+
+    def get_or_create_from_edr_record(self, obj_dict):
+        """
+        Kind of get_or_create method, to create or update company model
+        instance using data from EDR. DOESN'T SAVE THE MODIFIED OBJECT
+
+        Returns Company instance and a created flag
         """
         created = False
 
@@ -34,14 +37,17 @@ class CompanyImporter(object):
 
         parsed = parse_address(obj_dict["location"])
 
+        # Not using get_or_create to avoid situation
+        # when created object is saved immediately
         try:
-            company, created = Company.objects.get_or_create(
+            company = Company.objects.get(edrpou=edrpou)
+        except Company.DoesNotExist:
+            company = Company(
                 edrpou=edrpou,
-                defaults={
-                    "name_uk": obj_dict["name"].strip(),
-                    "short_name_uk": obj_dict["short_name"].strip()
-                }
+                name_uk=obj_dict["name"].strip(),
+                short_name_uk=obj_dict["short_name"].strip()
             )
+            created = True
         except Company.MultipleObjectsReturned:
             self.logger.error(
                 "Не можу імпортувати юр. особу <%s>: в базі таких більше одної" %

@@ -34,7 +34,7 @@ from core.model.declarations import Declaration
 class Person(models.Model, AbstractNode):
     last_name = models.CharField("Прізвище", max_length=40)
     first_name = models.CharField("Ім'я", max_length=40)
-    patronymic = models.CharField("По-батькові", max_length=40, blank=True)
+    patronymic = models.CharField("По батькові", max_length=40, blank=True)
 
     publish = models.BooleanField("Опублікувати", default=False)
     is_pep = models.BooleanField("Є PEPом", default=True)
