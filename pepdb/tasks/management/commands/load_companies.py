@@ -69,4 +69,4 @@ class Command(BaseCommand):
         es = connections.get_connection()
 
         with enc_open(file_path, 'r', encoding='cp1251') as fp:
-            bulk(es, self.iter_docs(fp.read().encode('utf-8')), chunk_size=50000)
+            bulk(es, self.iter_docs(fp.read().encode('utf-8')), chunk_size=10000)
