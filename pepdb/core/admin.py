@@ -309,7 +309,7 @@ class CompanyAdmin(TranslationAdmin):
         if query:
             s = EDRPOU.search().query(
                 ES_Q("multi_match", operator="and", query=query,
-                     fields=["name", "short_name", "edrpou", "head"])
+                     fields=["name", "short_name", "edrpou", "head", "founders"])
             )[:200].execute()
 
         return render(
@@ -323,10 +323,14 @@ class CompanyAdmin(TranslationAdmin):
         data = []
 
         for rec_id in request.POST.getlist('iswear'):
-            edrpou = request.POST.get("company_%s_id" % rec_id)
-            res = EDRPOU.search().query("term", edrpou=edrpou).execute()
+            meta_id = request.POST.get("company_%s_id" % rec_id)
+            res = EDRPOU.get(id=meta_id)
             if res:
-                data.append(res[0].to_dict())
+                rec = res.to_dict()
+
+                if isinstance(rec["founders"], list):
+                    rec["founders"] = ";;;".join(rec["founders"])
+                data.append(rec)
 
         if not data:
             self.message_user(request, u"Нічого експортувати")

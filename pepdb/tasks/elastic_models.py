@@ -11,6 +11,7 @@ class EDRPOU(DocType):
     name = Text(index=True, analyzer='ukrainian')
     short_name = Text(index=True, analyzer='ukrainian')
     status = Keyword(index=True)
+    founders = Text(index=True, analyzer='ukrainian')
 
     class Meta:
         index = 'edrpou'
