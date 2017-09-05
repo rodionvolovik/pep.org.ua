@@ -35,10 +35,12 @@ class Company(models.Model, AbstractNode):
         4: _("зареєстровано, свідоцтво про державну реєстрацію недійсне"),
         5: _("порушено справу про банкрутство"),
         6: _("порушено справу про банкрутство (санація)"),
+        7: _("розпорядження майном"),
+        8: _("ліквідація"),
     }
 
     name = models.CharField("Повна назва", max_length=512)
-    short_name = models.CharField("Скорочена назва", max_length=100,
+    short_name = models.CharField("Скорочена назва", max_length=200,
                                   blank=True)
 
     publish = models.BooleanField("Опублікувати", default=False)
@@ -73,7 +75,7 @@ class Company(models.Model, AbstractNode):
                            self.founded_details)
 
     state_company = models.BooleanField(
-        "Держаустанова", default=False)
+        "Керівник — ПЕП", default=False)
 
     legal_entity = models.BooleanField(
         "Юрособа", default=True)

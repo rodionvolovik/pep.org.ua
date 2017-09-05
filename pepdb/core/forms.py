@@ -34,5 +34,5 @@ class EDRImportForm(Form):
     csv = FileField(required=True)
     is_state_companies = BooleanField(
         required=False,
-        help_text=u"Усі компанії з файла є держустановами"
+        help_text=u"Керівники усіх компанії з файлу є ПЕПами"
     )

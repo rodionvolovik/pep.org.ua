@@ -40,17 +40,38 @@ class CompanyImporter(object):
         # Not using get_or_create to avoid situation
         # when created object is saved immediately
         try:
-            company = Company.objects.get(edrpou=edrpou)
-        except Company.DoesNotExist:
-            company = Company(
+            # Sometime in companies table we have more than one company
+            # with same edrpou, that usually happens when company got
+            # reorganized or resurrected or something else strange had
+            # happened
+
+            # Here we'll try to update the most record of the company
+            # in business first by narrowing down the search by using
+            # status field
+            company = Company.objects.get(
                 edrpou=edrpou,
-                name_uk=obj_dict["name"].strip(),
-                short_name_uk=obj_dict["short_name"].strip()
+                status=1
             )
-            created = True
+        except Company.DoesNotExist:
+            try:
+                company = Company.objects.get(edrpou=edrpou)
+            except Company.DoesNotExist:
+                company = Company(
+                    edrpou=edrpou,
+                    name_uk=obj_dict["name"].strip(),
+                    short_name_uk=obj_dict["short_name"].strip()
+                )
+                created = True
+            except Company.MultipleObjectsReturned:
+                self.logger.error(
+                    "Не можу імпортувати юр. особу <%s>: в базі таких більше одної" %
+                    json.dumps(obj_dict, ensure_ascii=False)
+                )
+                return None, created
+
         except Company.MultipleObjectsReturned:
             self.logger.error(
-                "Не можу імпортувати юр. особу <%s>: в базі таких більше одної" %
+                "Не можу імпортувати юр. особу <%s>: в базі більше одної в статусі 'зареєстровано'" %
                 json.dumps(obj_dict, ensure_ascii=False)
             )
             return None, created

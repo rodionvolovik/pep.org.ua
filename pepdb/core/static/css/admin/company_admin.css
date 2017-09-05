@@ -1,7 +1,11 @@
 .mt-field-name-uk {
-	max-width: 720px!important;
+    max-width: 750px!important;
 }
 
 .grp-changelist-results table .vTextField {
-	max-width: 150px;
+    max-width: 150px;
+}
+
+.field-status select {
+    max-width: 150px!important;
 }

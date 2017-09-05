@@ -419,10 +419,10 @@ class CompanyAdmin(TranslationAdmin):
 
     inlines = (Company2PersonInline, Company2CompanyInline,
                Company2CompanyBackInline, Company2CountryInline)
-    list_display = ("pk", "name_uk", "edrpou", "state_company", "legal_entity",
-                    "status", "management")
-    list_editable = ("name_uk", "edrpou", "state_company", "legal_entity",
-                     "status")
+    list_display = ("pk", "name_uk", "short_name_uk", "edrpou",
+                    "state_company", "legal_entity", "status", "management")
+    list_editable = ("name_uk", "short_name_uk", "edrpou", "state_company",
+                     "legal_entity", "status")
     search_fields = ["name_uk", "short_name_uk", "edrpou"]
     actions = [make_published, make_unpublished]
 
