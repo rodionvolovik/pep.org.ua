@@ -1,4 +1,4 @@
-Django==1.11.4
+Django==1.11.5
 django-jinja==2.3.1
 psycopg2==2.6
 django-select2-forms==2.0.2
