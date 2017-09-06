@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.core.management.base import BaseCommand
+from django.utils.translation import activate
 from django.db.utils import IntegrityError
 from django.conf import settings
 
@@ -18,6 +19,7 @@ class Command(BaseCommand):
             'manual resolution')
 
     def handle(self, *args, **options):
+        activate(settings.LANGUAGE_CODE)
         all_persons = []
 
         keys = ["pk", "key", "fullname", "has_initials", "last_name",
