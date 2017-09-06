@@ -210,7 +210,7 @@ class Company(models.Model, AbstractNode):
                 "from_person__wiki",
                 "from_person__names",
                 "from_person__hash"
-            )
+            ).order_by("from_person__last_name_uk", "from_person__first_name_uk")
         ]
 
         res = {
@@ -302,7 +302,7 @@ class Company(models.Model, AbstractNode):
             "all": []
         }
 
-        for rtp, p, rel in related_companies:
+        for rtp, p, rel in sorted(related_companies, key=lambda x: x[1].name_uk):
             p.rtype = rtp
             p.connection = rel
 
