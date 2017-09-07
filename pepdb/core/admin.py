@@ -721,6 +721,7 @@ class DeclarationAdmin(admin.ModelAdmin):
     family_table.allow_tags = True
 
     list_select_related = ("person",)
+    list_per_page = 50
 
     list_display = (
         "pk", "fullname_pep", "fullname_decl", "position_pep", "position_decl",
