@@ -565,10 +565,10 @@ class DeclarationAdmin(admin.ModelAdmin):
 
     def position_pep(self, obj):
         last_workplace = obj.person.last_workplace
-        if last_workplace:
+        if last_workplace and last_workplace["position"] != "Клієнт":
             return '%s @ %s,<br/><span style="color: silver">%s</span>' % (
-                obj.person.last_workplace["position"],
-                obj.person.last_workplace["company"],
+                last_workplace["position"],
+                last_workplace["company"],
                 obj.person.get_type_of_official_display()
             )
 
@@ -720,7 +720,7 @@ class DeclarationAdmin(admin.ModelAdmin):
     family_table.short_description = 'Родина'
     family_table.allow_tags = True
 
-    list_select_related = ("person", )
+    list_select_related = ("person",)
 
     list_display = (
         "pk", "fullname_pep", "fullname_decl", "position_pep", "position_decl",

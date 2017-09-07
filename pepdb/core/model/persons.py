@@ -142,7 +142,12 @@ class Person(models.Model, AbstractNode):
             "-is_employee", "-date_finished",
             "-date_established").exclude(
                 date_finished__isnull=True,  # AND!
-                date_established__isnull=True).select_related("to_company")
+                date_established__isnull=True).select_related("to_company") \
+            .only(
+                "to_company__short_name_uk", "to_company__name_uk",
+                "to_company__short_name_en", "to_company__name_en",
+                "to_company__id",
+                "relationship_type_uk", "relationship_type_en")
 
         if qs:
             return qs
@@ -152,13 +157,19 @@ class Person(models.Model, AbstractNode):
         # In contrast with previous query it'll also return those positions
         # where date_finished and date_established == null.
         qs = self.person2company_set.order_by(
-            "-is_employee", "-date_finished").select_related("to_company")
+            "-is_employee", "-date_finished").select_related("to_company") \
+            .only(
+                "to_company__short_name_uk", "to_company__name_uk",
+                "to_company__short_name_en", "to_company__name_en",
+                "to_company__id",
+                "relationship_type_uk", "relationship_type_en")
 
         return qs
 
     def _last_workplace_from_declaration(self):
         return Declaration.objects.filter(person=self, confirmed="a").order_by(
-            "-nacp_declaration", "-year")[:1]
+            "-nacp_declaration", "-year").only(
+            "office_en", "position_en", "office_uk", "position_uk")[:1]
 
     @property
     def last_workplace(self):

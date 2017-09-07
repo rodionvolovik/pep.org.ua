@@ -435,6 +435,9 @@ class Declaration(models.Model):
     class Meta:
         verbose_name = "Декларація"
         verbose_name_plural = "Декларації"
+        indexes = [
+            models.Index(fields=['confirmed', 'fuzziness', 'batch_number']),
+        ]
 
 
 class DeclarationExtra(models.Model):
