@@ -183,6 +183,13 @@ class Company(models.Model, AbstractNode):
             if t and t.translation:
                 self.name_en = t.translation
 
+        if not self.short_name_en:
+            t = Ua2EnDictionary.objects.filter(
+                term__iexact=lookup_term(self.short_name_en)).first()
+
+            if t and t.translation:
+                self.short_name_en = t.translation
+
         super(Company, self).save(*args, **kwargs)
 
     def get_absolute_url(self):

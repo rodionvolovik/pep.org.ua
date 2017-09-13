@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.core.management.base import BaseCommand
-from core.models import Declaration, Ua2EnDictionary
+from django.db.models import Q
+from core.models import Declaration, Ua2EnDictionary, Company, Person2Company
 from core.utils import lookup_term
 
 
 class Command(BaseCommand):
-    args = '<file_path>'
-
     def handle(self, *args, **options):
         en_translations = {}
 
@@ -25,3 +24,13 @@ class Command(BaseCommand):
                 p.office_en = en_translations[lookup_term(p.office_uk)]
 
             p.save()
+
+        for c in Company.objects.filter(
+                Q(name_en="") | Q(short_name_en="") | Q(name_en__isnull=True) |
+                Q(short_name__isnull=True)):
+            c.save()  # This will invoke translation on the save method
+
+        for p2c in Person2Company.objects.filter(
+                Q(relationship_type_en="") |
+                Q(relationship_type_en__isnull=True)):
+            p2c.save()  # This will invoke translation on the save method
