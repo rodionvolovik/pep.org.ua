@@ -43,7 +43,7 @@ class Command(BaseCommand):
             if decl["intro"]["doc_type"] != "Щорічна":
                 return
 
-            Declaration.objects.create(
+            d = Declaration.objects.create(
                 declaration_id=decl["id"],
                 person=person,
                 **{
@@ -63,7 +63,7 @@ class Command(BaseCommand):
                 }
             )
         else:
-            Declaration.objects.create(
+            d = Declaration.objects.create(
                 declaration_id=decl["id"],
                 person=person,
                 **{
@@ -81,6 +81,10 @@ class Command(BaseCommand):
                     "fuzziness": fuzziness
                 }
             )
+
+        if not d.family:
+            d.relatives_populated = True
+            d.save()
 
         return True
 
