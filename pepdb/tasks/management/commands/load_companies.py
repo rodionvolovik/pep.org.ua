@@ -9,6 +9,8 @@ from xml.etree.ElementTree import ParseError
 from elasticsearch_dsl import Index
 from elasticsearch_dsl.connections import connections
 from elasticsearch.helpers import bulk
+from dateutil.parser import parse
+
 from django.core.management.base import BaseCommand
 
 from tasks.elastic_models import EDRPOU
@@ -24,7 +26,12 @@ class Command(BaseCommand):
             help='XML file with EDR export',
         )
 
-    def iter_docs(self, s):
+        parser.add_argument(
+            'date_of_export',
+            help='Date when dataset was exported',
+        )
+
+    def iter_docs(self, s, import_date):
         mapping = {
             'NAME': 'name',
             'SHORT_NAME': 'short_name',
@@ -55,6 +62,7 @@ class Command(BaseCommand):
                     company[mapping[el.tag]] = el.text
 
             company[mapping['FOUNDERS']] = founders_list
+            company["last_update"] = import_date
 
             if i and i % 50000 == 0:
                 self.stdout.write('Processed {} companies from XML feed'.format(i))
@@ -64,9 +72,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         file_path = options['file_path']
 
+        dt = parse(options["date_of_export"], dayfirst=True)
+
         Index(EDRPOU._doc_type.index).delete(ignore=404)
         EDRPOU.init()
         es = connections.get_connection()
 
         with enc_open(file_path, 'r', encoding='cp1251') as fp:
-            bulk(es, self.iter_docs(fp.read().encode('utf-8')), chunk_size=10000)
+            bulk(es, self.iter_docs(fp.read().encode('utf-8'), import_date=dt), chunk_size=10000)

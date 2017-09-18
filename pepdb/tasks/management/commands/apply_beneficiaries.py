@@ -36,7 +36,7 @@ class Command(BaseCommand):
             action='store_true',
             dest='real_run',
             default=False,
-            help='Connect persons to banks for real',
+            help='Connect beneficiar owners to companies for real',
         )
 
     def handle(self, *args, **options):

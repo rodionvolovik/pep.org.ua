@@ -190,6 +190,11 @@ class Person2Company(AbstractRelationship):
         default=False
     )
 
+    created_from_edr = models.BooleanField(
+        "Запис створено з інформації ЄДР",
+        default=False
+    )
+
     declarations = ArrayField(
         models.IntegerField(),
         verbose_name="Декларації, що підтверджують зв'язок",
