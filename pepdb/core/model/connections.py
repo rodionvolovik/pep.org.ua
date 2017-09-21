@@ -190,7 +190,7 @@ class Person2Company(AbstractRelationship):
         default=False
     )
 
-    created_from_edr = models.BooleanField(
+    created_from_edr = models.NullBooleanField(
         "Запис створено з інформації ЄДР",
         default=False
     )
