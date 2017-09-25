@@ -80,6 +80,12 @@
                                 <td><strong>{{ company.edrpou }}</strong></td>
                             </tr>
                             {% endif %}
+                            {% if company.also_known_as %}
+                            <tr>
+                                <td>{{ _("Також відома як") }}</td>
+                                <td itemprop="name">{{ company.also_known_as|replace("\n", "<br/>")|safe }}</td>
+                            </tr>
+                            {% endif %}
                             {% if company.founded %}
                             <tr>
                                 <td>{{ _("Дата створення") }} </td>

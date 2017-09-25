@@ -1,13 +1,17 @@
 {% for company in candidates %}
     <div class="company_match">
         <label>
-            <input type="radio" name="candidate__{{ task_id }}" value="{{ company.edrpou }}" {% if edrpou_match==company.edrpou %}checked{% endif %}/>
-            <span>
-            {{ company.name|safe }}{% if company.short_name and company.short_name != company.name %} ({{ company.short_name|safe }}) {% endif %},
-            <a href="https://youcontrol.com.ua/catalog/company_details/{{ company.edrpou }}/" target="_blank">{{ company.edrpou }}</a> <br/>
-            {{ company.location|safe }} <br />
-            {{ company.head|safe }}
-            </span>
+            {% if company.edrpou %}
+                <input type="radio" name="candidate__{{ task_id }}" value="{{ company.edrpou }}" {% if edrpou_match==company.edrpou %}checked{% endif %}/>
+                <span>
+                {{ company.name|safe }}{% if company.short_name and company.short_name != company.name %} ({{ company.short_name|safe }}) {% endif %},
+                <a href="https://youcontrol.com.ua/catalog/company_details/{{ company.edrpou }}/" target="_blank">{{ company.edrpou }}</a> <br/>
+                {{ company.location|safe }} <br />
+                {{ company.head|safe }}
+                </span>
+            {% else %}
+                <a href="{{ url("company_details", company_id=company.id) }}" target="_blank">{% if company.code %}{{ company.code }}, {% endif %}{{ company.name_uk }}{% if company.name_en %} ({{ company.name_en }}){% endif %}</a>
+            {% endif %}
         </label>
     </div>
 {% endfor %}

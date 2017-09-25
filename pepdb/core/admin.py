@@ -30,9 +30,10 @@ from core.models import (
     Ua2EnDictionary, FeedbackMessage, Declaration, DeclarationExtra,
     ActionLog)
 
-from core.forms import EDRImportForm
+from core.forms import EDRImportForm, ForeignImportForm
 from core.utils import parse_address
 from core.importers.company import CompanyImporter
+from core.importers.company2country import Company2CountryImporter
 from core.universal_loggers import MessagesLogger
 from tasks.elastic_models import EDRPOU
 
@@ -395,6 +396,55 @@ class CompanyAdmin(TranslationAdmin):
 
             return redirect(reverse("admin:core_company_changelist"))
 
+    def unified_foreign_registry_import(self, request):
+        if request.method == "GET":
+            return render(
+                request, "admin/company/unified_import.html",
+                {"form": ForeignImportForm()}
+            )
+        if request.method == "POST":
+            form = ForeignImportForm(request.POST, request.FILES)
+
+            if not form.is_valid():
+                return render(
+                    request, "admin/company/unified_import.html",
+                    {"form": form}
+                )
+
+            created_records = 0
+            updated_records = 0
+            r = DictReader(request.FILES["csv"])
+            importer = CompanyImporter(logger=MessagesLogger(request))
+            conn_importer = Company2CountryImporter(logger=MessagesLogger(request))
+
+            for entry in r:
+                company, created = importer.get_or_create_from_unified_foreign_registry(entry)
+
+                if not company:
+                    continue
+
+                if created:
+                    created_records += 1
+                else:
+                    updated_records += 1
+
+                company.save()
+
+                country_connection, _ = conn_importer.get_or_create(
+                    company, entry.get("country", "").strip(),
+                    "registered_in"
+                )
+
+                if country_connection:
+                    country_connection.save()
+
+            self.message_user(
+                request,
+                "Створено %s компаній, оновлено %s" % (created_records, updated_records)
+            )
+
+            return redirect(reverse("admin:core_company_changelist"))
+
     def get_urls(self):
         urls = super(CompanyAdmin, self).get_urls()
         extra_urls = [
@@ -404,6 +454,9 @@ class CompanyAdmin(TranslationAdmin):
                 name="edr_export"),
             url(r'^edr_import/$', self.admin_site.admin_view(self.edr_import),
                 name="edr_import"),
+            url(r'^unified_import/$',
+                self.admin_site.admin_view(self.unified_foreign_registry_import),
+                name="unified_import"),
         ]
         return extra_urls + urls
 

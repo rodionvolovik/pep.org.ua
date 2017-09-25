@@ -385,6 +385,7 @@ class Person(models.Model, AbstractNode):
             "reputation_assets_uk", "reputation_assets_en",
             "reputation_crimes_uk", "reputation_crimes_en",
             "reputation_manhunt_uk", "reputation_manhunt_en",
+            "also_known_as_uk", "also_known_as_en"
         ])
 
         d["related_persons"] = [

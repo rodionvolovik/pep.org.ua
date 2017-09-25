@@ -4,16 +4,47 @@ from copy import copy
 from collections import defaultdict
 
 from django.db import models
+from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_noop as _
 from django.utils.translation import ugettext_lazy, activate, deactivate
 from django.forms.models import model_to_dict
+from django.core.excptions import ObjectDoesNotExist
 
 from redactor.fields import RedactorField
 
 from core.model.base import AbstractNode
 from core.model.translations import Ua2EnDictionary
-from core.utils import render_date, lookup_term, parse_address
+from core.utils import render_date, lookup_term
+
+
+class CompanyManager(models.Manager):
+    def deep_get(self, clauses):
+        """
+        Two-stage search which takes into account company status
+        """
+
+        query = Q()
+        for field, value in clauses:
+
+            if value:
+                if len(value) < 2:
+                    continue
+
+                query |= Q(**{field: value})
+
+        try:
+            # Sometime in companies table we have more than one company
+            # with same code, that usually happens when company got
+            # reorganized or resurrected or something else strange had
+            # happened
+
+            # Here we'll try to update the most record of the company
+            # in business first by narrowing down the search by using
+            # status field
+            return self.get(query & Q(status=1))
+        except ObjectDoesNotExist:
+            return self.get(query)
 
 
 # to_*_dict methods are used to convert two main entities that we have, Person
@@ -42,6 +73,8 @@ class Company(models.Model, AbstractNode):
     name = models.CharField("Повна назва", max_length=512)
     short_name = models.CharField("Скорочена назва", max_length=200,
                                   blank=True)
+
+    also_known_as = models.TextField("Назви іншими мовами або варіації", blank=True)
 
     publish = models.BooleanField("Опублікувати", default=False)
     founded = models.DateField("Дата створення", blank=True, null=True)
@@ -81,7 +114,7 @@ class Company(models.Model, AbstractNode):
         "Юрособа", default=True)
 
     edrpou = models.CharField(
-        "ЄДРПОУ", max_length=20, blank=True)
+        "ЄДРПОУ", max_length=50, blank=True)
 
     zip_code = models.CharField("Індекс", max_length=20, blank=True)
     city = models.CharField("Місто", max_length=255, blank=True)
@@ -126,7 +159,7 @@ class Company(models.Model, AbstractNode):
             "id", "name_uk", "short_name_uk", "name_en", "short_name_en",
             "state_company", "edrpou", "wiki", "city", "street",
             "other_founders", "other_recipient", "other_owners",
-            "other_managers", "bank_name"])
+            "other_managers", "bank_name", "also_known_as"])
 
         d["related_persons"] = [
             i.to_person_dict()
@@ -375,6 +408,8 @@ class Company(models.Model, AbstractNode):
     def closed_on_human(self):
         return render_date(self.closed_on,
                            self.closed_on_details)
+
+    objects = CompanyManager()
 
     class Meta:
         verbose_name = "Юридична особа"

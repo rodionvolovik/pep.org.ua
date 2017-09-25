@@ -36,3 +36,7 @@ class EDRImportForm(Form):
         required=False,
         help_text=u"Керівники усіх компанії з файлу є ПЕПами"
     )
+
+
+class ForeignImportForm(Form):
+    csv = FileField(required=True)

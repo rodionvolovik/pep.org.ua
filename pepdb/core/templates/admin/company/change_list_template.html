@@ -3,5 +3,6 @@
 {% block object-tools-items %}
     <li><a href="{% url 'admin:edr_search' %}" class="grp-state-focus">Пошук в копії ЄДР</a></li>
     <li><a href="{% url 'admin:edr_import' %}" class="grp-state-focus">Імпорт з ЄДР</a></li>
+    <li><a href="{% url 'admin:unified_import' %}" class="grp-state-focus">Імпорт іноземних компаній</a></li>
     {{ block.super }}
 {% endblock %}
