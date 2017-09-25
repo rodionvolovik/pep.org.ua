@@ -139,10 +139,12 @@ class Person(models.Model, AbstractNode):
         # query will return the positions without both dates on the top of the
         # list
         qs = self.person2company_set.order_by(
-            "-is_employee", "-date_finished",
-            "-date_established").exclude(
+            "-is_employee", "-date_finished", "-date_established") \
+            .exclude(
                 date_finished__isnull=True,  # AND!
-                date_established__isnull=True).select_related("to_company") \
+                date_established__isnull=True) \
+            .exclude(relationship_type_uk="Клієнт") \
+            .select_related("to_company") \
             .only(
                 "to_company__short_name_uk", "to_company__name_uk",
                 "to_company__short_name_en", "to_company__name_en",
@@ -158,6 +160,7 @@ class Person(models.Model, AbstractNode):
         # where date_finished and date_established == null.
         qs = self.person2company_set.order_by(
             "-is_employee", "-date_finished").select_related("to_company") \
+            .exclude(relationship_type_uk="Клієнт") \
             .only(
                 "to_company__short_name_uk", "to_company__name_uk",
                 "to_company__short_name_en", "to_company__name_en",
