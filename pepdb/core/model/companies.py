@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_noop as _
 from django.utils.translation import ugettext_lazy, activate, deactivate
 from django.forms.models import model_to_dict
-from django.core.excptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist
 
 from redactor.fields import RedactorField
 

@@ -39,19 +39,7 @@ class Command(BaseCommand):
             help='Connect beneficiar owners to companies for real',
         )
 
-    def handle(self, *args, **options):
-        activate(settings.LANGUAGE_CODE)
-
-        importer = CompanyImporter(logger=PythonLogger("cli_commands"))
-        conn_importer = Person2CompanyImporter(logger=PythonLogger("cli_commands"))
-
-        successful = 0
-        failed = 0
-        companies_created = 0
-        companies_updated = 0
-        connections_created = 0
-        connections_updated = 0
-
+    def connect_domestic_companies(self, save_it):
         for ownership in BeneficiariesMatching.objects.filter(status="m"):
             k = ownership.edrpou_match.lstrip("0")
 
@@ -66,7 +54,7 @@ class Command(BaseCommand):
                     )
                 )
 
-                failed += 1
+                self.failed += 1
                 continue
 
             # Because open copy of registry has no dates and some of companies
@@ -101,12 +89,13 @@ class Command(BaseCommand):
                     )
                 )
 
-                failed += 1
+                self.failed += 1
                 continue
 
             if not ans:
                 try:
-                    company = Company.objects.get(edrpou=ownership.edrpou_match.rjust(8, "0"))
+                    company = Company.objects.get(
+                        edrpou=unicode(ownership.edrpou_match).rjust(8, "0"))
                 except Company.DoesNotExist:
                     self.stderr.write(
                         "Cannot find a company by code %s, for the key %s, skipping" %
@@ -116,10 +105,10 @@ class Command(BaseCommand):
                         )
                     )
 
-                    failed += 1
+                    self.failed += 1
                     continue
             else:
-                company, created = importer.get_or_create_from_edr_record(ans[0].to_dict())
+                company, created = self.importer.get_or_create_from_edr_record(ans[0].to_dict())
 
                 if not company:
                     self.stderr.write(
@@ -130,17 +119,17 @@ class Command(BaseCommand):
                         )
                     )
 
-                    failed += 1
+                    self.failed += 1
                     continue
 
                 if created:
-                    companies_created += 1
+                    self.companies_created += 1
                     self.stdout.write("Created company %s" % company)
                 else:
-                    companies_updated += 1
+                    self.companies_updated += 1
                     self.stdout.write("Updated company %s" % company)
 
-                if options["real_run"]:
+                if save_it:
                     company.save()
 
             try:
@@ -153,7 +142,7 @@ class Command(BaseCommand):
                         ownership.company_key
                     )
                 )
-                failed += 1
+                self.failed += 1
                 continue
 
             for d in ownership.declarations:
@@ -169,29 +158,112 @@ class Command(BaseCommand):
                     )
                     continue
 
-                conn, conn_created = conn_importer.get_or_create_from_declaration(
+                conn, conn_created = self.conn_importer.get_or_create_from_declaration(
                     person, company, "Бенефіціарний власник", decl)
 
                 if conn_created:
-                    connections_created += 1
+                    self.connections_created += 1
                     self.stdout.write("Created connection %s" % conn)
                 else:
-                    connections_updated += 1
+                    self.connections_updated += 1
                     self.stdout.write("Updated connection %s" % conn)
 
-                if options["real_run"]:
+                if save_it:
                     conn.save()
 
-            successful += 1
+            self.successful += 1
+
+    def connect_foreign_companies(self, save_it):
+        for ownership in BeneficiariesMatching.objects.filter(status="y"):
+            if len(ownership.candidates_json) != 1:
+                self.stderr.write(
+                    "Strange number of matches (%s) for foreign company %s" %
+                    (
+                        len(ownership.candidates_json),
+                        ownership.company_key
+                    )
+                )
+                continue
+
+            try:
+                company = Company.objects.get(pk=ownership.candidates_json[0]["id"])
+            except Company.DoesNotExist:
+                self.stderr.write(
+                    "Cannot find a company by id %s, for the key %s, skipping" %
+                    (
+                        ownership.candidates_json[0]["id"],
+                        ownership.company_key
+                    )
+                )
+
+                self.failed += 1
+                continue
+
+            try:
+                person = Person.objects.get(pk=ownership.person)
+            except Person.DoesNotExist:
+                self.stderr.write(
+                    "Cannot find a person by code %s, for the key %s, skipping" %
+                    (
+                        ownership.person,
+                        ownership.company_key
+                    )
+                )
+                self.failed += 1
+                continue
+
+            for d in ownership.declarations:
+                try:
+                    decl = Declaration.objects.get(pk=d)
+                except Declaration.DoesNotExist:
+                    self.stderr.write(
+                        "Cannot find a declaration by id %s, for the key %s, skipping" %
+                        (
+                            d,
+                            ownership.company_key
+                        )
+                    )
+                    continue
+
+                conn, conn_created = self.conn_importer.get_or_create_from_declaration(
+                    person, company, "Бенефіціарний власник", decl)
+
+                if conn_created:
+                    self.connections_created += 1
+                    self.stdout.write("Created connection %s" % conn)
+                else:
+                    self.connections_updated += 1
+                    self.stdout.write("Updated connection %s" % conn)
+
+                if save_it:
+                    conn.save()
+
+            self.successful += 1
+
+    def handle(self, *args, **options):
+        activate(settings.LANGUAGE_CODE)
+
+        self.importer = CompanyImporter(logger=PythonLogger("cli_commands"))
+        self.conn_importer = Person2CompanyImporter(logger=PythonLogger("cli_commands"))
+
+        self.successful = 0
+        self.failed = 0
+        self.companies_created = 0
+        self.companies_updated = 0
+        self.connections_created = 0
+        self.connections_updated = 0
+
+        self.connect_domestic_companies(options["real_run"])
+        self.connect_foreign_companies(options["real_run"])
 
         self.stdout.write(
-            "Creation failed: %s, creation successful: %s" % (failed, successful)
+            "Creation failed: %s, creation successful: %s" % (self.failed, self.successful)
         )
         self.stdout.write(
             "Companies created: %s, companies updated: %s" %
-            (companies_created, companies_updated)
+            (self.companies_created, self.companies_updated)
         )
         self.stdout.write(
             "Connections created: %s, connections updated: %s" %
-            (connections_created, connections_updated)
+            (self.connections_created, self.connections_updated)
         )

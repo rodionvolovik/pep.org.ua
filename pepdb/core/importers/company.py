@@ -28,12 +28,12 @@ class CompanyImporter(object):
         """
         created = False
 
-        edrpou = obj_dict["edrpou"].rjust(8, "0")
+        edrpou = unicode(obj_dict["edrpou"]).rjust(8, "0")
 
         if not obj_dict["edrpou"]:
             self.logger.error(
                 "Не можу імпортувати юр. особу без ЄДРПОУ <%s>" %
-                json.dumps(obj_dict, ensure_ascii=False)
+                json.dumps(obj_dict, ensure_ascii=False, default=str)
             )
             return None, created
 
@@ -67,14 +67,14 @@ class CompanyImporter(object):
             except Company.MultipleObjectsReturned:
                 self.logger.error(
                     "Не можу імпортувати юр. особу <%s>: в базі таких більше одної" %
-                    json.dumps(obj_dict, ensure_ascii=False)
+                    json.dumps(obj_dict, ensure_ascii=False, default=str)
                 )
                 return None, created
 
         except Company.MultipleObjectsReturned:
             self.logger.error(
                 "Не можу імпортувати юр. особу <%s>: в базі більше одної в статусі 'зареєстровано'" %
-                json.dumps(obj_dict, ensure_ascii=False)
+                json.dumps(obj_dict, ensure_ascii=False, default=str)
             )
             return None, created
 
@@ -201,42 +201,35 @@ class CompanyImporter(object):
             )
             return None, created
 
-        query = Q()
-        for field, value in (
-                ("edrpou__iexact", company_code),
-                ("name_uk__iexact", company_name_declaration),
-                ("name_uk__iexact", company_name_en),
-                ("name_uk__iexact", company_name_orig),
-                ("name_en__iexact", company_name_declaration),
-                ("name_en__iexact", company_name_en),
-                ("name_en__iexact", company_name_orig),):
-
-            if value:
-                if len(value) < 2:
-                    self.logger.warning(
-                        "Не використовуємо '%s' для пошуку компанії через довжину" % value)
-                    continue
-
-                query |= Q(**{field: value})
-
         # Not using get_or_create to avoid situation
         # when created object is saved immediately
         try:
-            # Sometime in companies table we have more than one company
-            # with same code, that usually happens when company got
-            # reorganized or resurrected or something else strange had
-            # happened
-
-            # Here we'll try to update the most record of the company
-            # in business first by narrowing down the search by using
-            # status field
-            company = Company.objects.get(query & Q(status=1))
-        except Company.DoesNotExist:
+            # Search by code first
+            company = Company.objects.deep_get([("edrpou__iexact", company_code)])
+        except (Company.DoesNotExist, Company.MultipleObjectsReturned):
             try:
-                company = Company.objects.get(query)
+                # Then refine the search if needed
+                company = Company.objects.deep_get([
+                    ("name_uk__iexact", company_name_declaration),
+                    ("name_uk__iexact", company_name_en),
+                    ("name_uk__iexact", company_name_orig),
+                    ("name_en__iexact", company_name_declaration),
+                    ("name_en__iexact", company_name_en),
+                    ("name_en__iexact", company_name_orig)
+                ])
+
+                if (company.edrpou and company_code and
+                        company.edrpou.lower() != company_code.lower()):
+                    # We found a company by name, but it's probably a wrong one
+                    self.logger.warning(
+                        ("Юр. особа що була знайдена для запису %s за іменем має відмінний " +
+                         "код реєстрації: %s, створюємо нову компанію") %
+                        (json.dumps(obj_dict, ensure_ascii=False), company.edrpou)
+                    )
+                    raise Company.DoesNotExist()
+
             except Company.DoesNotExist:
                 company = Company(edrpou=company_code)
-
                 created = True
             except Company.MultipleObjectsReturned:
                 self.logger.error(
@@ -244,13 +237,6 @@ class CompanyImporter(object):
                     json.dumps(obj_dict, ensure_ascii=False)
                 )
                 return None, created
-
-        except Company.MultipleObjectsReturned:
-            self.logger.error(
-                "Не можу імпортувати юр. особу <%s>: в базі більше одної в статусі 'зареєстровано'" %
-                json.dumps(obj_dict, ensure_ascii=False)
-            )
-            return None, created
 
         merger = st.Merger((
             (".*", st.replace_if_empty_strategy),

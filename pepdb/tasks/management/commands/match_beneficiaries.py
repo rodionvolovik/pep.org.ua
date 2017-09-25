@@ -24,40 +24,37 @@ class Command(BaseCommand):
     """
 
     def _search_db(self, company):
-        query = dbQ()
-        for field, value in (
+        try:
+            # Search by code first
+            company_db = Company.objects.deep_get([
                 ("edrpou__iexact", company["beneficial_owner_company_code"]),
                 ("edrpou__iexact", (company["beneficial_owner_company_code"] or "").replace(" ", "")),
-                ("name_uk__iexact", company["company_name"]),
-                ("name_uk__iexact", company["en_name"]),
-                ("name_en__iexact", company["company_name"]),
-                ("name_en__iexact", company["en_name"])):
+            ])
+        except (Company.DoesNotExist, Company.MultipleObjectsReturned):
+            try:
+                # Then refine the search if needed
+                company_db = Company.objects.deep_get([
+                    ("name_uk__iexact", company["company_name"]),
+                    ("name_uk__iexact", company["en_name"]),
+                    ("name_en__iexact", company["company_name"]),
+                    ("name_en__iexact", company["en_name"])
+                ])
 
-            if value:
-                if len(value) < 2:
-                    self.stderr.write(
-                        "Not using '%s' for company search because of length" % value)
-                    continue
+            except Company.DoesNotExist:
+                return None
+            except Company.MultipleObjectsReturned:
+                self.stderr.write(
+                    "Too much companies returned for record '%s'" % json.dumps(
+                        company, ensure_ascii=False)
+                )
+                return None
 
-                query |= dbQ(**{field: value})
-
-        try:
-            company_db = Company.objects.get(query)
-            return {
-                "id": company_db.id,
-                "code": company_db.edrpou,
-                "name_uk": company_db.name_uk,
-                "name_en": company_db.name_en,
-            }
-
-        except Company.DoesNotExist:
-            return None
-        except Company.MultipleObjectsReturned:
-            self.stderr.write(
-                "Too much companies returned for record '%s'" % json.dumps(
-                    company, ensure_ascii=True)
-            )
-            return None
+        return {
+            "id": company_db.id,
+            "code": company_db.edrpou,
+            "name_uk": company_db.name_uk,
+            "name_en": company_db.name_en,
+        }
 
     def _search_edr(self, company, fuzziness):
         ans = None
