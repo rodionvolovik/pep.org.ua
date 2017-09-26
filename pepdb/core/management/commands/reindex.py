@@ -16,6 +16,15 @@ from core.elastic_models import (
 
 
 class Command(BaseCommand):
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--drop_indices',
+            action='store_true',
+            dest='drop_indices',
+            default=False,
+            help='Delete indices before reindex',
+        )
+
     def bulk_write(self, conn, docs_to_index):
         for response in streaming_bulk(
                 conn, (d.to_dict(True) for d in docs_to_index)):
@@ -25,14 +34,16 @@ class Command(BaseCommand):
         activate(settings.LANGUAGE_CODE)
         conn = connections.get_connection('default')
 
-        Index(ElasticPerson._doc_type.index).delete(ignore=404)
-        ElasticPerson.init()
-        conn.indices.put_settings(
-            index=ElasticPerson._doc_type.index,
-            body={
-                'index.max_result_window': 100000
-            }
-        )
+        if options["drop_indices"]:
+            Index(ElasticPerson._doc_type.index).delete(ignore=404)
+            ElasticPerson.init()
+
+            conn.indices.put_settings(
+                index=ElasticPerson._doc_type.index,
+                body={
+                    'index.max_result_window': 100000
+                }
+            )
 
         docs_to_index = [
             ElasticPerson(**p.to_dict())
@@ -44,13 +55,14 @@ class Command(BaseCommand):
             'Loaded {} persons to persistence storage'.format(
                 len(docs_to_index)))
 
-        ElasticCompany.init()
-        conn.indices.put_settings(
-            index=ElasticCompany._doc_type.index,
-            body={
-                'index.max_result_window': 100000
-            }
-        )
+        if options["drop_indices"]:
+            ElasticCompany.init()
+            conn.indices.put_settings(
+                index=ElasticCompany._doc_type.index,
+                body={
+                    'index.max_result_window': 100000
+                }
+            )
 
         docs_to_index = [
             ElasticCompany(**p.to_dict())
