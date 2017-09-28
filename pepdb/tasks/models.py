@@ -124,3 +124,45 @@ class BeneficiariesMatching(AbstractTask):
     class Meta:
         verbose_name = "Бенефіціари компаній"
         verbose_name_plural = "Бенефіціари компаній"
+
+
+class CompanyDeduplication(AbstractTask):
+    STATUS_CHOICES = (
+        ("p", "Не перевірено"),
+        ("m", "Об'єднати"),
+        ("a", "Залишити все як є"),
+        ("p1", "Перша є правонаступницею"),
+        ("p2", "Друга є правонаступницею"),
+        ("-", "---------------"),   # That's a shame and copy-pasted, I know
+        ("d1", "Видалити першу"),
+        ("d2", "Видалити другу"),
+        ("dd", "Видалити всі"),
+    )
+
+    status = models.CharField(
+        "Статус",
+        max_length=2,
+        choices=STATUS_CHOICES,
+        default="p",
+        db_index=True
+    )
+
+    company1_id = models.IntegerField(null=True)
+    company2_id = models.IntegerField(null=True)
+    fuzzy = models.BooleanField(default=False, db_index=True)
+    applied = models.BooleanField(default=False, db_index=True)
+
+    company1_json = JSONField(verbose_name="Компанія 1", null=True)
+    company2_json = JSONField(verbose_name="Компанія 2", null=True)
+
+    class Meta:
+        verbose_name = "Дублікат юридичних осіб"
+        verbose_name_plural = "Дублікати юридичних осіб"
+
+        unique_together = [
+            ["company1_id", "company2_id"],
+        ]
+
+        index_together = [
+            ["company1_id", "company2_id"],
+        ]

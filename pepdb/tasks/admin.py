@@ -5,7 +5,8 @@ from django.template.loader import render_to_string
 
 from core.models import Declaration
 from tasks.models import (
-    PersonDeduplication, CompanyMatching, BeneficiariesMatching
+    PersonDeduplication, CompanyMatching, BeneficiariesMatching,
+    CompanyDeduplication
 )
 
 
@@ -181,6 +182,55 @@ class BeneficiariesMatchingAdmin(admin.ModelAdmin):
             request, obj, form, change)
 
 
+class CompanyDeduplicationAdmin(admin.ModelAdmin):
+    list_display = (
+        "pk",
+        "company1",
+        "company2",
+        "timestamp",
+        "fuzzy",
+        "status",
+        "applied"
+    )
+
+    list_editable = ("status",)
+    list_filter = ("status", "fuzzy", "applied")
+
+    ordering = ("timestamp",)
+
+    def _company(self, company):
+        return render_to_string(
+            "admin/dup_company.jinja",
+            {"company": company}
+        )
+
+    def company1(self, obj):
+        return self._company(obj.company1_json)
+
+    company1.short_description = 'Юр. особа 1'
+    company1.allow_tags = True
+
+    def company2(self, obj):
+        return self._company(obj.company2_json)
+    company2.short_description = 'Юр. особа 2'
+    company2.allow_tags = True
+
+    def has_add_permission(self, request):
+        return False
+
+    def save_model(self, request, obj, form, change):
+        obj.user = request.user
+        super(CompanyDeduplicationAdmin, self).save_model(
+            request, obj, form, change)
+
+    def ignore(self, request, queryset):
+        queryset.update(status="a")
+    ignore.short_description = "Залишити все як є"
+
+    actions = [ignore]
+
+
 admin.site.register(PersonDeduplication, PersonDeduplicationAdmin)
 admin.site.register(CompanyMatching, CompanyMatchingAdmin)
 admin.site.register(BeneficiariesMatching, BeneficiariesMatchingAdmin)
+admin.site.register(CompanyDeduplication, CompanyDeduplicationAdmin)

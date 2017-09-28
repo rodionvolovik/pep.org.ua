@@ -92,7 +92,6 @@ class Command(BaseCommand):
             if l["pk"] not in spoiled_ids and not l["has_initials"]
         ]
 
-        fuzzy_chunks = []
         for a, b in combinations(candidates_for_fuzzy, 2):
             score = jaro(a["fullname"], b["fullname"])
             if score > 0.93:
