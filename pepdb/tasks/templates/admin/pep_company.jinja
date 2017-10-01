@@ -1,8 +1,9 @@
-<ul>
+<ul style="list-style: disc inside;">
 {% for company in companies %}
 <li>
 {{ company.company_name }}{% if company.beneficial_owner_company_code %} ({{ company.beneficial_owner_company_code }}){% endif %}<br/>
-<small>{{ company.legalForm }}, {{ company.address }}</small>
+<small>{{ company.legalForm }}{% if company.address %}, {{ company.address }}{% endif %}</small>{% if company.link_type %}, {{ company.link_type }}{% endif %}
+{% if company.percent_of_cost %}<br/>Частка: {{ company.percent_of_cost }}% {% endif %}
 </li>
 
 {% endfor %}

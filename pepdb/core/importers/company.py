@@ -132,16 +132,16 @@ class CompanyImporter(object):
         """
         created = False
 
-        company_code = obj_dict["company_code"].strip()
+        company_code = obj_dict["company_code"].strip().replace(" ", "")
         company_name_declaration = obj_dict["company_name_declaration"].strip()
         company_name_en = obj_dict["company_name_en"].strip()
         company_name_orig = obj_dict["company_name_orig"].strip()
 
         if obj_dict["country"].strip().lower() == "кіпр":
-            company_code = re.sub("^HE\s?", "HE ", company_code)
-            company_code = re.sub("^ΗΕ\s?", "HE ", company_code)
-            company_code = re.sub("^H\.E\.\s?", "HE ", company_code)
-            company_code = re.sub("^Η\.E\.\s?", "HE ", company_code)
+            company_code = re.sub("^HE\s?", "HE", company_code)
+            company_code = re.sub("^ΗΕ\s?", "HE", company_code)
+            company_code = re.sub("^H\.E\.\s?", "HE", company_code)
+            company_code = re.sub("^Η\.E\.\s?", "HE", company_code)
 
         update_dict = {
             "zip_code": obj_dict["zip"].strip(),

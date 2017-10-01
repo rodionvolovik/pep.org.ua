@@ -333,13 +333,16 @@ class Declaration(models.Model):
 
         return resp
 
-    def resolve_person(self, declaration_person_id):
+    def resolve_person(self, family_id):
         """
-        Finds the relative mentioned in the declaration in 
+        Finds the relative mentioned in the declaration in
         PEP db.
         Returns person id and a flag set to true, if it was fuzzy
         match
         """
+
+        if str(family_id) == "1":
+            return self.person, False
 
         def _is_fuzzy_match(declaration_rec, person_rec):
             if (declaration_rec["lastname"].strip().lower() !=
@@ -358,19 +361,17 @@ class Declaration(models.Model):
         family = data.get("step_2")
 
         if isinstance(family, dict):
-            family_id = declaration_person_id
-
             if not family_id or family_id not in family:
                 raise CannotResolveRelativeException(
                     "Cannot find person %s in the declaration %s" % (
-                        family_id, data.get("id"))
+                        family_id, self.declaration_id)
                 )
 
             member = family[family_id]
         else:
             raise CannotResolveRelativeException(
                 "Cannot find family section in the declaration %s" % (
-                    family_id, data.get("id"))
+                    self.declaration_id)
             )
 
         chunk1 = list(Person2Person.objects.filter(

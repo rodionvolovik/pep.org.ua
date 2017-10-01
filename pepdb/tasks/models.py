@@ -93,6 +93,10 @@ class BeneficiariesMatching(AbstractTask):
         ("n", "Закордонна компанія, не знайдено"),
         ("y", "Закордонна компанія, знайдено"),
     )
+    TYPE_CHOICES = (
+        ("b", "Бенефіціарний власник"),
+        ("f", "Засновник"),
+    )
 
     status = models.CharField(
         "Статус",
@@ -102,8 +106,16 @@ class BeneficiariesMatching(AbstractTask):
         db_index=True
     )
 
+    type_of_connection = models.CharField(
+        "Тип зв'язку",
+        max_length=1,
+        choices=TYPE_CHOICES,
+        default="b",
+        db_index=True
+    )
+
     company_key = models.CharField(
-        "Ключ компанії", max_length=500, unique=True)
+        "Ключ компанії", max_length=500)
 
     person = models.IntegerField("Власник в реєстрі PEP")
     person_json = JSONField(verbose_name="Власник в реєстрі PEP", null=True)
@@ -122,8 +134,11 @@ class BeneficiariesMatching(AbstractTask):
         "Знайдена компанія", max_length=15, null=True, blank=True)
 
     class Meta:
-        verbose_name = "Бенефіціари компаній"
-        verbose_name_plural = "Бенефіціари компаній"
+        verbose_name = "Бенефіціар або власник компанії"
+        verbose_name_plural = "Бенефіціари або власники компаній"
+        unique_together = [
+            ["company_key", "type_of_connection"],
+        ]
 
 
 class CompanyDeduplication(AbstractTask):

@@ -6,11 +6,10 @@ import json
 from django.core.management.base import BaseCommand
 from django.utils.translation import activate
 from django.conf import settings
-from django.db.models import Q as dbQ
 
 from elasticsearch_dsl import Q
 
-from core.models import Declaration, Country, Person, Company
+from core.models import Declaration, Person, Company
 from core.model.exc import CannotResolveRelativeException
 from tasks.elastic_models import EDRPOU
 from tasks.models import BeneficiariesMatching
@@ -27,7 +26,6 @@ class Command(BaseCommand):
         try:
             # Search by code first
             company_db = Company.objects.deep_get([
-                ("edrpou__iexact", company["beneficial_owner_company_code"]),
                 ("edrpou__iexact", (company["beneficial_owner_company_code"] or "").replace(" ", "")),
             ])
         except (Company.DoesNotExist, Company.MultipleObjectsReturned):
@@ -151,16 +149,15 @@ class Command(BaseCommand):
                         "score": a._score
                     }
 
-                if rec["edrpou"] not in edrpous_found:
-                    matches.append(rec)
-                    edrpous_found.append(rec["edrpou"])
+                    if rec["edrpou"] not in edrpous_found:
+                        matches.append(rec)
+                        edrpous_found.append(rec["edrpou"])
 
         return matches[:candidates]
 
-    def resolve_person(self, declaration, ownership):
+    def resolve_person(self, declaration, person_declaration_id):
         try:
-            person, _ = declaration.resolve_person(
-                ownership.get("person"))
+            person, _ = declaration.resolve_person(person_declaration_id)
             return person.pk
         except CannotResolveRelativeException as e:
             self.stderr.write(unicode(e))
@@ -178,7 +175,7 @@ class Command(BaseCommand):
             company_name,
         ))
 
-    def insert_record(self, obj, declaration):
+    def insert_record(self, obj, declaration, type_of_connection):
         if obj["declarant_id"] is None:
             return
 
@@ -186,7 +183,10 @@ class Command(BaseCommand):
         key = self.get_key(obj, declarant)
 
         try:
-            rec = BeneficiariesMatching.objects.get(company_key=key)
+            rec = BeneficiariesMatching.objects.get(
+                company_key=key,
+                type_of_connection=type_of_connection
+            )
 
             if obj["country"] != "Україна" and rec.status not in ["y", "n"]:
                 self.stderr.write(
@@ -202,6 +202,7 @@ class Command(BaseCommand):
                 rec.status = "n"
 
         rec.person = obj["declarant_id"]
+        rec.type_of_connection = type_of_connection
         rec.person_json = declarant.to_dict()
         rec.is_family_member = obj["owner"] == "FAMILY"
         rec.declarations = list(
@@ -210,27 +211,46 @@ class Command(BaseCommand):
         if obj not in rec.pep_company_information:
             rec.pep_company_information.append(obj)
 
-        rec.candidates_json = {}
+        if rec.status not in ["y", "m"]:
+            rec.candidates_json = {}
         rec.save()
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--type',
+            choices=["beneficiary", "founder"],
+            required=True,
+            help='Which type of connection to use',
+        )
 
     def handle(self, *args, **options):
         activate(settings.LANGUAGE_CODE)
 
-        self.stdout.write("Retrieving beneficiary ownership information")
+        if options["type"] == "beneficiary":
+            type_of_connection = "b"
+            section = "step_9"
+            code_field = "beneficial_owner_company_code"
+        elif options["type"] == "founder":
+            type_of_connection = "f"
+            section = "step_8"
+            code_field = "corporate_rights_company_code"
+
+        self.stdout.write("Retrieving ownership information")
         for d in Declaration.objects.filter(
                 nacp_declaration=True, confirmed="a").select_related(
                 "person"):
             data = d.source["nacp_orig"]
-            if isinstance(data.get("step_9"), dict):
-                for ownership in data["step_9"].values():
+
+            if isinstance(data.get(section), dict):
+                for ownership in data[section].values():
                     if not isinstance(ownership, dict):
                         self.stderr.write("Ownership record '%s' is invalid" % ownership)
                         continue
 
-                    self.insert_record({
+                    base_rec = {
                         "declarant_id": (
                             d.person_id if ownership.get("person") == "1"
-                            else self.resolve_person(d, ownership)
+                            else self.resolve_person(d, ownership.get("person"))
                         ),
                         "declarant_name": d.person.full_name,
                         "company_name": ownership.get("name"),
@@ -244,15 +264,73 @@ class Command(BaseCommand):
                         "address": ownership.get("address"),
                         "mail": ownership.get("mail"),
                         "year_declared": d.year,
-                        "beneficial_owner_company_code": ownership.get(
-                            "beneficial_owner_company_code"),
+                        "is_fixed": d.source["intro"].get("corrected", False),
+                        "beneficial_owner_company_code": ownership.get(code_field),
                         "owner": "DECLARANT" if ownership.get(
                             "person") == "1" else "FAMILY"
-                    }, declaration=d
-                    )
+                    }
+
+                    if options["type"] == "founder":
+                        rights = ownership.get("rights", {}) or {}
+
+                        # Adding all family members declared as coowners/cofounders
+                        for person_declaration_id, right in rights.items():
+                            person = self.resolve_person(d, person_declaration_id)
+
+                            if person:
+                                rec = base_rec.copy()
+
+                                link_type = right.get("otherOwnership") or right.get("ownershipType")
+
+                                # If declarant specified himself in co-owners but forget to specify the share
+                                # we'll grab that value from the ownership record
+                                percent_of_cost = right.get("percent-ownership")
+                                if percent_of_cost:
+                                    rec["percent_of_cost"] = str(percent_of_cost).replace(",", ".")
+                                elif person_declaration_id == ownership.get("person"):
+                                    rec["percent_of_cost"] = str(
+                                        ownership.get("cost_percent", "100.")).replace(",", ".")
+
+                                if not link_type:
+                                    self.stderr.write("Cannot determine type of ownership in the record %s" % (
+                                        json.dumps(ownership, ensure_ascii=False))
+                                    )
+                                    link_type = "Співвласник"
+
+                                rec["link_type"] = link_type
+
+                                self.insert_record(
+                                    rec,
+                                    declaration=d,
+                                    type_of_connection=type_of_connection
+                                )
+
+                        # Ignoring ownership record if declarant already specified his ownership rights
+                        if ownership.get("person") not in rights:
+                            rec = base_rec.copy()
+
+                            link_type = "Співвласник"
+                            rec["link_type"] = link_type
+                            rec["percent_of_cost"] = str(ownership.get("cost_percent", "100.")).replace(",", ".")
+
+                            self.insert_record(
+                                rec,
+                                declaration=d,
+                                type_of_connection=type_of_connection
+                            )
+                    else:
+                        rec = base_rec.copy()
+                        rec["link_type"] = "Бенефіціарний власник"
+
+                        self.insert_record(
+                            rec,
+                            declaration=d,
+                            type_of_connection=type_of_connection
+                        )
 
         self.stdout.write("Matching with EDR registry")
-        for ownership in BeneficiariesMatching.objects.filter(status__in=["p", "n"]):
+        for ownership in BeneficiariesMatching.objects.filter(
+                status__in=["p", "n"], type_of_connection=type_of_connection):
             candidates = self.search_me(ownership)
             ownership.candidates_json = candidates
 

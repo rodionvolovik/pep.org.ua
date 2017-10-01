@@ -202,6 +202,13 @@ class Person2Company(AbstractRelationship):
         blank=True
     )
 
+    share = models.DecimalField(
+        null=True,
+        decimal_places=6,
+        max_digits=9,
+        verbose_name="Розмір частки (відсотки)"
+    )
+
     def __unicode__(self):
         return "%s (%s)" % (
             self.to_company, self.relationship_type)

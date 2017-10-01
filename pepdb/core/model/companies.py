@@ -1,5 +1,6 @@
 # coding: utf-8
 from __future__ import unicode_literals
+import re
 from copy import copy
 from collections import defaultdict
 
@@ -9,6 +10,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_noop as _
 from django.utils.translation import ugettext_lazy, activate, deactivate
 from django.forms.models import model_to_dict
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
 from redactor.fields import RedactorField
@@ -192,13 +194,21 @@ class Company(models.Model, AbstractNode):
                 suggestions.append(" ".join(variant))
 
         if self.edrpou:
+            edrpou_chunks = list(filter(
+                None,
+                map(unicode.strip, re.split('([a-z]+)', self.edrpou, flags=re.IGNORECASE))
+            ))
+
+            suggestions += edrpou_chunks
             suggestions.append(self.edrpou.lstrip("0"))
 
             if self.edrpou.isdigit():
                 suggestions.append(self.edrpou.rjust(8, "0"))
 
+            d["code_chunks"] = edrpou_chunks
+
         d["name_suggest"] = [
-            {"input": x} for x in suggestions
+            {"input": x} for x in set(suggestions)
         ]
 
         d["name_suggest_output"] = d["short_name_uk"] or d["name_uk"]
@@ -222,6 +232,10 @@ class Company(models.Model, AbstractNode):
 
             if t and t.translation:
                 self.short_name_en = t.translation
+
+        edrpou = self.edrpou or ""
+        if " " in edrpou and edrpou.strip() and ":" not in edrpou:
+            self.edrpou = self.edrpou.replace(" ", "")
 
         super(Company, self).save(*args, **kwargs)
 

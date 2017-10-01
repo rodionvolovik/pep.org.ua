@@ -114,10 +114,11 @@ class BeneficiariesMatchingAdmin(admin.ModelAdmin):
         "person_readable",
         "is_family_member",
         "declarations_readable",
+        "type_of_connection",
         "pep_company_information_readable",
         "edrpou_match",
         "candidates",
-        "status"
+        "status",
     )
 
     def person_readable(self, obj):
@@ -141,7 +142,7 @@ class BeneficiariesMatchingAdmin(admin.ModelAdmin):
     declarations_readable.short_description = 'Декларації'
     declarations_readable.allow_tags = True
 
-    list_filter = ("status",)
+    list_filter = ("status", "type_of_connection")
     list_editable = ("status", "edrpou_match")
     search_fields = (
         'pep_company_information',

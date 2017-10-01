@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import re
 
 from django.core.management.base import BaseCommand
 from django.utils.translation import activate
@@ -38,6 +37,16 @@ class Command(BaseCommand):
             default=False,
             help='Connect beneficiar owners to companies for real',
         )
+
+    def get_latest_declaration_record(self, ownership):
+        def key_fun(rec):
+            return rec["year_declared"], rec.get("is_fixed", False)
+
+        if ownership.pep_company_information:
+            return sorted(
+                ownership.pep_company_information,
+                key=key_fun, reverse=True
+            )[0]
 
     def connect_domestic_companies(self, save_it):
         for ownership in BeneficiariesMatching.objects.filter(status="m"):
@@ -145,6 +154,7 @@ class Command(BaseCommand):
                 self.failed += 1
                 continue
 
+            most_recent_record = self.get_latest_declaration_record(ownership)
             for d in ownership.declarations:
                 try:
                     decl = Declaration.objects.get(pk=d)
@@ -159,7 +169,11 @@ class Command(BaseCommand):
                     continue
 
                 conn, conn_created = self.conn_importer.get_or_create_from_declaration(
-                    person, company, "Бенефіціарний власник", decl)
+                    person, company,
+                    most_recent_record.get("link_type", "Бенефіціарний власник"), decl)
+
+                if most_recent_record.get("percent_of_cost"):
+                    conn.share = most_recent_record["percent_of_cost"]
 
                 if conn_created:
                     self.connections_created += 1
@@ -212,6 +226,7 @@ class Command(BaseCommand):
                 self.failed += 1
                 continue
 
+            most_recent_record = self.get_latest_declaration_record(ownership)
             for d in ownership.declarations:
                 try:
                     decl = Declaration.objects.get(pk=d)
@@ -226,7 +241,11 @@ class Command(BaseCommand):
                     continue
 
                 conn, conn_created = self.conn_importer.get_or_create_from_declaration(
-                    person, company, "Бенефіціарний власник", decl)
+                    person, company,
+                    most_recent_record.get("link_type", "Бенефіціарний власник"), decl)
+
+                if most_recent_record.get("percent_of_cost"):
+                    conn.share = most_recent_record["percent_of_cost"]
 
                 if conn_created:
                     self.connections_created += 1

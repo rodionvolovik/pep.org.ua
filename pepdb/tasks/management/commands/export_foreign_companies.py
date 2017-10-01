@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import json
 import xlsxwriter
 from django.core.management.base import BaseCommand
 from tasks.models import BeneficiariesMatching
@@ -19,8 +18,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        tasks = BeneficiariesMatching.objects.filter(status="n")
-
         keys = [
             "owner_name",
             "company_name_declaration",
@@ -45,28 +42,31 @@ class Command(BaseCommand):
         ]
 
         workbook = xlsxwriter.Workbook(options["target_file"])
-        ws = workbook.add_worksheet()
+        for kind, name in (("f", "Founders"), ("b", "Beneficiaries")):
+            ws = workbook.add_worksheet(name)
 
-        for i, f in enumerate(keys):
-            ws.write(0, i, f)
+            for i, f in enumerate(keys):
+                ws.write(0, i, f)
 
-        row = 1
-        for t in tasks:
-            base_res = {
-                "owner_name": t.person_json["full_name"]
-            }
+            row = 1
+            for t in BeneficiariesMatching.objects.filter(
+                    status="n", type_of_connection=kind):
 
-            for company in t.pep_company_information:
-                res = base_res.copy()
-                res["company_name_declaration"] = company["company_name"]
-                res["company_name_en"] = company["en_name"] or ""
-                res["country"] = company["country"]
-                res["zip"] = company["address"] or ""
-                res["company_code"] = company["beneficial_owner_company_code"]
+                base_res = {
+                    "owner_name": t.person_json["full_name"]
+                }
 
-                for i, f in enumerate(keys):
-                    ws.write(row, i, res.get(f, ""))
+                for company in t.pep_company_information:
+                    res = base_res.copy()
+                    res["company_name_declaration"] = company["company_name"]
+                    res["company_name_en"] = company["en_name"] or ""
+                    res["country"] = company["country"]
+                    res["zip"] = company["address"] or ""
+                    res["company_code"] = company["beneficial_owner_company_code"]
 
-                row += 1
+                    for i, f in enumerate(keys):
+                        ws.write(row, i, res.get(f, ""))
+
+                    row += 1
 
         workbook.close()
