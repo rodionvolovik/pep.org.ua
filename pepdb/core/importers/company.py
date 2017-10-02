@@ -239,6 +239,8 @@ class CompanyImporter(object):
                 return None, created
 
         merger = st.Merger((
+            ("name_uk", st.replace_strategy),
+            ("name_en", st.replace_strategy),
             (".*", st.replace_if_empty_strategy),
         ))
 
