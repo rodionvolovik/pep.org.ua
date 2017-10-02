@@ -7,7 +7,7 @@ from unicodecsv import DictWriter, DictReader
 from cStringIO import StringIO
 
 from django import forms
-from django.contrib import admin, messages
+from django.contrib import admin
 from django.db.models import Q
 from django.conf import settings
 from django.conf.urls import url
@@ -31,7 +31,6 @@ from core.models import (
     ActionLog)
 
 from core.forms import EDRImportForm, ForeignImportForm
-from core.utils import parse_address
 from core.importers.company import CompanyImporter
 from core.importers.company2country import Company2CountryImporter
 from core.universal_loggers import MessagesLogger

@@ -5,7 +5,7 @@ from collections import defaultdict
 from unicodecsv import DictReader
 
 from core.model.exc import CannotResolveRelativeException
-from core.models import Company, Person2Company, Declaration
+from core.models import Company, Declaration
 from core.importers.person2company import Person2CompanyImporter
 from core.universal_loggers import PythonLogger
 
@@ -64,7 +64,6 @@ class Command(BaseCommand):
         self.names_mapping = defaultdict(set)
         importer = Person2CompanyImporter(
             logger=PythonLogger("cli_commands"))
-
 
         # Reading mapping between edrpous of bank branches and
         # edrpou of main branch of the bank
