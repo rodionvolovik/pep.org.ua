@@ -27,7 +27,7 @@ class Command(BaseCommand):
 
         for c in Company.objects.filter(
                 Q(name_en="") | Q(short_name_en="") | Q(name_en__isnull=True) |
-                Q(short_name__isnull=True)):
+                Q(short_name_en__isnull=True)):
             c.save()  # This will invoke translation on the save method
 
         for p2c in Person2Company.objects.filter(
