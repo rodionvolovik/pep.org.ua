@@ -228,7 +228,7 @@ class Company(models.Model, AbstractNode):
 
         if not self.short_name_en:
             t = Ua2EnDictionary.objects.filter(
-                term__iexact=lookup_term(self.short_name_en)).first()
+                term__iexact=lookup_term(self.short_name_uk)).first()
 
             if t and t.translation:
                 self.short_name_en = t.translation
