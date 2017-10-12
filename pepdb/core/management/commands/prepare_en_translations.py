@@ -45,6 +45,9 @@ class Command(BaseCommand):
         for x in [not_translated_regions, not_translated_positions,
                   not_translated_offices]:
             for term in x:
+                if not x:
+                    continue
+
                 try:
                     Ua2EnDictionary.objects.create(
                         term=term
