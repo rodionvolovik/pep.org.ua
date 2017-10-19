@@ -929,7 +929,7 @@ msgid "Результати пошуку"
 msgstr "Search results"
 
 #: core/templates/countries.jinja:19
-msgid "Пошук по країнам"
+msgid "Пошук по країнах"
 msgstr "Country search"
 
 #: core/templates/countries.jinja:23 core/templates/countries.jinja.py:27

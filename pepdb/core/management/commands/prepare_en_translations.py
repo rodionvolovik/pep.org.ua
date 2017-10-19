@@ -2,7 +2,8 @@
 from __future__ import unicode_literals
 from django.core.management.base import BaseCommand
 from django.db.utils import IntegrityError
-from core.models import Declaration, Ua2EnDictionary, Company, Person2Company
+from core.models import (
+    Declaration, Ua2EnDictionary, Company, Person2Company, Person)
 from core.utils import lookup_term
 
 
@@ -20,6 +21,8 @@ class Command(BaseCommand):
         not_translated_regions = set()
         not_translated_positions = set()
         not_translated_offices = set()
+        not_translated_cities = set()
+
         for p in Declaration.objects.filter(confirmed="a").all():
             if (lookup_term(p.region_uk) not in en_translations):
                 not_translated_regions.add(lookup_term(p.region_uk))
@@ -29,6 +32,10 @@ class Command(BaseCommand):
 
             if (lookup_term(p.office_uk) not in en_translations):
                 not_translated_offices.add(lookup_term(p.office_uk))
+
+        for p in Person.objects.all():
+            if not p.city_of_birth_en and lookup_term(p.city_of_birth_en) not in en_translations:
+                not_translated_cities.add(lookup_term(p.city_of_birth_uk))
 
         for c in Company.objects.all():
             if not c.name_en and lookup_term(c.name_uk) not in en_translations:
@@ -42,16 +49,17 @@ class Command(BaseCommand):
                     lookup_term(p2c.relationship_type_uk) not in en_translations):
                 not_translated_positions.add(lookup_term(p2c.relationship_type_uk))
 
-        for x in [not_translated_regions, not_translated_positions,
-                  not_translated_offices]:
-            for term in x:
-                if not x:
-                    continue
+        x = (not_translated_regions | not_translated_positions |
+             not_translated_offices | not_translated_cities)
 
-                try:
-                    Ua2EnDictionary.objects.create(
-                        term=term
-                    )
-                except IntegrityError:
-                    # No need to turn alarm on, if the value is already in db
-                    pass
+        for term in x:
+            if not term:
+                continue
+
+            try:
+                Ua2EnDictionary.objects.create(
+                    term=term
+                )
+            except IntegrityError:
+                # No need to turn alarm on, if the value is already in db
+                pass

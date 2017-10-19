@@ -1546,26 +1546,6 @@ tr.additional_hidden > td {
   top: auto;
   bottom: 19px;
 }
-.search-by-country-page .dropdown.country-list {
-  margin-top: 30px;
-  margin-bottom: 20px;
-}
-.search-by-country-page .dropdown.country-list button {
-  min-width: 200px;
-  text-align: left;
-}
-.search-by-country-page .dropdown.country-list .dropdown-menu > li > a {
-  padding: 7px 20px;
-}
-.search-by-country-page .dropdown.country-list .dropdown-menu > li > a:focus,
-.search-by-country-page .dropdown.country-list .dropdown-menu > li > a:hover {
-  color: white;
-  text-decoration: none;
-  background-color: #355383;
-  -webkit-box-shadow: inset 0px 0px 9px 1px rgba(25, 54, 98, 0.75);
-  -moz-box-shadow: inset 0px 0px 9px 1px rgba(25, 54, 98, 0.75);
-  box-shadow: inset 0px 0px 9px 1px rgba(25, 54, 98, 0.75);
-}
 .company-profile .pep-name {
   font-size: 22px;
 }
@@ -1747,4 +1727,13 @@ tr.additional_hidden > td {
 .tooltip-hilite {
   font-weight: bold;
   text-decoration: underline;
+}
+
+.country-list {
+  min-width: 200px;
+  text-align: left;
+}
+
+#country-selection-form {
+  margin: 30px 0 20px;
 }

@@ -218,4 +218,14 @@ $(function() {
     $(".richtext img, .rich-text img").featherlight({
         targetAttr: "src"
     });
+
+    $(".combobox").combobox();
+
+    $(".country-list").change(function(e) {
+        var s = $(this).find(":selected").data("url");
+
+        if (typeof(s) !== "undefined") {
+            window.location = s;
+        }
+    });
 });

@@ -227,6 +227,7 @@ PIPELINE = {
                 'css/vis.css',
                 'css/style.css',
                 'css/graph.css',
+                'css/bootstrap-combobox.css',
             ),
             'output_filename': 'css/merged.css',
             'extra_context': {
@@ -255,6 +256,7 @@ PIPELINE = {
                 "bower_components/featherlight/src/featherlight.js",
                 "bower_components/jquery.nicescroll/jquery.nicescroll.min.js",
                 "js/ripples.min.js",
+                "js/bootstrap-combobox.js",
                 "js/vis-network.min.js",
                 "js/pep.js",
                 "js/graph.js",

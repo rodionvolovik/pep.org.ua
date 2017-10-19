@@ -316,10 +316,10 @@ def countries(request, sources=("persons", "companies"), country_id=None):
         country = get_object_or_404(Country, iso2=country_id)
 
     used_countries = Country.objects.annotate(
-        persons_count=Count("person2country"),
-        companies_count=Count("company2country")).annotate(
+        persons_count=Count("person2country", distinct=True),
+        companies_count=Count("company2country", distinct=True)).annotate(
         usages=F("persons_count") + F("companies_count")).exclude(
-        usages=0, iso2="").order_by("-usages")
+        usages=0).exclude(iso2="").order_by("-usages")
 
     params = {
         "used_countries": used_countries,

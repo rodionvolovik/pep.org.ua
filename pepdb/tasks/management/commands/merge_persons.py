@@ -43,7 +43,7 @@ class Command(BaseCommand):
         def _fetch_person(task, pk):
             try:
                 return Person.objects.get(pk=pk)
-            except person.DoesNotExist:
+            except Person.DoesNotExist:
                 self.stderr.write(
                     "\tperson with id {} doesn't exist, skipping".format(pk)
                 )
