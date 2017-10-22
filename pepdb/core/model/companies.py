@@ -398,7 +398,7 @@ class Company(models.Model, AbstractNode):
             # existing method that handles both directions of relations
             for c in self.all_related_companies["all"]:
                 connections.append({
-                    "relation": unicode(ugettext_lazy(c.rtype)),
+                    "relation": unicode(ugettext_lazy(c.rtype or "")),
                     "node": c.get_node_info(False),
                     "model": c.connection._meta.model_name,
                     "pk": c.connection.pk

@@ -1,29 +1,40 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
+from django.core.management.base import BaseCommand
+
 from core.models import (
     Person, Person2Company, Person2Country, Person2Person, Declaration)
 from tasks.models import PersonDeduplication
-from django.db import transaction
+from django.db import connection
 
 
 FIELDS_TO_CONCATENATE = [
-    "reputation_assets",
-    "reputation_sanctions",
-    "reputation_crimes",
-    "reputation_manhunt",
-    "reputation_convictions",
-    "wiki"
+    "reputation_assets_en",
+    "reputation_sanctions_en",
+    "reputation_crimes_en",
+    "reputation_manhunt_en",
+    "reputation_convictions_en",
+    "wiki_en",
+    "reputation_assets_uk",
+    "reputation_sanctions_uk",
+    "reputation_crimes_uk",
+    "reputation_manhunt_uk",
+    "reputation_convictions_uk",
+    "wiki_uk",
+
+    "also_known_as_uk",
+    "also_known_as_en",
 ]
 
 FIELDS_TO_UPDATE = [
     "is_pep",
     "photo",
     "dob",
-    "city_of_birth",
+    "city_of_birth_uk",
+    "city_of_birth_en",
 ]
+
 
 class Command(BaseCommand):
     help = ('Takes finished tasks for persons deduplication and applies '
@@ -61,6 +72,7 @@ class Command(BaseCommand):
                 if options["real_run"]:
                     person.delete()
 
+        cursor = connection.cursor()
         for task in PersonDeduplication.objects.filter(
                 applied=False).exclude(status="p"):
 
@@ -113,7 +125,7 @@ class Command(BaseCommand):
                     donor_val = getattr(donor, field)
                     master_val = getattr(master, field)
 
-                    if donor_val.strip():
+                    if donor_val and donor_val.strip():
                         setattr(master, field, master_val + donor_val)
 
                         self.stdout.write("\tconcatenating content of {}".format(
@@ -172,30 +184,20 @@ class Command(BaseCommand):
                 for p2p in Person2Person.objects.filter(
                         from_person_id=donor.pk):
 
-                    if Person2Person.objects.filter(
-                            from_person_id=master.pk,
-                            to_person_id=p2p.to_person_id).count() == 0:
-                        self.stdout.write("\tchanging link {}".format(p2p))
+                    self.stdout.write("\tchanging link {}".format(p2p))
 
-                        if options["real_run"]:
-                            p2p.from_person_id = master.pk
-                            p2p.save()
-                    else:
-                        self.stdout.write("\tignoring link {}".format(p2p))
+                    if options["real_run"]:
+                        p2p.from_person_id = master.pk
+                        p2p.save()
 
                 for p2p in Person2Person.objects.filter(
                         to_person_id=donor.pk):
 
-                    if Person2Person.objects.filter(
-                            to_person_id=master.pk,
-                            from_person_id=p2p.from_person_id).count() == 0:
-                        self.stdout.write("\tchanging link {}".format(p2p))
+                    self.stdout.write("\tchanging link {}".format(p2p))
 
-                        if options["real_run"]:
-                            p2p.to_person_id = master.pk
-                            p2p.save()
-                    else:
-                        self.stdout.write("\tignoring link {}".format(p2p))
+                    if options["real_run"]:
+                        p2p.to_person_id = master.pk
+                        p2p.save()
 
                 # Merging declarations
                 for decl in Declaration.objects.filter(
@@ -212,8 +214,9 @@ class Command(BaseCommand):
                             decl.person = master
                             decl.save()
                     else:
+                        decl.delete()
                         self.stdout.write(
-                            "\t not switching declaration {}".format(decl))
+                            "\t not switching declaration {}, deleting it".format(decl))
 
                 # TODO: Move also DeclarationExtra
 
@@ -231,7 +234,7 @@ class Command(BaseCommand):
                     # Kill the donor!
                     # Raw SQL because otherwise django will also kill the old
                     # connections of donor person, which are stuck for some reason.
-                    Person.objects.raw(
+                    cursor.execute(
                         "DELETE from core_person WHERE id=%s", [donor.pk]
                     )
 
