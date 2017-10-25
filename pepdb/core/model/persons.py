@@ -65,7 +65,7 @@ class Person(models.Model, AbstractNode):
     reputation_sanctions = RedactorField(
         "Наявність санкцій", blank=True)
     reputation_crimes = RedactorField(
-        "Кримінальні впровадження", blank=True)
+        "Кримінальні провадження", blank=True)
     reputation_manhunt = RedactorField(
         "Перебування у розшуку", blank=True)
     reputation_convictions = RedactorField(

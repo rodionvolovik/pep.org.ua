@@ -129,7 +129,7 @@ $(function() {
             return rgb_to_hex(new_rgb); //and back to hex
         }
 
-        function wordwrap(text,limit) {
+        function wordwrap(text, limit) {
             var words = text.split(" ");
             var lines = [""];
             for (var i = 0; i < words.length; i++) {
@@ -145,7 +145,7 @@ $(function() {
             return lines.join("\n").trim();
         }
 
-        function add_node(node, parent) {
+        function add_node(node, parent, group) {
             var subnodes = [],
                 newedges = [],
                 node_id = get_neutral_id(node),
@@ -161,7 +161,8 @@ $(function() {
                     level: 1,
                     color: '#ffcc01',
                     shape: 'star',
-                    _node: node
+                    _node: node,
+                    group: group
                 }
 
                 if (typeof(parent) !== "undefined") {
@@ -182,7 +183,8 @@ $(function() {
                 var edge = node.connections[i],
                     new_child_node = add_node(
                         edge.node,
-                        subnode
+                        subnode,
+                        group
                     ),
                     edge_id = get_neutral_id(edge);
 
@@ -212,7 +214,7 @@ $(function() {
                         return;
                     }
                 }
-                add_node(data, node);
+                add_node(data, node, url);
             });
         }
 
@@ -240,7 +242,20 @@ $(function() {
                     hoverConnectedEdges: true,
                     selectConnectedEdges: true,
                 },
-            },
+                layout: {
+                    improvedLayout: true
+                },
+                physics: {
+                    stabilization: {
+                        onlyDynamicEdges: true,
+                        iterations: 330,
+                    },
+                    barnesHut: {
+                        springLength: 200
+                    },
+                    timestep: 0.3
+                }
+            }
 
             nodes = new vis.DataSet(),
             edges = new vis.DataSet(),

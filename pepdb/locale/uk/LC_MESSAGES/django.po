@@ -1006,7 +1006,7 @@ msgid "Репутація:"
 msgstr ""
 
 #: core/templates/person.jinja:200 core/templates/person.jinja.py:224
-msgid "Кримінальні впровадження"
+msgid "Кримінальні провадження"
 msgstr ""
 
 #: core/templates/person.jinja:204 core/templates/person.jinja.py:228

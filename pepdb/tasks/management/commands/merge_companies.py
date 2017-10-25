@@ -138,7 +138,7 @@ class Command(BaseCommand):
                     master_val = getattr(master, field)
 
                     if donor_val and donor_val.strip():
-                        setattr(master, field, master_val + donor_val)
+                        setattr(master, field, master_val + " " + donor_val)
 
                         self.stdout.write("\tconcatenating content of {}".format(
                             field))
