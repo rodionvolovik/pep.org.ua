@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.core.management.base import BaseCommand
 from django.db.models import Q
-from core.models import Declaration, Ua2EnDictionary, Company, Person2Company
+from core.models import Declaration, Ua2EnDictionary, Company, Person2Company, Person
 from core.utils import lookup_term
 
 
@@ -34,3 +34,8 @@ class Command(BaseCommand):
                 Q(relationship_type_en="") |
                 Q(relationship_type_en__isnull=True)):
             p2c.save()  # This will invoke translation on the save method
+
+        for p in Person.objects \
+                .exclude(Q(city_of_birth_uk="") | Q(city_of_birth_uk__isnull=True)) \
+                .filter(Q(city_of_birth_en="") | Q(city_of_birth_en__isnull=True)):
+            p.save()  # This will invoke translation on the save method

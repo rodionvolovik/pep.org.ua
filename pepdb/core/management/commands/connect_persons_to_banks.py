@@ -149,7 +149,7 @@ class Command(BaseCommand):
 
                         for bank in bank_matches:
                             conn, created = importer.get_or_create_from_declaration(
-                                person, bank, "Клієнт", d)
+                                person, bank, "Клієнт банку", d)
 
                             if created:
                                 created_records += 1

@@ -1,5 +1,5 @@
 {% extends "base.jinja" %}
-{% from "macros/_connections.jinja" import render_connection, render_related_person with context %}
+{% from "macros/_connections.jinja" import render_connection, render_related_person, render_person_companies with context %}
 {% block body_class %}not-front profile-page person-profile page{% endblock %}
 
 {% set last_workplace = person.translated_last_workplace %}
@@ -328,32 +328,14 @@
                 {% include "_declaration.jinja" %}
             {% endif %}
 
+            {# TODO: remove at all? #}
             {% if LANGUAGE_CODE == "en" %}
                 {% if assets or person.reputation_assets_en %}
                     <div id="assets" class="sub box">
                         <h3>{{ _("Статки:") }}</h3>
                         <div class="printWrap">
-                            {% for asset in assets %}
-                                <div class="panel panel-default">
-                                    <div class="panel-body" itemscope itemtype="http://schema.org/Organization" itemprop="affiliation">
-                                        <a href="{{ asset.to_company.get_absolute_url() }}"><span itemprop="name">{{ asset.to_company }}</span></a>
-                                        {% if asset.to_company.edrpou %}
-                                        , {{ _("ЄДРПОУ") }} <span itemprop="taxID">{{ asset.to_company.edrpou }}</span>
-                                        {% endif%}
-                                    </div>
-                                    <div class="panel-footer">
-                                        {{ asset.relationship_type }}
-            
-                                        {% if asset.has_additional_info %}
-                                        <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalAsset-{{ loop.index }}">
-                                            <i class="fa fa-info-circle info-gray"></i>
-                                        </a>
-                                        {% endif %}
-                                    </div>
-                                </div>                
-                                
-                                {{ render_connection(asset, "modalAsset-{}".format(loop.index)) }}
-                            {% endfor %}
+                            {{ render_person_companies(assets, "Asset") }}
+
                             {% if person.reputation_assets %}
                                 {{ person.reputation_assets|richtext }}
                             {% endif %}
@@ -365,27 +347,8 @@
                     <div id="assets" class="sub box">
                         <h3>{{ _("Статки:") }}</h3>
                         <div class="printWrap">
-                            {% for asset in assets %}
-                                <div class="panel panel-default">
-                                    <div class="panel-body" itemscope itemtype="http://schema.org/Organization" itemprop="affiliation">
-                                        <a href="{{ asset.to_company.get_absolute_url() }}"><span itemprop="name">{{ asset.to_company }}</span></a>
-                                        {% if asset.to_company.edrpou %}
-                                        , {{ _("ЄДРПОУ") }} <span itemprop="taxID">{{ asset.to_company.edrpou }}</span>
-                                        {% endif%}
-                                    </div>
-                                    <div class="panel-footer">
-                                        {{ asset.relationship_type }}
-            
-                                        {% if asset.has_additional_info %}
-                                        <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalAsset-{{ loop.index }}">
-                                            <i class="fa fa-info-circle info-gray"></i>
-                                        </a>
-                                        {% endif %}
-                                    </div>
-                                </div>                
-                                
-                                {{ render_connection(asset, "modalAsset-{}".format(loop.index)) }}
-                            {% endfor %}
+                            {{ render_person_companies(assets, "Asset") }}
+
                             {% if person.reputation_assets_uk %}
                                 {{ person.reputation_assets_uk|richtext }}
                             {% endif %}
@@ -398,27 +361,7 @@
                 <div id="related-companies" class="sub box">
                     <h3>{{ _("Пов'язані юридичні особи:") }}</h3>
                     <div class="printWrap">
-                        {% for related_company in related_companies %}
-                            <div class="panel panel-default">
-                                <div class="panel-body" itemscope itemtype="http://schema.org/Organization" itemprop="affiliation">
-                                    <a href="{{ related_company.to_company.get_absolute_url() }}"><span itemprop="name">{{ related_company.to_company }}</span></a>
-                                    {% if related_company.to_company.edrpou %}
-                                    , {{ _("ЄДРПОУ") }} <span itemprop="taxID">{{ related_company.to_company.edrpou }}</span>
-                                    {% endif%}
-                                </div>
-                                <div class="panel-footer">
-                                    {{ related_company.relationship_type }}
-
-                                    {% if related_company.has_additional_info %}
-                                    <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalRelatedCompany-{{ loop.index }}">
-                                        <i class="fa fa-info-circle info-gray"></i>
-                                    </a>
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                            {{ render_connection(related_company, "modalRelatedCompany-{}".format(loop.index)) }}
-                        {% endfor %}
+                        {{ render_person_companies(related_companies, "RelatedCompany") }}
                     </div>
                 </div>
             {% endif %}

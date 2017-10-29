@@ -64,6 +64,8 @@ INSTALLED_APPS = (
     'wagtail.wagtailsearch',
     'wagtail.wagtailredirects',
     'wagtail.wagtailforms',
+    'django_pickling',
+    'cacheops',
 
     'cms_pages',
     'qartez',
@@ -224,6 +226,7 @@ PIPELINE = {
                 'css/animate.css',
                 'css/font-awesome.min.css',
                 'bower_components/featherlight/src/featherlight.css',
+                'css/flag-css.css',
                 'css/vis.css',
                 'css/style.css',
                 'css/graph.css',
@@ -294,6 +297,13 @@ NOCAPTCHA = True
 RECAPTCHA_USE_SSL = True
 
 DECLARATIONS_ENDPOINT = "https://declarations.com.ua/fuzzy_search"
+CACHEOPS_REDIS = "redis://localhost:6379/1"
+
+CACHEOPS = {
+    'core.*': {
+        'ops': 'all', 'timeout': 12 * 60 * 60
+    }
+}
 
 try:
     from local_settings import *

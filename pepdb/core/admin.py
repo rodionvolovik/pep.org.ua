@@ -275,7 +275,7 @@ class PersonAdmin(TranslationAdmin):
                        'publish']}),
 
         (u'Додаткова інформація', {
-            'fields': ['wiki', 'reputation_assets', 'risk_category', 'names']}),
+            'fields': ['wiki', 'wiki_draft', 'reputation_assets', 'risk_category', 'names']}),
 
         (u'Ділова репутація', {
             'fields': ['reputation_sanctions', 'reputation_crimes',
@@ -617,7 +617,7 @@ class DeclarationAdmin(admin.ModelAdmin):
 
     def position_pep(self, obj):
         last_workplace = obj.person.last_workplace
-        if last_workplace and last_workplace["position"] != "Клієнт":
+        if last_workplace and last_workplace["position"] != "Клієнт банку":
             return '%s @ %s,<br/><span style="color: silver">%s</span>' % (
                 last_workplace["position"],
                 last_workplace["company"],

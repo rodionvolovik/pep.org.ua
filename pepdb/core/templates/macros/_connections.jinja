@@ -9,15 +9,15 @@
                     </div>
                     <div class="modal-body">
                         {% if connection.date_established %}
-                            <p><b>{{ _("Зв'язок почався: ") }}</b>{{ connection.date_established_human }}</p>
+                            <p><b>{{ _("Зв'язок почався: ") }}</b> {{ connection.date_established_human }}</p>
                         {% endif %}
                                             
                         {% if connection.date_finished %}
-                            <p><b>{{ _("Зв'язок скінчився: ") }}</b>{{ connection.date_finished_human }}</p>
+                            <p><b>{{ _("Зв'язок скінчився: ") }}</b> {{ connection.date_finished_human }}</p>
                         {% endif %}
                                             
                         {% if connection.date_confirmed %}
-                            <p><b>{{ _("Підтверджено: ") }}</b>{{ connection.date_confirmed_human }}</p>
+                            <p><b>{{ _("Підтверджено: ") }}</b> {{ connection.date_confirmed_human }}</p>
                         {% endif %}
 
                         {% if connection.proof_title or connection.proof %}
@@ -67,13 +67,16 @@
         {% else %}
             {% if person.rtype %}{{ _(person.rtype) }},{% endif %}
         {% endif %}
+        {% set countries = person.foreign_citizenship %}
+        {% for country in countries %}
+            <span class="flag flag-{{ country.to_country.iso3|lower }}" title="{{ country.to_country.name }}"></span>
+        {% endfor %}
         {% if person.connection.has_additional_info %}
             <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalPerson-{{ person.pk }}">
                <i class="fa fa-info-circle info-gray"></i>
             </a>
         {% endif %}
         {% if person.dob %}<meta itemprop="birthDate" content="{{ person.dob }} "/>{% endif %}
-
 
         {% if type != "worked" %}
             {% set last_workplace = person.translated_last_workplace %}
@@ -124,6 +127,10 @@
         <div class="panel panel-default">
             <div class="panel-body" itemscope itemtype="http://schema.org/Organization" itemprop="affiliation">
                 <a href="{{ company.get_absolute_url() }}"><span itemprop="name">{{ company }}</span></a>
+                {% set countries = company.foreign_registration %}
+                {% for country in countries %}
+                    <span class="flag flag-{{ country.to_country.iso3|lower }}" title="{{ country.to_country.name }}"></span>
+                {% endfor %}
             </div>
             <div class="panel-footer">
                 {{ company.connection.relationship_type }}
@@ -136,5 +143,37 @@
         </div>
 
         {{ render_connection(company.connection, "modal{}-{}".format(prefix, loop.index)) }}
+    {% endfor %}
+{% endmacro %}
+
+{% macro render_person_companies(companies, prefix) %}
+    {% for company in companies %}
+        <div class="panel panel-default">
+            <div class="panel-body" itemscope itemtype="http://schema.org/Organization" itemprop="affiliation">
+                <a href="{{ company.to_company.get_absolute_url() }}"><span itemprop="name">{{ company.to_company }}</span></a>
+                {% if company.to_company.edrpou %}
+                , {{ _("ЄДРПОУ") }} <span itemprop="taxID">{{ company.to_company.edrpou }}</span>
+                {% endif %}
+                {% if company.share %}
+                , {{ _("Частка") }} {{ "{:2.3f}".format(company.share) }}%
+                {% endif %}
+                {% set countries = company.to_company.foreign_registration %}
+                {% for country in countries %}
+                    <span class="flag flag-{{ country.to_country.iso3|lower }}" title="{{ country.to_country.name }}"></span>
+                {% endfor %}
+                {% if company.declarations %}<span class="label label-danger">{{ _("Інформація з декларації") }}</span>{% endif %}
+            </div>
+            <div class="panel-footer">
+                {{ company.relationship_type }}
+
+                {% if company.has_additional_info %}
+                <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modal{{ prefix }}-{{ loop.index }}">
+                    <i class="fa fa-info-circle info-gray"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        {{ render_connection(company, "modal{}-{}".format(prefix, loop.index)) }}
     {% endfor %}
 {% endmacro %}

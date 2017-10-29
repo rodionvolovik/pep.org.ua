@@ -18,7 +18,8 @@ import select2.fields
 import select2.models
 
 from core.model.base import AbstractNode
-from core.utils import render_date, parse_fullname
+from core.model.translations import Ua2EnDictionary
+from core.utils import render_date, lookup_term, parse_fullname
 from core.model.declarations import Declaration
 
 # to_*_dict methods are used to convert two main entities that we have, Person
@@ -81,6 +82,7 @@ class Person(models.Model, AbstractNode):
         "Company", through="Person2Company")
 
     wiki = RedactorField("Вікі-стаття", blank=True)
+    wiki_draft = RedactorField("Чернетка вікі-статті", blank=True)
     names = models.TextField("Варіанти написання імені", blank=True)
 
     also_known_as = models.TextField("Інші імена", blank=True)
@@ -143,8 +145,8 @@ class Person(models.Model, AbstractNode):
             .exclude(
                 date_finished__isnull=True,  # AND!
                 date_established__isnull=True) \
-            .exclude(relationship_type_uk="Клієнт") \
-            .select_related("to_company") \
+            .exclude(relationship_type_uk="Клієнт банку") \
+            .prefetch_related("to_company") \
             .only(
                 "to_company__short_name_uk", "to_company__name_uk",
                 "to_company__short_name_en", "to_company__name_en",
@@ -159,8 +161,8 @@ class Person(models.Model, AbstractNode):
         # In contrast with previous query it'll also return those positions
         # where date_finished and date_established == null.
         qs = self.person2company_set.order_by(
-            "-is_employee", "-date_finished").select_related("to_company") \
-            .exclude(relationship_type_uk="Клієнт") \
+            "-is_employee", "-date_finished").prefetch_related("to_company") \
+            .exclude(relationship_type_uk="Клієнт банку") \
             .only(
                 "to_company__short_name_uk", "to_company__name_uk",
                 "to_company__short_name_en", "to_company__name_en",
@@ -253,7 +255,7 @@ class Person(models.Model, AbstractNode):
         # djangoproject.com/en/1.8/ref/models/database-functions/#coalesce
         the_past = datetime.datetime.now() - datetime.timedelta(days=10 * 365)
 
-        timeline = self.person2company_set.select_related(
+        timeline = self.person2company_set.prefetch_related(
             "to_company").filter(is_employee=True).annotate(
                 fixed_date_established=Coalesce(
                     'date_established', Value(the_past))
@@ -263,7 +265,7 @@ class Person(models.Model, AbstractNode):
 
     @property
     def assets(self):
-        return self.person2company_set.select_related("to_company").filter(
+        return self.person2company_set.prefetch_related("to_company").filter(
             is_employee=False,
             relationship_type_uk__in=(
                 "Член центрального статутного органу",
@@ -283,35 +285,17 @@ class Person(models.Model, AbstractNode):
     def all_related_companies(self):
         # TODO: unify output format with all_related_persons
         # TODO: adjust name to reflect that it's only a subset of companies
-        companies = self.person2company_set.select_related(
+        companies = self.person2company_set.prefetch_related(
             "to_company").filter(is_employee=False)
 
-        assets = []
-        related = []
-        for c in companies:
-            if c.relationship_type_uk.lower() in (
-                    "член центрального статутного органу",
-                    "повірений у справах",
-                    "засновник/учасник",
-                    "колишній засновник/учасник",
-                    "бенефіціарний власник",
-                    "номінальний власник",
-                    "номінальний директор",
-                    "фінансові зв'язки",
-                    "секретар",  # ???
-                    "керуючий",
-                    "контролер"):
-                assets.append(c)
-            else:
-                related.append(c)
-
-        return assets, related
+        # TODO: remove at all?
+        return [], companies
 
     @property
     def all_related_persons(self):
         related_persons = [
             (i.to_relationship_type, i.from_relationship_type, i.to_person, i)
-            for i in self.to_persons.select_related("to_person").defer(
+            for i in self.to_persons.prefetch_related("to_person").defer(
                 "to_person__reputation_assets",
                 "to_person__reputation_sanctions",
                 "to_person__reputation_crimes",
@@ -324,7 +308,7 @@ class Person(models.Model, AbstractNode):
         ] + [
             (i.from_relationship_type, i.to_relationship_type,
              i.from_person, i)
-            for i in self.from_persons.select_related("from_person").defer(
+            for i in self.from_persons.prefetch_related("from_person").defer(
                 "from_person__reputation_assets",
                 "from_person__reputation_sanctions",
                 "from_person__reputation_crimes",
@@ -393,16 +377,16 @@ class Person(models.Model, AbstractNode):
 
         d["related_persons"] = [
             i.to_dict()
-            for i in self.to_persons.select_related("to_person")] + [
+            for i in self.to_persons.prefetch_related("to_person")] + [
             i.to_dict_reverse()
-            for i in self.from_persons.select_related("from_person")
+            for i in self.from_persons.prefetch_related("from_person")
         ]
         d["related_countries"] = [
             i.to_dict()
-            for i in self.person2country_set.select_related("to_country")]
+            for i in self.person2country_set.prefetch_related("to_country")]
         d["related_companies"] = [
             i.to_company_dict()
-            for i in self.person2company_set.select_related("to_company")]
+            for i in self.person2company_set.prefetch_related("to_company")]
         d["declarations"] = [
             i.to_dict()
             for i in Declaration.objects.filter(
@@ -473,6 +457,12 @@ class Person(models.Model, AbstractNode):
         deactivate()
         return url
 
+    # TODO: Request in bulk in all_related_persons?
+    @property
+    def foreign_citizenship(self):
+        return self.person2country_set.prefetch_related("to_country").filter(
+            relationship_type__in=["citizenship", "registered_in"]).exclude(to_country__iso2="UA")
+
     @property
     def url_uk(self):
         return settings.SITE_URL + self.localized_url("uk")
@@ -497,6 +487,13 @@ class Person(models.Model, AbstractNode):
             self.also_known_as_en = translitua(self.also_known_as_uk)
         else:
             self.also_known_as_en = ""
+
+        if self.city_of_birth_uk and not self.city_of_birth_en:
+            t = Ua2EnDictionary.objects.filter(
+                term__iexact=lookup_term(self.city_of_birth_uk)).first()
+
+            if t and t.translation:
+                self.city_of_birth_en = t.translation
 
         super(Person, self).save(*args, **kwargs)
 
@@ -554,7 +551,7 @@ class Person(models.Model, AbstractNode):
                     "pk": p.connection.pk
                 })
 
-            companies = self.person2company_set.select_related("to_company")
+            companies = self.person2company_set.prefetch_related("to_company")
             for c in companies:
                 connections.append({
                     "relation": unicode(c.relationship_type),
@@ -563,7 +560,7 @@ class Person(models.Model, AbstractNode):
                     "pk": c.pk
                 })
 
-            countries = self.person2country_set.select_related("to_country")
+            countries = self.person2country_set.prefetch_related("to_country")
             for c in countries:
                 connections.append({
                     "relation": unicode(c.relationship_type),

@@ -76,6 +76,7 @@ class Person2Person(AbstractRelationship):
         max_length=100,
         blank=True)
 
+    # TODO: Check and drop
     declaration = models.ForeignKey(
         "Declaration", blank=True, null=True,
         verbose_name="Декларація, що підтверджує зв'язок")
@@ -174,6 +175,7 @@ class Person2Company(AbstractRelationship):
         "Керуючий",
         "Контролер",
         "Клієнт",
+        "Клієнт банку",
     ]
 
     from_person = models.ForeignKey("Person")
@@ -292,6 +294,8 @@ class Company2Company(AbstractRelationship):
         _("Колишній співвласник/співзасновник"),
         _("Самостійний структурний підрозділ"),
         _("Головне підприємство"),
+        _("Секретар"),
+        _("Директор"),
     ]
 
     _relationships_mapping = {
@@ -320,6 +324,8 @@ class Company2Company(AbstractRelationship):
         _("Член наглядового органу)"): _("Підконтрольна"),
         _("Самостійний структурний підрозділ"): _("Головне підприємство"),
         _("Головне підприємство"): _("Самостійний структурний підрозділ"),
+        _("Секретар"): _("Клієнт"),
+        _("Директор"): _("Клієнт"),
     }
 
     from_company = models.ForeignKey("Company", related_name="to_companies")

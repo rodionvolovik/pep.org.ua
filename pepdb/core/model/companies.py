@@ -165,17 +165,17 @@ class Company(models.Model, AbstractNode):
 
         d["related_persons"] = [
             i.to_person_dict()
-            for i in self.from_persons.select_related("from_person")]
+            for i in self.from_persons.prefetch_related("from_person")]
 
         d["related_countries"] = [
             i.to_dict()
-            for i in self.from_countries.select_related("to_country")]
+            for i in self.from_countries.prefetch_related("to_country")]
 
         d["related_companies"] = [
             i.to_dict()
-            for i in self.to_companies.select_related("to_company")] + [
+            for i in self.to_companies.prefetch_related("to_company")] + [
             i.to_dict_reverse()
-            for i in self.from_companies.select_related("from_company")
+            for i in self.from_companies.prefetch_related("from_company")
         ]
 
         suggestions = []
@@ -256,7 +256,7 @@ class Company(models.Model, AbstractNode):
     def all_related_persons(self):
         related_persons = [
             (i.relationship_type_uk, i.from_person, i)
-            for i in self.from_persons.select_related("from_person").defer(
+            for i in self.from_persons.prefetch_related("from_person").defer(
                 "from_person__reputation_assets",
                 "from_person__reputation_crimes",
                 "from_person__reputation_manhunt",
@@ -308,7 +308,7 @@ class Company(models.Model, AbstractNode):
     def all_related_countries(self):
         related_countries = [
             (i.relationship_type, i.to_country, i)
-            for i in self.from_countries.select_related("to_country")
+            for i in self.from_countries.prefetch_related("to_country")
         ]
 
         res = defaultdict(list)
@@ -324,11 +324,17 @@ class Company(models.Model, AbstractNode):
 
         return res
 
+    # TODO: Request in bulk in all_related_companies?
+    @property
+    def foreign_registration(self):
+        return self.from_countries.prefetch_related("to_country").filter(
+            relationship_type="registered_in").exclude(to_country__iso2="UA")
+
     @property
     def all_related_companies(self):
         related_companies = [
             (i.relationship_type, i.to_company, i)
-            for i in self.to_companies.select_related("to_company").defer(
+            for i in self.to_companies.prefetch_related("to_company").defer(
                 "to_company__wiki",
                 "to_company__other_founders",
                 "to_company__other_recipient",
@@ -339,7 +345,7 @@ class Company(models.Model, AbstractNode):
             )
         ] + [
             (i.reverse_relationship_type, i.from_company, i)
-            for i in self.from_companies.select_related("from_company").defer(
+            for i in self.from_companies.prefetch_related("from_company").defer(
                 "from_company__wiki",
                 "from_company__other_founders",
                 "from_company__other_recipient",
@@ -404,7 +410,7 @@ class Company(models.Model, AbstractNode):
                     "pk": c.connection.pk
                 })
 
-            countries = self.from_countries.select_related("to_country")
+            countries = self.from_countries.prefetch_related("to_country")
             for c in countries:
                 connections.append({
                     "relation": unicode(
