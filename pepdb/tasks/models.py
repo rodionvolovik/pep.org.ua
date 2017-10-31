@@ -5,8 +5,17 @@ from django.db import models
 from django.contrib.auth.models import User
 from core.models import Person
 from jsonfield import JSONField
+from jsonfield.encoder import JSONEncoder
 from django.contrib.postgres.fields import ArrayField
 
+
+# Custom dump kwargs for third party lib for jsonfield, uses ensure_ascii=False
+# to enable search of cyrillic in the db
+dump_kwargs = {
+    'cls': JSONEncoder,
+    'separators': (',', ':'),
+    'ensure_ascii': False
+}
 
 class AbstractTask(models.Model):
     user = models.ForeignKey(
@@ -96,6 +105,7 @@ class BeneficiariesMatching(AbstractTask):
     TYPE_CHOICES = (
         ("b", "Бенефіціарний власник"),
         ("f", "Засновник"),
+        ("s", "Акціонер"),
     )
 
     status = models.CharField(
@@ -118,7 +128,8 @@ class BeneficiariesMatching(AbstractTask):
         "Ключ компанії", max_length=500)
 
     person = models.IntegerField("Власник в реєстрі PEP")
-    person_json = JSONField(verbose_name="Власник в реєстрі PEP", null=True)
+    person_json = JSONField(verbose_name="Власник в реєстрі PEP", null=True, dump_kwargs=dump_kwargs)
+
     is_family_member = models.BooleanField("Член родини")
 
     declarations = ArrayField(
@@ -128,8 +139,8 @@ class BeneficiariesMatching(AbstractTask):
         blank=True
     )
 
-    pep_company_information = JSONField("Записи компанії, згруповані разом")
-    candidates_json = JSONField(verbose_name="Кандидати на матчінг", null=True)
+    pep_company_information = JSONField("Записи компанії, згруповані разом", dump_kwargs=dump_kwargs)
+    candidates_json = JSONField(verbose_name="Кандидати на матчінг", null=True, dump_kwargs=dump_kwargs)
     edrpou_match = models.CharField(
         "Знайдена компанія", max_length=15, null=True, blank=True)
 

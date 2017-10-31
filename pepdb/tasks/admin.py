@@ -1,5 +1,8 @@
 # coding: utf-8
 from __future__ import unicode_literals
+
+import json
+
 from django.contrib import admin
 from django.template.loader import render_to_string
 
@@ -145,7 +148,7 @@ class BeneficiariesMatchingAdmin(admin.ModelAdmin):
     list_filter = ("status", "type_of_connection")
     list_editable = ("status", "edrpou_match")
     search_fields = (
-        'pep_company_information',
+        'pep_company_information', 'person_json'
     )
 
     ordering = ("timestamp",)

@@ -1,5 +1,5 @@
 {% extends "base.jinja" %}
-{% from "macros/_connections.jinja" import render_connection, render_related_person, render_person_companies with context %}
+{% from "macros/_connections.jinja" import render_connection, render_related_persons, render_person_companies with context %}
 {% block body_class %}not-front profile-page person-profile page{% endblock %}
 
 {% set last_workplace = person.translated_last_workplace %}
@@ -290,9 +290,7 @@
                                     <li>
                                         <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Родина та близькі особи") }}</span>
                                         <ul class="h">
-                                            {% for rp in related_persons.family %}
-                                                {{ render_related_person(rp, "family") }}
-                                            {% endfor %}
+                                            {{ render_related_persons(related_persons.family, "family") }}
                                         </ul>
                                     </li>
                                     {% endif %}
@@ -300,9 +298,7 @@
                                     <li>
                                         <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Персональні зв'язки") }}</span>
                                         <ul class="h">
-                                            {% for rp in related_persons.personal %}
-                                                {{ render_related_person(rp, "personal") }}
-                                            {% endfor %}
+                                            {{ render_related_persons(related_persons.personal, "personal") }}
                                         </ul>
                                     </li>
                                     {% endif %}
@@ -310,9 +306,7 @@
                                     <li>
                                         <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Ділові зв'язки") }}</span>
                                         <ul class="h">
-                                            {% for rp in related_persons.business %}
-                                                {{ render_related_person(rp, "business") }}
-                                            {% endfor %}
+                                            {{ render_related_persons(related_persons.business, "business") }}
                                         </ul>
                                     </li>
                                     {% endif %}

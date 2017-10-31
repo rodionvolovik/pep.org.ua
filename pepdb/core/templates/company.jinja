@@ -1,5 +1,5 @@
 {% extends "base.jinja" %}
-{% from "macros/_connections.jinja" import render_connection, render_company_persons, render_related_person, render_company_companies with context %}
+{% from "macros/_connections.jinja" import render_connection, render_company_persons, render_related_persons, render_company_companies with context %}
 {% block body_class %}not-front profile-page company-profile page{% endblock %}
 
 {% block page_title %}{{ company.name }} {% endblock %}
@@ -211,9 +211,7 @@
                                         <li>
                                             <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Пов'язані особи") }}</span>
                                             <ul class="h">
-                                                {% for rp in related_persons.rest %}
-                                                    {{ render_related_person(rp, "worked", for_company=True) }}
-                                                {% endfor %}
+                                                {{ render_related_persons(related_persons.rest, "worked", for_company=True) }}
                                             </ul>
                                         </li>
                                         {% endif %}

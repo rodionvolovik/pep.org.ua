@@ -9,6 +9,7 @@ from django.conf import settings
 
 from elasticsearch_dsl import Q
 
+from dateutil.parser import parse as dt_parse
 from core.models import Declaration, Person, Company
 from core.model.exc import CannotResolveRelativeException
 from tasks.elastic_models import EDRPOU
@@ -218,7 +219,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
             '--type',
-            choices=["beneficiary", "founder"],
+            choices=["beneficiary", "founder", "stakeholder"],
             required=True,
             help='Which type of connection to use',
         )
@@ -234,6 +235,10 @@ class Command(BaseCommand):
             type_of_connection = "f"
             section = "step_8"
             code_field = "corporate_rights_company_code"
+        elif options["type"] == "stakeholder":
+            type_of_connection = "s"
+            section = "step_7"
+            code_field = "emitent_ua_company_code"
 
         self.stdout.write("Retrieving ownership information")
         for d in Declaration.objects.filter(
@@ -318,9 +323,35 @@ class Command(BaseCommand):
                                 declaration=d,
                                 type_of_connection=type_of_connection
                             )
-                    else:
+                    elif options["type"] == "beneficiary":
                         rec = base_rec.copy()
                         rec["link_type"] = "Бенефіціарний власник"
+
+                        self.insert_record(
+                            rec,
+                            declaration=d,
+                            type_of_connection=type_of_connection
+                        )
+                    else:
+                        rec = base_rec.copy()
+                        rec["link_type"] = "Акціонер"
+
+                        rec["company_name"] = (
+                            ownership.get("emitent_ua_company_name") or
+                            ownership.get("emitent_ukr_company_name")
+                        )
+
+                        rec["en_name"] = ownership.get("emitent_eng_company_name")
+                        rec["en_address"] = ownership.get("emitent_eng_company_address")
+                        rec["address"] = ownership.get("emitent_ukr_company_address")
+                        if ownership.get("owningDate"):
+                            rec["owning_date"] = dt_parse(ownership.get("owningDate"), dayfirst=True)
+                        rec["cost"] = ownership.get("cost")
+                        rec["amount"] = ownership.get("amount")
+
+                        rec["beneficial_owner_company_code"] = (
+                            ownership.get(code_field) or ownership.get("emitent_eng_company_code")
+                        )
 
                         self.insert_record(
                             rec,

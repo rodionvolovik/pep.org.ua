@@ -1,9 +1,12 @@
 # coding: utf-8
 from __future__ import unicode_literals
 
+from itertools import groupby
+
 from django.utils.safestring import mark_safe
 from django_markdown.utils import markdown as _markdown
 from django_jinja import library
+from jinja2.filters import _GroupTuple
 
 
 @library.filter
@@ -63,3 +66,15 @@ def spaceformat(value):
             return "0" + value
         else:
             return value
+
+
+@library.filter
+def groupbyandsort(value, attribute, reverse):
+    attr = lambda x: getattr(x, attribute)
+
+    grouped = [
+        _GroupTuple(key, list(values)) for key, values
+        in groupby(sorted(value, key=attr), attr)
+    ]
+
+    return sorted(grouped, key=lambda x: len(x.list), reverse=reverse)
