@@ -1,7 +1,7 @@
 # coding: utf-8
 from __future__ import unicode_literals
 import re
-from copy import copy
+from copy import copy, deepcopy
 from collections import defaultdict
 
 from django.db import models
@@ -255,7 +255,7 @@ class Company(models.Model, AbstractNode):
     @property
     def all_related_persons(self):
         related_persons = [
-            (i.relationship_type_uk, i.from_person, i)
+            (i.relationship_type_uk, deepcopy(i.from_person), i)
             for i in self.from_persons.prefetch_related("from_person").defer(
                 "from_person__reputation_assets",
                 "from_person__reputation_crimes",
@@ -277,6 +277,7 @@ class Company(models.Model, AbstractNode):
         for rtp, p, rel in related_persons:
             add_to_rest = True
             p.rtype = rtp
+            print(hasattr(p, "connection"))
             p.connection = rel
 
             if rtp.lower() in [
@@ -307,7 +308,7 @@ class Company(models.Model, AbstractNode):
     @property
     def all_related_countries(self):
         related_countries = [
-            (i.relationship_type, i.to_country, i)
+            (i.relationship_type, deepcopy(i.to_country), i)
             for i in self.from_countries.prefetch_related("to_country")
         ]
 
@@ -333,7 +334,7 @@ class Company(models.Model, AbstractNode):
     @property
     def all_related_companies(self):
         related_companies = [
-            (i.relationship_type, i.to_company, i)
+            (i.relationship_type, deepcopy(i.to_company), i)
             for i in self.to_companies.prefetch_related("to_company").defer(
                 "to_company__wiki",
                 "to_company__other_founders",
@@ -344,7 +345,7 @@ class Company(models.Model, AbstractNode):
                 "to_company__sanctions",
             )
         ] + [
-            (i.reverse_relationship_type, i.from_company, i)
+            (i.reverse_relationship_type, deepcopy(i.from_company), i)
             for i in self.from_companies.prefetch_related("from_company").defer(
                 "from_company__wiki",
                 "from_company__other_founders",

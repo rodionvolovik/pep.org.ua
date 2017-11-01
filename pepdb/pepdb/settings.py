@@ -305,6 +305,8 @@ CACHEOPS = {
     }
 }
 
+CACHEOPS_DEGRADE_ON_FAILURE = True
+
 try:
     from local_settings import *
 except ImportError:

@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from itertools import chain
+from copy import deepcopy
 
 import datetime
 from django.db import models
@@ -294,7 +295,7 @@ class Person(models.Model, AbstractNode):
     @property
     def all_related_persons(self):
         related_persons = [
-            (i.to_relationship_type, i.from_relationship_type, i.to_person, i)
+            (i.to_relationship_type, i.from_relationship_type, deepcopy(i.to_person), i)
             for i in self.to_persons.prefetch_related("to_person").defer(
                 "to_person__reputation_assets",
                 "to_person__reputation_sanctions",
@@ -307,7 +308,7 @@ class Person(models.Model, AbstractNode):
             )
         ] + [
             (i.from_relationship_type, i.to_relationship_type,
-             i.from_person, i)
+             deepcopy(i.from_person), i)
             for i in self.from_persons.prefetch_related("from_person").defer(
                 "from_person__reputation_assets",
                 "from_person__reputation_sanctions",
