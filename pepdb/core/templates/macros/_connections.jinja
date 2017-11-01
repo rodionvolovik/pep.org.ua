@@ -165,7 +165,7 @@
                 {% for country in countries %}
                     <span class="flag flag-{{ country.to_country.iso3|lower }}" title="{{ country.to_country.name }}"></span>
                 {% endfor %}
-                {% if company.declarations %}<span class="label label-danger">{{ _("Інформація з декларації") }}</span>{% endif %}
+                {% if company.declarations %}<span class="label label-danger" style="display: none">{{ _("Інформація з декларації") }}</span>{% endif %}
             </div>
             <div class="panel-footer">
                 {{ company.relationship_type }}
