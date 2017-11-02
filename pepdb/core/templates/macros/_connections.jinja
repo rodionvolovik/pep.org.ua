@@ -157,6 +157,7 @@
                 <a href="{{ company.to_company.get_absolute_url() }}"><span itemprop="name">{{ company.to_company }}</span></a>
                 {% if company.to_company.edrpou %}
                 , {{ _("ЄДРПОУ") }} <span itemprop="taxID">{{ company.to_company.edrpou }}</span>
+                <a href="#link-to-declaration" data-toggle="tooltip" title="Інформація з декларації"> <i class="fa fa-long-arrow-right" aria-hidden="true"></i><i class="fa fa-file-text-o"></i></a>
                 {% endif %}
                 {% if company.share %}
                 , {{ _("Частка") }} {{ "{:2.3f}".format(company.share) }}%
