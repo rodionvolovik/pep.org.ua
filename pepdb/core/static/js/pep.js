@@ -66,8 +66,8 @@ $(function() {
     }
 
     equalheight(".small-profile");
-    
-    $('.tooltip-anchor').tooltip();
+
+    $('.tooltip-anchor, [data-toggle="tooltip"]').tooltip();
     
     $('.pep-tab .nav-tabs a').click(function (e) {
         e.preventDefault();
@@ -77,7 +77,7 @@ $(function() {
     $('.pep-tab a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         equalheight(".small-profile");
         setCountryPaginationHash();
-    })
+    });
     
     $(".as-select .dropdown-menu li a").click(function(){
         $(this).parents(".as-select").find(".dropdown-toggle").html($(this).html() + " <span class=\"caret\"></span>");

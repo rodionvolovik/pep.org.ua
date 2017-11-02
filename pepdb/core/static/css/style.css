@@ -312,7 +312,8 @@ h1 {
 .timeline .tl-date {
   font-family: 'arsenalbold';
 }
-.node {
+.node,
+.tooltip-link {
   cursor: pointer;
 }
 .node circle {

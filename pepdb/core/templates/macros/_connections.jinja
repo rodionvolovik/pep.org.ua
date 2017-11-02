@@ -157,6 +157,7 @@
                 <a href="{{ company.to_company.get_absolute_url() }}"><span itemprop="name">{{ company.to_company }}</span></a>
                 {% if company.to_company.edrpou %}
                 , {{ _("ЄДРПОУ") }} <span itemprop="taxID">{{ company.to_company.edrpou }}</span>
+                {% if company.declarations %}<span class="tooltip-link" data-toggle="tooltip" title="Інформація з декларації"> <i class="fa fa-long-arrow-right" aria-hidden="true"></i><i class="fa fa-file-text-o"></i></span>{% endif %}
                 {% endif %}
                 {% if company.share %}
                 , {{ _("Частка") }} {{ "{:2.3f}".format(company.share) }}%
@@ -165,7 +166,6 @@
                 {% for country in countries %}
                     <span class="flag flag-{{ country.to_country.iso3|lower }}" title="{{ country.to_country.name }}"></span>
                 {% endfor %}
-                {% if company.declarations %}<span class="label label-danger" style="display: none">{{ _("Інформація з декларації") }}</span>{% endif %}
             </div>
             <div class="panel-footer">
                 {{ company.relationship_type }}
