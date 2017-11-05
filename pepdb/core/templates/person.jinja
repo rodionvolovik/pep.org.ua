@@ -1,5 +1,5 @@
 {% extends "base.jinja" %}
-{% from "macros/_connections.jinja" import render_connection, render_related_persons, render_person_companies with context %}
+{% from "macros/_connections.jinja" import render_connection, render_related_persons, render_person_companies, render_related_grouped_persons with context %}
 {% block body_class %}not-front profile-page person-profile page{% endblock %}
 
 {% set last_workplace = person.translated_last_workplace %}
@@ -306,7 +306,7 @@
                                     <li>
                                         <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Ділові зв'язки") }}</span>
                                         <ul class="h">
-                                            {{ render_related_persons(related_persons.business, "business") }}
+                                            {{ render_related_grouped_persons(related_persons.business) }}
                                         </ul>
                                     </li>
                                     {% endif %}

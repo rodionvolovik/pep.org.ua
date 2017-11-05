@@ -47,11 +47,12 @@ def make_unpublished(modeladmin, request, queryset):
 make_unpublished.short_description = "Приховати"
 
 
-class Person2PersonInline(admin.StackedInline):
+class Person2PersonInline(TranslationStackedInline):
     model = Person2Person
     fk_name = "from_person"
     extra = 1
     fields = ["from_relationship_type", ("to_relationship_type", "to_person"),
+              "relationship_details",
               ("date_established", "date_established_details"),
               ("date_finished", "date_finished_details"),
               ("date_confirmed", "date_confirmed_details"),
@@ -69,7 +70,7 @@ class Person2PersonInline(admin.StackedInline):
         return qs.select_related("to_person")
 
 
-class Person2PersonBackInline(admin.StackedInline):
+class Person2PersonBackInline(TranslationStackedInline):
     verbose_name = u"Зворотній зв'язок з іншою персоною"
     verbose_name_plural = u"Зворотні зв'язки з іншими персонами"
     model = Person2Person
@@ -91,6 +92,7 @@ class Person2PersonBackInline(admin.StackedInline):
     fields = [
               ("from_person", "from_relationship_type"),
               "to_relationship_type",
+              "relationship_details",
               ("date_established", "date_established_details"),
               ("date_finished", "date_finished_details"),
               ("date_confirmed", "date_confirmed_details"),
@@ -292,6 +294,14 @@ class PersonAdmin(TranslationAdmin):
 
         return super(PersonAdmin, self).change_view(
             request, object_id, form_url, extra_context=extra_context)
+
+    def add_view(self, request, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['person2person_rels'] = json.dumps(
+            Person2Person._relationships_explained)
+
+        return super(PersonAdmin, self).add_view(
+            request, form_url, extra_context=extra_context)
 
 
 class CompanyAdmin(TranslationAdmin):

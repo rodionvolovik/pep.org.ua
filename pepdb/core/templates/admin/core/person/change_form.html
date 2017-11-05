@@ -29,6 +29,13 @@
 				if (switch_to_first_elem) {
 					trgt.val("");
 				}
+
+				var details_block = el
+					.closest("fieldset")
+					.find("[name$=relationship_details_uk]")
+					.closest(".mt-switcher-container");
+
+				details_block.toggle(el.val() == "ділові зв'язки");
 			}
 
 			$(document.body).on("change", "select[name^=to_persons-][name$=from_relationship_type]", function() {

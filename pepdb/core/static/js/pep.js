@@ -131,7 +131,7 @@ $(function() {
         }
     });
 
-    $('.tree li:has(ul)')
+    $('.tree > ul > li > ul > li:has(ul)')
         .addClass('parent_li')
         .find(' > span')
         .attr('title', 'Collapse this branch');

@@ -13,7 +13,7 @@ from django.forms.models import model_to_dict
 from django.db.models.functions import Coalesce
 from django.db.models import Q, Value
 
-from redactor.fields import RedactorField
+from core.fields import RedactorField
 from translitua import translitua
 import select2.fields
 import select2.models

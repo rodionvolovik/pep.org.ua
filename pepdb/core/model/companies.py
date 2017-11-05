@@ -13,7 +13,7 @@ from django.forms.models import model_to_dict
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
-from redactor.fields import RedactorField
+from core.fields import RedactorField
 
 from core.model.base import AbstractNode
 from core.model.translations import Ua2EnDictionary

@@ -6,6 +6,7 @@ from collections import OrderedDict
 from django.db import models
 from django.utils.translation import ugettext_noop as _
 from django.contrib.postgres.fields import ArrayField
+from core.fields import RedactorField
 
 from core.utils import lookup_term
 from core.model.base import AbstractRelationship
@@ -75,6 +76,10 @@ class Person2Person(AbstractRelationship):
                      map(_, _relationships_explained.keys()))),
         max_length=100,
         blank=True)
+
+    relationship_details = RedactorField(
+        "Детальний опис зв'язку", blank=True
+    )
 
     # TODO: Check and drop
     declaration = models.ForeignKey(
