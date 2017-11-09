@@ -537,7 +537,7 @@ class Person(models.Model, AbstractNode):
             res["description"] = "{position} @ {company}".format(
                 **last_workplace)
         res["kind"] = unicode(
-            ugettext_lazy(self.get_type_of_official_display()) or "")
+            ugettext_lazy(self.get_type_of_official_display() or ""))
 
         if with_connections:
             connections = []

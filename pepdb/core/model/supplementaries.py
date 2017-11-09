@@ -16,6 +16,10 @@ class Document(models.Model):
     hash = models.CharField("Хеш", max_length=40, blank=True)
     comments = models.TextField("Коментарі", blank=True)
 
+    @staticmethod
+    def autocomplete_search_fields():
+        return ("id__iexact", "name__icontains", "source__icontains")
+
     def __unicode__(self):
         return self.name
 

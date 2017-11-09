@@ -89,6 +89,7 @@ urlpatterns += [
 
     url(r'^cms/', include(wagtailadmin_urls)),
     url(r'^wg_search/', include(wagtailsearch_urls)),
+    url(r'^nested_admin/', include('nested_admin.urls')),
 
     # PEP dataset
     url(r'^opendata/persons/(?P<fmt>(json|xml))',

@@ -61,7 +61,7 @@ class CompanyImporter(object):
                 company = Company(
                     edrpou=edrpou,
                     name_uk=obj_dict["name"].strip(),
-                    short_name_uk=obj_dict["short_name"].strip()
+                    short_name_uk=obj_dict.get("short_name", "").strip()
                 )
                 created = True
             except Company.MultipleObjectsReturned:

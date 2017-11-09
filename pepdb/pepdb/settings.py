@@ -65,6 +65,7 @@ INSTALLED_APPS = (
     'wagtail.wagtailredirects',
     'wagtail.wagtailforms',
     'django_pickling',
+    'nested_admin',
     'cacheops',
 
     'cms_pages',

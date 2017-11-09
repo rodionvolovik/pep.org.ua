@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.core.urlresolvers import reverse
+from django.contrib.contenttypes.fields import GenericRelation
 
 from core.utils import render_date
 
@@ -80,6 +81,8 @@ class AbstractRelationship(models.Model):
     def date_confirmed_human(self):
         return render_date(self.date_confirmed,
                            self.date_confirmed_details)
+
+    proofs = GenericRelation("RelationshipProof")
 
     proof_title = models.TextField(
         "Назва доказу зв'язку", blank=True,

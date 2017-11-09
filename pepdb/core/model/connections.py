@@ -11,6 +11,9 @@ from core.fields import RedactorField
 from core.utils import lookup_term
 from core.model.base import AbstractRelationship
 from core.model.translations import Ua2EnDictionary
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 
 
 class Person2Person(AbstractRelationship):
@@ -446,3 +449,38 @@ class Company2Country(AbstractRelationship):
     class Meta:
         verbose_name = "Зв'язок з країною"
         verbose_name_plural = "Зв'язки з країнами"
+
+
+class RelationshipProof(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
+    object_id = models.PositiveIntegerField(null=True)
+    content_object = GenericForeignKey('content_type', 'object_id')
+
+    proof_title = models.TextField(
+        "Назва доказу зв'язку", blank=True,
+        help_text="Наприклад: склад ВР 7-го скликання")
+
+    proof_document = models.ForeignKey(
+        "core.Document", verbose_name="Документ-доказ зв'язку",
+        default=None, blank=True, null=True)
+    proof = models.TextField("або посилання на доказ зв'язку", blank=True)
+
+    def clean(self):
+        if self.proof_document is None and not self.proof:
+            raise ValidationError({
+                'proof_document': 'Поле документа або посилання має бути заповнено',
+                'proof': 'Поле документа або посилання має бути заповнено',
+            })
+
+        if self.proof_document is not None and self.proof:
+            raise ValidationError({
+                'proof_document': 'Тільки поле документа або посилання має бути заповнено',
+                'proof': 'Тільки поле документа або посилання має бути заповнено',
+            })
+
+    def __unicode__(self):
+        return "%s: %s" % (self.proof_title, self.proof_document or self.proof)
+
+    class Meta:
+        verbose_name = "Підтвердження зв'язку"
+        verbose_name_plural = "Підтвердження зв'язків"
