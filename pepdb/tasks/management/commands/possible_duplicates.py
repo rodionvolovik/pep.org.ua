@@ -8,7 +8,7 @@ from django.conf import settings
 
 from collections import defaultdict
 from core.models import Person
-from core.utils import is_initial
+from core.utils import is_initial, parse_fullname
 from tasks.models import PersonDeduplication
 from Levenshtein import jaro
 from itertools import combinations
@@ -36,6 +36,25 @@ class Command(BaseCommand):
                 p.last_name,
                 p.first_name,
                 p.patronymic])))
+
+            for aka in map(unicode.strip, (p.also_known_as_uk or "").replace(",", "\n").split("\n")):
+                if not aka:
+                    continue
+
+                last_name, first_name, patronymic, _ = parse_fullname(aka)
+                if not(all([last_name, first_name, patronymic])):
+                    continue
+
+                all_persons.append(dict(zip(keys, [
+                    p.pk,
+                    ("%s %s %s" % (
+                        last_name, first_name[:1], patronymic[:1])).lower(),
+                    ("%s %s %s" % (
+                        last_name, first_name, patronymic)).lower(),
+                    is_initial(first_name) or is_initial(patronymic),
+                    last_name,
+                    first_name,
+                    patronymic])))
 
         grouped_by_fullname = defaultdict(list)
         grouped_by_shortenedname = defaultdict(list)
