@@ -462,15 +462,10 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
                 else:
                     updated_records += 1
 
-                company.save()
-
                 country_connection, _ = conn_importer.get_or_create(
                     company, entry.get("country", "").strip(),
                     "registered_in"
                 )
-
-                if country_connection:
-                    country_connection.save()
 
             self.message_user(
                 request,
@@ -741,13 +736,6 @@ class DeclarationAdmin(admin.ModelAdmin):
                     set((relation.declarations or []) + [declaration_id])
                 )
 
-                relation.proof = ", ".join(
-                    set(
-                        relation.proof.split(", ") +
-                        [declaration.url + "?source"]
-                    )
-                )
-
                 if relation.from_person_id == base_person.pk:
                     relation.from_relationship_type = relation_from
                     relation.to_relationship_type = relation_to
@@ -759,12 +747,9 @@ class DeclarationAdmin(admin.ModelAdmin):
 
                 connections_updated += 1
             else:
-                Person2Person.objects.create(
+                relation = Person2Person.objects.create(
                     declaration=declaration,
                     declarations=[declaration.pk],
-                    proof=declaration.url + "?source",
-                    proof_title=(
-                        "Декларація за %s рік" % declaration.year),
                     from_person=base_person,
                     to_person=relative,
                     from_relationship_type=relation_from,
@@ -772,6 +757,18 @@ class DeclarationAdmin(admin.ModelAdmin):
                 )
 
                 connections_created += 1
+
+            url = declaration.url + "?source"
+            try:
+                relation.proofs.get(proof=url)
+            except RelationshipProof.DoesNotExist:
+                relation.proofs.create(
+                    proof=url,
+                    proof_title_uk="Декларація за %s рік" % declaration.year,
+                    proof_title_en="Income and assets declaration, %s" % declaration.year
+                )
+            except RelationshipProof.MultipleObjectsReturned:
+                pass
 
             declaration.relatives_populated = True
             declaration.save()

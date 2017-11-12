@@ -277,7 +277,6 @@ class Company(models.Model, AbstractNode):
         for rtp, p, rel in related_persons:
             add_to_rest = True
             p.rtype = rtp
-            print(hasattr(p, "connection"))
             p.connection = rel
 
             if rtp.lower() in [

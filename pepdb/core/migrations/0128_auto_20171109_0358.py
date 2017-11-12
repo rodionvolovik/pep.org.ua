@@ -66,6 +66,9 @@ def migrate_proofs(apps, schema_editor):
                     if p.startswith("/media/"):
                         p = p.replace("/media/", "", 1)
 
+                    if p.startswith("media/"):
+                        p = p.replace("media/", "", 1)
+
                     try:
                         doc = document_model.objects.get(doc=p)
                         proof.proof_document = doc

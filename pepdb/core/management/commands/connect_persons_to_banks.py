@@ -149,15 +149,12 @@ class Command(BaseCommand):
 
                         for bank in bank_matches:
                             conn, created = importer.get_or_create_from_declaration(
-                                person, bank, "Клієнт банку", d)
+                                person, bank, "Клієнт банку", d, options["real_run"])
 
                             if created:
                                 created_records += 1
                             else:
                                 updated_records += 1
-
-                            if options["real_run"]:
-                                conn.save()
 
                         successful += 1
 

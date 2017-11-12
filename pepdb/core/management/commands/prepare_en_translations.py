@@ -13,7 +13,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         en_translations = {}
 
-        for t in Ua2EnDictionary.objects.all():
+        for t in Ua2EnDictionary.objects.all().nocache():
             en_translations[lookup_term(t.term)] = filter(None, [
                 t.translation, t.alt_translation
             ])
@@ -23,7 +23,7 @@ class Command(BaseCommand):
         not_translated_offices = set()
         not_translated_cities = set()
 
-        for p in Declaration.objects.filter(confirmed="a").all():
+        for p in Declaration.objects.filter(confirmed="a").defer("source").all().nocache():
             if (lookup_term(p.region_uk) not in en_translations):
                 not_translated_regions.add(lookup_term(p.region_uk))
 
@@ -33,18 +33,18 @@ class Command(BaseCommand):
             if (lookup_term(p.office_uk) not in en_translations):
                 not_translated_offices.add(lookup_term(p.office_uk))
 
-        for p in Person.objects.all():
+        for p in Person.objects.all().nocache():
             if not p.city_of_birth_en and lookup_term(p.city_of_birth_en) not in en_translations:
                 not_translated_cities.add(lookup_term(p.city_of_birth_uk))
 
-        for c in Company.objects.all():
+        for c in Company.objects.all().nocache():
             if not c.name_en and lookup_term(c.name_uk) not in en_translations:
                 not_translated_offices.add(lookup_term(c.name_uk))
 
             if not c.short_name_en and lookup_term(c.short_name_uk) not in en_translations:
                 not_translated_offices.add(lookup_term(c.short_name_uk))
 
-        for p2c in Person2Company.objects.all():
+        for p2c in Person2Company.objects.all().nocache():
             if (not p2c.relationship_type_en and
                     lookup_term(p2c.relationship_type_uk) not in en_translations):
                 not_translated_positions.add(lookup_term(p2c.relationship_type_uk))

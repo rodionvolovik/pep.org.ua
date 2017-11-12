@@ -19,10 +19,10 @@ class CompanyImporter(object):
 
         self.logger = logger
 
-    def get_or_create_from_edr_record(self, obj_dict):
+    def get_or_create_from_edr_record(self, obj_dict, save=True):
         """
         Kind of get_or_create method, to create or update company model
-        instance using data from EDR. DOESN'T SAVE THE MODIFIED OBJECT
+        instance using data from EDR.
 
         Returns Company instance and a created flag
         """
@@ -114,9 +114,12 @@ class CompanyImporter(object):
                     )
                 )
 
+        if save:
+            company.save()
+
         return company, created
 
-    def get_or_create_from_unified_foreign_registry(self, obj_dict):
+    def get_or_create_from_unified_foreign_registry(self, obj_dict, save=True):
         """
         Kind of get_or_create method, to create or update company model
         instance using data from spreadsheet rows of unified format below:
@@ -126,7 +129,6 @@ class CompanyImporter(object):
 
         Lookup for get is made using company_code (if present).
         If company_code is absent or no match is found, lookup is made by name
-        DOESN'T SAVE THE MODIFIED OBJECT
 
         Returns Company instance and a created flag
         """
@@ -256,5 +258,8 @@ class CompanyImporter(object):
                         company.id
                     )
                 )
+
+        if save:
+            company.save()
 
         return company, created

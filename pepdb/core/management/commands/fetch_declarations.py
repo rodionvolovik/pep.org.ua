@@ -94,7 +94,7 @@ class Command(BaseCommand):
         current_batch = max_batch.get("mx", 0) + 1
         task_number = 0
 
-        for person in Person.objects.all():
+        for person in Person.objects.all().nocache():
             full_name = ("%s %s %s" % (person.first_name, person.patronymic,
                                        person.last_name)).replace("  ", " ")
             full_name = full_name.strip()

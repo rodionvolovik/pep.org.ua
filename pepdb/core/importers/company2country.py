@@ -14,10 +14,10 @@ class Company2CountryImporter(object):
 
         self.logger = logger
 
-    def get_or_create(self, company, country_name, relation):
+    def get_or_create(self, company, country_name, relation, save=True):
         """
         Kind of get_or_create method, to create or update company2country model
-        instance using data from declaration. DOESN'T SAVE THE MODIFIED OBJECT
+        instance using data from declaration
 
         Returns Company2Country instance and a created flag
         """
@@ -56,5 +56,8 @@ class Company2CountryImporter(object):
                 to_country=country,
                 relationship_type=relation
             )
+
+        if save:
+            conn.save()
 
         return conn, created

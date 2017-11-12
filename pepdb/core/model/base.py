@@ -91,9 +91,10 @@ class AbstractRelationship(models.Model):
 
     @property
     def has_additional_info(self):
-        return any([
-            self.date_confirmed, self.date_established, self.date_finished,
-            self.proof, self.proof_title])
+        if any([self.date_confirmed, self.date_established, self.date_finished]):
+            return True
+
+        return bool(self.proofs.count())
 
     class Meta:
         abstract = True

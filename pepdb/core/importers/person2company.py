@@ -1,9 +1,10 @@
 # coding: utf-8
 from __future__ import unicode_literals
 from datetime import date
+from django.contrib.contenttypes.models import ContentType
 
 from core.universal_loggers import NoOpLogger
-from core.models import Person2Company
+from core.models import Person2Company, RelationshipProof
 
 
 class Person2CompanyImporter(object):
@@ -15,10 +16,10 @@ class Person2CompanyImporter(object):
 
         self.logger = logger
 
-    def get_or_create_from_declaration(self, person, company, relation, decl):
+    def get_or_create_from_declaration(self, person, company, relation, decl, save=True):
         """
         Kind of get_or_create method, to create or update person2company model
-        instance using data from declaration. DOESN'T SAVE THE MODIFIED OBJECT
+        instance using data from declaration
 
         Returns Person2Company instance and a created flag
         """
@@ -55,16 +56,20 @@ class Person2CompanyImporter(object):
             set([decl.pk])
         )
 
-        conn.proof_title = ", ".join(filter(
-            None,
-            set(conn.proof_title.split(", ")) |
-            set(["Декларація за %s рік" % decl.year])
-        ))
+        if save:
+            conn.save()
 
-        conn.proof = ", ".join(filter(
-            None,
-            set(conn.proof.split(", ")) |
-            set([decl.url + "?source"])
-        ))
+        url = decl.url + "?source"
+        try:
+            conn.proofs.get(proof=url)
+        except RelationshipProof.DoesNotExist:
+            if save:
+                conn.proofs.create(
+                    proof=url,
+                    proof_title_uk="Декларація за %s рік" % decl.year,
+                    proof_title_en="Income and assets declaration, %s" % decl.year
+                )
+        except RelationshipProof.MultipleObjectsReturned:
+            pass
 
         return conn, created
