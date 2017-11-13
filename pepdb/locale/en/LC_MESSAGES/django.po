@@ -103,11 +103,11 @@ msgstr "bankruptcy case initiated (bailout)"
 
 #: core/model/companies.py:71
 msgid "розпорядження майном"
-msgstr ""
+msgstr "Asset management"
 
 #: core/model/companies.py:72
 msgid "ліквідація"
-msgstr ""
+msgstr "Dissolving"
 
 #: core/model/companies.py:386
 msgid "Державна компанія чи установа"
@@ -397,7 +397,7 @@ msgstr "Main company"
 
 #: core/model/connections.py:307 core/model/connections.py:337
 msgid "Секретар"
-msgstr "Secretary"
+msgstr "Secretaty"
 
 #: core/model/connections.py:308 core/model/connections.py:338
 msgid "Директор"
@@ -986,7 +986,7 @@ msgstr "Country search"
 
 #: core/templates/countries.jinja:24
 msgid "Оберіть країну"
-msgstr "Choose the country"
+msgstr "Choose country"
 
 #: core/templates/countries.jinja:40 core/templates/search.jinja:15
 #: core/templates/search.jinja:35
