@@ -561,6 +561,7 @@ class DocumentAdmin(TranslationAdmin):
     link.short_description = 'Завантажити'
 
     list_display = ("name", "link", "uploader", "uploaded")
+    search_fields = ["name", "doc"]
 
 
 class FeedbackAdmin(admin.ModelAdmin):

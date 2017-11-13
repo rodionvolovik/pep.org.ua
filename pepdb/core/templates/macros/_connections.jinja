@@ -40,7 +40,7 @@
 {% endmacro %}
 
 {% macro render_related_persons(persons, type, for_company=False) %}
-    {% for person in persons %}
+    {% for person in persons|sort(attribute="last_name") %}
         <li itemprop="{% if type == "family" %}relatedTo{% elif type == "worked" %}employee{% else %}knows{% endif %}" itemscope itemtype="http://schema.org/Person">
             <a href="{{ person.get_absolute_url() }}" itemprop="url">
                 <span class="{% if person.is_pep %}is_pep {% endif %}name-pill" itemprop="name">

@@ -25,10 +25,11 @@ def migrate_proofs(apps, schema_editor):
 
         for obj in model.objects.all():
             declarations = []
-            for i, p in enumerate(obj.proof.split(", ")):
+            for i, p in enumerate(obj.proof.replace("\n", ", ").split(", ")):
                 p = p.strip()
                 if not p:
                     continue
+                orig_p = p
 
                 proof = proof_model(
                     object_id=obj.pk,
@@ -51,6 +52,25 @@ def migrate_proofs(apps, schema_editor):
                         proof.proof_title_en = "Income and assets declaration"
                         print("Cannot find declaration with uid %s" % decl_uid)
 
+                if "," in p or p.count("http") > 1:
+                    if obj._meta.model_name in ["person2company", "person2person"]:
+                        print("%s, %s %s %s, %s" % (
+                            obj,
+                            obj.from_person.first_name,
+                            obj.from_person.patronymic,
+                            obj.from_person.last_name,
+                            orig_p
+                        ))
+                    elif obj._meta.model_name == "company2company":
+                        print("%s %s %s" % (
+                            obj, obj.from_company.name, orig_p))
+                    elif obj._meta.model_name == "company2country":
+                        print("%s %s %s" % (
+                            obj, obj.from_company.name, orig_p))
+                    else:
+                        print("%s %s %s" % (obj, obj.pk, orig_p))
+
+
                 if p.startswith("http") and not p.startswith("https://pep.org.ua"):
                     proof.proof = p
                 else:
@@ -59,7 +79,6 @@ def migrate_proofs(apps, schema_editor):
                     except UnicodeDecodeError:
                         pass
 
-                    orig_p = p
                     if p.startswith("https://pep.org.ua"):
                         p = p.replace("https://pep.org.ua", "", 1)
 
@@ -100,6 +119,12 @@ def migrate_proofs(apps, schema_editor):
                 proof.save()
 
 
+def truncate_proofs(apps, schema_editor):
+    proof_model = apps.get_model('core.RelationshipProof')
+
+    proof_model.objects.all().delete()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -107,5 +132,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(migrate_proofs, reverse_code=migrations.RunPython.noop),
+        migrations.RunPython(migrate_proofs, reverse_code=truncate_proofs),
     ]
