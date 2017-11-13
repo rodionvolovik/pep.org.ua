@@ -8,7 +8,7 @@ from core.model.declarations import Declaration, DeclarationExtra
 from core.model.translations import Ua2RuDictionary, Ua2EnDictionary
 from core.model.connections import (
     Person2Person, Person2Company, Company2Company, Person2Country,
-    Company2Country
+    Company2Country, RelationshipProof
 )
 from core.model.supplementaries import (
     ActionLog, Document, FeedbackMessage)
@@ -17,5 +17,5 @@ __all__ = [
     Person, Company, Country, Declaration, DeclarationExtra,
     Ua2EnDictionary, Ua2RuDictionary, Person2Country, Person2Company,
     Company2Company, Person2Country, Company2Country,
-    ActionLog, Document, FeedbackMessage
+    ActionLog, Document, FeedbackMessage, RelationshipProof
 ]

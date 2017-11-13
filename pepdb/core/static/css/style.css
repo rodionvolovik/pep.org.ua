@@ -329,7 +329,7 @@ h1 {
   stroke: #ccc;
   stroke-width: 1.5px;
 }
-.h li {
+.h > li {
   display: none;
 }
 .mc {
@@ -1737,4 +1737,8 @@ tr.additional_hidden > td {
 
 #country-selection-form {
   margin: 30px 0 20px;
+}
+
+.detailed_relations p {
+  display: inline;
 }

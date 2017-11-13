@@ -117,7 +117,7 @@ class Command(BaseCommand):
                     self.failed += 1
                     continue
             else:
-                company, created = self.importer.get_or_create_from_edr_record(ans[0].to_dict())
+                company, created = self.importer.get_or_create_from_edr_record(ans[0].to_dict(), save_it)
 
                 if not company:
                     self.stderr.write(
@@ -137,9 +137,6 @@ class Command(BaseCommand):
                 else:
                     self.companies_updated += 1
                     self.stdout.write("Updated company %s" % company)
-
-                if save_it:
-                    company.save()
 
             try:
                 person = Person.objects.get(pk=ownership.person)
@@ -170,10 +167,13 @@ class Command(BaseCommand):
 
                 conn, conn_created = self.conn_importer.get_or_create_from_declaration(
                     person, company,
-                    most_recent_record.get("link_type", "Бенефіціарний власник"), decl)
+                    most_recent_record.get("link_type", "Бенефіціарний власник"), decl, save_it)
 
                 if most_recent_record.get("percent_of_cost"):
                     conn.share = most_recent_record["percent_of_cost"]
+
+                    if save_it:
+                        conn.save()
 
                 if conn_created:
                     self.connections_created += 1
@@ -181,9 +181,6 @@ class Command(BaseCommand):
                 else:
                     self.connections_updated += 1
                     self.stdout.write("Updated connection %s" % conn)
-
-                if save_it:
-                    conn.save()
 
             self.successful += 1
 
@@ -242,10 +239,13 @@ class Command(BaseCommand):
 
                 conn, conn_created = self.conn_importer.get_or_create_from_declaration(
                     person, company,
-                    most_recent_record.get("link_type", "Бенефіціарний власник"), decl)
+                    most_recent_record.get("link_type", "Бенефіціарний власник"), decl, save_it)
 
                 if most_recent_record.get("percent_of_cost"):
                     conn.share = most_recent_record["percent_of_cost"]
+
+                    if save_it:
+                        conn.save()
 
                 if conn_created:
                     self.connections_created += 1
@@ -253,9 +253,6 @@ class Command(BaseCommand):
                 else:
                     self.connections_updated += 1
                     self.stdout.write("Updated connection %s" % conn)
-
-                if save_it:
-                    conn.save()
 
             self.successful += 1
 

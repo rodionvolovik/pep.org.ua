@@ -20,6 +20,7 @@ from oauth2client.client import SignedJwtAssertionCredentials
 import logging
 logger = logging.getLogger(__name__)
 
+
 def expand_gdrive_download_url(url):
     """
     Convert google drive links like.

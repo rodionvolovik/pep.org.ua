@@ -94,7 +94,7 @@ class Command(BaseCommand):
         current_batch = max_batch.get("mx", 0) + 1
         task_number = 0
 
-        for person in Person.objects.all():
+        for person in Person.objects.all().nocache():
             full_name = ("%s %s %s" % (person.first_name, person.patronymic,
                                        person.last_name)).replace("  ", " ")
             full_name = full_name.strip()
@@ -110,7 +110,14 @@ class Command(BaseCommand):
 
             if person.also_known_as_uk:
                 names_to_retrieve += list(
-                    filter(None, person.also_known_as_uk.split("\n")))
+                    filter(
+                        None,
+                        map(
+                            unicode.strip,
+                            person.also_known_as_uk.replace(",", "\n").split("\n")
+                        )
+                    )
+                )
 
             for full_name_to_ret in names_to_retrieve:
                 subr = requests.get(

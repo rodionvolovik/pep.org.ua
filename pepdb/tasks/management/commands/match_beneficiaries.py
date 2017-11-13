@@ -243,7 +243,7 @@ class Command(BaseCommand):
         self.stdout.write("Retrieving ownership information")
         for d in Declaration.objects.filter(
                 nacp_declaration=True, confirmed="a").select_related(
-                "person"):
+                "person").nocache():
             data = d.source["nacp_orig"]
 
             if isinstance(data.get(section), dict):

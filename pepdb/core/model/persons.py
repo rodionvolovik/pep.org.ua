@@ -13,7 +13,7 @@ from django.forms.models import model_to_dict
 from django.db.models.functions import Coalesce
 from django.db.models import Q, Value
 
-from redactor.fields import RedactorField
+from core.fields import RedactorField
 from translitua import translitua
 import select2.fields
 import select2.models
@@ -257,7 +257,7 @@ class Person(models.Model, AbstractNode):
         the_past = datetime.datetime.now() - datetime.timedelta(days=10 * 365)
 
         timeline = self.person2company_set.prefetch_related(
-            "to_company").filter(is_employee=True).annotate(
+            "to_company", "proofs", "proofs__proof_document").filter(is_employee=True).annotate(
                 fixed_date_established=Coalesce(
                     'date_established', Value(the_past))
         ).order_by('-fixed_date_established')
@@ -266,7 +266,7 @@ class Person(models.Model, AbstractNode):
 
     @property
     def assets(self):
-        return self.person2company_set.prefetch_related("to_company").filter(
+        return self.person2company_set.prefetch_related("to_company", "proofs", "proofs__proof_document").filter(
             is_employee=False,
             relationship_type_uk__in=(
                 "Член центрального статутного органу",
@@ -287,7 +287,7 @@ class Person(models.Model, AbstractNode):
         # TODO: unify output format with all_related_persons
         # TODO: adjust name to reflect that it's only a subset of companies
         companies = self.person2company_set.prefetch_related(
-            "to_company").filter(is_employee=False)
+            "to_company", "proofs", "proofs__proof_document").filter(is_employee=False)
 
         # TODO: remove at all?
         return [], companies
@@ -296,7 +296,7 @@ class Person(models.Model, AbstractNode):
     def all_related_persons(self):
         related_persons = [
             (i.to_relationship_type, i.from_relationship_type, deepcopy(i.to_person), i)
-            for i in self.to_persons.prefetch_related("to_person").defer(
+            for i in self.to_persons.prefetch_related("to_person", "proofs", "proofs__proof_document").defer(
                 "to_person__reputation_assets",
                 "to_person__reputation_sanctions",
                 "to_person__reputation_crimes",
@@ -309,7 +309,7 @@ class Person(models.Model, AbstractNode):
         ] + [
             (i.from_relationship_type, i.to_relationship_type,
              deepcopy(i.from_person), i)
-            for i in self.from_persons.prefetch_related("from_person").defer(
+            for i in self.from_persons.prefetch_related("from_person", "proofs", "proofs__proof_document").defer(
                 "from_person__reputation_assets",
                 "from_person__reputation_sanctions",
                 "from_person__reputation_crimes",
@@ -537,7 +537,7 @@ class Person(models.Model, AbstractNode):
             res["description"] = "{position} @ {company}".format(
                 **last_workplace)
         res["kind"] = unicode(
-            ugettext_lazy(self.get_type_of_official_display()) or "")
+            ugettext_lazy(self.get_type_of_official_display() or ""))
 
         if with_connections:
             connections = []

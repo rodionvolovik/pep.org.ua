@@ -19,16 +19,20 @@ from django.http import HttpResponse
 from django.utils.encoding import force_str
 from django.utils.translation import ugettext_lazy as _
 
+import nested_admin
+
 from elasticsearch_dsl.query import Q as ES_Q
 
 from grappelli_modeltranslation.admin import (
-    TranslationAdmin, TranslationStackedInline)
+    TranslationAdmin, TranslationStackedInline,
+    TranslationGenericStackedInline
+)
 
 from core.models import (
     Country, Person, Company, Person2Person, Document, Person2Country,
     Person2Company, Company2Company, Company2Country, Ua2RuDictionary,
     Ua2EnDictionary, FeedbackMessage, Declaration, DeclarationExtra,
-    ActionLog)
+    ActionLog, RelationshipProof)
 
 from core.forms import EDRImportForm, ForeignImportForm
 from core.importers.company import CompanyImporter
@@ -47,15 +51,36 @@ def make_unpublished(modeladmin, request, queryset):
 make_unpublished.short_description = "Приховати"
 
 
-class Person2PersonInline(admin.StackedInline):
+class TranslationNestedStackedInline(nested_admin.NestedInlineModelAdminMixin, TranslationStackedInline):
+    if 'grappelli' in settings.INSTALLED_APPS:
+        template = 'nesting/admin/inlines/grappelli_stacked.html'
+    else:
+        template = 'nesting/admin/inlines/stacked.html'
+
+
+class ProofsInline(nested_admin.NestedInlineModelAdminMixin, TranslationGenericStackedInline):
+    formset = nested_admin.NestedBaseGenericInlineFormSet
+
+    model = RelationshipProof
+    extra = 1
+
+    raw_id_fields = ('proof_document',)
+    autocomplete_lookup_fields = {
+        'fk': ['proof_document'],
+    }
+
+
+class Person2PersonInline(TranslationNestedStackedInline):
     model = Person2Person
     fk_name = "from_person"
     extra = 1
-    fields = ["from_relationship_type", ("to_relationship_type", "to_person"),
-              ("date_established", "date_established_details"),
-              ("date_finished", "date_finished_details"),
-              ("date_confirmed", "date_confirmed_details"),
-              ("proof_title", "proof")]
+    fields = [
+        "from_relationship_type", ("to_relationship_type", "to_person"),
+        "relationship_details",
+        ("date_established", "date_established_details"),
+        ("date_finished", "date_finished_details"),
+        ("date_confirmed", "date_confirmed_details")
+    ]
 
     inline_classes = ('grp-collapse grp-open',)
 
@@ -64,12 +89,14 @@ class Person2PersonInline(admin.StackedInline):
         'fk': ['to_person'],
     }
 
+    inlines = [ProofsInline]
+
     def get_queryset(self, request):
         qs = super(Person2PersonInline, self).get_queryset(request)
         return qs.select_related("to_person")
 
 
-class Person2PersonBackInline(admin.StackedInline):
+class Person2PersonBackInline(TranslationNestedStackedInline):
     verbose_name = u"Зворотній зв'язок з іншою персоною"
     verbose_name_plural = u"Зворотні зв'язки з іншими персонами"
     model = Person2Person
@@ -77,6 +104,7 @@ class Person2PersonBackInline(admin.StackedInline):
     extra = 0
     max_num = 0
 
+    inlines = [ProofsInline]
     inline_classes = ('grp-collapse grp-open',)
 
     raw_id_fields = ('from_person',)
@@ -89,36 +117,39 @@ class Person2PersonBackInline(admin.StackedInline):
         return qs.select_related("from_person")
 
     fields = [
-              ("from_person", "from_relationship_type"),
-              "to_relationship_type",
-              ("date_established", "date_established_details"),
-              ("date_finished", "date_finished_details"),
-              ("date_confirmed", "date_confirmed_details"),
-              ("proof_title", "proof")]
+        ("from_person", "from_relationship_type"),
+        "to_relationship_type",
+        "relationship_details",
+        ("date_established", "date_established_details"),
+        ("date_finished", "date_finished_details"),
+        ("date_confirmed", "date_confirmed_details")
+    ]
 
 
-class Person2CountryInline(admin.StackedInline):
+class Person2CountryInline(nested_admin.NestedStackedInline):
     model = Person2Country
     extra = 1
     fields = [("relationship_type", "to_country"),
               ("date_established", "date_established_details"),
               ("date_finished", "date_finished_details"),
-              ("date_confirmed", "date_confirmed_details"),
-              ("proof_title", "proof")]
+              ("date_confirmed", "date_confirmed_details")]
 
     inline_classes = ('grp-collapse grp-open',)
+    inlines = [ProofsInline]
+
     raw_id_fields = ('to_country',)
     autocomplete_lookup_fields = {
         'fk': ['to_country'],
     }
 
 
-class Company2CountryInline(admin.TabularInline):
+class Company2CountryInline(nested_admin.NestedTabularInline):
     model = Company2Country
     extra = 1
     fields = ["relationship_type", "to_country", "date_established",
-              "date_finished", "date_confirmed", "proof_title", "proof"]
+              "date_finished", "date_confirmed"]
 
+    inlines = [ProofsInline]
     raw_id_fields = ('to_country',)
     autocomplete_lookup_fields = {
         'fk': ['to_country'],
@@ -144,15 +175,14 @@ class Person2CompanyForm(forms.ModelForm):
         }
 
 
-class Person2CompanyInline(TranslationStackedInline):
+class Person2CompanyInline(TranslationNestedStackedInline):
     model = Person2Company
     form = Person2CompanyForm
     extra = 1
     fields = [("relationship_type", "is_employee", "to_company",),
               ("date_established", "date_established_details"),
               ("date_finished", "date_finished_details"),
-              ("date_confirmed", "date_confirmed_details"),
-              ("proof_title", "proof")]
+              ("date_confirmed", "date_confirmed_details")]
 
     raw_id_fields = ('to_company',)
 
@@ -161,6 +191,7 @@ class Person2CompanyInline(TranslationStackedInline):
     }
 
     inline_classes = ('grp-collapse grp-open',)
+    inlines = [ProofsInline]
 
     class Media:
         css = {
@@ -173,7 +204,7 @@ class Person2CompanyInline(TranslationStackedInline):
         return qs.select_related("to_company")
 
 
-class Company2PersonInline(TranslationStackedInline):
+class Company2PersonInline(TranslationNestedStackedInline):
     verbose_name = u"Зв'язок з іншою персоною"
     verbose_name_plural = u"Зв'язки з іншими персонами"
 
@@ -183,10 +214,10 @@ class Company2PersonInline(TranslationStackedInline):
     fields = [("relationship_type", "is_employee", "from_person"),
               ("date_established", "date_established_details"),
               ("date_finished", "date_finished_details"),
-              ("date_confirmed", "date_confirmed_details"),
-              ("proof_title", "proof")]
+              ("date_confirmed", "date_confirmed_details")]
 
     inline_classes = ('grp-collapse grp-open',)
+    inlines = [ProofsInline]
 
     raw_id_fields = ('from_person',)
     autocomplete_lookup_fields = {
@@ -198,13 +229,13 @@ class Company2PersonInline(TranslationStackedInline):
         return qs.select_related("from_person")
 
 
-class Company2CompanyInline(admin.TabularInline):
+class Company2CompanyInline(nested_admin.NestedTabularInline):
     model = Company2Company
     fk_name = "from_company"
     extra = 1
     fields = ["relationship_type", "to_company", "date_established",
-              "date_finished", "date_confirmed", "equity_part",
-              "proof_title", "proof"]
+              "date_finished", "date_confirmed", "equity_part"]
+    inlines = [ProofsInline]
 
     raw_id_fields = ('to_company',)
     autocomplete_lookup_fields = {
@@ -216,7 +247,7 @@ class Company2CompanyInline(admin.TabularInline):
         return qs.select_related("to_company")
 
 
-class Company2CompanyBackInline(admin.TabularInline):
+class Company2CompanyBackInline(nested_admin.NestedTabularInline):
     verbose_name = u"Зворотній зв'язок з іншою компанією"
     verbose_name_plural = u"Зворотні зв'язки з іншими компаніями"
 
@@ -225,9 +256,9 @@ class Company2CompanyBackInline(admin.TabularInline):
     extra = 0
     max_num = 0
     fields = ["relationship_type", "from_company", "date_established",
-              "date_finished", "date_confirmed", "equity_part",
-              "proof_title", "proof"]
+              "date_finished", "date_confirmed", "equity_part"]
 
+    inlines = [ProofsInline]
     raw_id_fields = ('from_company',)
     autocomplete_lookup_fields = {
         'fk': ['from_company'],
@@ -249,13 +280,12 @@ class DeclarationExtraInline(admin.TabularInline):
               "address", "country"]
 
 
-class PersonAdmin(TranslationAdmin):
+class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     inlines = (
         Person2PersonInline,
         Person2PersonBackInline,
         Person2CountryInline,
-        Person2CompanyInline,
-        DeclarationExtraInline
+        Person2CompanyInline
     )
 
     list_display = ("last_name_uk", "first_name_uk", "patronymic_uk",
@@ -280,9 +310,6 @@ class PersonAdmin(TranslationAdmin):
         (u'Ділова репутація', {
             'fields': ['reputation_sanctions', 'reputation_crimes',
                        'reputation_manhunt', 'reputation_convictions']}),
-
-        (u'SEO', {
-            'fields': ['title', 'description']}),
     ]
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
@@ -293,8 +320,16 @@ class PersonAdmin(TranslationAdmin):
         return super(PersonAdmin, self).change_view(
             request, object_id, form_url, extra_context=extra_context)
 
+    def add_view(self, request, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['person2person_rels'] = json.dumps(
+            Person2Person._relationships_explained)
 
-class CompanyAdmin(TranslationAdmin):
+        return super(PersonAdmin, self).add_view(
+            request, form_url, extra_context=extra_context)
+
+
+class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     change_list_template = "admin/company/change_list_template.html"
 
     class Media:
@@ -427,15 +462,10 @@ class CompanyAdmin(TranslationAdmin):
                 else:
                     updated_records += 1
 
-                company.save()
-
                 country_connection, _ = conn_importer.get_or_create(
                     company, entry.get("country", "").strip(),
                     "registered_in"
                 )
-
-                if country_connection:
-                    country_connection.save()
 
             self.message_user(
                 request,
@@ -531,6 +561,7 @@ class DocumentAdmin(TranslationAdmin):
     link.short_description = 'Завантажити'
 
     list_display = ("name", "link", "uploader", "uploaded")
+    search_fields = ["name", "doc"]
 
 
 class FeedbackAdmin(admin.ModelAdmin):
@@ -706,13 +737,6 @@ class DeclarationAdmin(admin.ModelAdmin):
                     set((relation.declarations or []) + [declaration_id])
                 )
 
-                relation.proof = ", ".join(
-                    set(
-                        relation.proof.split(", ") +
-                        [declaration.url + "?source"]
-                    )
-                )
-
                 if relation.from_person_id == base_person.pk:
                     relation.from_relationship_type = relation_from
                     relation.to_relationship_type = relation_to
@@ -724,12 +748,9 @@ class DeclarationAdmin(admin.ModelAdmin):
 
                 connections_updated += 1
             else:
-                Person2Person.objects.create(
+                relation = Person2Person.objects.create(
                     declaration=declaration,
                     declarations=[declaration.pk],
-                    proof=declaration.url + "?source",
-                    proof_title=(
-                        "Декларація за %s рік" % declaration.year),
                     from_person=base_person,
                     to_person=relative,
                     from_relationship_type=relation_from,
@@ -737,6 +758,18 @@ class DeclarationAdmin(admin.ModelAdmin):
                 )
 
                 connections_created += 1
+
+            url = declaration.url + "?source"
+            try:
+                relation.proofs.get(proof=url)
+            except RelationshipProof.DoesNotExist:
+                relation.proofs.create(
+                    proof=url,
+                    proof_title_uk="Декларація за %s рік" % declaration.year,
+                    proof_title_en="Income and assets declaration, %s" % declaration.year
+                )
+            except RelationshipProof.MultipleObjectsReturned:
+                pass
 
             declaration.relatives_populated = True
             declaration.save()

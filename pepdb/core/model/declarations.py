@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy
 
 
 from jsonfield import JSONField
-from redactor.fields import RedactorField
+from core.fields import RedactorField
 
 from core.utils import (
     parse_fullname, parse_family_member, RELATIONS_MAPPING, render_date)

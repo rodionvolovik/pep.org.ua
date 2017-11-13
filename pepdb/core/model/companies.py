@@ -13,7 +13,7 @@ from django.forms.models import model_to_dict
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
-from redactor.fields import RedactorField
+from core.fields import RedactorField
 
 from core.model.base import AbstractNode
 from core.model.translations import Ua2EnDictionary
@@ -277,7 +277,6 @@ class Company(models.Model, AbstractNode):
         for rtp, p, rel in related_persons:
             add_to_rest = True
             p.rtype = rtp
-            print(hasattr(p, "connection"))
             p.connection = rel
 
             if rtp.lower() in [

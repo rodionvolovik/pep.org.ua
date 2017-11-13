@@ -169,6 +169,7 @@ class Command(BaseCommand):
                         is_employee=True,
                         created_from_edr=True,
                         date_confirmed=edr_company.last_update,
+                        # TODO: decide what to do with connection proofs
                         proof_title="Інформація, отримана з ЄДР",
                     )
 

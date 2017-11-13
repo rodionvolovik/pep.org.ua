@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.core.urlresolvers import reverse
+from django.contrib.contenttypes.fields import GenericRelation
 
 from core.utils import render_date
 
@@ -81,6 +82,8 @@ class AbstractRelationship(models.Model):
         return render_date(self.date_confirmed,
                            self.date_confirmed_details)
 
+    proofs = GenericRelation("RelationshipProof")
+
     proof_title = models.TextField(
         "Назва доказу зв'язку", blank=True,
         help_text="Наприклад: склад ВР 7-го скликання")
@@ -88,9 +91,10 @@ class AbstractRelationship(models.Model):
 
     @property
     def has_additional_info(self):
-        return any([
-            self.date_confirmed, self.date_established, self.date_finished,
-            self.proof, self.proof_title])
+        if any([self.date_confirmed, self.date_established, self.date_finished]):
+            return True
+
+        return bool(self.proofs.count())
 
     class Meta:
         abstract = True

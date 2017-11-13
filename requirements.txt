@@ -28,3 +28,4 @@ XlsxWriter==1.0.0
 django-pickling==1.0
 django-cacheops==4.0.1
 Jinja2==2.9.6
+django-nested-admin==3.0.21
