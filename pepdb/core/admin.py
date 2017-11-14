@@ -752,7 +752,6 @@ class DeclarationAdmin(TranslationAdmin):
                 connections_updated += 1
             else:
                 relation = Person2Person.objects.create(
-                    declaration=declaration,
                     declarations=[declaration.pk],
                     from_person=base_person,
                     to_person=relative,
