@@ -19,7 +19,7 @@ SITE_URL = "https://pep.org.ua"
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '*37e&4-qi$f+paw#=me8opo$uk7y%d$c@crd++q89$4y!g$p!e'
-FERNET_SECRET_KEY = 'FVoBKGUZrvoqhsfafhV-XGnG0igLdMJSN1pxrTjQIFk='
+FERNET_SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -297,7 +297,8 @@ RECAPTCHA_PRIVATE_KEY = ""
 NOCAPTCHA = True
 RECAPTCHA_USE_SSL = True
 
-DECLARATIONS_ENDPOINT = "https://declarations.com.ua/fuzzy_search"
+DECLARATIONS_SEARCH_ENDPOINT = "https://declarations.com.ua/fuzzy_search"
+DECLARATION_DETAILS_ENDPOINT ="https://declarations.com.ua/declaration/{}"
 CACHEOPS_REDIS = "redis://localhost:6379/1"
 
 CACHEOPS = {
@@ -320,4 +321,4 @@ connections.connections.configure(**ELASTICSEARCH_CONNECTIONS)
 
 # Init fernet instance
 from cryptography.fernet import Fernet
-SYMMETRIC_ENCRYPTOR = Fernet('FVoBKGUZrvoqhsfafhV-XGnG0igLdMJSN1pxrTjQIFk=')
+SYMMETRIC_ENCRYPTOR = Fernet(FERNET_SECRET_KEY)

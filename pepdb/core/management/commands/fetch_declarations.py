@@ -57,8 +57,7 @@ class Command(BaseCommand):
                     "source": decl,
                     "batch_number": batch,
                     "nacp_declaration": True,
-                    "url": "https://declarations.com.ua/declaration/%s" % (
-                        decl["id"]),
+                    "url": settings.DECLARATION_DETAILS_ENDPOINT.format(decl["id"]),
                     "fuzziness": fuzziness
                 }
             )
@@ -76,8 +75,7 @@ class Command(BaseCommand):
                     "year": decl["intro"]["declaration_year"],
                     "source": decl,
                     "batch_number": batch,
-                    "url": "https://declarations.com.ua/declaration/%s" % (
-                        decl["id"]),
+                    "url": settings.DECLARATION_DETAILS_ENDPOINT.format(decl["id"]),
                     "fuzziness": fuzziness
                 }
             )
@@ -121,7 +119,7 @@ class Command(BaseCommand):
 
             for full_name_to_ret in names_to_retrieve:
                 subr = requests.get(
-                    settings.DECLARATIONS_ENDPOINT, params={
+                    settings.DECLARATIONS_SEARCH_ENDPOINT, params={
                         "q": full_name_to_ret,
                         "format": "json"
                     }, verify=False, timeout=60).json()

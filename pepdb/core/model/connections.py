@@ -84,11 +84,6 @@ class Person2Person(AbstractRelationship):
         "Детальний опис зв'язку", blank=True
     )
 
-    # TODO: Check and drop
-    declaration = models.ForeignKey(
-        "Declaration", blank=True, null=True,
-        verbose_name="Декларація, що підтверджує зв'язок")
-
     declarations = ArrayField(
         models.IntegerField(),
         verbose_name="Декларації, що підтверджують зв'язок",

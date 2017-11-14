@@ -17,7 +17,7 @@ FIELDS_TO_CONCATENATE = [
 ]
 
 FIELDS_TO_UPDATE = [
-    "declaration",
+    "declarations",
     "date_established",
     "date_finished",
     "date_confirmed",
@@ -100,6 +100,12 @@ class Command(BaseCommand):
                         self.stdout.write(
                             "\tnot replacing content of {} ({} vs {})".format(
                                 field, master_val, donor_val))
+
+                if field == "declarations":
+                    setattr(
+                        master, field,
+                        list(set(master_val or []) | set(donor_val or []))
+                    )
 
                 # Corner cases:
                 if field.startswith("date_"):

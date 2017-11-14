@@ -27,6 +27,7 @@ from grappelli_modeltranslation.admin import (
     TranslationAdmin, TranslationStackedInline,
     TranslationGenericStackedInline
 )
+import requests
 
 from core.models import (
     Country, Person, Company, Person2Person, Document, Person2Country,
@@ -606,10 +607,7 @@ def populate_relatives(modeladmin, request, queryset):
 populate_relatives.short_description = "Створити родичів"
 
 
-class DeclarationAdmin(admin.ModelAdmin):
-    def has_add_permission(self, request):
-        return False
-
+class DeclarationAdmin(TranslationAdmin):
     def fullname_decl(self, obj):
         return ('<a href="%s" target="_blank">%s %s %s</a>' % (
             obj.url, obj.last_name, obj.first_name, obj.patronymic)).replace(
@@ -618,6 +616,11 @@ class DeclarationAdmin(admin.ModelAdmin):
     fullname_decl.short_description = 'ПІБ з декларації'
     fullname_decl.admin_order_field = 'last_name'
     fullname_decl.allow_tags = True
+    readonly_fields = (
+        'region', 'office', 'year', 'position', 'fuzziness',
+        'batch_number', 'first_name', 'last_name', 'patronymic',
+        'url', 'nacp_declaration', 'relatives_populated', "source"
+    )
 
     def approve(self, request, queryset):
         queryset.update(confirmed="a")
@@ -826,6 +829,56 @@ class DeclarationAdmin(admin.ModelAdmin):
     list_filter = ("confirmed", "relatives_populated", "batch_number")
 
     actions = [populate_relatives, approve, reject, doublecheck]
+
+    def save_model(self, request, obj, form, change):
+        if not change:
+            decl = requests.get(
+                settings.DECLARATION_DETAILS_ENDPOINT.format(obj.declaration_id),
+                params={"format": "json"},
+                verify=False, timeout=60
+            ).json()["declaration"]
+
+            if "ft_src" in decl:
+                del decl["ft_src"]
+            if "index_card" in decl:
+                del decl["index_card"]
+
+            if decl["id"].startswith("nacp_"):
+                if "nacp_src" in decl:
+                    del decl["nacp_src"]
+
+                if decl["intro"]["doc_type"] == "Форма змін":
+                    return
+
+                obj.last_name = decl["general"]["last_name"]
+                obj.first_name = decl["general"]["name"]
+                obj.patronymic = decl["general"]["patronymic"]
+                obj.position_uk = decl["general"]["post"]["post"]
+                obj.office_uk = decl["general"]["post"]["office"]
+                obj.region_uk = decl["general"]["post"]["region"]
+                obj.year = decl["intro"]["declaration_year"]
+                obj.source = decl
+                obj.batch_number = 0
+                obj.nacp_declaration = True
+                obj.url = settings.DECLARATION_DETAILS_ENDPOINT.format(decl["id"])
+                obj.fuzziness = 0
+            else:
+                obj.last_name = decl["general"]["last_name"]
+                obj.first_name = decl["general"]["name"]
+                obj.patronymic = decl["general"]["patronymic"]
+                obj.position_uk = decl["general"]["post"]["post"]
+                obj.office_uk = decl["general"]["post"]["office"]
+                obj.region_uk = decl["general"]["post"]["region"]
+                obj.year = decl["intro"]["declaration_year"]
+                obj.source = decl
+                obj.batch_number = 0
+                obj.url = settings.DECLARATION_DETAILS_ENDPOINT.format(decl["id"])
+                obj.fuzziness = 0
+
+            if not obj.family:
+                obj.relatives_populated = True
+
+        super(DeclarationAdmin, self).save_model(request, obj, form, change)
 
 
 class ActionLogAdmin(admin.ModelAdmin):

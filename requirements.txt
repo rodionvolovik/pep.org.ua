@@ -21,7 +21,7 @@ django-recaptcha==1.0.4
 easy-thumbnails==2.4.1
 jsonfield==1.0.3
 cryptography==0.9.3
-raven==6.0.0
+raven==6.3.0
 elasticsearch-dsl==5.3.0
 python-levenshtein==0.12.0
 XlsxWriter==1.0.0

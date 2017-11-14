@@ -8,10 +8,9 @@ from django.forms.models import model_to_dict
 from django.utils.translation import ugettext_noop as _
 from django.utils.translation import ugettext_lazy
 
-
 from jsonfield import JSONField
-from core.fields import RedactorField
 
+from core.fields import RedactorField
 from core.utils import (
     parse_fullname, parse_family_member, RELATIONS_MAPPING, render_date)
 
@@ -32,14 +31,14 @@ class Declaration(models.Model):
     declaration_id = models.CharField(
         "Ідентифікатор", max_length=50, db_index=True)
 
-    last_name = models.CharField("Прізвище", max_length=40)
-    first_name = models.CharField("Ім'я", max_length=40)
+    last_name = models.CharField("Прізвище", max_length=40, blank=True)
+    first_name = models.CharField("Ім'я", max_length=40, blank=True)
     patronymic = models.CharField("По-батькові", max_length=40, blank=True)
     position = models.CharField("Посада", max_length=512, blank=True)
     office = models.CharField("Відомство", max_length=512, blank=True)
     region = models.CharField("Регіон", max_length=50, blank=True)
     year = models.CharField("Рік", max_length=4, blank=True, db_index=True)
-    source = JSONField()
+    source = JSONField(blank=True)
     url = models.URLField("Посилання", max_length=512, blank=True)
     confirmed = models.CharField(
         "Підтверджено", max_length=1, choices=STATUS_CHOICES, default="p",
@@ -67,6 +66,9 @@ class Declaration(models.Model):
 
     @property
     def family(self):
+        if not self.source:
+            return []
+
         res = []
         if ("family" in self.source["general"] and
                 self.source["general"]["family"]):
@@ -138,7 +140,7 @@ class Declaration(models.Model):
                     try:
                         expense_amount = float(expense.get("costAmount", "0"))
                         resp["expenses_of_declarant"] += expense_amount
-                    except ValueError:
+                    except (ValueError, AttributeError):
                         pass
         else:
             resp["expenses_of_declarant"] = ugettext_lazy("Не зазначалось")
@@ -279,7 +281,7 @@ class Declaration(models.Model):
                             resp["gifts_of_declarant"] += income_size
                         else:
                             resp["gifts_of_family"] += income_size
-                    except ValueError:
+                    except (ValueError, AttributeError):
                         pass
         else:
             if "income" in self.source:
@@ -311,7 +313,7 @@ class Declaration(models.Model):
                             resp["liabilities_of_declarant"][currency] += liability_amount
                         else:
                             resp["liabilities_of_family"][currency] += liability_amount
-                    except ValueError:
+                    except (ValueError, AttributeError):
                         pass
         else:
             if "liabilities" in self.source:
