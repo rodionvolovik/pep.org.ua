@@ -110,7 +110,7 @@ class Command(BaseCommand):
         created_records = 0
         updated_records = 0
         for d in Declaration.objects.filter(
-                nacp_declaration=True, confirmed="a"):
+                nacp_declaration=True, confirmed="a").nocache():
             data = d.source["nacp_orig"]
 
             if isinstance(data.get("step_12"), dict):

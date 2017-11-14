@@ -857,7 +857,7 @@ class DeclarationAdmin(TranslationAdmin):
                 obj.region_uk = decl["general"]["post"]["region"]
                 obj.year = decl["intro"]["declaration_year"]
                 obj.source = decl
-                obj.batch_number = 0
+                obj.batch_number = 100
                 obj.nacp_declaration = True
                 obj.url = settings.DECLARATION_DETAILS_ENDPOINT.format(decl["id"])
                 obj.fuzziness = 0
@@ -870,7 +870,7 @@ class DeclarationAdmin(TranslationAdmin):
                 obj.region_uk = decl["general"]["post"]["region"]
                 obj.year = decl["intro"]["declaration_year"]
                 obj.source = decl
-                obj.batch_number = 0
+                obj.batch_number = 100
                 obj.url = settings.DECLARATION_DETAILS_ENDPOINT.format(decl["id"])
                 obj.fuzziness = 0
 
