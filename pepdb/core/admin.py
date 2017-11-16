@@ -554,7 +554,7 @@ def export_to_excel(modeladmin, request, queryset):
         output.read(),
         content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
-    response['Content-Disposition'] = "attachment; filename=test.xlsx"
+    response['Content-Disposition'] = "attachment; filename=translations.xlsx"
 
     return response
 
