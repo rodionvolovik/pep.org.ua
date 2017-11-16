@@ -28,6 +28,8 @@ from grappelli_modeltranslation.admin import (
     TranslationGenericStackedInline
 )
 import requests
+import xlsxwriter
+import StringIO
 
 from core.models import (
     Country, Person, Company, Person2Person, Document, Person2Country,
@@ -532,6 +534,33 @@ class EmptyValueFilter(admin.SimpleListFilter):
                 Q(translation="") | Q(translation__isnull=True))
 
 
+def export_to_excel(modeladmin, request, queryset):
+    output = StringIO.StringIO()
+
+    workbook = xlsxwriter.Workbook(output)
+    ws = workbook.add_worksheet("translations")
+    keys = ["term", "translation", "alt_translation"]
+
+    for j, k in enumerate(keys):
+        ws.write(0, j, k)
+
+    for i, trans in enumerate(queryset):
+        for j, k in enumerate(keys):
+            ws.write(i + 1, j, getattr(trans, k))
+
+    workbook.close()
+    output.seek(0)
+    response = HttpResponse(
+        output.read(),
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+    response['Content-Disposition'] = "attachment; filename=test.xlsx"
+
+    return response
+
+export_to_excel.short_description = "Експортувати в Excel"
+
+
 class Ua2RuDictionaryAdmin(admin.ModelAdmin):
     list_display = ("term", "translation", "alt_translation")
     list_editable = ("translation", "alt_translation")
@@ -539,6 +568,7 @@ class Ua2RuDictionaryAdmin(admin.ModelAdmin):
     search_fields = ["term", "translation", "alt_translation"]
 
     list_filter = (EmptyValueFilter,)
+    actions = [export_to_excel]
 
 
 class Ua2EnDictionaryAdmin(admin.ModelAdmin):
@@ -548,6 +578,7 @@ class Ua2EnDictionaryAdmin(admin.ModelAdmin):
     search_fields = ["term", "translation"]
 
     list_filter = (EmptyValueFilter,)
+    actions = [export_to_excel]
 
 
 class CountryAdmin(TranslationAdmin):
