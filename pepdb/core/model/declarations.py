@@ -60,8 +60,16 @@ class Declaration(models.Model):
         ])
 
         income = self.get_income()
-        d["income"] = income["income_of_declarant"]
-        d["family_income"] = income["income_of_family"]
+
+        try:
+            d["income"] = float(income["income_of_declarant"])
+        except ValueError:
+            pass
+
+        try:
+            d["family_income"] = income["income_of_family"]
+        except ValueError:
+            pass
 
         return d
 
