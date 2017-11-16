@@ -388,12 +388,12 @@ class Person(models.Model, AbstractNode):
         d["related_companies"] = [
             i.to_company_dict()
             for i in self.person2company_set.prefetch_related("to_company")]
+
         d["declarations"] = [
             i.to_dict()
             for i in Declaration.objects.filter(
                 person=self,
-                confirmed="a",
-                nacp_declaration=False
+                confirmed="a"
             )
         ]
 
@@ -497,10 +497,6 @@ class Person(models.Model, AbstractNode):
                 self.city_of_birth_en = t.translation
 
         super(Person, self).save(*args, **kwargs)
-
-    def declarations_extra_fields(self):
-        for decl in self.declaration_extras:
-            pass
 
     def get_declarations(self):
         decls = Declaration.objects.filter(

@@ -40,7 +40,17 @@ class Command(BaseCommand):
             if "nacp_src" in decl:
                 del decl["nacp_src"]
 
-            if decl["intro"]["doc_type"] != "Щорічна":
+            allowed_types = ["Щорічна"]
+            if (person.is_pep and
+                    person.declaration_set.filter(nacp_declaration=True, confirmed="a").count() == 0):
+
+                self.stdout.write(
+                    "There are no declarations for poor %s at all, thus extending the scope" % (person,)
+                )
+
+                allowed_types += ["Перед звільненням", "Після звільнення", "Кандидата на посаду"]
+
+            if decl["intro"]["doc_type"] not in allowed_types:
                 return
 
             d = Declaration.objects.create(

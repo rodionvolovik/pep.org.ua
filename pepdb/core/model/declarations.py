@@ -59,8 +59,9 @@ class Declaration(models.Model):
             "position_en", "office_en", "region_en", "url"
         ])
 
-        d["income"] = self.source["income"]['5'].get("value")
-        d["family_income"] = self.source["income"]['5'].get("family")
+        income = self.get_income()
+        d["income"] = income["income_of_declarant"]
+        d["family_income"] = income["income_of_family"]
 
         return d
 
@@ -132,7 +133,7 @@ class Declaration(models.Model):
                             resp["income_of_declarant"] += income_size
                         else:
                             resp["income_of_family"] += income_size
-                    except ValueError:
+                    except (ValueError, AttributeError):
                         pass
 
             if isinstance(self.source["nacp_orig"].get("step_14"), dict):
@@ -334,6 +335,13 @@ class Declaration(models.Model):
                             pass
 
         return resp
+
+    @property
+    def declaration_type(self):
+        if self.nacp_declaration:
+            return self.source["intro"].get("doc_type", "Щорічна")
+        else:
+            return "Щорічна"
 
     def resolve_person(self, family_id):
         """

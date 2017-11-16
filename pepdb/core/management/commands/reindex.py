@@ -47,7 +47,8 @@ class Command(BaseCommand):
 
         docs_to_index = [
             ElasticPerson(**p.to_dict())
-            for p in Person.objects.all()]
+            for p in Person.objects.all().nocache()
+        ]
 
         self.bulk_write(conn, docs_to_index)
 
@@ -66,7 +67,7 @@ class Command(BaseCommand):
 
         docs_to_index = [
             ElasticCompany(**p.to_dict())
-            for p in Company.objects.all()]
+            for p in Company.objects.all().nocache()]
 
         self.bulk_write(conn, docs_to_index)
 

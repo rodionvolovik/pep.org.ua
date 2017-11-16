@@ -677,7 +677,7 @@ class DeclarationAdmin(TranslationAdmin):
     fullname_pep.admin_order_field = 'person__last_name_uk'
 
     def position_decl(self, obj):
-        return ("%s @ %s" % (obj.position, obj.office))
+        return ("%s @ %s, %s" % (obj.position, obj.office, obj.declaration_type))
     position_decl.short_description = 'Посада з декларації'
 
     def position_pep(self, obj):
