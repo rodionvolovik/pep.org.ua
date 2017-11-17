@@ -63,12 +63,12 @@ class Declaration(models.Model):
 
         try:
             d["income"] = float(income["income_of_declarant"])
-        except ValueError:
+        except (ValueError, TypeError):
             pass
 
         try:
-            d["family_income"] = income["income_of_family"]
-        except ValueError:
+            d["family_income"] = float(income["income_of_family"])
+        except (ValueError, TypeError):
             pass
 
         return d
