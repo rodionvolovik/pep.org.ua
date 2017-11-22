@@ -18,7 +18,7 @@
 
 {% block content %}
 {% set related_persons = person.all_related_persons %}
-{% set assets, related_companies = person.all_related_companies %}
+{% set related_companies = person.all_related_companies %}
 {% set workplaces = person.workplaces %}
 <div class="container" itemscope itemtype="http://schema.org/Person">
     <div class="row">
@@ -61,16 +61,19 @@
                     <li><a href="#declarations" class="btn btn-transp trans"><i class="fa fa-file-text-o"></i><span>{{ _("Декларації") }}</span></a></li>
                 {% endif %}
                 {% if LANGUAGE_CODE == "en" %}
-                    {% if assets or person.reputation_assets_en %}
+                    {% if person.reputation_assets_en %}
                         <li><a href="#assets" class="btn btn-transp trans"><i class="fa fa-cubes"></i><span>{{ _("Статки") }}</span></a></li>
                     {% endif %}
                 {% else %}
-                    {% if assets or person.reputation_assets %}
+                    {% if person.reputation_assets %}
                         <li><a href="#assets" class="btn btn-transp trans"><i class="fa fa-cubes"></i><span>{{ _("Статки") }}</span></a></li>
                     {% endif %}
                 {% endif %}
-                {% if related_companies %}
+                {% if related_companies.rest %}
                     <li><a href="#related-companies" class="btn btn-transp trans"><i class="fa fa-building-o"></i><span>{{ _("Пов'язані юридичні особи") }}</span></a></li>
+                {% endif %}
+                {% if related_companies.banks %}
+                    <li><a href="#bank-accounts" class="btn btn-transp trans"><i class="fa fa-money-o"></i><span>{{ _("Банківські рахунки") }}</span></a></li>
                 {% endif %}
             </ul>
         </aside>
@@ -324,12 +327,10 @@
 
             {# TODO: remove at all? #}
             {% if LANGUAGE_CODE == "en" %}
-                {% if assets or person.reputation_assets_en %}
+                {% if person.reputation_assets_en %}
                     <div id="assets" class="sub box">
                         <h3>{{ _("Статки:") }}</h3>
                         <div class="printWrap">
-                            {{ render_person_companies(assets, "Asset") }}
-
                             {% if person.reputation_assets %}
                                 {{ person.reputation_assets|richtext }}
                             {% endif %}
@@ -337,12 +338,10 @@
                     </div>
                 {% endif %}
             {% else %}
-                {% if assets or person.reputation_assets_uk %}
+                {% if person.reputation_assets_uk %}
                     <div id="assets" class="sub box">
                         <h3>{{ _("Статки:") }}</h3>
                         <div class="printWrap">
-                            {{ render_person_companies(assets, "Asset") }}
-
                             {% if person.reputation_assets_uk %}
                                 {{ person.reputation_assets_uk|richtext }}
                             {% endif %}
@@ -351,11 +350,20 @@
                 {% endif %}
             {% endif %}
 
-            {% if related_companies %}
+            {% if related_companies.rest %}
                 <div id="related-companies" class="sub box">
                     <h3>{{ _("Пов'язані юридичні особи:") }}</h3>
                     <div class="printWrap">
-                        {{ render_person_companies(related_companies, "RelatedCompany") }}
+                        {{ render_person_companies(related_companies.rest, "RelatedCompany") }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if related_companies.banks %}
+                <div id="bank-accounts" class="sub box">
+                    <h3>{{ _("Банківські рахунки:") }}</h3>
+                    <div class="printWrap">
+                        {{ render_person_companies(related_companies.banks, "Banks") }}
                     </div>
                 </div>
             {% endif %}
@@ -380,7 +388,7 @@
 {% endblock %}
 
 {#
-    # Urging django i18n to pick textes below for translation
+    # Urging django i18n to pick texts below for translation
     {{ _("meters") }}
     {{ _("gectars") }}
     {{ _("sotok") }}

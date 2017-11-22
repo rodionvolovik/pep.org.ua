@@ -166,6 +166,8 @@ class Company2CountryInline(nested_admin.NestedTabularInline):
 
     inlines = [ProofsInline]
     raw_id_fields = ('to_country',)
+    classes = ('c2country-block',)
+
     autocomplete_lookup_fields = {
         'fk': ['to_country'],
     }
@@ -206,6 +208,7 @@ class Company2PersonInline(TranslationNestedStackedInline):
               ("date_confirmed", "date_confirmed_details")]
 
     inline_classes = ('grp-collapse grp-open',)
+    classes = ('p2c-block',)
     inlines = [ProofsInline]
 
     raw_id_fields = ('from_person',)
@@ -225,6 +228,7 @@ class Company2CompanyInline(nested_admin.NestedTabularInline):
     fields = ["relationship_type", "to_company", "date_established",
               "date_finished", "date_confirmed", "equity_part"]
     inlines = [ProofsInline]
+    classes = ('c2c-block',)
 
     raw_id_fields = ('to_company',)
     autocomplete_lookup_fields = {
@@ -248,6 +252,8 @@ class Company2CompanyBackInline(nested_admin.NestedTabularInline):
               "date_finished", "date_confirmed", "equity_part"]
 
     inlines = [ProofsInline]
+    classes = ('c2c-block',)
+
     raw_id_fields = ('from_company',)
     autocomplete_lookup_fields = {
         'fk': ['from_company'],

@@ -359,6 +359,7 @@ class Company(models.Model, AbstractNode):
         res = {
             "founders": [],
             "rest": [],
+            "banks": [],
             "all": []
         }
 
@@ -370,6 +371,8 @@ class Company(models.Model, AbstractNode):
                        "Колишній власник/засновник",
                        "Колишній співвласник/співзасновник"]:
                 res["founders"].append(p)
+            elif rtp == "Клієнт банку":
+                res["banks"].append(p)
             else:
                 res["rest"].append(p)
 

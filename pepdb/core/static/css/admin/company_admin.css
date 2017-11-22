@@ -9,3 +9,15 @@
 .field-status select {
     max-width: 150px!important;
 }
+
+.c2c-block .grp-module, .c2c-block .grp-td {
+    background: #fffee8!important;
+}
+
+.p2c-block .grp-module, .p2c-block .grp-td {
+    background: #e9ffe2!important;
+}
+
+.c2country-block .grp-module, .c2country-block .grp-td {
+    background: #ffeff1!important;
+}

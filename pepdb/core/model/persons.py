@@ -284,13 +284,21 @@ class Person(models.Model, AbstractNode):
 
     @property
     def all_related_companies(self):
-        # TODO: unify output format with all_related_persons
-        # TODO: adjust name to reflect that it's only a subset of companies
         companies = self.person2company_set.prefetch_related(
             "to_company", "proofs", "proofs__proof_document").filter(is_employee=False)
 
-        # TODO: remove at all?
-        return [], companies
+        banks = []
+        rest = []
+        for c in companies:
+            if c.relationship_type_uk == "Клієнт банку":
+                banks.append(c)
+            else:
+                rest.append(c)
+
+        return {
+            "banks": banks,
+            "rest": rest
+        }
 
     @property
     def all_related_persons(self):

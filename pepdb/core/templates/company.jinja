@@ -52,7 +52,7 @@
                 <li><a href="#dossier" class="btn btn-transp trans"><i class="fa fa-briefcase"></i><span>{{ _("Досьє") }}</span></a></li>
                 {% endif %}
 
-                {% if (company.bank_name_en and LANGUAGE_CODE == "en") or (company.bank_name_uk and LANGUAGE_CODE == "uk") %}
+                {% if related_companies.banks or (company.bank_name_en and LANGUAGE_CODE == "en") or (company.bank_name_uk and LANGUAGE_CODE == "uk") %}
                 <li><a href="#bank" class="btn btn-transp trans"><i class="fa fa-money"></i><span>{{ _("Фінансова інформація") }}</span></a></li>
                 {% endif %}
             </ul>
@@ -262,7 +262,8 @@
                                                 {% endfor %}
                                             </ul>
                                         </li>
-                                        {% endif %}                                    </ul>
+                                        {% endif %}
+                                    </ul>
                                 </li>
                             </ul>
                         </div>
@@ -297,10 +298,12 @@
                 </div>
             {% endif %}
 
-            {% if (company.bank_name_en and LANGUAGE_CODE == "en") or (company.bank_name_uk and LANGUAGE_CODE == "uk") %}
+            {% if related_companies.banks or (company.bank_name_en and LANGUAGE_CODE == "en") or (company.bank_name_uk and LANGUAGE_CODE == "uk") %}
                 <div id="bank" class="sub box">
                     <h3>{{ _("Фінансова інформація:") }}</h3>
                     <div class="printWrap">
+                        {{ render_company_companies(related_companies.banks, "Banks") }}
+
                         {% if company.bank_name_en and LANGUAGE_CODE == "en" %}
                             {{ company.bank_name_en|richtext }}
                         {% elif company.bank_name_uk and LANGUAGE_CODE == "uk" %}
