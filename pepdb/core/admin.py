@@ -305,6 +305,8 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
         extra_context = extra_context or {}
         extra_context['person2person_rels'] = json.dumps(
             Person2Person._relationships_explained)
+        extra_context['person2company_rels'] = json.dumps(
+            Person2Company._relationships_explained)
 
         return super(PersonAdmin, self).change_view(
             request, object_id, form_url, extra_context=extra_context)
@@ -313,6 +315,8 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
         extra_context = extra_context or {}
         extra_context['person2person_rels'] = json.dumps(
             Person2Person._relationships_explained)
+        extra_context['person2company_rels'] = json.dumps(
+            Person2Company._relationships_explained)
 
         return super(PersonAdmin, self).add_view(
             request, form_url, extra_context=extra_context)

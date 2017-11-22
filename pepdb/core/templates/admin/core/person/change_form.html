@@ -5,6 +5,24 @@
 
     <script type="text/javascript" charset="utf-8">
     	var person2person_rels = {{ person2person_rels|safe }};
+        var person2company_rels = {{ person2company_rels|safe }};
+
+        django.jQuery(function(){
+            var $ = django.jQuery;
+
+            function init() {
+                $(".mt-field-relationship_type-uk").each(function(i, box) {
+                    box = $(box);
+                    box.autocomplete({
+                        "source": person2company_rels
+                    });
+                })
+            }
+
+            init();
+
+            $(document.body).on("click", ".grp-add-handler", init);
+        });
 
 		grp.jQuery(function(){
 			var $ = grp.jQuery;
