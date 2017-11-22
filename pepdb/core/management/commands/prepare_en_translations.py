@@ -60,8 +60,8 @@ class Command(BaseCommand):
 
         x = (
             not_translated_regions | not_translated_positions |
-            not_translated_offices | not_translated_cities
-            # | not_translated_proofs
+            not_translated_offices | not_translated_cities |
+            not_translated_proofs
         )
 
         for term in x:

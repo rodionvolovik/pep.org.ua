@@ -9,11 +9,13 @@ from cStringIO import StringIO
 from django import forms
 from django.contrib import admin
 from django.db.models import Q
+from django.db import models
 from django.conf import settings
 from django.conf.urls import url
 from django.shortcuts import redirect, render
 from django.core.urlresolvers import reverse
 from django.utils import formats
+from django.forms import widgets
 from django.http import HttpResponse
 
 from django.utils.encoding import force_str
@@ -29,7 +31,6 @@ from grappelli_modeltranslation.admin import (
 )
 import requests
 import xlsxwriter
-import StringIO
 
 from core.models import (
     Country, Person, Company, Person2Person, Document, Person2Country,
@@ -62,12 +63,23 @@ class TranslationNestedStackedInline(nested_admin.NestedInlineModelAdminMixin, T
 
 
 class ProofsInline(nested_admin.NestedInlineModelAdminMixin, TranslationGenericStackedInline):
+    if 'grappelli' in settings.INSTALLED_APPS:
+        template = 'nesting/admin/inlines/grappelli_stacked.html'
+    else:
+        template = 'nesting/admin/inlines/stacked.html'
+
     formset = nested_admin.NestedBaseGenericInlineFormSet
+    inline_classes = ('grp-collapse grp-open',)
 
     model = RelationshipProof
     extra = 1
 
+    formfield_overrides = {
+        models.TextField: {'widget': widgets.Textarea(attrs={'rows': '1'})},
+    }
+
     raw_id_fields = ('proof_document',)
+    fields = ("proof_title", ("proof_document", "proof"))
     autocomplete_lookup_fields = {
         'fk': ['proof_document'],
     }
@@ -159,28 +171,8 @@ class Company2CountryInline(nested_admin.NestedTabularInline):
     }
 
 
-class Person2CompanyForm(forms.ModelForm):
-    class Meta:
-        model = Person2Company
-        fields = '__all__'
-
-        widgets = {
-            'relationship_type_uk': forms.Textarea(
-                attrs={
-                    'data-choices': json.dumps(
-                        Person2Company._relationships_explained),
-                    'class': "suggest"
-                }),
-        }
-        help_texts = {
-            'relationship_type_en':
-                "Залиште порожнім для автоматичного перекладу",
-        }
-
-
 class Person2CompanyInline(TranslationNestedStackedInline):
     model = Person2Company
-    form = Person2CompanyForm
     extra = 1
     fields = [("relationship_type", "is_employee", "to_company",),
               ("date_established", "date_established_details"),
@@ -195,12 +187,6 @@ class Person2CompanyInline(TranslationNestedStackedInline):
 
     inline_classes = ('grp-collapse grp-open',)
     inlines = [ProofsInline]
-
-    class Media:
-        css = {
-            "all": ("css/narrow.css",)
-        }
-        js = ("js/init_autocompletes.js",)
 
     def get_queryset(self, request):
         qs = super(Person2CompanyInline, self).get_queryset(request)
@@ -333,11 +319,9 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
 
 
 class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
-    change_list_template = "admin/company/change_list_template.html"
-
     class Media:
         css = {
-            'all': ('css/admin/company_admin.css',)
+            'all': ('css/admin/company_admin.css', "css/narrow.css",)
         }
 
     def edr_search(self, request):
@@ -351,7 +335,7 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
             )[:200].execute()
 
         return render(
-            request, "admin/company/edr_search.html", {
+            request, "admin/core/company/edr_search.html", {
                 "query": query,
                 "search_results": s
             }
@@ -394,7 +378,7 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     def edr_import(self, request):
         if request.method == "GET":
             return render(
-                request, "admin/company/edr_import.html",
+                request, "admin/core/company/edr_import.html",
                 {"form": EDRImportForm(initial={"is_state_companies": True})}
             )
         if request.method == "POST":
@@ -402,7 +386,7 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
 
             if not form.is_valid():
                 return render(
-                    request, "admin/company/edr_import.html",
+                    request, "admin/core/company/edr_import.html",
                     {"form": form}
                 )
 
@@ -436,7 +420,7 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     def unified_foreign_registry_import(self, request):
         if request.method == "GET":
             return render(
-                request, "admin/company/unified_import.html",
+                request, "admin/core/company/unified_import.html",
                 {"form": ForeignImportForm()}
             )
         if request.method == "POST":
@@ -444,7 +428,7 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
 
             if not form.is_valid():
                 return render(
-                    request, "admin/company/unified_import.html",
+                    request, "admin/core/company/unified_import.html",
                     {"form": form}
                 )
 
@@ -504,12 +488,29 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
 
     inlines = (Company2PersonInline, Company2CompanyInline,
                Company2CompanyBackInline, Company2CountryInline)
+
     list_display = ("pk", "name_uk", "short_name_uk", "edrpou",
                     "state_company", "legal_entity", "status", "management")
     list_editable = ("name_uk", "short_name_uk", "edrpou", "state_company",
                      "legal_entity", "status")
     search_fields = ["name_uk", "short_name_uk", "edrpou"]
     actions = [make_published, make_unpublished]
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['person2company_rels'] = json.dumps(
+            Person2Company._relationships_explained)
+
+        return super(CompanyAdmin, self).change_view(
+            request, object_id, form_url, extra_context=extra_context)
+
+    def add_view(self, request, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['person2company_rels'] = json.dumps(
+            Person2Company._relationships_explained)
+
+        return super(CompanyAdmin, self).add_view(
+            request, form_url, extra_context=extra_context)
 
 
 class EmptyValueFilter(admin.SimpleListFilter):
@@ -535,7 +536,7 @@ class EmptyValueFilter(admin.SimpleListFilter):
 
 
 def export_to_excel(modeladmin, request, queryset):
-    output = StringIO.StringIO()
+    output = StringIO()
 
     workbook = xlsxwriter.Workbook(output)
     ws = workbook.add_worksheet("translations")
