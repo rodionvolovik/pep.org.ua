@@ -1086,7 +1086,7 @@ msgstr "Associated legal entities"
 
 #: core/templates/person.jinja:76
 msgid "Банківські рахунки"
-msgstr "Bank accounts
+msgstr "Bank accounts"
 
 #: core/templates/person.jinja:100
 msgid "Інші імена"
