@@ -20,11 +20,12 @@ from cryptography.fernet import InvalidToken
 
 from core.models import Person, Declaration, Country, Company, ActionLog
 from core.pdf import pdf_response
-from core.utils import is_cyr, blacklist, add_encrypted_url, unique
+from core.utils import is_cyr, add_encrypted_url, unique, blacklist
 from core.paginator import paginated_search
 from core.forms import FeedbackForm
 from core.auth import logged_in_or_basicauth
 from core.api import XmlItemExporter
+
 
 
 from core.elastic_models import (
@@ -389,17 +390,13 @@ def export_persons(request, fmt):
     if not request.user.has_perm("core.export_persons"):
         return HttpResponseForbidden()
 
-    data = [
-        blacklist(
-            add_encrypted_url(
-                p.to_dict(), request.user, "encrypted_person_redirect"),
-            [
-                "full_name_suggest_en", "dob_details", "dob",
-                "full_name_suggest", "id", "last_job_id", "risk_category"
-            ]
-        )
-        for p in ElasticPerson.search().scan()
-    ]
+    data = map(
+        lambda p: blacklist(
+            add_encrypted_url(p, request.user, "encrypted_person_redirect"),
+            ["id"]
+        ),
+        ElasticPerson.get_all_persons()
+    )
 
     ActionLog(
         user=request.user,

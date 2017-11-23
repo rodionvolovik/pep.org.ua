@@ -1,5 +1,6 @@
 from elasticsearch_dsl import DocType, Completion
-from core.utils import TranslatedField
+from core.utils import TranslatedField, blacklist
+from cacheops import cached
 
 
 class RangeRelevantEntitiesMixin(object):
@@ -51,6 +52,20 @@ class Person(DocType, RangeRelevantEntitiesMixin):
         "last_workplace", "last_workplace_en")
     translated_last_job_title = TranslatedField(
         "last_job_title", "last_job_title_en")
+
+    @classmethod
+    @cached(timeout=24 * 60 * 60)
+    def get_all_persons(cls):
+        return [
+            blacklist(
+                p.to_dict(),
+                [
+                    "full_name_suggest_en", "dob_details", "dob",
+                    "full_name_suggest", "last_job_id", "risk_category"
+                ]
+            )
+            for p in cls.search().scan()
+        ]
 
     class Meta:
         index = 'peps'
