@@ -98,6 +98,7 @@ class Person2PersonInline(TranslationNestedStackedInline):
     ]
 
     inline_classes = ('grp-collapse grp-open',)
+    classes = ('p2p-block',)
 
     raw_id_fields = ('to_person',)
     autocomplete_lookup_fields = {
@@ -121,6 +122,7 @@ class Person2PersonBackInline(TranslationNestedStackedInline):
 
     inlines = [ProofsInline]
     inline_classes = ('grp-collapse grp-open',)
+    classes = ('p2p-block',)
 
     raw_id_fields = ('from_person',)
     autocomplete_lookup_fields = {
@@ -150,6 +152,7 @@ class Person2CountryInline(nested_admin.NestedStackedInline):
               ("date_confirmed", "date_confirmed_details")]
 
     inline_classes = ('grp-collapse grp-open',)
+    classes = ('p2country-block', )
     inlines = [ProofsInline]
 
     raw_id_fields = ('to_country',)
@@ -177,6 +180,7 @@ class Person2CompanyInline(TranslationNestedStackedInline):
     model = Person2Company
     extra = 1
     fields = [("relationship_type", "is_employee", "to_company",),
+              ("share",),
               ("date_established", "date_established_details"),
               ("date_finished", "date_finished_details"),
               ("date_confirmed", "date_confirmed_details")]
@@ -188,6 +192,8 @@ class Person2CompanyInline(TranslationNestedStackedInline):
     }
 
     inline_classes = ('grp-collapse grp-open',)
+    classes = ('p2p-block',)
+
     inlines = [ProofsInline]
 
     def get_queryset(self, request):
@@ -276,11 +282,16 @@ class DeclarationExtraInline(admin.TabularInline):
 
 
 class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
+    class Media:
+        css = {
+            'all': ('css/admin/person_admin.css',)
+        }
+
     inlines = (
         Person2PersonInline,
         Person2PersonBackInline,
+        Person2CompanyInline,
         Person2CountryInline,
-        Person2CompanyInline
     )
 
     list_display = ("last_name_uk", "first_name_uk", "patronymic_uk",

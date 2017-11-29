@@ -209,6 +209,7 @@ class Person2Company(AbstractRelationship):
 
     share = models.DecimalField(
         null=True,
+        blank=True,
         decimal_places=6,
         max_digits=9,
         verbose_name="Розмір частки (відсотки)"

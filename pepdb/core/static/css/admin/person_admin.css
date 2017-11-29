@@ -1,0 +1,11 @@
+.p2c-block .grp-module, .c2c-block .grp-td {
+    background: #fffee8!important;
+}
+
+.p2p-block .grp-module, .p2c-block .grp-td {
+    background: #e9ffe2!important;
+}
+
+.p2country-block .grp-module, .c2country-block .grp-td {
+    background: #ffeff1!important;
+}
