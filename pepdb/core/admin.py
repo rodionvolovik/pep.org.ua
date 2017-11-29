@@ -192,7 +192,7 @@ class Person2CompanyInline(TranslationNestedStackedInline):
     }
 
     inline_classes = ('grp-collapse grp-open',)
-    classes = ('p2p-block',)
+    classes = ('p2c-block',)
 
     inlines = [ProofsInline]
 
