@@ -201,7 +201,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_URL = '/media/'
 
-REDACTOR_OPTIONS = {'lang': 'ua'}
+REDACTOR_OPTIONS = {'lang': 'ua', 'air': True}
 REDACTOR_UPLOAD = 'uploads/'
 
 
