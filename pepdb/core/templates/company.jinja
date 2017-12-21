@@ -42,7 +42,7 @@
                 <li><a href="#managers" class="btn btn-transp trans"><i class="fa fa-users"></i><span>{{ _("Керівництво") }}</span></a></li>
                 {% endif %}
 
-                {% if related_persons.rest or related_countries.rest or related_companies.rest %}
+                {% if related_persons.bank_customers or related_persons.rest or related_countries.rest or related_companies.rest %}
                 <li><a href="#connections" class="btn btn-transp trans"><i class="fa fa-heart"></i><span>{{ _("Зв'язки") }}</span></a></li>
                 {% endif %}
 
@@ -53,7 +53,7 @@
                 {% endif %}
 
                 {% if related_companies.banks or (company.bank_name_en and LANGUAGE_CODE == "en") or (company.bank_name_uk and LANGUAGE_CODE == "uk") %}
-                <li><a href="#bank" class="btn btn-transp trans"><i class="fa fa-money"></i><span>{{ _("Фінансова інформація") }}</span></a></li>
+                <li><a href="#bank" class="btn btn-transp trans"><i class="fa fa-money"></i><span>{{ _("Банківські рахунки") }}</span></a></li>
                 {% endif %}
             </ul>
         </aside>
@@ -198,7 +198,7 @@
                 </div>
             {% endif %}
 
-            {% if related_persons.rest or related_countries.rest or related_companies.rest %}
+            {% if related_persons.bank_customers or related_persons.rest or related_countries.rest or related_companies.rest %}
                 <div id="connections" class="sub box">
                     <h3>{{ _("Зв'язки:") }}</h3>
                     <div class="printWrap">
@@ -212,6 +212,14 @@
                                             <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Пов'язані особи") }}</span>
                                             <ul class="h">
                                                 {{ render_related_persons(related_persons.rest, "worked", for_company=True) }}
+                                            </ul>
+                                        </li>
+                                        {% endif %}
+                                        {% if related_persons.bank_customers %}
+                                        <li>
+                                            <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Клієнти банку") }}</span>
+                                            <ul class="h">
+                                                {{ render_related_persons(related_persons.bank_customers, "bank_customers", for_company=True) }}
                                             </ul>
                                         </li>
                                         {% endif %}
@@ -300,7 +308,7 @@
 
             {% if related_companies.banks or (company.bank_name_en and LANGUAGE_CODE == "en") or (company.bank_name_uk and LANGUAGE_CODE == "uk") %}
                 <div id="bank" class="sub box">
-                    <h3>{{ _("Фінансова інформація:") }}</h3>
+                    <h3>{{ _("Банківські рахунки:") }}</h3>
                     <div class="printWrap">
                         {{ render_company_companies(related_companies.banks, "Banks") }}
 

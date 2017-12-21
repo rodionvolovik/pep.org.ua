@@ -271,6 +271,7 @@ class Company(models.Model, AbstractNode):
             "managers": [],
             "founders": [],
             "sanctions": [],
+            "bank_customers": [],
             "rest": []
         }
 
@@ -293,6 +294,10 @@ class Company(models.Model, AbstractNode):
                     "колишній засновник/учасник", "бенефіціарний власник",
                     "номінальний власник"]:
                 res["founders"].append(p)
+                add_to_rest = False
+
+            elif rtp.lower() in ["клієнт банку"]:
+                res["bank_customers"].append(p)
                 add_to_rest = False
 
             if p.reputation_sanctions:
