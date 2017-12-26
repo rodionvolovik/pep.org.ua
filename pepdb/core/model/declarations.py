@@ -464,7 +464,7 @@ class Declaration(models.Model):
                             for f in self.source["estate"][field]:
                                 seen.add(_get_key_for_paper(f, section))
                                 resp["assets_of_declarant"][section].append(
-                                    _convert_space_values(f["space"], f["space_units"])
+                                    _convert_space_values(f.get("space", "0"), f.get("space_units"))
                                 )
                         except (ValueError, UnicodeEncodeError):
                             pass
@@ -483,7 +483,7 @@ class Declaration(models.Model):
                                 seen.add(k)
 
                                 resp["assets_of_family"][section].append(
-                                    _convert_space_values(f["space"], f["space_units"])
+                                    _convert_space_values(f.get("space", "0"), f.get("space_units"))
                                 )
                         except (ValueError, UnicodeEncodeError):
                             pass
