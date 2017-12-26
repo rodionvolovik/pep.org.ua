@@ -288,10 +288,6 @@ def person_details(request, person_id):
     context = {
         "person": person,
         "query": "",
-        "declarations": Declaration.objects.filter(
-            nacp_declaration=False,
-            person=person, confirmed="a").order_by("year"),
-
         "all_declarations": person.get_declarations()
     }
 

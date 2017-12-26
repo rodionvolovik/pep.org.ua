@@ -1,5 +1,6 @@
 # coding: utf-8
 from __future__ import unicode_literals
+import re
 import logging
 from collections import defaultdict
 
@@ -342,6 +343,249 @@ class Declaration(models.Model):
                         except (ValueError, UnicodeEncodeError):
                             pass
 
+        return resp
+
+    def get_active_assets(self):
+        resp = {
+            "year": self.year,
+            "url": self.url,
+            "assets_of_declarant": defaultdict(list),
+            "assets_of_family": defaultdict(list),
+        }
+
+        realty = self.get_real_estate()
+        vehicles = self.get_vehicles()
+
+        resp["assets_of_declarant"].update(realty["assets_of_declarant"])
+        resp["assets_of_family"].update(realty["assets_of_family"])
+        resp["assets_of_declarant"].update(vehicles["assets_of_declarant"])
+        resp["assets_of_family"].update(vehicles["assets_of_family"])
+
+        return resp
+
+    def get_real_estate(self):
+        def _convert_space_values(total_area, area_units):
+            areas_koef = {
+                "га": 10000,
+                "cоток": 100
+            }
+
+            try:
+                total_area = total_area.replace(',', '.')
+
+                if not total_area:
+                    return 0
+
+                if not area_units:
+                    return float(total_area)
+
+                return float(total_area) * areas_koef.get(area_units, 1)
+            except ValueError:
+                return 0
+
+        def _get_key_for_paper(f, field):
+            return "{}.{}.{}".format(f.get("space"), field, f.get("region")).lower()
+
+        def _get_key_for_nacp(f, total_area):
+            return "{}.{}.{}".format(f.get("ua_cityType"), total_area, f.get("objectType")).lower()
+
+        resp = {
+            "year": self.year,
+            "url": self.url,
+            "assets_of_declarant": defaultdict(list),
+            "assets_of_family": defaultdict(list),
+        }
+
+        seen = set()
+
+        if self.nacp_declaration:
+            ESTATE_OBJECT_TYPE_MAPPING = {
+                'квартира': 'apartments',
+                'земельна ділянка': 'land',
+                'житловий будинок': 'houses',
+                'кімната': 'other',
+                'гараж': 'other',
+                'садовий (дачний) будинок': 'other',
+                'офіс': 'other',
+                'інше': 'other'
+            }
+            if isinstance(self.source["nacp_orig"].get("step_3"), dict):
+                for src in ["declarant", "family"]:
+                    for asset in self.source["nacp_orig"]["step_3"].values():
+                        try:
+                            person = asset.get("person", "1")
+                            if src == "declarant" and person != "1":
+                                continue
+
+                            if src == "family" and person == "1":
+                                continue
+
+                            area = _convert_space_values(asset.get("totalArea", "0"), "")
+                            k = _get_key_for_nacp(asset, area)
+                            rec_type = asset.get("objectType", "").lower()
+                            section = ESTATE_OBJECT_TYPE_MAPPING[rec_type]
+
+                            if person == "1":
+                                seen.add(k)
+                                resp["assets_of_declarant"][section].append(area)
+                            else:
+                                if k in seen:
+                                    continue
+
+                                seen.add(k)
+                                resp["assets_of_family"][section].append(area)
+                        except (ValueError, AttributeError):
+                            pass
+        else:
+            if "estate" in self.source:
+                ESTATE_OBJECT_TYPE_MAPPING_DECLARANT = {
+                    "23": "land",
+                    "24": "houses",
+                    "25": "apartments",
+                    "26": "other",
+                    "27": "other",
+                    "28": "other",
+                }
+
+                ESTATE_OBJECT_TYPE_MAPPING_FAMILY = {
+                    "29": "land",
+                    "30": "houses",
+                    "31": "apartments",
+                    "32": "other",
+                    "33": "other",
+                    "34": "other",
+                }
+
+                for field in ESTATE_OBJECT_TYPE_MAPPING_DECLARANT.keys():
+                    if field in self.source["estate"]:
+                        section = ESTATE_OBJECT_TYPE_MAPPING_DECLARANT[field]
+
+                        try:
+                            for f in self.source["estate"][field]:
+                                seen.add(_get_key_for_paper(f, section))
+                                resp["assets_of_declarant"][section].append(
+                                    _convert_space_values(f["space"], f["space_units"])
+                                )
+                        except (ValueError, UnicodeEncodeError):
+                            pass
+
+                for field in ESTATE_OBJECT_TYPE_MAPPING_FAMILY.keys():
+                    if field in self.source["estate"]:
+                        section = ESTATE_OBJECT_TYPE_MAPPING_FAMILY[field]
+
+                        try:
+                            for f in self.source["estate"][field]:
+                                k = _get_key_for_paper(f, section)
+
+                                if k in seen:
+                                    continue
+
+                                seen.add(k)
+
+                                resp["assets_of_family"][section].append(
+                                    _convert_space_values(f["space"], f["space_units"])
+                                )
+                        except (ValueError, UnicodeEncodeError):
+                            pass
+
+        return resp
+
+    def get_vehicles(self):
+        def _normalize_key(src):
+            s = re.sub(
+                "[.,\/#!$%\^&\*;:{}=\-_`~()]",
+                "",
+                src
+            )
+
+            return re.sub("\s+", "", s).lower()
+
+        def _get_key_for_paper(f):
+            return _normalize_key(
+                "{}|{}|{}".format(
+                    f.get("brand", ""),
+                    f.get("model", ""),
+                    f.get("graduationYear", "")
+                )
+            )
+
+        def _get_key_for_nacp(f):
+            return _normalize_key(
+                "{}|{}|{}".format(
+                    f.get("brand", ""),
+                    f.get("brand_info", ""),
+                    f.get("year", "")
+                )
+            )
+
+        resp = {
+            "year": self.year,
+            "url": self.url,
+            "assets_of_declarant": defaultdict(list),
+            "assets_of_family": defaultdict(list),
+        }
+
+        seen = set()
+
+        if self.nacp_declaration:
+            if isinstance(self.source["nacp_orig"].get("step_6"), dict):
+                for src in ["declarant", "family"]:
+                    for asset in self.source["nacp_orig"]["step_6"].values():
+                        try:
+                            person = asset.get("person", "1")
+                            if src == "declarant" and person != "1":
+                                continue
+
+                            if src == "family" and person == "1":
+                                continue
+
+                            k = _get_key_for_nacp(asset)
+                            vehicle = "{} {} {}".format(
+                                asset.get("brand", ""),
+                                asset.get("model", ""),
+                                asset.get("graduationYear", "")
+                            )
+
+                            if person == "1":
+                                seen.add(k)
+                                resp["assets_of_declarant"]["vehicles"].append(vehicle)
+                            else:
+                                if k in seen:
+                                    continue
+
+                                seen.add(k)
+                                resp["assets_of_family"]["vehicles"].append(vehicle)
+                        except (ValueError, AttributeError):
+                            pass
+        else:
+            if "vehicle" in self.source:
+                for field in ["34", "35", "36", "37", "38", "39"]:
+                    if field in self.source["vehicle"]:
+                        try:
+                            for f in self.source["vehicle"][field]:
+                                seen.add(_get_key_for_paper(f))
+
+                                resp["assets_of_declarant"]["vehicles"].append(
+                                    "{} {} {}".format(f.get("brand", ""), f.get("brand_info", ""), f.get("year", ""))
+                                )
+                        except (ValueError, UnicodeEncodeError):
+                            pass
+
+                for field in ["40", "41", "42", "43", "44"]:
+                    if field in self.source["vehicle"]:
+                        try:
+                            for f in self.source["vehicle"][field]:
+                                k = _get_key_for_paper(f)
+
+                                if k in seen:
+                                    continue
+
+                                seen.add(k)
+                                resp["assets_of_family"]["vehicles"].append(
+                                    "{} {} {}".format(f.get("brand", ""), f.get("brand_info", ""), f.get("year", ""))
+                                )
+                        except (ValueError, UnicodeEncodeError):
+                            pass
         return resp
 
     @property

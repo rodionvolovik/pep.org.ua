@@ -1742,3 +1742,8 @@ tr.additional_hidden > td {
 .detailed_relations p {
   display: inline;
 }
+
+.btn-16px {
+  font-size: 16px;
+  padding: 0;
+}

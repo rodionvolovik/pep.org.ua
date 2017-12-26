@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-21 18:59+0200\n"
+"POT-Creation-Date: 2017-12-26 15:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -478,55 +478,55 @@ msgstr "Under sanctions"
 msgid "Зареєстрована"
 msgstr "Registered"
 
-#: core/model/declarations.py:125 core/model/declarations.py:126
-#: core/model/declarations.py:127 core/model/declarations.py:159
-#: core/model/declarations.py:161 core/model/declarations.py:269
-#: core/model/declarations.py:270 core/model/declarations.py:298
-#: core/model/declarations.py:301
+#: core/model/declarations.py:126 core/model/declarations.py:127
+#: core/model/declarations.py:128 core/model/declarations.py:160
+#: core/model/declarations.py:162 core/model/declarations.py:270
+#: core/model/declarations.py:271 core/model/declarations.py:299
+#: core/model/declarations.py:302
 msgid "Не зазначено"
 msgstr "Not specified"
 
-#: core/model/declarations.py:155
+#: core/model/declarations.py:156
 msgid "Не зазначалось"
 msgstr "Not applicable"
 
-#: core/model/declarations.py:485
+#: core/model/declarations.py:731
 msgid "Загальна сума сукупного доходу, гривні"
 msgstr "Total amount of aggregate income (UAH)"
 
-#: core/model/declarations.py:486
+#: core/model/declarations.py:732
 msgid "Дарунки, призи, виграші"
 msgstr "Gifts, prizes, winnings"
 
-#: core/model/declarations.py:487
+#: core/model/declarations.py:733
 msgid "Земельні ділянки"
 msgstr "Land"
 
-#: core/model/declarations.py:488
+#: core/model/declarations.py:734
 msgid "Житлові будинки"
 msgstr "Residential buildings"
 
-#: core/model/declarations.py:489
+#: core/model/declarations.py:735 core/templates/_declaration.jinja:310
 msgid "Квартири"
 msgstr "Apartments"
 
-#: core/model/declarations.py:490
+#: core/model/declarations.py:736
 msgid "Інше нерухоме майно"
 msgstr "Other real estate"
 
-#: core/model/declarations.py:491
+#: core/model/declarations.py:737 core/templates/_declaration.jinja:371
 msgid "Транспортні засоби"
 msgstr "Vehicles"
 
-#: core/model/declarations.py:492
+#: core/model/declarations.py:738
 msgid "Вклади у банках"
 msgstr "Bank deposits"
 
-#: core/model/declarations.py:493
+#: core/model/declarations.py:739
 msgid "Фінансові зобов’язання"
 msgstr "Financial liabilities"
 
-#: core/model/declarations.py:494
+#: core/model/declarations.py:740
 msgid "Інші активи"
 msgstr "Other assets"
 
@@ -592,9 +592,7 @@ msgstr "Income declaration:"
 
 #: core/templates/_declaration.jinja:8 core/templates/_declaration.jinja:67
 #: core/templates/_declaration.jinja:219 core/templates/_declaration.jinja:268
-#: core/templates/_declaration.jinja:304 core/templates/_declaration.jinja:362
-#: core/templates/_declaration.jinja:393 core/templates/_declaration.jinja:424
-#: core/templates/_declaration.jinja:458
+#: core/templates/_declaration.jinja:307 core/templates/_declaration.jinja:370
 msgid "Рік"
 msgstr "Year"
 
@@ -624,9 +622,7 @@ msgstr "Expenses and other transactions of the declarant"
 
 #: core/templates/_declaration.jinja:19 core/templates/_declaration.jinja:83
 #: core/templates/_declaration.jinja:228 core/templates/_declaration.jinja:277
-#: core/templates/_declaration.jinja:325 core/templates/_declaration.jinja:382
-#: core/templates/_declaration.jinja:413 core/templates/_declaration.jinja:444
-#: core/templates/_declaration.jinja:484
+#: core/templates/_declaration.jinja:378
 msgid "Відкрити декларацію"
 msgstr "Open declaration"
 
@@ -784,43 +780,39 @@ msgstr ""
 msgid "Сума в декларанта"
 msgstr "Declarant's total"
 
-#: core/templates/_declaration.jinja:299
-msgid "Земельні ділянки:"
-msgstr "Land:"
+#: core/templates/_declaration.jinja:300
+msgid "Нерухомість декларанта і родини:"
+msgstr "Real estate of declarant and household (family):"
 
-#: core/templates/_declaration.jinja:305 core/templates/_declaration.jinja:363
-#: core/templates/_declaration.jinja:394 core/templates/_declaration.jinja:425
-msgid "Площа в декларанта"
-msgstr "Declarant's floor space total"
+#: core/templates/_declaration.jinja:308
+msgid "Земля"
+msgstr "Land"
 
-#: core/templates/_declaration.jinja:306 core/templates/_declaration.jinja:364
-#: core/templates/_declaration.jinja:395 core/templates/_declaration.jinja:426
-msgid "Площа в сім'ї"
-msgstr "Household (family) floor space total"
+#: core/templates/_declaration.jinja:309
+msgid "Будинки"
+msgstr "Residential buildings"
 
-#: core/templates/_declaration.jinja:357
-msgid "Житлові будинки:"
-msgstr "Residential buildings:"
+#: core/templates/_declaration.jinja:311
+msgid "Інша нерухомість"
+msgstr "Other real estate"
 
-#: core/templates/_declaration.jinja:388
-msgid "Квартири:"
-msgstr "Apartments:"
+#: core/templates/_declaration.jinja:318
+msgid "Електронна декларація"
+msgstr "e-Declaration"
 
-#: core/templates/_declaration.jinja:419
-msgid "Інше нерухоме майно:"
-msgstr "Other real estate:"
+#: core/templates/_declaration.jinja:318
+msgid "Паперова декларація"
+msgstr "Paper declaration"
 
-#: core/templates/_declaration.jinja:452
+#: core/templates/_declaration.jinja:322 core/templates/_declaration.jinja:331
+#: core/templates/_declaration.jinja:340 core/templates/_declaration.jinja:349
+#: core/templates/person.jinja:395
+msgid "м²"
+msgstr "sq. m"
+
+#: core/templates/_declaration.jinja:363
 msgid "Транспортні засоби:"
 msgstr "Vehicles:"
-
-#: core/templates/_declaration.jinja:459
-msgid "Авто в декларанта"
-msgstr "Declarant's vehicles"
-
-#: core/templates/_declaration.jinja:460
-msgid "Авто в сім'ї"
-msgstr "Household (family) vehicles"
 
 #: core/templates/_feedback_form.jinja:44
 msgid "Надіслати"
@@ -963,7 +955,6 @@ msgid "Пов'язані особи"
 msgstr "Close associates"
 
 #: core/templates/company.jinja:220
-#, fuzzy
 msgid "Клієнти банку"
 msgstr "Bank customers"
 
@@ -1161,10 +1152,6 @@ msgstr "hectars"
 msgid "sotok"
 msgstr "ares"
 
-#: core/templates/person.jinja:395
-msgid "м²"
-msgstr "sq. m"
-
 #: core/templates/search.jinja:12
 msgid "Результати пошуку"
 msgstr "Search results"
@@ -1180,6 +1167,27 @@ msgstr "Ukrainian"
 #: pepdb/settings.py:171
 msgid "English"
 msgstr "English"
+
+#~ msgid "Земельні ділянки:"
+#~ msgstr "Land:"
+
+#~ msgid "Площа в декларанта"
+#~ msgstr "Declarant's floor space total"
+
+#~ msgid "Площа в сім'ї"
+#~ msgstr "Household (family) floor space total"
+
+#~ msgid "Житлові будинки:"
+#~ msgstr "Residential buildings:"
+
+#~ msgid "Квартири:"
+#~ msgstr "Apartments:"
+
+#~ msgid "Інше нерухоме майно:"
+#~ msgstr "Other real estate:"
+
+#~ msgid "Авто в сім'ї"
+#~ msgstr "Household (family) vehicles"
 
 #~ msgid "Фінансова інформація"
 #~ msgstr "Financial information"

@@ -508,7 +508,7 @@ class Person(models.Model, AbstractNode):
 
     def get_declarations(self):
         decls = Declaration.objects.filter(
-            person=self, confirmed="a").order_by("year")
+            person=self, confirmed="a").order_by("year", "nacp_declaration")
 
         corrected = []
         res = []
