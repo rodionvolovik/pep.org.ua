@@ -291,7 +291,7 @@
                                 <ul>
                                     {% if related_persons.family %}
                                     <li>
-                                        <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Родина та близькі особи") }}</span>
+                                        <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Члени сім'ї") }}</span>
                                         <ul class="h">
                                             {{ render_related_persons(related_persons.family, "family") }}
                                         </ul>
@@ -299,7 +299,7 @@
                                     {% endif %}
                                     {% if related_persons.personal %}
                                     <li>
-                                        <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Персональні зв'язки") }}</span>
+                                        <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Особисті зв'язки") }}</span>
                                         <ul class="h">
                                             {{ render_related_persons(related_persons.personal, "personal") }}
                                         </ul>
