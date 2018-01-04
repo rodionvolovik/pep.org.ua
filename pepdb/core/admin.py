@@ -5,8 +5,9 @@ import datetime
 import json
 from unicodecsv import DictWriter, DictReader
 from cStringIO import StringIO
+import requests
+import xlsxwriter
 
-from django import forms
 from django.contrib import admin
 from django.db.models import Q
 from django.db import models
@@ -29,14 +30,12 @@ from grappelli_modeltranslation.admin import (
     TranslationAdmin, TranslationStackedInline,
     TranslationGenericStackedInline
 )
-import requests
-import xlsxwriter
 
 from core.models import (
     Country, Person, Company, Person2Person, Document, Person2Country,
     Person2Company, Company2Company, Company2Country, Ua2RuDictionary,
     Ua2EnDictionary, FeedbackMessage, Declaration, DeclarationExtra,
-    ActionLog, RelationshipProof)
+    ActionLog, RelationshipProof, DeclarationToLink, DeclarationToWatch)
 
 from core.forms import EDRImportForm, ForeignImportForm
 from core.importers.company import CompanyImporter
@@ -55,6 +54,7 @@ def make_unpublished(modeladmin, request, queryset):
 make_unpublished.short_description = "Приховати"
 
 
+# TODO: refactor to a smaller files
 class TranslationNestedStackedInline(nested_admin.NestedInlineModelAdminMixin, TranslationStackedInline):
     if 'grappelli' in settings.INSTALLED_APPS:
         template = 'nesting/admin/inlines/grappelli_stacked.html'
@@ -650,17 +650,7 @@ class FeedbackAdmin(admin.ModelAdmin):
             request, object_id, form_url, extra_context=extra_context)
 
 
-def populate_relatives(modeladmin, request, queryset):
-    return render(request, "admin/relatives.html", {
-        "qs": queryset,
-        "referer": request.META.get("HTTP_REFERER"),
-        "relations": Person2Person._relationships_explained.keys()
-    })
-
-populate_relatives.short_description = "Створити родичів"
-
-
-class DeclarationAdmin(TranslationAdmin):
+class DeclarationBaseAdmin(TranslationAdmin):
     def fullname_decl(self, obj):
         return ('<a href="%s" target="_blank">%s %s %s</a>' % (
             obj.url, obj.last_name, obj.first_name, obj.patronymic)).replace(
@@ -669,23 +659,6 @@ class DeclarationAdmin(TranslationAdmin):
     fullname_decl.short_description = 'ПІБ з декларації'
     fullname_decl.admin_order_field = 'last_name'
     fullname_decl.allow_tags = True
-    readonly_fields = (
-        'region', 'office', 'year', 'position', 'fuzziness',
-        'batch_number', 'first_name', 'last_name', 'patronymic',
-        'url', 'nacp_declaration', 'relatives_populated', "source"
-    )
-
-    def approve(self, request, queryset):
-        queryset.update(confirmed="a")
-    approve.short_description = "Опублікувати"
-
-    def reject(self, request, queryset):
-        queryset.update(confirmed="r")
-    reject.short_description = "Відхилити"
-
-    def doublecheck(self, request, queryset):
-        queryset.update(confirmed="c")
-    doublecheck.short_description = "На повторну перевірку"
 
     def fullname_pep(self, obj):
         return ('<a href="%s" target="_blank">%s %s %s</a><br/> %s' % (
@@ -715,6 +688,39 @@ class DeclarationAdmin(TranslationAdmin):
 
     position_pep.short_description = 'Посада з БД PEP'
     position_pep.allow_tags = True
+
+    list_select_related = ("person",)
+    list_per_page = 50
+
+
+def populate_relatives(modeladmin, request, queryset):
+    return render(request, "admin/relatives.html", {
+        "qs": queryset,
+        "referer": request.META.get("HTTP_REFERER"),
+        "relations": Person2Person._relationships_explained.keys()
+    })
+
+populate_relatives.short_description = "Створити родичів"
+
+
+class DeclarationAdmin(DeclarationBaseAdmin):
+    readonly_fields = (
+        'region', 'office', 'year', 'position', 'fuzziness',
+        'batch_number', 'first_name', 'last_name', 'patronymic',
+        'url', 'nacp_declaration', 'relatives_populated', "source"
+    )
+
+    def approve(self, request, queryset):
+        queryset.update(confirmed="a")
+    approve.short_description = "Опублікувати"
+
+    def reject(self, request, queryset):
+        queryset.update(confirmed="r")
+    reject.short_description = "Відхилити"
+
+    def doublecheck(self, request, queryset):
+        queryset.update(confirmed="c")
+    doublecheck.short_description = "На повторну перевірку"
 
     def get_urls(self):
         urls = super(DeclarationAdmin, self).get_urls()
@@ -860,9 +866,6 @@ class DeclarationAdmin(TranslationAdmin):
     family_table.short_description = 'Родина'
     family_table.allow_tags = True
 
-    list_select_related = ("person",)
-    list_per_page = 50
-
     list_display = (
         "pk", "fullname_pep", "fullname_decl", "position_pep", "position_decl",
         "region", "year", "family_table", "confirmed", "fuzziness", "batch_number")
@@ -902,6 +905,7 @@ class DeclarationAdmin(TranslationAdmin):
                 if decl["intro"]["doc_type"] == "Форма змін":
                     return
 
+                # TODO: DRY me
                 obj.last_name = decl["general"]["last_name"]
                 obj.first_name = decl["general"]["name"]
                 obj.patronymic = decl["general"]["patronymic"]
@@ -912,6 +916,7 @@ class DeclarationAdmin(TranslationAdmin):
                 obj.source = decl
                 obj.batch_number = 100
                 obj.nacp_declaration = True
+                obj.to_link = True
                 obj.url = settings.DECLARATION_DETAILS_ENDPOINT.format(decl["id"])
                 obj.fuzziness = 0
             else:
@@ -924,6 +929,7 @@ class DeclarationAdmin(TranslationAdmin):
                 obj.year = decl["intro"]["declaration_year"]
                 obj.source = decl
                 obj.batch_number = 100
+                obj.to_link = True
                 obj.url = settings.DECLARATION_DETAILS_ENDPOINT.format(decl["id"])
                 obj.fuzziness = 0
 
@@ -931,6 +937,36 @@ class DeclarationAdmin(TranslationAdmin):
                 obj.relatives_populated = True
 
         super(DeclarationAdmin, self).save_model(request, obj, form, change)
+
+
+class DeclarationMonitorAdmin(DeclarationBaseAdmin):
+    list_filter = (
+        "submitted", "acknowledged",
+    )
+
+    list_editable = ("to_link", )
+
+    def make_monitored(self, request, queryset):
+        queryset.update(acknowledged=True)
+    make_monitored.short_description = "Помітити як оброблене"
+
+    def make_unmonitored(self, request, queryset):
+        queryset.update(acknowledged=False)
+    make_unmonitored.short_description = "Помітити як необроблене"
+
+    actions = [make_monitored, make_unmonitored]
+
+    list_display = (
+        "pk", "fullname_pep", "fullname_decl", "position_pep", "position_decl",
+        "region", "year", "fuzziness", "acknowledged", "to_link", "submitted")
+
+    search_fields = [
+        'last_name', "first_name", "patronymic",
+        'person__last_name_uk', 'person__first_name_uk',
+        'person__patronymic_uk', 'declaration_id']
+
+    def has_add_permission(self, request):
+        return False
 
 
 class ActionLogAdmin(admin.ModelAdmin):
@@ -950,5 +986,6 @@ admin.site.register(Document, DocumentAdmin)
 admin.site.register(Ua2RuDictionary, Ua2RuDictionaryAdmin)
 admin.site.register(Ua2EnDictionary, Ua2EnDictionaryAdmin)
 admin.site.register(FeedbackMessage, FeedbackAdmin)
-admin.site.register(Declaration, DeclarationAdmin)
+admin.site.register(DeclarationToLink, DeclarationAdmin)
+admin.site.register(DeclarationToWatch, DeclarationMonitorAdmin)
 admin.site.register(ActionLog, ActionLogAdmin)

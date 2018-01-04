@@ -52,6 +52,18 @@ class Declaration(models.Model):
     relatives_populated = models.BooleanField(
         "Родини немає, або вже внесена до БД", default=False, db_index=True)
 
+    to_link = models.BooleanField(
+        "Декларація для профілів", default=False, db_index=True)
+
+    to_watch = models.BooleanField(
+        "Декларація для моніторінгу звільнень", default=False, db_index=True)
+
+    acknowledged = models.BooleanField(
+        "Відмоніторено", default=False, db_index=True)
+
+    submitted = models.DateField(
+        "Подана", blank=True, null=True, db_index=True)
+
     batch_number = models.IntegerField("Номер теки", default=0, db_index=True)
 
     def to_dict(self):
@@ -701,6 +713,36 @@ class Declaration(models.Model):
         indexes = [
             models.Index(fields=['confirmed', 'fuzziness', 'batch_number']),
         ]
+
+
+class DeclarationToLinkManager(models.Manager):
+    def get_queryset(self):
+        return super(DeclarationToLinkManager, self).get_queryset().filter(to_link=True)
+
+
+class DeclarationToLink(Declaration):
+    class Meta:
+        proxy = True
+        verbose_name = "Декларація"
+        verbose_name_plural = "Декларації"
+
+    objects = DeclarationToLinkManager()
+
+
+class DeclarationToWatchManager(models.Manager):
+    def get_queryset(self):
+        return super(DeclarationToWatchManager, self).get_queryset().filter(to_watch=True).order_by(
+            "-submitted"
+        )
+
+
+class DeclarationToWatch(Declaration):
+    class Meta:
+        proxy = True
+        verbose_name = "Моніторинг декларацій"
+        verbose_name_plural = "Моніторинг декларацій"
+
+    objects = DeclarationToWatchManager()
 
 
 class DeclarationExtra(models.Model):
