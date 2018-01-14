@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 
-from core.models import Declaration
+from core.models import Declaration, Person2Company
 from tasks.models import (
     PersonDeduplication, CompanyMatching, BeneficiariesMatching,
     CompanyDeduplication, EDRMonitoring
@@ -238,7 +238,7 @@ class EDRMonitoringAdmin(admin.ModelAdmin):
         "pk",
         "pep_name_readable",
         "edr_name",
-        "pep_position",
+        "pep_position_readable",
         "company_readable",
         "edr_date",
         "name_match_score",
@@ -257,6 +257,23 @@ class EDRMonitoringAdmin(admin.ModelAdmin):
         )
     pep_name_readable.short_description = 'Прізвище керівника з БД ПЕП'
     pep_name_readable.allow_tags = True
+
+    def pep_position_readable(self, obj):
+        try:
+            p2c = Person2Company.objects.get(pk=obj.relation_id)
+
+            if p2c.date_established or p2c.date_finished:
+                return "{}<br/> ({}—{})".format(
+                    obj.pep_position,
+                    p2c.date_established_human,
+                    p2c.date_finished_human
+                )
+        except Person2Company.DoesNotExist:
+            pass
+        return obj.pep_position
+
+    pep_position_readable.short_description = 'Посада ПЕП'
+    pep_position_readable.allow_tags = True
 
     def company_readable(self, obj):
         edrpou = unicode(obj.company_edrpou).rjust(8, "0")
