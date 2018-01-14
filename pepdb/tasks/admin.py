@@ -1,15 +1,14 @@
 # coding: utf-8
 from __future__ import unicode_literals
 
-import json
-
 from django.contrib import admin
+from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 
 from core.models import Declaration
 from tasks.models import (
     PersonDeduplication, CompanyMatching, BeneficiariesMatching,
-    CompanyDeduplication
+    CompanyDeduplication, EDRMonitoring
 )
 
 
@@ -234,7 +233,56 @@ class CompanyDeduplicationAdmin(admin.ModelAdmin):
     actions = [ignore]
 
 
+class EDRMonitoringAdmin(admin.ModelAdmin):
+    list_display = (
+        "pk",
+        "pep_name_readable",
+        "edr_name",
+        "pep_position",
+        "company_readable",
+        "edr_date",
+        "name_match_score",
+        "status",
+    )
+
+    list_editable = ("status",)
+    list_filter = ("status", "applied")
+
+    ordering = ("timestamp",)
+
+    def pep_name_readable(self, obj):
+        return '<a href="{}" target="_blank">{}</a>'.format(
+            reverse("person_details", kwargs={"person_id": obj.person_id}),
+            obj.pep_name
+        )
+    pep_name_readable.short_description = 'Прізвище керівника з БД ПЕП'
+    pep_name_readable.allow_tags = True
+
+    def company_readable(self, obj):
+        edrpou = unicode(obj.company_edrpou).rjust(8, "0")
+
+        return ('<a href="{}" target="_blank">{}</a> ' +
+                '(<a href="https://youcontrol.com.ua/catalog/company_details/{}" target="_blank">{}</a>)').format(
+                    reverse("company_details", kwargs={"company_id": obj.company_id}),
+                    obj.pep_company_json["name_uk"],
+                    edrpou,
+                    edrpou
+        )
+
+    company_readable.short_description = 'Компанія де ПЕП є керівником'
+    company_readable.allow_tags = True
+
+    def has_add_permission(self, request):
+        return False
+
+    def save_model(self, request, obj, form, change):
+        obj.user = request.user
+        super(EDRMonitoringAdmin, self).save_model(
+            request, obj, form, change)
+
+
 admin.site.register(PersonDeduplication, PersonDeduplicationAdmin)
 admin.site.register(CompanyMatching, CompanyMatchingAdmin)
 admin.site.register(BeneficiariesMatching, BeneficiariesMatchingAdmin)
 admin.site.register(CompanyDeduplication, CompanyDeduplicationAdmin)
+admin.site.register(EDRMonitoring, EDRMonitoringAdmin)

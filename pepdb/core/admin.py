@@ -371,7 +371,7 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
             if res:
                 rec = res.to_dict()
 
-                if isinstance(rec["founders"], list):
+                if isinstance(rec.get("founders"), list):
                     rec["founders"] = ";;;".join(rec["founders"])
                 data.append(rec)
 

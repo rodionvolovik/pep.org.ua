@@ -228,4 +228,14 @@ $(function() {
             window.location = s;
         }
     });
+
+    $(".track-ga-event").each(function(){
+        var eventCategory = $(this).data('ga-event-category'),
+            eventAction = $(this).data('ga-event-action'),
+            eventLabel = $(this).data('ga-event-label');
+        
+        if (typeof(ga) !== "undefined") {
+            ga('send', 'event', eventCategory, eventAction, eventLabel);
+        }
+    });
 });

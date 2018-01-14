@@ -13,7 +13,7 @@ from django.core.urlresolvers import reverse
 from django.utils import formats, translation
 
 import gspread
-from dateutil import parser
+from dateutil import parser, relativedelta
 from rfc6266 import parse_requests_response
 from oauth2client.client import SignedJwtAssertionCredentials
 
@@ -317,13 +317,52 @@ def render_date(dt, date_details):
     if not dt:
         return ""
 
+    # Date precision = full date
     if date_details == 0:
         return formats.date_format(dt, "SHORT_DATE_FORMAT")
+    # Date precision = we only know year and month
     elif date_details == 1:
         return formats.date_format(
             dt, "MONTH_YEAR_DATE_FORMAT")
+    # Date precision = we only know year
     elif date_details == 2:
         return formats.date_format(dt, "YEAR_DATE_FORMAT")
+
+
+def floor_date(dt, date_details):
+    """
+    Only return meaningful and floored part of the date according to date_details
+    """
+    if not dt:
+        return None
+
+    # Date precision = full date
+    if date_details == 0:
+        return dt
+    # Date precision = we only know year and month
+    elif date_details == 1:
+        return date(dt.year, dt.month, 1)
+    # Date precision = we only know year
+    elif date_details == 2:
+        return date(dt.year, 1, 1)
+
+
+def ceil_date(dt, date_details):
+    """
+    Only return meaningful and ceiled part of the date according to date_details
+    """
+    if not dt:
+        return None
+
+    # Date precision = full date
+    if date_details == 0:
+        return dt
+    # Date precision = we only know year and month
+    elif date_details == 1:
+        return date(dt.year, dt.month, 1) + relativedelta.relativedelta(months=1, days=-1)
+    # Date precision = we only know year
+    elif date_details == 2:
+        return date(dt.year, 12, 31)
 
 
 def mangle_date(dt):
@@ -331,6 +370,7 @@ def mangle_date(dt):
     Return the date with month and day swapped when possible.
 
     Or original date otherwise
+    Don't ask why
     """
     try:
         return date(dt.year, dt.day, dt.month)

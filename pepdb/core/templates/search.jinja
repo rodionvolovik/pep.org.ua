@@ -29,7 +29,7 @@
 
         <section id="search-results">
             {% if not persons and not companies and not related_persons %}
-            <h2 class="text-center">{{ _("На жаль, пошук не дав результатів") }}</h2>
+            <h2 class="text-center track-ga-event" data-ga-event-category="search" data-ga-event-action="search-gave-no-results" data-ga-event-label="{{ query }}">{{ _("На жаль, пошук не дав результатів") }}</h2>
             {% endif %}
             {% if persons %}
                 <h2 class="text-center">{{ _("Фізичні особи") }}</h2>

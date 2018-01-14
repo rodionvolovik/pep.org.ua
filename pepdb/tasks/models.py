@@ -190,3 +190,53 @@ class CompanyDeduplication(AbstractTask):
         index_together = [
             ["company1_id", "company2_id"],
         ]
+
+
+class EDRMonitoring(AbstractTask):
+    STATUS_CHOICES = (
+        ("p", "Не перевірено"),
+        ("a", "Застосувати зміну"),
+        ("i", "Ігнорувати зміну"),
+        ("r", "Потребує додаткової перевірки"),
+    )
+
+    status = models.CharField(
+        "Статус",
+        max_length=1,
+        choices=STATUS_CHOICES,
+        default="p",
+        db_index=True
+    )
+
+    # Holy four
+    pep_name = models.CharField(
+        "Прізвище керівника з БД ПЕП", max_length=200, null=True, blank=True)
+    pep_position = models.CharField(
+        "Посада керівника з БД ПЕП", max_length=200, null=True, blank=True)
+    company_edrpou = models.CharField(
+        "ЄДРПОУ компанії з БД ПЕП", max_length=15, null=True, blank=True)
+    edr_name = models.CharField(
+        "Прізвище керівника з ЄДР", max_length=200, null=True, blank=True)
+
+    pep_company_json = JSONField(verbose_name="Компанія де ПЕП є керівником", null=True)
+    edr_company_json = JSONField(verbose_name="Компанія з ЄДР", null=True)
+    name_match_score = models.IntegerField("Ступінь співпадіння")
+
+    company_id = models.IntegerField(null=True)
+    person_id = models.IntegerField(null=True)
+    relation_id = models.IntegerField(null=True)
+
+    applied = models.BooleanField(default=False, db_index=True)
+    edr_date = models.DateField(verbose_name="Дата експорту з ЄДР")
+
+    class Meta:
+        verbose_name = "Результат моніторингу ЄДР"
+        verbose_name_plural = "Результати моніторингу ЄДР"
+
+        unique_together = [
+            ["pep_name", "pep_position", "edr_name", "company_edrpou"],
+        ]
+
+        index_together = [
+            ["pep_name", "pep_position", "edr_name", "company_edrpou"],
+        ]
