@@ -33,17 +33,17 @@
             <ul id="side-profilemenu">
                 <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-male"></i><span>{{ _("Персональні дані") }}</span></a></li>
                 {% if LANGUAGE_CODE == "en" %}
-                    {% if person.wiki_en %}
+                    {% if person.wiki_en or person.wiki_uk %}
                         <li><a href="#profile" class="btn btn-transp trans"><i class="fa fa-briefcase"></i><span>{{ _("Досьє") }}</span></a></li>
                     {% endif %}
                 {% else %}
-                    {% if person.wiki %}
+                    {% if person.wiki_uk %}
                         <li><a href="#profile" class="btn btn-transp trans"><i class="fa fa-briefcase"></i><span>{{ _("Досьє") }}</span></a></li>
                     {% endif %}
                 {% endif %}
 
                 {% if LANGUAGE_CODE == "en" %}
-                    {% if person.reputation_sanctions_en or person.reputation_crimes_en or person.reputation_manhunt_en or person.reputation_convictions_en %}
+                    {% if person.reputation_sanctions_en or person.reputation_crimes_en or person.reputation_manhunt_en or person.reputation_convictions_en or person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk %}
                     <li><a href="#reputation" class="btn btn-transp trans"><i class="fa fa-bullhorn"></i><span>{{ _("Кримінальні провадження та санкції") }}</span></a></li>
                     {% endif %}
                 {% else %}
@@ -171,11 +171,15 @@
 
 
             {% if LANGUAGE_CODE == "en" %}
-                {% if person.wiki_en %}
+                {% if person.wiki_en or person.wiki_uk %}
                 <div id="profile-wiki" class="sub box" itemprop="description">
                     <h3>{{ _("Досьє:") }}</h3>
                     <div class="printWrap">
                         {{ person.wiki_en|richtext }}
+
+                        {% if person.wiki_uk %}
+                            <p><a href="{{ person.url_uk }}#dossier">more information is available in Ukrainian version of the dossier</a></p>
+                        {% endif %}
                     </div>
                 </div>
                 {% endif %}
@@ -191,7 +195,7 @@
             {% endif %}
 
             {% if LANGUAGE_CODE == "en" %}
-                {% if person.reputation_sanctions_en or person.reputation_crimes_en or person.reputation_manhunt_en or person.reputation_convictions_en %}
+                {% if person.reputation_sanctions_en or person.reputation_crimes_en or person.reputation_manhunt_en or person.reputation_convictions_en or person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk %}
                 <div id="reputation" class="sub box">
                     <h3>{{ _("Кримінальні провадження та санкції:") }}</h3>
                     <div class="printWrap">
@@ -210,6 +214,10 @@
                         {% if person.reputation_convictions_en %}
                             <h4>{{ _("Наявність судимості") }}</h4>
                             {{ person.reputation_convictions_en|richtext }}
+                        {% endif %}
+
+                        {% if person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk %}
+                            <p><a href="{{ person.url_uk }}#reputation">more information is available in Ukrainian version of the dossier</a></p>
                         {% endif %}
                     </div>
                 </div>

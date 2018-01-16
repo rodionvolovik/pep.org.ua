@@ -134,6 +134,10 @@ def is_ukr(name):
     return re.search("['іїєґ]+", name.lower(), re.UNICODE) is not None
 
 
+def is_greek(name):
+    return re.search("[α-ωίϊΐόάέύϋΰήώ]+", name.lower(), re.UNICODE) is not None
+
+
 def parse_fullname(person_name):
     # Extra care for initials (especialy those without space)
     person_name = re.sub("\s+", " ",

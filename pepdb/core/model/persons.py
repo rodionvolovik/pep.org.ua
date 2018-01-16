@@ -8,8 +8,9 @@ import datetime
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_noop as _
-from django.utils.translation import ugettext_lazy, activate, deactivate
+from django.utils.translation import ugettext_lazy, activate, get_language
 from django.forms.models import model_to_dict
+from django.conf import settings
 from django.db.models.functions import Coalesce
 from django.db.models import Q, Value
 
@@ -461,9 +462,10 @@ class Person(models.Model, AbstractNode):
         return reverse("person_details", kwargs={"person_id": self.pk})
 
     def localized_url(self, locale):
+        curr_lang = get_language()
         activate(locale)
         url = self.get_absolute_url()
-        deactivate()
+        activate(curr_lang)
         return url
 
     # TODO: Request in bulk in all_related_persons?

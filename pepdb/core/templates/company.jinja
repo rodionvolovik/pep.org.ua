@@ -46,9 +46,12 @@
                 <li><a href="#connections" class="btn btn-transp trans"><i class="fa fa-heart"></i><span>{{ _("Зв'язки") }}</span></a></li>
                 {% endif %}
 
-                {% if (company.wiki_en and LANGUAGE_CODE == "en") or (company.sanctions_en and LANGUAGE_CODE == "en") or
-                    (company.wiki_uk and LANGUAGE_CODE == "uk") or (company.sanctions_uk and LANGUAGE_CODE == "uk") or
-                    related_persons.sanctions %}
+                {% if 
+                        ((company.wiki_en or company.wiki_uk)  and LANGUAGE_CODE == "en") or
+                        ((company.sanctions_en or company.sanctions_uk) and LANGUAGE_CODE == "en") or
+                        (company.wiki_uk and LANGUAGE_CODE == "uk") or
+                        (company.sanctions_uk and LANGUAGE_CODE == "uk") or
+                        related_persons.sanctions %}
                 <li><a href="#dossier" class="btn btn-transp trans"><i class="fa fa-briefcase"></i><span>{{ _("Досьє") }}</span></a></li>
                 {% endif %}
 
@@ -280,9 +283,12 @@
             {% endif %}
 
 
-            {% if (company.wiki_en and LANGUAGE_CODE == "en") or (company.sanctions_en and LANGUAGE_CODE == "en") or
-                (company.wiki_uk and LANGUAGE_CODE == "uk") or (company.sanctions_uk and LANGUAGE_CODE == "uk") or
-                related_persons.sanctions %}
+            {% if   ((company.wiki_en or company.wiki_uk) and LANGUAGE_CODE == "en") or
+                    ((company.sanctions_en or company.sanctions_uk) and LANGUAGE_CODE == "en") or
+                    (company.wiki_uk and LANGUAGE_CODE == "uk") or
+                    (company.sanctions_uk and LANGUAGE_CODE == "uk") or
+                    related_persons.sanctions %}
+
                 <div id="dossier" class="sub box">
                     <h3>{{ _("Досьє:") }}</h3>
                     <div class="printWrap">
@@ -301,6 +307,10 @@
                             {% endif %}
 
                             {{ render_company_persons(related_persons.sanctions, "Sanctions") }}
+                        {% endif %}
+
+                        {% if (company.wiki_uk and LANGUAGE_CODE == "en") or (company.sanctions_uk and LANGUAGE_CODE == "en") %}
+                            <p><a href="{{ company.url_uk }}#dossier">more information is available in Ukrainian version of the dossier</a></p>
                         {% endif %}
                     </div>
                 </div>
