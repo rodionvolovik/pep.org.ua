@@ -226,7 +226,7 @@ class EDRMonitoring(AbstractTask):
     person_id = models.IntegerField(null=True)
     relation_id = models.IntegerField(null=True)
 
-    applied = models.BooleanField(default=False, db_index=True)
+    applied = models.BooleanField(verbose_name="Застосовано", default=False, db_index=True)
     edr_date = models.DateField(verbose_name="Дата експорту з ЄДР")
 
     class Meta:
