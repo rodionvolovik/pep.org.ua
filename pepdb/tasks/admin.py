@@ -242,6 +242,7 @@ class EDRMonitoringAdmin(admin.ModelAdmin):
         "company_readable",
         "edr_date",
         "name_match_score",
+        "applied",
         "status",
     )
 
