@@ -246,8 +246,8 @@ class EDRMonitoringAdmin(admin.ModelAdmin):
         "status",
     )
 
-    list_editable = ("status",)
-    list_filter = ("status", "applied")
+    list_editable = ("status", "applied",)
+    list_filter = ("status", "applied",)
 
     ordering = ("timestamp",)
 
