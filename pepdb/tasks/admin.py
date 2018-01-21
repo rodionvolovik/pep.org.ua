@@ -251,6 +251,24 @@ class EDRMonitoringAdmin(admin.ModelAdmin):
 
     ordering = ("timestamp",)
 
+    def mark_for_application(self, request, queryset):
+        queryset.update(status="a")
+    mark_for_application.short_description = "Статус: Застосувати зміну"
+
+    def ignore(self, request, queryset):
+        queryset.update(status="i")
+    ignore.short_description = "Статус: Ігнорувати зміну"
+
+    def doublecheck(self, request, queryset):
+        queryset.update(status="r")
+    doublecheck.short_description = "Статус: Потребує додаткової перевірки"
+
+    def apply_manually(self, request, queryset):
+        queryset.update(applied=True)
+    apply_manually.short_description = "Було застосовано вручну"
+
+    actions = [mark_for_application, ignore, doublecheck, apply_manually]
+
     def pep_name_readable(self, obj):
         return '<a href="{}" target="_blank">{}</a>'.format(
             reverse("person_details", kwargs={"person_id": obj.person_id}),
