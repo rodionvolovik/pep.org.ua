@@ -18,6 +18,7 @@ from django.core.urlresolvers import reverse
 from django.utils import formats
 from django.forms import widgets
 from django.http import HttpResponse
+from django.contrib.admin.models import LogEntry
 
 from django.utils.encoding import force_str
 from django.utils.translation import ugettext_lazy as _
@@ -979,6 +980,32 @@ class ActionLogAdmin(admin.ModelAdmin):
         return False
 
 
+class LogEntryAdmin(admin.ModelAdmin):
+    readonly_fields = (
+        'content_type',
+        'user',
+        'action_time',
+        'object_id',
+        'object_repr',
+        'action_flag',
+        'change_message'
+    )
+
+    list_display = ("__str__", "user", "action_time", )
+    list_filter = ("user", "action_time", )
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request):
+        return False
+
+    def get_actions(self, request):
+        actions = super(LogEntryAdmin, self).get_actions(request)
+        del actions['delete_selected']
+        return actions
+
+
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(Country, CountryAdmin)
@@ -989,3 +1016,4 @@ admin.site.register(FeedbackMessage, FeedbackAdmin)
 admin.site.register(DeclarationToLink, DeclarationAdmin)
 admin.site.register(DeclarationToWatch, DeclarationMonitorAdmin)
 admin.site.register(ActionLog, ActionLogAdmin)
+admin.site.register(LogEntry, LogEntryAdmin)
