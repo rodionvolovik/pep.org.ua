@@ -250,6 +250,9 @@ class EDRMonitoringAdmin(admin.ModelAdmin):
     list_filter = ("status", "applied",)
 
     ordering = ("timestamp",)
+    search_fields = (
+        'pep_name', 'edr_name', 'pep_position', 'company_edrpou',
+    )
 
     def mark_for_application(self, request, queryset):
         queryset.update(status="a")
@@ -276,6 +279,7 @@ class EDRMonitoringAdmin(admin.ModelAdmin):
         )
     pep_name_readable.short_description = 'Прізвище керівника з БД ПЕП'
     pep_name_readable.allow_tags = True
+    pep_name_readable.admin_order_field = 'pep_name'
 
     def pep_position_readable(self, obj):
         try:
@@ -293,6 +297,7 @@ class EDRMonitoringAdmin(admin.ModelAdmin):
 
     pep_position_readable.short_description = 'Посада ПЕП'
     pep_position_readable.allow_tags = True
+    pep_position_readable.admin_order_field = 'pep_position'
 
     def company_readable(self, obj):
         edrpou = unicode(obj.company_edrpou).rjust(8, "0")
@@ -307,6 +312,7 @@ class EDRMonitoringAdmin(admin.ModelAdmin):
 
     company_readable.short_description = 'Компанія де ПЕП є керівником'
     company_readable.allow_tags = True
+    company_readable.admin_order_field = 'company_edrpou'
 
     def has_add_permission(self, request):
         return False

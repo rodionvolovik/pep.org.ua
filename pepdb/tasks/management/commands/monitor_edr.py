@@ -181,6 +181,10 @@ class Command(BaseCommand):
                     )
                 except EDRMonitoring.DoesNotExist:
                     diff = fuzz.token_set_ratio(edr_name, pep_name, force_ascii=False)
+
+                    if diff == 100:
+                        continue
+
                     if diff > 90:
                         status = "i"
                     else:
