@@ -55,14 +55,10 @@ class Command(BaseCommand):
                         continue
 
                     if obj.translation:
-                        if obj.translation == trans:
+                        if obj.translation.lower() == trans.lower():
                             continue
 
-                        if options["replace"]:
-                            obj.translation = trans
-                            obj.save()
-                            successful += 1
-                        else:
+                        if not options["replace"]:
                             self.stdout.write(
                                 "Not overwritting existing translation %s for term %s with %s" % (
                                     term, obj.translation, trans))
