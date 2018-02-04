@@ -131,8 +131,7 @@ class Command(BaseCommand):
         return result | set(map(self.get_name, translated))
 
     def handle(self, *args, **options):
-        # for person in Person.objects.all():
-        for person in Person.objects.filter(pk=8493):
+        for person in Person.objects.all():
             person.last_name_uk = person.last_name_uk or ""
             person.first_name_uk = person.first_name_uk or ""
             person.patronymic_uk = person.patronymic_uk or ""
