@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django.core.management.base import BaseCommand
-from django.db.utils import IntegrityError
-from core.models import Person, Ua2RuDictionary
-from core.utils import is_cyr, is_ukr, parse_fullname
+import re
+
 from translitua import (
     translit, ALL_RUSSIAN, ALL_UKRAINIAN, UkrainianKMU, RussianInternationalPassport)
+
+from django.core.management.base import BaseCommand
+from django.db.utils import IntegrityError
+
+from core.models import Person, Ua2RuDictionary
+from core.utils import is_cyr, is_ukr, parse_fullname, title
 
 
 class Command(BaseCommand):
@@ -14,6 +18,13 @@ class Command(BaseCommand):
         "Юлия": ["Julia", "Yulia"],
         "Дмитро": ["Dmitry", "Dimitry"],
         "Дмитрий": ["Dmitry", "Dimitry"],
+        "Євген": ["Eugene"],
+        "Петро": ["Peter"],
+    }
+
+    special_replacements = {
+        "ий$": ["y", "i"],
+        "кс": ["x"],
     }
 
     def __init__(self, *args, **kwargs):
@@ -84,6 +95,12 @@ class Command(BaseCommand):
                 for ua_table in ALL_UKRAINIAN:
                     result.add(translit(name, ua_table))
 
+                for sc_rex, replacements in self.special_replacements.items():
+                    if re.search(sc_rex, name, flags=re.I | re.U):
+                        for repl in replacements:
+                            optional_n = re.sub(sc_rex, repl, name, flags=re.I | re.U)
+                            result.add(translit(title(optional_n), UkrainianKMU))
+
                 for sc, replacements in self.special_cases.items():
                     if sc in n:
                         for repl in replacements:
@@ -95,6 +112,12 @@ class Command(BaseCommand):
             if not is_ukr(name):
                 for ru_table in ALL_RUSSIAN:
                     result.add(translit(name, ru_table))
+
+            for sc_rex, replacements in self.special_replacements.items():
+                if re.search(sc_rex, name, flags=re.I | re.U):
+                    for repl in replacements:
+                        optional_n = re.sub(sc_rex, repl, name, flags=re.I | re.U)
+                        result.add(translit(title(optional_n), RussianInternationalPassport))
 
             for sc, replacements in self.special_cases.items():
                 if sc in n:
@@ -108,7 +131,8 @@ class Command(BaseCommand):
         return result | set(map(self.get_name, translated))
 
     def handle(self, *args, **options):
-        for person in Person.objects.all():
+        # for person in Person.objects.all():
+        for person in Person.objects.filter(pk=8493):
             person.last_name_uk = person.last_name_uk or ""
             person.first_name_uk = person.first_name_uk or ""
             person.patronymic_uk = person.patronymic_uk or ""
