@@ -20,10 +20,12 @@ class Command(BaseCommand):
         "Дмитрий": ["Dmitry", "Dimitry"],
         "Євген": ["Eugene"],
         "Петро": ["Peter"],
+        "Ірина": ["Irene"],
     }
 
     special_replacements = {
         "ий$": ["y", "i"],
+        "ий\s": ["y ", "i "],
         "кс": ["x"],
     }
 
