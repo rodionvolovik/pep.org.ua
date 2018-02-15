@@ -4,6 +4,17 @@
 
 {% set last_workplace = person.translated_last_workplace %}
 
+{% block og_tags %}
+    {% if person.photo %}
+        <meta property="og:image" content="{{ SITE_URL }}{{ person.photo|thumbnail_url("fb_photo") }}" />
+    {% else %}
+        <meta property="og:image" content="{{ SITE_URL }}{{ static("images/pep_fb.png") }}" />
+    {% endif %}
+    <meta property="og:image:alt" content="Politically exposed persons" />
+    <meta property="profile:first_name" content="{{ person.first_name }} {{ person.patronymic }}" />
+    <meta property="profile:last_name" content="{{ person.last_name }}" />
+{% endblock %}
+
 {% block page_title %}{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}{% if last_workplace %}, {{ last_workplace.company }}, {{ last_workplace.position }}{% endif %}{% endblock %}
 
 {% block extra_menu %}

@@ -105,9 +105,6 @@ class Command(BaseCommand):
             ans = res.execute()
 
         return ans
-        # print(ans[0].head)
-        # print(conn.from_person.full_name)
-        # print(fuzz.token_set_ratio(ans[0].head, conn.from_person.full_name, force_ascii=False))
 
     def handle(self, *args, **options):
         activate(settings.LANGUAGE_CODE)

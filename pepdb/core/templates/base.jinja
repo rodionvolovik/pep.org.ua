@@ -17,6 +17,12 @@
 
     <title>PEP: {% block page_title %}{{ root_page.translated_title }}{% endblock %}</title>
 
+    <meta property="og:site_name" content="PEP.org.ua" />
+    {% block og_tags %}
+        <meta property="og:image" content="{{ SITE_URL }}{{ static("images/pep_fb.png") }}" />
+        <meta property="og:image:alt" content="Politically exposed persons" />
+    {% endblock %}
+
     {% if not disable_css %}
     {% stylesheet 'css_all' %}
 {#    <link href='//fonts.googleapis.com/css?family=Roboto+Slab:400,300,700,100&subset=latin,cyrillic-ext,cyrillic' rel='stylesheet' type='text/css' />
