@@ -289,7 +289,6 @@ THUMBNAIL_ALIASES = {
     '': {
         'small_avatar': {'size': (100, 100), 'crop': True},
         'avatar': {'size': (128, 128), 'crop': True},
-        'fb_photo': {'size': (512, 512), 'crop': False},
     },
 }
 
