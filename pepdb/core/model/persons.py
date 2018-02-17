@@ -406,7 +406,7 @@ class Person(models.Model, AbstractNode):
             )
         ]
 
-        d["photo"] = self.photo.name if self.photo else ""
+        d["photo"] = settings.SITE_URL + self.photo.url if self.photo else ""
         d["date_of_birth"] = self.date_of_birth
 
         last_workplace = self.last_workplace
@@ -420,9 +420,14 @@ class Person(models.Model, AbstractNode):
             d["last_job_title_en"] = last_workplace_en["position"]
 
         d["type_of_official"] = self.get_type_of_official_display()
-        d["risk_category"] = self.get_risk_category_display()
-        d["full_name"] = self.full_name
 
+        curr_lang = get_language()
+        activate("en")
+        d["type_of_official_en"] = unicode(
+            ugettext_lazy(self.get_type_of_official_display() or ""))
+        activate(curr_lang)
+
+        d["full_name"] = self.full_name
         d["full_name_en"] = self.full_name_en
 
         def generate_suggestions(last_name, first_name, patronymic, *args):
