@@ -96,11 +96,20 @@ urlpatterns += [
         core.views.export_persons,
         name='export_persons'),
 
+    url(r'^opendata/companies/(?P<fmt>(json|xml))',
+        core.views.export_companies,
+        name='export_companies'),
+
     # Short encrypted urls
     url(r'^p/(?P<enc>.*)',
         core.views.encrypted_redirect,
         name='encrypted_person_redirect',
         kwargs={"model": "Person"}),
+
+    url(r'^c/(?P<enc>.*)',
+        core.views.encrypted_redirect,
+        name='encrypted_company_redirect',
+        kwargs={"model": "Company"}),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

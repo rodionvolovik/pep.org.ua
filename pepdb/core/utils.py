@@ -10,7 +10,8 @@ from datetime import datetime, date
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.utils import formats, translation
+from django.utils import formats
+from django.utils.translation import ugettext_lazy, activate, get_language
 
 import gspread
 from dateutil import parser, relativedelta
@@ -179,7 +180,7 @@ class TranslatedField(object):
 
     def __get__(self, instance, owner):
 
-        if translation.get_language() == 'en':
+        if get_language() == 'en':
             return (getattr(instance, self.en_field, "") or
                     getattr(instance, self.ua_field, ""))
         else:
@@ -484,3 +485,12 @@ def parse_address(location):
         )
 
         return None
+
+
+def translate_into(chunk, lang="en"):
+    curr_lang = get_language()
+    activate(lang)
+    res = unicode(ugettext_lazy(chunk or ""))
+    activate(curr_lang)
+
+    return res

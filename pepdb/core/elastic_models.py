@@ -78,5 +78,19 @@ class Company(DocType, RangeRelevantEntitiesMixin):
 
     translated_name = TranslatedField("name_uk", "name_en")
 
+    @classmethod
+    @cached(timeout=24 * 60 * 60)
+    def get_all_companies(cls):
+        return [
+            blacklist(
+                p.to_dict(),
+                [
+                    "code_chunks", "name_suggest", "name_suggest_output",
+                    "name_suggest_output_en"
+                ]
+            )
+            for p in cls.search().scan()
+        ]
+
     class Meta:
         index = 'peps'

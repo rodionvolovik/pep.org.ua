@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_noop as _
 from django.contrib.postgres.fields import ArrayField
 from core.fields import RedactorField
 
-from core.utils import lookup_term
+from core.utils import lookup_term, translate_into
 from core.model.base import AbstractRelationship
 from core.model.translations import Ua2EnDictionary
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -106,6 +106,7 @@ class Person2Person(AbstractRelationship):
             "date_confirmed": self.date_confirmed_human,
 
             "relationship_type": self.to_relationship_type,
+            "relationship_type_en": translate_into(self.to_relationship_type),
             "is_pep": self.to_person.is_pep,
             "person_uk": "%s %s %s" % (
                 self.to_person.first_name_uk,
@@ -127,6 +128,7 @@ class Person2Person(AbstractRelationship):
             "date_confirmed": self.date_confirmed_human,
 
             "relationship_type": self.from_relationship_type,
+            "relationship_type_en": translate_into(self.from_relationship_type),
             "is_pep": self.from_person.is_pep,
             "person_uk": "%s %s %s" % (
                 self.from_person.first_name_uk,

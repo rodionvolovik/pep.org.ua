@@ -427,6 +427,53 @@ def export_persons(request, fmt):
     return response
 
 
+@logged_in_or_basicauth()
+@never_cache
+def export_companies(request, fmt):
+    if not request.user.has_perm("core.export_companies"):
+        return HttpResponseForbidden()
+
+    data = map(
+        lambda p: blacklist(
+            add_encrypted_url(p, request.user, "encrypted_company_redirect"),
+            ["id"]
+        ),
+        ElasticCompany.get_all_companies()
+    )
+
+    ActionLog(
+        user=request.user,
+        action="download_companies_dataset",
+        details=fmt
+    ).save()
+
+    if fmt == "json":
+        response = JsonResponse(data, safe=False)
+
+    if fmt == "xml":
+        fp = StringIO()
+        xim = XmlItemExporter(fp)
+        xim.start_exporting()
+
+        for item in data:
+            xim.export_item(item)
+
+        xim.finish_exporting()
+        payload = fp.getvalue()
+        fp.close()
+        response = HttpResponse(
+            payload,
+            content_type="application/xhtml+xml")
+
+    response['Content-Disposition'] = (
+        'attachment; filename=companies_{:%Y%m%d_%H%M}.{}'.format(
+            datetime.now(), fmt))
+
+    response['Content-Length'] = len(response.content)
+
+    return response
+
+
 def encrypted_redirect(request, enc, model):
     try:
         decrypted = settings.SYMMETRIC_ENCRYPTOR.decrypt(bytes(enc))
@@ -441,7 +488,7 @@ def encrypted_redirect(request, enc, model):
 
     log_rec = ActionLog(
         user=user,
-        action="view_person"
+        action="view_{}".format(model.lower())
     )
 
     model = apps.get_model('core', model)

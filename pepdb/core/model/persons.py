@@ -21,7 +21,7 @@ import select2.models
 
 from core.model.base import AbstractNode
 from core.model.translations import Ua2EnDictionary
-from core.utils import render_date, lookup_term, parse_fullname
+from core.utils import render_date, lookup_term, parse_fullname, translate_into
 from core.model.declarations import Declaration
 
 # to_*_dict methods are used to convert two main entities that we have, Person
@@ -421,11 +421,9 @@ class Person(models.Model, AbstractNode):
 
         d["type_of_official"] = self.get_type_of_official_display()
 
-        curr_lang = get_language()
-        activate("en")
-        d["type_of_official_en"] = unicode(
-            ugettext_lazy(self.get_type_of_official_display() or ""))
-        activate(curr_lang)
+        d["type_of_official_en"] = translate_into(
+            self.get_type_of_official_display(), "en"
+        )
 
         d["full_name"] = self.full_name
         d["full_name_en"] = self.full_name_en

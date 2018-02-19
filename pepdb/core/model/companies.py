@@ -17,7 +17,7 @@ from core.fields import RedactorField
 
 from core.model.base import AbstractNode
 from core.model.translations import Ua2EnDictionary
-from core.utils import render_date, lookup_term
+from core.utils import render_date, lookup_term, translate_into
 
 
 class CompanyManager(models.Manager):
@@ -177,6 +177,11 @@ class Company(models.Model, AbstractNode):
             i.to_dict_reverse()
             for i in self.from_companies.prefetch_related("from_company")
         ]
+
+        d["status"] = self.get_status_display()
+        d["status_en"] = translate_into(self.get_status_display())
+        d["founded"] = self.founded_human
+        d["closed"] = self.closed_on_human
 
         suggestions = []
 
