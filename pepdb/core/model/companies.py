@@ -339,7 +339,7 @@ class Company(models.Model, AbstractNode):
     @property
     def foreign_registration(self):
         return self.from_countries.prefetch_related("to_country").filter(
-            relationship_type="registered_in").exclude(to_country__iso2="UA")
+            relationship_type="registered_in")
 
     @property
     def all_related_companies(self):

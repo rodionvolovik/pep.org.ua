@@ -475,7 +475,7 @@ class Person(models.Model, AbstractNode):
     @property
     def foreign_citizenship(self):
         return self.person2country_set.prefetch_related("to_country").filter(
-            relationship_type__in=["citizenship", "registered_in"]).exclude(to_country__iso2="UA")
+            relationship_type__in=["citizenship", "registered_in"])
 
     @property
     def url_uk(self):

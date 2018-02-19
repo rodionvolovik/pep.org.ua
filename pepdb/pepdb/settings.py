@@ -109,6 +109,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "core.context_processors.feedback_processor",
                 "core.context_processors.config_processor",
+                "core.context_processors.default_country",
                 "cms_pages.context_processors.menu_processor"
             ),
             "extensions": DEFAULT_EXTENSIONS + [
@@ -144,6 +145,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "core.context_processors.feedback_processor",
                 "core.context_processors.config_processor",
+                "core.context_processors.default_country",
                 "cms_pages.context_processors.menu_processor"
             )
         },
@@ -310,6 +312,7 @@ CACHEOPS = {
 }
 
 CACHEOPS_DEGRADE_ON_FAILURE = True
+DEFAULT_COUNTRY_ISO3 = "UKR"
 
 try:
     from local_settings import *
