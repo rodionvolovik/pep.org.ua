@@ -94,15 +94,9 @@ class Command(BaseCommand):
                 # annually or before applying for the position, not on resign
                 return
             elif task == "link":
-                try:
-                    d = Declaration.objects.get(declaration_id=decl["id"], person_id=person.pk)
-
-                    self.stdout.write(
-                        "Declaration %s for user %s already exists" % (decl["id"], person)
-                    )
+                if Declaration.objects.filter(declaration_id=decl["id"], person_id=person.pk).exists():
+                    self.stdout.write("Declaration %s for user %s already exists" % (decl["id"], person))
                     return
-                except Declaration.DoesNotExist:
-                    pass
 
         d = Declaration.objects.create(
             declaration_id=decl["id"],
