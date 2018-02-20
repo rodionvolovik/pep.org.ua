@@ -51,7 +51,7 @@ class Command(BaseCommand):
                 del decl["nacp_src"]
 
             if task == "link":
-                allowed_types = ["Щорічна"]
+                allowed_types = ["Щорічна", "Після звільнення"]
                 if (person.is_pep and
                         person.declaration_set.filter(nacp_declaration=True, confirmed="a").count() == 0):
 
