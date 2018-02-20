@@ -162,10 +162,6 @@ class Company(models.Model, AbstractNode):
         null=True,
     )
 
-    permissions = (
-        ("export_companies", "Can export the dataset of companies"),
-    )
-
     @staticmethod
     def autocomplete_search_fields():
         return ("id__iexact", "short_name__icontains", "name__icontains")
