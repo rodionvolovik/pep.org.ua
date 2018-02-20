@@ -465,3 +465,8 @@ class Company(models.Model, AbstractNode):
     class Meta:
         verbose_name = "Юридична особа"
         verbose_name_plural = "Юридичні особи"
+
+        permissions = (
+            ("export_companies", "Can export the dataset of companies"),
+        )
+

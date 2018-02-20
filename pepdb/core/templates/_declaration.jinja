@@ -497,6 +497,10 @@
                                     {% endfor %}
                                     </ul>
                                 {% endif %}
+
+                                {% if not asset.assets_of_declarant.vehicles and not asset.assets_of_family.vehicles %}
+                                —
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}
