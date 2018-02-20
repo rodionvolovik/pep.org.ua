@@ -5,6 +5,7 @@ from copy import copy, deepcopy
 from collections import defaultdict
 
 from django.db import models
+from django.contrib.auth.models import User
 from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -148,6 +149,22 @@ class Company(models.Model, AbstractNode):
 
     related_companies = models.ManyToManyField(
         "self", through="Company2Company", symmetrical=False)
+
+    last_change = models.DateTimeField(
+        "Дата останньої зміни профіля або зв'язків профіля", blank=True, null=True
+    )
+
+    last_editor = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        verbose_name="Автор зміни",
+        blank=True,
+        null=True,
+    )
+
+    permissions = (
+        ("export_companies", "Can export the dataset of companies"),
+    )
 
     @staticmethod
     def autocomplete_search_fields():

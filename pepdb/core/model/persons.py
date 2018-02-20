@@ -13,6 +13,7 @@ from django.forms.models import model_to_dict
 from django.conf import settings
 from django.db.models.functions import Coalesce
 from django.db.models import Q, Value
+from django.contrib.auth.models import User
 
 from core.fields import RedactorField
 from translitua import translitua
@@ -116,6 +117,45 @@ class Person(models.Model, AbstractNode):
     description = models.TextField(blank=True)
 
     hash = models.CharField("Хеш", max_length=40, blank=True)
+
+    reason_of_termination = models.IntegerField(
+        "Причина припинення статусу ПЕП",
+        choices=(
+            (1, _("Помер")),
+            (2, _("Звільнився")),
+            (3, _("Член сім'ї - ПЕП припинив бути ПЕПом")),
+            (4, _("Зміни у законодавстві що визначає статус ПЕПа")),
+            (5, _("Зміни форми власності юр. особи посада в котрій давала статус ПЕПа")),
+        ),
+        blank=True,
+        null=True)
+
+    termination_date = models.DateField(
+        "Дата припинення статусу ПЕП", blank=True, null=True,
+        help_text="Вказується реальна дата зміни без врахування 3 років (реальна дата звільнення, тощо)"
+    )
+    termination_date_details = models.IntegerField(
+        "Дата припинення статусу ПЕП: точність",
+        choices=(
+            (0, "Точна дата"),
+            (1, "Рік та місяць"),
+            (2, "Тільки рік"),
+        ),
+        default=0
+    )
+
+    last_change = models.DateTimeField(
+        "Дата останньої зміни профіля або зв'язків профіля", blank=True, null=True
+    )
+
+    last_editor = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        verbose_name="Автор зміни",
+        blank=True,
+        null=True,
+    )
+
 
     @staticmethod
     def autocomplete_search_fields():

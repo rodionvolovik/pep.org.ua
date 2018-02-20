@@ -298,7 +298,7 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     list_display = ("last_name_uk", "first_name_uk", "patronymic_uk",
                     "is_pep", "dob", "dob_details", "type_of_official",
                     "publish")
-    readonly_fields = ('names',)
+    readonly_fields = ('names', 'last_change', 'last_editor',)
     search_fields = ['last_name_uk', "first_name_uk", "patronymic_uk", "names"]
     list_editable = ("dob", "dob_details")
 
@@ -311,12 +311,18 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
                        'photo', 'dob', 'dob_details', 'city_of_birth',
                        'publish']}),
 
+        (u"Припинення статусу ПЕП", {
+            'fields': ["reason_of_termination", "termination_date", "termination_date_details"]}),
+
         (u'Додаткова інформація', {
             'fields': ['wiki', 'wiki_draft', 'reputation_assets', 'risk_category', 'names']}),
 
         (u'Ділова репутація', {
             'fields': ['reputation_sanctions', 'reputation_crimes',
                        'reputation_manhunt', 'reputation_convictions']}),
+
+        (u'Остання зміна', {
+            'fields': ['last_change', 'last_editor']}),
     ]
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
@@ -516,6 +522,7 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     list_editable = ("name_uk", "short_name_uk", "edrpou", "state_company",
                      "legal_entity", "status")
     search_fields = ["name_uk", "short_name_uk", "edrpou"]
+    readonly_fields = ('last_change', 'last_editor',)
     actions = [make_published, make_unpublished]
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
