@@ -714,6 +714,10 @@ class Declaration(models.Model):
             models.Index(fields=['confirmed', 'fuzziness', 'batch_number']),
         ]
 
+        unique_together = [
+            ["person", "declaration_id"],
+        ]
+
 
 class DeclarationToLinkManager(models.Manager):
     def get_queryset(self):

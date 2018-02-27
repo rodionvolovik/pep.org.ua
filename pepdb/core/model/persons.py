@@ -447,6 +447,7 @@ class Person(models.Model, AbstractNode):
         ]
 
         d["photo"] = settings.SITE_URL + self.photo.url if self.photo else ""
+        d["photo_path"] = self.photo.name if self.photo else ""
         d["date_of_birth"] = self.date_of_birth
 
         last_workplace = self.last_workplace

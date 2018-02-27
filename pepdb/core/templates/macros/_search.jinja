@@ -4,8 +4,8 @@
         <div class="box active-box" data-url="{{ url("person_details", person_id=p.id) }}">
             <header class="profile-header">
                 <div class="avatar">
-                {% if p.photo %}
-                    <img src="{{ p.photo|thumbnail_url("small_avatar") }}" itemprop="image" />
+                {% if p.photo_path %}
+                    <img src="{{ p.photo_path|thumbnail_url("small_avatar") }}" itemprop="image" />
                 {% endif %}
                 </div>
 
