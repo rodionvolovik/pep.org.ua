@@ -46,32 +46,3 @@ def touch_last_modification_time(sender, **kwargs):
         obj.last_change = datetime.utcnow()
         obj.last_editor = instance.user
         obj.save()
-    elif isinstance(obj, (Person2Person)):
-        obj.from_person.last_change = datetime.utcnow()
-        obj.from_person.last_editor = instance.user
-        obj.from_person.save()
-        obj.to_person.last_change = datetime.utcnow()
-        obj.to_person.last_editor = instance.user
-        obj.to_person.save()
-    elif isinstance(obj, (Person2Company)):
-        obj.from_person.last_change = datetime.utcnow()
-        obj.from_person.last_editor = instance.user
-        obj.from_person.save()
-        obj.to_company.last_change = datetime.utcnow()
-        obj.to_company.last_editor = instance.user
-        obj.to_company.save()
-    elif isinstance(obj, (Company2Company)):
-        obj.from_company.last_change = datetime.utcnow()
-        obj.from_company.last_editor = instance.user
-        obj.from_company.save()
-        obj.to_company.last_change = datetime.utcnow()
-        obj.to_company.last_editor = instance.user
-        obj.to_company.save()
-    elif isinstance(obj, (Company2Country)):
-        obj.from_company.last_change = datetime.utcnow()
-        obj.from_company.last_editor = instance.user
-        obj.from_company.save()
-    elif isinstance(obj, (Person2Country)):
-        obj.from_person.last_change = datetime.utcnow()
-        obj.from_person.last_editor = instance.user
-        obj.from_person.save()

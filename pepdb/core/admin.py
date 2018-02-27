@@ -347,6 +347,17 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
 
 
 class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
+    inlines = (Company2PersonInline, Company2CompanyInline,
+               Company2CompanyBackInline, Company2CountryInline)
+
+    list_display = ("pk", "name_uk", "short_name_uk", "edrpou",
+                    "state_company", "legal_entity", "status", "management")
+    list_editable = ("name_uk", "short_name_uk", "edrpou", "state_company",
+                     "legal_entity", "status")
+    search_fields = ["name_uk", "short_name_uk", "edrpou"]
+    readonly_fields = ('last_change', 'last_editor',)
+    actions = [make_published, make_unpublished]
+
     class Media:
         css = {
             'all': ('css/admin/company_admin.css', "css/narrow.css",)
@@ -513,17 +524,6 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
             ) for person in managers
         ])
     management.allow_tags = True
-
-    inlines = (Company2PersonInline, Company2CompanyInline,
-               Company2CompanyBackInline, Company2CountryInline)
-
-    list_display = ("pk", "name_uk", "short_name_uk", "edrpou",
-                    "state_company", "legal_entity", "status", "management")
-    list_editable = ("name_uk", "short_name_uk", "edrpou", "state_company",
-                     "legal_entity", "status")
-    search_fields = ["name_uk", "short_name_uk", "edrpou"]
-    readonly_fields = ('last_change', 'last_editor',)
-    actions = [make_published, make_unpublished]
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
         extra_context = extra_context or {}
