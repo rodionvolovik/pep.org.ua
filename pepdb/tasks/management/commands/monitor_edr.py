@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from datetime import timedelta
 
 from django.core.management.base import BaseCommand
 from django.db.models.functions import Lower
@@ -40,11 +41,8 @@ class Command(BaseCommand):
         "генеральний прокурор україни",
         "голова",
         "голова комісії",
-        "голова ліквідаційної комісії",
-        "голова наглядової ради",
         "голова нбу",
         "голова ода",
-        "голова політичної ради партії",
         "голова правління",
         "голова президії партії",
         "голова ради партії",
@@ -123,6 +121,11 @@ class Command(BaseCommand):
 
             pep_position = conn.relationship_type_uk.lower()
             company_edrpou = conn.to_company.edrpou.lstrip("0")
+            if conn.to_company.closed_on:  # and conn.to_company.status in [2]:
+                closed_on = ceil_date(conn.to_company.closed_on, conn.to_company.closed_on_details)
+            else:
+                closed_on = None
+
 
             ans = self.search_for_company(company_edrpou)
             for company in ans:
@@ -132,8 +135,17 @@ class Command(BaseCommand):
                     company_edrpou=company_edrpou
                 ).order_by("-edr_date")
 
+                if closed_on is not None and closed_on < company.last_update.date():
+                    self.stderr.write(
+                        "Company in {} were closed on {} before the date {} from registry, skipping it".format(
+                            conn,
+                            closed_on,
+                            company.last_update.date()
+                        ))
+                    continue
+
                 if conn.date_established:
-                    if floor_date(conn.date_established, conn.date_established_details) >= company.last_update.date():
+                    if floor_date(conn.date_established, conn.date_established_details) >= company.last_update.date() + timedelta(days=10):
                         self.stderr.write(
                             "Connection {} started on {} after the date {} from registry, skipping it".format(
                                 conn,
@@ -143,7 +155,7 @@ class Command(BaseCommand):
                         continue
 
                 if conn.date_finished:
-                    if ceil_date(conn.date_finished, conn.date_finished_details) <= company.last_update.date():
+                    if ceil_date(conn.date_finished, conn.date_finished_details) <= company.last_update.date() - timedelta(days=10):
                         self.stderr.write(
                             "Connection {} finished on {} before the date {} from registry, skipping it".format(
                                 conn,
