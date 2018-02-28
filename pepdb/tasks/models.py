@@ -240,3 +240,65 @@ class EDRMonitoring(AbstractTask):
         index_together = [
             ["pep_name", "pep_position", "edr_name", "company_edrpou"],
         ]
+
+
+# Cheezy throwaway model
+class TerminationNotice(AbstractTask):
+    STATUS_CHOICES = (
+        ("p", "Не перевірено"),
+        ("a", "Застосувати зміну"),
+        ("i", "Ігнорувати зміну"),
+        ("r", "Потребує додаткової перевірки"),
+    )
+
+    status = models.CharField(
+        "Статус",
+        max_length=1,
+        choices=STATUS_CHOICES,
+        default="p",
+        db_index=True
+    )
+
+    new_person_status = models.IntegerField(
+        "Можлива причина припинення статусу ПЕП",
+        choices=Person._reasons_of_termination,
+        blank=True,
+        null=True
+    )
+
+    termination_date = models.DateField(
+        "Дата припинення статусу ПЕП", blank=True, null=True,
+        help_text="Вказується реальна дата зміни без врахування 3 років (реальна дата звільнення, тощо)"
+    )
+    termination_date_details = models.IntegerField(
+        "Дата припинення статусу ПЕП: точність",
+        choices=(
+            (0, "Точна дата"),
+            (1, "Рік та місяць"),
+            (2, "Тільки рік"),
+        ),
+        default=0
+    )
+
+    comments = models.TextField(
+        "Коментар",
+        blank=True
+    )
+
+    pep_name = models.CharField(
+        "Прізвище", max_length=200, null=True, blank=True)
+    pep_position = models.TextField("Посада", null=True, blank=True)
+
+    person = models.ForeignKey(Person, null=True, on_delete=models.SET_NULL)
+
+    class Meta:
+        verbose_name = "Кандидат на виліт"
+        verbose_name_plural = "Кандидати на виліт"
+
+        unique_together = [
+            ["person", "pep_name", "termination_date", "termination_date_details"],
+        ]
+
+        index_together = [
+            ["person", "pep_name", "termination_date", "termination_date_details"],
+        ]

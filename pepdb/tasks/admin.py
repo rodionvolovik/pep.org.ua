@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from core.models import Declaration, Person2Company
 from tasks.models import (
     PersonDeduplication, CompanyMatching, BeneficiariesMatching,
-    CompanyDeduplication, EDRMonitoring
+    CompanyDeduplication, EDRMonitoring, TerminationNotice
 )
 
 
@@ -323,8 +323,51 @@ class EDRMonitoringAdmin(admin.ModelAdmin):
             request, obj, form, change)
 
 
+class TerminationNoticeAdmin(admin.ModelAdmin):
+    list_display = (
+        "pk",
+        "comments",
+        "pep_name",
+        "pep_position",
+        "new_person_status",
+        "status",
+    )
+
+    list_editable = ("status", )
+    list_filter = ("status", "new_person_status")
+
+    ordering = ("timestamp",)
+
+    search_fields = (
+        "pep_name", "pep_position", "comments"
+    )
+
+    def mark_for_application(self, request, queryset):
+        queryset.update(status="a")
+    mark_for_application.short_description = "Статус: Застосувати зміну"
+
+    def ignore(self, request, queryset):
+        queryset.update(status="i")
+    ignore.short_description = "Статус: Ігнорувати зміну"
+
+    def doublecheck(self, request, queryset):
+        queryset.update(status="r")
+    doublecheck.short_description = "Статус: Потребує додаткової перевірки"
+
+    actions = [mark_for_application, ignore, doublecheck]
+
+    def has_add_permission(self, request):
+        return False
+
+    def save_model(self, request, obj, form, change):
+        obj.user = request.user
+        super(EDRMonitoringAdmin, self).save_model(
+            request, obj, form, change)
+
+
 admin.site.register(PersonDeduplication, PersonDeduplicationAdmin)
 admin.site.register(CompanyMatching, CompanyMatchingAdmin)
 admin.site.register(BeneficiariesMatching, BeneficiariesMatchingAdmin)
 admin.site.register(CompanyDeduplication, CompanyDeduplicationAdmin)
 admin.site.register(EDRMonitoring, EDRMonitoringAdmin)
+admin.site.register(TerminationNotice, TerminationNoticeAdmin)
