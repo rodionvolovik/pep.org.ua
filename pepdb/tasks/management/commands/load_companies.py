@@ -64,7 +64,7 @@ class EDR_Reader(object):
             with ZipFile(self.file) as zip_arch:
                 for fname in zip_arch.namelist():
                     if "uo" in fname.lower():
-                        logger.info("Reading {} file from archive {}".format(fname, self.zip_file))
+                        logger.info("Reading {} file from archive {}".format(fname, self.file))
 
                         if fname.lower().endswith(".xml"):
                             with zip_arch.open(fname, 'r') as fp_raw:
