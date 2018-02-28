@@ -18,6 +18,10 @@ class Command(BaseCommand):
             r = reader(fp)
 
             for l in r:
+                if len(l) != 2:
+                    self.stderr.write("CSV file doesn't look sane, check this out: {}".format(", ".join(l)))
+                    return
+
                 positions[l[0].lower().strip()] = l[1].strip()
 
         for p2c in Person2Company.objects.annotate(
