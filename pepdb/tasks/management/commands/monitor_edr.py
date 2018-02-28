@@ -121,7 +121,7 @@ class Command(BaseCommand):
 
             pep_position = conn.relationship_type_uk.lower()
             company_edrpou = conn.to_company.edrpou.lstrip("0")
-            if conn.to_company.closed_on:  # and conn.to_company.status in [2]:
+            if conn.to_company.closed_on and conn.to_company.status in [2]:  # 2 is for prypyneno
                 closed_on = ceil_date(conn.to_company.closed_on, conn.to_company.closed_on_details)
             else:
                 closed_on = None
