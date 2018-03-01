@@ -1,9 +1,11 @@
 # coding: utf-8
 from __future__ import unicode_literals
+from datetime import timedelta, datetime, date
 
 from django.contrib import admin
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
+from django.utils import formats
 
 from core.models import Declaration, Person2Company
 from tasks.models import (
@@ -327,20 +329,34 @@ class TerminationNoticeAdmin(admin.ModelAdmin):
     list_display = (
         "pk",
         "comments",
+        "termination_date_ceiled_readable",
         "pep_name",
         "pep_position",
         "new_person_status",
+        "action",
         "status",
     )
 
     list_editable = ("status", )
-    list_filter = ("status", "new_person_status")
+    list_filter = ("status", "action", "new_person_status")
 
-    ordering = ("timestamp",)
+    ordering = ("termination_date_ceiled",)
 
     search_fields = (
         "pep_name", "pep_position", "comments"
     )
+
+    def termination_date_ceiled_readable(self, obj):
+        dt = formats.date_format(obj.termination_date_ceiled, "SHORT_DATE_FORMAT")
+
+        if obj.termination_date_ceiled + timedelta(days=3 * 365) < date.today():
+            return "<strong>{}</strong><br/>Три роки пройшло".format(dt)
+        else:
+            return dt
+
+    termination_date_ceiled_readable.short_description = 'Дата припинення (округлена вгору)'
+    termination_date_ceiled_readable.allow_tags = True
+    termination_date_ceiled_readable.admin_order_field = 'termination_date_ceiled'
 
     def mark_for_application(self, request, queryset):
         queryset.update(status="a")
@@ -361,7 +377,7 @@ class TerminationNoticeAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         obj.user = request.user
-        super(EDRMonitoringAdmin, self).save_model(
+        super(TerminationNoticeAdmin, self).save_model(
             request, obj, form, change)
 
 

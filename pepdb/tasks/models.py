@@ -251,6 +251,13 @@ class TerminationNotice(AbstractTask):
         ("r", "Потребує додаткової перевірки"),
     )
 
+    ACTION_CHOICES = (
+        ("review", "Перевірити вручну"),
+        ("change_type", "Змінити тип ПЕП на пов'язану особу"),
+        ("change_and_fire", "Змінити тип ПЕП на пов'язану особу та встановити дату"),
+        ("fire", "Припинити ПЕПство"),
+    )
+
     status = models.CharField(
         "Статус",
         max_length=1,
@@ -266,6 +273,14 @@ class TerminationNotice(AbstractTask):
         null=True
     )
 
+    action = models.CharField(
+        "Дія",
+        max_length=25,
+        choices=ACTION_CHOICES,
+        default="fire",
+        db_index=True
+    )
+
     termination_date = models.DateField(
         "Дата припинення статусу ПЕП", blank=True, null=True,
         help_text="Вказується реальна дата зміни без врахування 3 років (реальна дата звільнення, тощо)"
@@ -278,6 +293,11 @@ class TerminationNotice(AbstractTask):
             (2, "Тільки рік"),
         ),
         default=0
+    )
+
+    termination_date_ceiled = models.DateField(
+        "Дата припинення статусу ПЕП, округлена вгору",
+        blank=True, null=True
     )
 
     comments = models.TextField(

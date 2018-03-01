@@ -575,12 +575,12 @@ msgid "Звільнився/склав повноваження"
 msgstr "Resigned"
 
 #: core/model/persons.py:126
-msgid "Член сім'ї - ПЕП помер"
-msgstr "Family member - PEP died"
+msgid "Пов'язана особа або член сім'ї - ПЕП помер"
+msgstr "Close associate or family member - PEP died"
 
 #: core/model/persons.py:127
-msgid "Член сім'ї - ПЕП припинив бути ПЕПом"
-msgstr "Family member - PEP is no more PEP"
+msgid "Пов'язана особа або член сім'ї - ПЕП припинив бути ПЕПом"
+msgstr "Close associate or family member - PEP is no more PEP"
 
 #: core/model/persons.py:128
 msgid "Зміни у законодавстві що визначає статус ПЕПа"
