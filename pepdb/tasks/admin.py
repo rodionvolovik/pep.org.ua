@@ -347,6 +347,9 @@ class TerminationNoticeAdmin(admin.ModelAdmin):
     )
 
     def termination_date_ceiled_readable(self, obj):
+        if obj.termination_date_ceiled is None:
+            return "-"
+
         dt = formats.date_format(obj.termination_date_ceiled, "SHORT_DATE_FORMAT")
 
         if obj.termination_date_ceiled + timedelta(days=3 * 365) < date.today():
