@@ -121,6 +121,7 @@ class Command(BaseCommand):
                 "dt_ceiled": ceil_date(last_date_on_job.date_finished, last_date_on_job.date_finished_details)
             }
 
+            # TODO: ignore those who is resigned recently
             self.stdout.write("Reviewing {} who got {} friends in high places".format(pep, len(set(to_persons + from_persons))))
 
             if to_persons + from_persons:

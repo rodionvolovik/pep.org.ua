@@ -330,7 +330,7 @@ class TerminationNoticeAdmin(admin.ModelAdmin):
         "pk",
         "comments",
         "termination_date_ceiled_readable",
-        "pep_name",
+        "pep_name_readable",
         "pep_position",
         "new_person_status",
         "action",
@@ -360,6 +360,19 @@ class TerminationNoticeAdmin(admin.ModelAdmin):
     termination_date_ceiled_readable.short_description = 'Дата припинення (округлена вгору)'
     termination_date_ceiled_readable.allow_tags = True
     termination_date_ceiled_readable.admin_order_field = 'termination_date_ceiled'
+
+    def pep_name_readable(self, obj):
+        if obj.person:
+            return '<a href="{}" target="_blank">{}</a>'.format(
+                obj.person.get_absolute_url(),
+                obj.pep_name
+            )
+        else:
+            return obj.pep_name
+
+    pep_name_readable.short_description = 'Прізвище керівника з БД ПЕП'
+    pep_name_readable.allow_tags = True
+    pep_name_readable.admin_order_field = 'pep_name'
 
     def mark_for_application(self, request, queryset):
         queryset.update(status="a")
