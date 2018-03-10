@@ -145,7 +145,7 @@ class Command(BaseCommand):
                     continue
 
                 if conn.date_established:
-                    if floor_date(conn.date_established, conn.date_established_details) >= company.last_update.date() + timedelta(days=10):
+                    if floor_date(conn.date_established, conn.date_established_details) >= company.last_update.date():
                         self.stderr.write(
                             "Connection {} started on {} after the date {} from registry, skipping it".format(
                                 conn,
@@ -155,7 +155,7 @@ class Command(BaseCommand):
                         continue
 
                 if conn.date_finished:
-                    if ceil_date(conn.date_finished, conn.date_finished_details) <= company.last_update.date() - timedelta(days=10):
+                    if ceil_date(conn.date_finished, conn.date_finished_details) <= company.last_update.date():
                         self.stderr.write(
                             "Connection {} finished on {} before the date {} from registry, skipping it".format(
                                 conn,
