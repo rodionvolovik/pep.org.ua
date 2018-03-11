@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_noop as _
 from django.contrib.contenttypes.fields import GenericRelation
 
 from core.utils import render_date
@@ -32,38 +33,38 @@ class AbstractNode(object):
 
 class AbstractRelationship(models.Model):
     date_established = models.DateField(
-        "Зв'язок почався", blank=True, null=True)
+        _("Зв'язок почався"), blank=True, null=True)
 
     date_established_details = models.IntegerField(
-        "точність",
+        _("точність"),
         choices=(
-            (0, "Точна дата"),
-            (1, "Рік та місяць"),
-            (2, "Тільки рік"),
+            (0, _("Точна дата")),
+            (1, _("Рік та місяць")),
+            (2, _("Тільки рік")),
         ),
         default=0)
 
     date_finished = models.DateField(
-        "Зв'язок скінчився", blank=True, null=True)
+        _("Зв'язок скінчився"), blank=True, null=True)
 
     date_finished_details = models.IntegerField(
-        "точність",
+        _("точність"),
         choices=(
-            (0, "Точна дата"),
-            (1, "Рік та місяць"),
-            (2, "Тільки рік"),
+            (0, _("Точна дата")),
+            (1, _("Рік та місяць")),
+            (2, _("Тільки рік")),
         ),
         default=0)
 
     date_confirmed = models.DateField(
-        "Підтверджено", blank=True, null=True)
+        _("Підтверджено"), blank=True, null=True)
 
     date_confirmed_details = models.IntegerField(
-        "точність",
+        _("точність"),
         choices=(
-            (0, "Точна дата"),
-            (1, "Рік та місяць"),
-            (2, "Тільки рік"),
+            (0, _("Точна дата")),
+            (1, _("Рік та місяць")),
+            (2, _("Тільки рік")),
         ),
         default=0)
 
@@ -85,9 +86,9 @@ class AbstractRelationship(models.Model):
     proofs = GenericRelation("RelationshipProof")
 
     proof_title = models.TextField(
-        "Назва доказу зв'язку", blank=True,
+        _("Назва доказу зв'язку"), blank=True,
         help_text="Наприклад: склад ВР 7-го скликання")
-    proof = models.TextField("Посилання на доказ зв'язку", blank=True)
+    proof = models.TextField(_("Посилання на доказ зв'язку"), blank=True)
 
     @property
     def has_additional_info(self):

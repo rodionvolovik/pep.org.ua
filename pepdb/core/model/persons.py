@@ -54,19 +54,19 @@ class Person(models.Model, AbstractNode):
         (5, _("Член сім'ї")),
     )
 
-    last_name = models.CharField("Прізвище", max_length=40)
-    first_name = models.CharField("Ім'я", max_length=40)
-    patronymic = models.CharField("По батькові", max_length=40, blank=True)
+    last_name = models.CharField(_("Прізвище"), max_length=40)
+    first_name = models.CharField(_("Ім'я"), max_length=40)
+    patronymic = models.CharField(_("По батькові"), max_length=40, blank=True)
 
-    publish = models.BooleanField("Опублікувати", default=False)
-    is_pep = models.BooleanField("Є PEPом", default=True)
-    imported = models.BooleanField("Був імпортований з гугл-таблиці",
+    publish = models.BooleanField(_("Опублікувати"), default=False)
+    is_pep = models.BooleanField(_("Є PEPом"), default=True)
+    imported = models.BooleanField(_("Був імпортований з гугл-таблиці"),
                                    default=False)
 
-    photo = models.ImageField("Світлина", blank=True, upload_to="images")
-    dob = models.DateField("Дата народження", blank=True, null=True)
+    photo = models.ImageField(_("Світлина"), blank=True, upload_to="images")
+    dob = models.DateField(_("Дата народження"), blank=True, null=True)
     dob_details = models.IntegerField(
-        "Дата народження: точність",
+        _("Дата народження: точність"),
         choices=(
             (0, "Точна дата"),
             (1, "Рік та місяць"),
@@ -75,23 +75,23 @@ class Person(models.Model, AbstractNode):
         default=0)
 
     city_of_birth = models.CharField(
-        "Місто народження", max_length=100, blank=True)
+        _("Місто народження"), max_length=100, blank=True)
 
     related_countries = models.ManyToManyField(
-        "Country", verbose_name="Пов'язані країни",
+        "Country", verbose_name=_("Пов'язані країни"),
         through="Person2Country", related_name="people")
 
     reputation_assets = RedactorField(
-        "Статки", blank=True)
+        _("Статки"), blank=True)
 
     reputation_sanctions = RedactorField(
-        "Наявність санкцій", blank=True)
+        _("Наявність санкцій"), blank=True)
     reputation_crimes = RedactorField(
-        "Кримінальні провадження", blank=True)
+        _("Кримінальні провадження"), blank=True)
     reputation_manhunt = RedactorField(
-        "Перебування у розшуку", blank=True)
+        _("Перебування у розшуку"), blank=True)
     reputation_convictions = RedactorField(
-        "Наявність судимості", blank=True)
+        _("Наявність судимості"), blank=True)
 
     related_persons = select2.fields.ManyToManyField(
         "self", through="Person2Person", symmetrical=False,
@@ -102,20 +102,20 @@ class Person(models.Model, AbstractNode):
     related_companies = models.ManyToManyField(
         "Company", through="Person2Company")
 
-    wiki = RedactorField("Вікі-стаття", blank=True)
-    wiki_draft = RedactorField("Чернетка вікі-статті", blank=True)
-    names = models.TextField("Варіанти написання імені", blank=True)
+    wiki = RedactorField(_("Вікі-стаття"), blank=True)
+    wiki_draft = RedactorField(_("Чернетка вікі-статті"), blank=True)
+    names = models.TextField(_("Варіанти написання імені"), blank=True)
 
-    also_known_as = models.TextField("Інші імена", blank=True)
+    also_known_as = models.TextField(_("Інші імена"), blank=True)
 
     type_of_official = models.IntegerField(
-        "Тип ПЕП",
+        _("Тип ПЕП"),
         choices=_types_of_officials,
         blank=True,
         null=True)
 
     risk_category = models.CharField(
-        "Рівень ризику",
+        _("Рівень ризику"),
         choices=(
             ("danger", _("Неприйнятно високий")),
             ("high", _("Високий")),
@@ -127,20 +127,20 @@ class Person(models.Model, AbstractNode):
     title = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
 
-    hash = models.CharField("Хеш", max_length=40, blank=True)
+    hash = models.CharField(_("Хеш"), max_length=40, blank=True)
 
     reason_of_termination = models.IntegerField(
-        "Причина припинення статусу ПЕП",
+        _("Причина припинення статусу ПЕП"),
         choices=_reasons_of_termination,
         blank=True,
         null=True)
 
     termination_date = models.DateField(
-        "Дата припинення статусу ПЕП", blank=True, null=True,
-        help_text="Вказується реальна дата зміни без врахування 3 років (реальна дата звільнення, тощо)"
+        _("Дата припинення статусу ПЕП"), blank=True, null=True,
+        help_text=_("Вказується реальна дата зміни без врахування 3 років (реальна дата звільнення, тощо)")
     )
     termination_date_details = models.IntegerField(
-        "Дата припинення статусу ПЕП: точність",
+        _("Дата припинення статусу ПЕП: точність"),
         choices=(
             (0, "Точна дата"),
             (1, "Рік та місяць"),
@@ -150,7 +150,7 @@ class Person(models.Model, AbstractNode):
     )
 
     last_change = models.DateTimeField(
-        "Дата останньої зміни профіля або зв'язків профіля", blank=True, null=True
+        _("Дата останньої зміни профіля або зв'язків профіля"), blank=True, null=True
     )
 
     last_editor = models.ForeignKey(
@@ -630,8 +630,8 @@ class Person(models.Model, AbstractNode):
         return res
 
     class Meta:
-        verbose_name = "Фізична особа"
-        verbose_name_plural = "Фізичні особи"
+        verbose_name = _("Фізична особа")
+        verbose_name_plural = _("Фізичні особи")
 
         index_together = [
             ["last_name", "first_name"],

@@ -73,35 +73,35 @@ class Company(models.Model, AbstractNode):
         8: _("ліквідація"),
     }
 
-    name = models.CharField("Повна назва", max_length=512)
-    short_name = models.CharField("Скорочена назва", max_length=200,
+    name = models.CharField(_("Повна назва"), max_length=512)
+    short_name = models.CharField(_("Скорочена назва"), max_length=200,
                                   blank=True)
 
-    also_known_as = models.TextField("Назви іншими мовами або варіації", blank=True)
+    also_known_as = models.TextField(_("Назви іншими мовами або варіації"), blank=True)
 
-    publish = models.BooleanField("Опублікувати", default=False)
-    founded = models.DateField("Дата створення", blank=True, null=True)
+    publish = models.BooleanField(_("Опублікувати"), default=False)
+    founded = models.DateField(_("Дата створення"), blank=True, null=True)
     founded_details = models.IntegerField(
-        "Дата створення: точність",
+        _("Дата створення: точність"),
         choices=(
-            (0, "Точна дата"),
-            (1, "Рік та місяць"),
-            (2, "Тільки рік"),
+            (0, _("Точна дата")),
+            (1, _("Рік та місяць")),
+            (2, _("Тільки рік")),
         ),
         default=0)
 
     status = models.IntegerField(
-        "Поточний стан",
+        _("Поточний стан"),
         choices=_status_choices.items(),
         default=0
     )
-    closed_on = models.DateField("Дата припинення", blank=True, null=True)
+    closed_on = models.DateField(_("Дата припинення"), blank=True, null=True)
     closed_on_details = models.IntegerField(
-        "Дата припинення: точність",
+        _("Дата припинення: точність"),
         choices=(
-            (0, "Точна дата"),
-            (1, "Рік та місяць"),
-            (2, "Тільки рік"),
+            (0, _("Точна дата")),
+            (1, _("Рік та місяць")),
+            (2, _("Тільки рік")),
         ),
         default=0)
 
@@ -111,53 +111,53 @@ class Company(models.Model, AbstractNode):
                            self.founded_details)
 
     state_company = models.BooleanField(
-        "Керівник — ПЕП", default=False)
+        _("Керівник — ПЕП"), default=False)
 
     legal_entity = models.BooleanField(
-        "Юрособа", default=True)
+        _("Юрособа"), default=True)
 
     edrpou = models.CharField(
-        "ЄДРПОУ", max_length=50, blank=True)
+        _("ЄДРПОУ"), max_length=50, blank=True)
 
-    zip_code = models.CharField("Індекс", max_length=20, blank=True)
-    city = models.CharField("Місто", max_length=255, blank=True)
-    street = models.CharField("Вулиця", max_length=100, blank=True)
-    appt = models.CharField("№ будинку, офісу", max_length=50, blank=True)
-    raw_address = models.TextField('"Сира" адреса', blank=True)
+    zip_code = models.CharField(_("Індекс"), max_length=20, blank=True)
+    city = models.CharField(_("Місто"), max_length=255, blank=True)
+    street = models.CharField(_("Вулиця"), max_length=100, blank=True)
+    appt = models.CharField(_("№ будинку, офісу"), max_length=50, blank=True)
+    raw_address = models.TextField(_('"Сира" адреса'), blank=True)
 
-    wiki = RedactorField("Вікі-стаття", blank=True)
+    wiki = RedactorField(_("Вікі-стаття"), blank=True)
 
     other_founders = RedactorField(
-        "Інші засновники",
-        help_text="Через кому, не PEP", blank=True)
+        _("Інші засновники"),
+        help_text=_("Через кому, не PEP"), blank=True)
 
     other_recipient = models.CharField(
-        "Бенефіціарій", help_text="Якщо не є PEPом", blank=True,
+        _("Бенефіціарій"), help_text=_("Якщо не є PEPом"), blank=True,
         max_length=200)
 
     other_owners = RedactorField(
-        "Інші власники",
-        help_text="Через кому, не PEP", blank=True)
+        _("Інші власники"),
+        help_text=_("Через кому, не PEP"), blank=True)
 
     other_managers = RedactorField(
-        "Інші керуючі",
-        help_text="Через кому, не PEP", blank=True)
+        _("Інші керуючі"),
+        help_text=_("Через кому, не PEP"), blank=True)
 
-    bank_name = RedactorField("Фінансова інформація", blank=True)
+    bank_name = RedactorField(_("Фінансова інформація"), blank=True)
 
-    sanctions = RedactorField("Санкції", blank=True)
+    sanctions = RedactorField(_("Санкції"), blank=True)
 
     related_companies = models.ManyToManyField(
         "self", through="Company2Company", symmetrical=False)
 
     last_change = models.DateTimeField(
-        "Дата останньої зміни профіля або зв'язків профіля", blank=True, null=True
+        _("Дата останньої зміни профіля або зв'язків профіля"), blank=True, null=True
     )
 
     last_editor = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
-        verbose_name="Автор зміни",
+        verbose_name=_("Автор зміни"),
         blank=True,
         null=True,
     )
@@ -459,8 +459,8 @@ class Company(models.Model, AbstractNode):
     objects = CompanyManager()
 
     class Meta:
-        verbose_name = "Юридична особа"
-        verbose_name_plural = "Юридичні особи"
+        verbose_name = _("Юридична особа")
+        verbose_name_plural = _("Юридичні особи")
 
         permissions = (
             ("export_companies", "Can export the dataset of companies"),

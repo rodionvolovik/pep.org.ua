@@ -62,31 +62,31 @@ class Person2Person(AbstractRelationship):
     ])
 
     from_person = models.ForeignKey(
-        "Person", verbose_name="Персона 1", related_name="to_persons")
+        "Person", verbose_name=_("Персона 1"), related_name="to_persons")
     to_person = models.ForeignKey(
-        "Person", verbose_name="Персона 2", related_name="from_persons")
+        "Person", verbose_name=_("Персона 2"), related_name="from_persons")
 
     from_relationship_type = models.CharField(
-        "Персона 1 є",
+        _("Персона 1 є"),
         choices=(zip(_relationships_explained.keys(),
                      map(_, _relationships_explained.keys()))),
         max_length=100,
         blank=True)
 
     to_relationship_type = models.CharField(
-        "Персона 2 є",
+        _("Персона 2 є"),
         choices=(zip(_relationships_explained.keys(),
                      map(_, _relationships_explained.keys()))),
         max_length=100,
         blank=True)
 
     relationship_details = RedactorField(
-        "Детальний опис зв'язку", blank=True
+        _("Детальний опис зв'язку"), blank=True
     )
 
     declarations = ArrayField(
         models.IntegerField(),
-        verbose_name="Декларації, що підтверджують зв'язок",
+        verbose_name=_("Декларації, що підтверджують зв'язок"),
         null=True,
         blank=True
     )
@@ -141,8 +141,8 @@ class Person2Person(AbstractRelationship):
         }
 
     class Meta:
-        verbose_name = "Зв'язок з іншою персоною"
-        verbose_name_plural = "Зв'язки з іншими персонами"
+        verbose_name = _("Зв'язок з іншою персоною")
+        verbose_name_plural = _("Зв'язки з іншими персонами")
 
 
 class Person2Company(AbstractRelationship):
@@ -185,26 +185,26 @@ class Person2Company(AbstractRelationship):
 
     from_person = models.ForeignKey("Person")
     to_company = models.ForeignKey(
-        "Company", verbose_name="Компанія або установа",
+        "Company", verbose_name=_("Компанія або установа"),
         related_name="from_persons")
 
     relationship_type = models.TextField(
-        "Тип зв'язку",
+        _("Тип зв'язку"),
         blank=True)
 
     is_employee = models.BooleanField(
-        "Працює(-вав)",
+        _("Працює(-вав)"),
         default=False
     )
 
     created_from_edr = models.NullBooleanField(
-        "Запис створено з інформації ЄДР",
+        _("Запис створено з інформації ЄДР"),
         default=False
     )
 
     declarations = ArrayField(
         models.IntegerField(),
-        verbose_name="Декларації, що підтверджують зв'язок",
+        verbose_name=_("Декларації, що підтверджують зв'язок"),
         null=True,
         blank=True
     )
@@ -214,7 +214,7 @@ class Person2Company(AbstractRelationship):
         blank=True,
         decimal_places=6,
         max_digits=9,
-        verbose_name="Розмір частки (відсотки)"
+        verbose_name=_("Розмір частки (відсотки)")
     )
 
     def __unicode__(self):
@@ -269,8 +269,8 @@ class Person2Company(AbstractRelationship):
         super(Person2Company, self).save(*args, **kwargs)
 
     class Meta:
-        verbose_name = "Зв'язок з компанією/установою"
-        verbose_name_plural = "Зв'язки з компаніями/установами"
+        verbose_name = _("Зв'язок з компанією/установою")
+        verbose_name_plural = _("Зв'язки з компаніями/установами")
 
 
 class Company2Company(AbstractRelationship):
@@ -340,7 +340,7 @@ class Company2Company(AbstractRelationship):
     to_company = models.ForeignKey("Company", related_name="from_companies")
 
     relationship_type = models.CharField(
-        "Тип зв'язку",
+        _("Тип зв'язку"),
         choices=zip(_relationships_explained,
                     map(_, _relationships_explained)),
         max_length=40,
@@ -374,16 +374,16 @@ class Company2Company(AbstractRelationship):
         }
 
     class Meta:
-        verbose_name = "Зв'язок з компанією"
-        verbose_name_plural = "Зв'язки з компаніями"
+        verbose_name = _("Зв'язок з компанією")
+        verbose_name_plural = _("Зв'язки з компаніями")
 
 
 class Person2Country(AbstractRelationship):
-    from_person = models.ForeignKey("Person", verbose_name="Персона")
-    to_country = models.ForeignKey("Country", verbose_name="Країна")
+    from_person = models.ForeignKey("Person", verbose_name=_("Персона"))
+    to_country = models.ForeignKey("Country", verbose_name=_("Країна"))
 
     relationship_type = models.CharField(
-        "Тип зв'язку",
+        _("Тип зв'язку"),
         choices=(
             ("born_in", _("Народився(-лась)")),
             ("registered_in", _("Зареєстрований(-а)")),
@@ -412,18 +412,18 @@ class Person2Country(AbstractRelationship):
         }
 
     class Meta:
-        verbose_name = "Зв'язок з країною"
-        verbose_name_plural = "Зв'язки з країнами"
+        verbose_name = _("Зв'язок з країною")
+        verbose_name_plural = _("Зв'язки з країнами")
 
 
 class Company2Country(AbstractRelationship):
     from_company = models.ForeignKey(
-        "Company", verbose_name="Компанія", related_name="from_countries")
+        "Company", verbose_name=_("Компанія"), related_name="from_countries")
     to_country = models.ForeignKey(
-        "Country", verbose_name="Країна")
+        "Country", verbose_name=_("Країна"))
 
     relationship_type = models.CharField(
-        "Тип зв'язку",
+        _("Тип зв'язку"),
         choices=(
             ("registered_in", _("Зареєстрована")),
             ("under_sanctions", _("Під санкціями")),
@@ -447,8 +447,8 @@ class Company2Country(AbstractRelationship):
             self.get_relationship_type_display(), self.to_country)
 
     class Meta:
-        verbose_name = "Зв'язок з країною"
-        verbose_name_plural = "Зв'язки з країнами"
+        verbose_name = _("Зв'язок з країною")
+        verbose_name_plural = _("Зв'язки з країнами")
 
 
 class RelationshipProof(models.Model):
@@ -457,30 +457,30 @@ class RelationshipProof(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
 
     proof_title = models.TextField(
-        "Назва доказу зв'язку", blank=True,
-        help_text="Наприклад: склад ВР 7-го скликання")
+        _("Назва доказу зв'язку"), blank=True,
+        help_text=_("Наприклад: склад ВР 7-го скликання"))
 
     proof_document = models.ForeignKey(
-        "core.Document", verbose_name="Документ-доказ зв'язку",
+        "core.Document", verbose_name=_("Документ-доказ зв'язку"),
         default=None, blank=True, null=True)
-    proof = models.TextField("або посилання на доказ зв'язку", blank=True)
+    proof = models.TextField(_("або посилання на доказ зв'язку"), blank=True)
 
     def clean(self):
         if self.proof_document is None and not self.proof:
             raise ValidationError({
-                'proof_document': 'Поле документа або посилання має бути заповнено',
-                'proof': 'Поле документа або посилання має бути заповнено',
+                'proof_document': _('Поле документа або посилання має бути заповнено'),
+                'proof': _('Поле документа або посилання має бути заповнено'),
             })
 
         if self.proof_document is not None and self.proof:
             raise ValidationError({
-                'proof_document': 'Тільки поле документа або посилання має бути заповнено',
-                'proof': 'Тільки поле документа або посилання має бути заповнено',
+                'proof_document': _('Тільки поле документа або посилання має бути заповнено'),
+                'proof': _('Тільки поле документа або посилання має бути заповнено'),
             })
 
     def __unicode__(self):
         return "%s: %s" % (self.proof_title, self.proof_document or self.proof)
 
     class Meta:
-        verbose_name = "Підтвердження зв'язку"
-        verbose_name_plural = "Підтвердження зв'язків"
+        verbose_name = _("Підтвердження зв'язку")
+        verbose_name_plural = _("Підтвердження зв'язків")
