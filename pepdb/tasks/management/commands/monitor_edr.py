@@ -129,6 +129,9 @@ class Command(BaseCommand):
 
             ans = self.search_for_company(company_edrpou)
             for company in ans:
+                if company.head is None:
+                    continue
+
                 edr_name = company.head.lower()
 
                 latest_rec = EDRMonitoring.objects.filter(
