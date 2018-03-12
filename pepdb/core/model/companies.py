@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.utils.translation import ugettext_noop as _
+from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext_lazy, activate, get_language
 from django.forms.models import model_to_dict
 from django.core.exceptions import ObjectDoesNotExist

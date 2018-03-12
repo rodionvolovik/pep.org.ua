@@ -47,12 +47,12 @@ from tasks.elastic_models import EDRPOU
 
 def make_published(modeladmin, request, queryset):
     queryset.update(publish=True)
-make_published.short_description = "Опублікувати"
+make_published.short_description = _("Опублікувати")
 
 
 def make_unpublished(modeladmin, request, queryset):
     queryset.update(publish=False)
-make_unpublished.short_description = "Приховати"
+make_unpublished.short_description = _("Приховати")
 
 
 # TODO: refactor to a smaller files
@@ -114,8 +114,8 @@ class Person2PersonInline(TranslationNestedStackedInline):
 
 
 class Person2PersonBackInline(TranslationNestedStackedInline):
-    verbose_name = u"Зворотній зв'язок з іншою персоною"
-    verbose_name_plural = u"Зворотні зв'язки з іншими персонами"
+    verbose_name = _("Зворотній зв'язок з іншою персоною")
+    verbose_name_plural = _("Зворотні зв'язки з іншими персонами")
     model = Person2Person
     fk_name = "to_person"
     extra = 0
@@ -203,8 +203,8 @@ class Person2CompanyInline(TranslationNestedStackedInline):
 
 
 class Company2PersonInline(TranslationNestedStackedInline):
-    verbose_name = u"Зв'язок з іншою персоною"
-    verbose_name_plural = u"Зв'язки з іншими персонами"
+    verbose_name = _("Зв'язок з іншою персоною")
+    verbose_name_plural = _("Зв'язки з іншими персонами")
 
     model = Person2Company
     fk_name = "to_company"
@@ -248,8 +248,8 @@ class Company2CompanyInline(nested_admin.NestedTabularInline):
 
 
 class Company2CompanyBackInline(nested_admin.NestedTabularInline):
-    verbose_name = u"Зворотній зв'язок з іншою компанією"
-    verbose_name_plural = u"Зворотні зв'язки з іншими компаніями"
+    verbose_name = _("Зворотній зв'язок з іншою компанією")
+    verbose_name_plural = _("Зворотні зв'язки з іншими компаніями")
 
     model = Company2Company
     fk_name = "to_company"
@@ -272,8 +272,8 @@ class Company2CompanyBackInline(nested_admin.NestedTabularInline):
 
 
 class DeclarationExtraInline(admin.TabularInline):
-    verbose_name = u"Додаткова інформація про статки"
-    verbose_name_plural = u"Додаткова інформація про статки"
+    verbose_name = _("Додаткова інформація про статки")
+    verbose_name_plural = _("Додаткова інформація про статки")
 
     model = DeclarationExtra
     extra = 1
@@ -305,23 +305,23 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     actions = [make_published, make_unpublished]
 
     fieldsets = [
-        (u"Загальна інформація", {
+        (_("Загальна інформація"), {
             'fields': ['last_name', 'first_name', 'patronymic',
                        'also_known_as', 'is_pep', 'type_of_official',
                        'photo', 'dob', 'dob_details', 'city_of_birth',
                        'publish']}),
 
-        (u"Припинення статусу ПЕП", {
+        (_("Припинення статусу ПЕП"), {
             'fields': ["reason_of_termination", "termination_date", "termination_date_details"]}),
 
-        (u'Додаткова інформація', {
+        (_('Додаткова інформація'), {
             'fields': ['wiki', 'wiki_draft', 'reputation_assets', 'risk_category', 'names']}),
 
-        (u'Ділова репутація', {
+        (_('Ділова репутація'), {
             'fields': ['reputation_sanctions', 'reputation_crimes',
                        'reputation_manhunt', 'reputation_convictions']}),
 
-        (u'Остання зміна', {
+        (_('Остання зміна'), {
             'fields': ['last_change', 'last_editor']}),
     ]
 
@@ -588,7 +588,7 @@ def export_to_excel(modeladmin, request, queryset):
 
     return response
 
-export_to_excel.short_description = "Експортувати в Excel"
+export_to_excel.short_description = _("Експортувати в Excel")
 
 
 class Ua2RuDictionaryAdmin(admin.ModelAdmin):
@@ -620,7 +620,7 @@ class DocumentAdmin(TranslationAdmin):
         return '<a href="{0}{1}" target="_blank">Лінк</a>'.format(
             settings.MEDIA_URL, obj.doc)
     link.allow_tags = True
-    link.short_description = 'Завантажити'
+    link.short_description = _('Завантажити')
 
     list_display = ("name", "link", "uploader", "uploaded")
     search_fields = ["name", "doc"]
@@ -632,7 +632,7 @@ class FeedbackAdmin(admin.ModelAdmin):
                 if obj.link else "")
 
     link_expanded.allow_tags = True
-    link_expanded.short_description = 'Джерело'
+    link_expanded.short_description = _('Джерело')
 
     def text_expanded(self, obj):
         return (u'<strong><sup>*</sup> {0}</strong>'.format(obj.text)
@@ -641,7 +641,7 @@ class FeedbackAdmin(admin.ModelAdmin):
                     obj.text))
 
     text_expanded.allow_tags = True
-    text_expanded.short_description = 'Інформація'
+    text_expanded.short_description = _('Інформація')
 
     list_display = ("text_expanded", "person", "link_expanded", "added",
                     "contacts")

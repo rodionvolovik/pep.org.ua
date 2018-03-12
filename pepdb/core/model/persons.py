@@ -7,7 +7,7 @@ from copy import deepcopy
 import datetime
 from django.db import models
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_noop as _
+from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext_lazy, activate, get_language
 from django.forms.models import model_to_dict
 from django.conf import settings
@@ -68,9 +68,9 @@ class Person(models.Model, AbstractNode):
     dob_details = models.IntegerField(
         _("Дата народження: точність"),
         choices=(
-            (0, "Точна дата"),
-            (1, "Рік та місяць"),
-            (2, "Тільки рік"),
+            (0, _("Точна дата")),
+            (1, _("Рік та місяць")),
+            (2, _("Тільки рік")),
         ),
         default=0)
 
@@ -142,9 +142,9 @@ class Person(models.Model, AbstractNode):
     termination_date_details = models.IntegerField(
         _("Дата припинення статусу ПЕП: точність"),
         choices=(
-            (0, "Точна дата"),
-            (1, "Рік та місяць"),
-            (2, "Тільки рік"),
+            (0, _("Точна дата")),
+            (1, _("Рік та місяць")),
+            (2, _("Тільки рік")),
         ),
         default=0
     )
@@ -156,7 +156,7 @@ class Person(models.Model, AbstractNode):
     last_editor = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
-        verbose_name="Автор зміни",
+        verbose_name=_("Автор зміни"),
         blank=True,
         null=True,
     )
