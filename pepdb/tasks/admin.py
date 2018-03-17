@@ -378,6 +378,9 @@ class TerminationNoticeAdmin(admin.ModelAdmin):
 
     def pep_position_readable(self, obj):
         res = obj.pep_position
+        if not obj.person:
+            return res
+
         pd = obj.person._last_workplace_from_declaration()
         if pd:
             res += '<br/><br/> Декларація за {}: <a href="{}" target="blank">{} @ {}</a>'.format(
