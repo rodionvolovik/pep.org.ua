@@ -30,3 +30,4 @@ django-cacheops==4.0.1
 Jinja2==2.9.6
 django-nested-admin==3.0.21
 fuzzywuzzy==0.16.0
+tqdm==4.19.8

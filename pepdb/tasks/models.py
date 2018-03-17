@@ -322,3 +322,33 @@ class TerminationNotice(AbstractTask):
         index_together = [
             ["person", "pep_name", "termination_date", "termination_date_details"],
         ]
+
+
+class AdHocMatch(AbstractTask):
+    STATUS_CHOICES = (
+        ("p", "Не перевірено"),
+        ("a", "Застосовано"),
+        ("i", "Ігнорувати"),
+        ("r", "Потребує додаткової перевірки"),
+    )
+
+    status = models.CharField(
+        "Статус",
+        max_length=1,
+        choices=STATUS_CHOICES,
+        default="p",
+        db_index=True
+    )
+
+    pep_name = models.CharField(
+        "Прізвище", max_length=200, null=True, blank=True)
+    pep_position = models.TextField("Посада", null=True, blank=True)
+    person = models.ForeignKey(Person, null=True, on_delete=models.SET_NULL)
+    matched_json_hash = models.CharField("Хеш", max_length=40)
+    matched_json = JSONField(verbose_name="Знайдено в датасеті", null=True)
+    dataset_id = models.CharField("Походження датасету", max_length=200, null=True, blank=True)
+    name_match_score = models.IntegerField("Ступінь співпадіння")
+
+    class Meta:
+        verbose_name = "Універсальний матчінг"
+        verbose_name_plural = "Універсальні матчінги"

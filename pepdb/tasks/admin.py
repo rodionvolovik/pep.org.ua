@@ -10,7 +10,8 @@ from django.utils import formats
 from core.models import Declaration, Person2Company
 from tasks.models import (
     PersonDeduplication, CompanyMatching, BeneficiariesMatching,
-    CompanyDeduplication, EDRMonitoring, TerminationNotice
+    CompanyDeduplication, EDRMonitoring, TerminationNotice,
+    AdHocMatch
 )
 
 
@@ -397,9 +398,94 @@ class TerminationNoticeAdmin(admin.ModelAdmin):
             request, obj, form, change)
 
 
+class AdHocMatchAdmin(admin.ModelAdmin):
+    list_display = (
+        "pk",
+        "pep_name_readable",
+        "pep_position_readable",
+        "dataset_entry_readable",
+        "dataset_id",
+        "name_match_score",
+        "status",
+    )
+
+    list_editable = ("status", )
+    list_filter = ("status", "dataset_id")
+
+    search_fields = (
+        "pep_name", "pep_position", "matched_json"
+    )
+
+    def pep_name_readable(self, obj):
+        if obj.person:
+            return ('<a href="%s" target="_blank">%s %s %s</a><br/> %s' % (
+                reverse("person_details", kwargs={"person_id": obj.person_id}),
+                obj.person.last_name_uk, obj.person.first_name_uk,
+                obj.person.patronymic_uk,
+                (obj.person.also_known_as_uk or "").replace("\n", " ,")
+            )).replace("  ", " ").strip()
+        else:
+            return obj.pep_name
+
+    pep_name_readable.short_description = 'Прізвище з БД ПЕП'
+    pep_name_readable.allow_tags = True
+    pep_name_readable.admin_order_field = 'pep_name'
+
+    def dataset_entry_readable(self, obj):
+        if obj.matched_json:
+            return render_to_string(
+                "admin/dataset_entry.jinja",
+                {"obj": obj}
+            )
+        else:
+            return ""
+
+    dataset_entry_readable.short_description = 'Запис з датасету'
+    dataset_entry_readable.allow_tags = True
+
+    def pep_position_readable(self, obj):
+        if obj.person:
+            last_workplace = obj.person.last_workplace
+            if last_workplace and last_workplace["position"] != "Клієнт банку":
+                return '%s @ %s,<br/><span style="color: silver">%s</span>' % (
+                    last_workplace["position"],
+                    last_workplace["company"],
+                    obj.person.get_type_of_official_display()
+                )
+        else:
+            return obj.pep_position
+
+    pep_position_readable.short_description = 'Посада з БД PEP'
+    pep_position_readable.allow_tags = True
+
+    def mark_for_application(self, request, queryset):
+        queryset.update(status="a")
+    mark_for_application.short_description = "Статус: Застосовано"
+
+    def ignore(self, request, queryset):
+        queryset.update(status="i")
+    ignore.short_description = "Статус: Ігнорувати"
+
+    def doublecheck(self, request, queryset):
+        queryset.update(status="r")
+    doublecheck.short_description = "Статус: Потребує додаткової перевірки"
+
+    actions = [mark_for_application, ignore, doublecheck]
+
+    def has_add_permission(self, request):
+        return False
+
+    def save_model(self, request, obj, form, change):
+        obj.user = request.user
+        super(TerminationNoticeAdmin, self).save_model(
+            request, obj, form, change)
+
+
+
 admin.site.register(PersonDeduplication, PersonDeduplicationAdmin)
 admin.site.register(CompanyMatching, CompanyMatchingAdmin)
 admin.site.register(BeneficiariesMatching, BeneficiariesMatchingAdmin)
 admin.site.register(CompanyDeduplication, CompanyDeduplicationAdmin)
 admin.site.register(EDRMonitoring, EDRMonitoringAdmin)
 admin.site.register(TerminationNotice, TerminationNoticeAdmin)
+admin.site.register(AdHocMatch, AdHocMatchAdmin)
