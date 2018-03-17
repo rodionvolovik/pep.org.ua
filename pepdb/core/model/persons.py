@@ -221,7 +221,7 @@ class Person(models.Model, AbstractNode):
     def _last_workplace_from_declaration(self):
         return Declaration.objects.filter(person=self, confirmed="a").order_by(
             "-nacp_declaration", "-year").only(
-            "office_en", "position_en", "office_uk", "position_uk")[:1]
+            "year", "office_en", "position_en", "office_uk", "position_uk", "url")[:1]
 
     @property
     def last_workplace(self):

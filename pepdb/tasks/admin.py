@@ -332,7 +332,7 @@ class TerminationNoticeAdmin(admin.ModelAdmin):
         "comments",
         "termination_date_ceiled_readable",
         "pep_name_readable",
-        "pep_position",
+        "pep_position_readable",
         "new_person_status",
         "action",
         "status",
@@ -375,6 +375,19 @@ class TerminationNoticeAdmin(admin.ModelAdmin):
     pep_name_readable.allow_tags = True
     pep_name_readable.admin_order_field = 'pep_name'
 
+
+    def pep_position_readable(self, obj):
+        res = obj.pep_position
+        pd = obj.person._last_workplace_from_declaration()
+        if pd:
+            res += '<br/><br/> Декларація за {}: <a href="{}" target="blank">{} @ {}</a>'.format(
+                pd[0].year, pd[0].url, pd[0].office_uk, pd[0].position_uk)
+        return res
+
+    pep_position_readable.short_description = 'Посада/остання декларація'
+    pep_position_readable.allow_tags = True
+    pep_position_readable.admin_order_field = 'pep_position'
+
     def mark_for_application(self, request, queryset):
         queryset.update(status="a")
     mark_for_application.short_description = "Статус: Застосувати зміну"
@@ -391,6 +404,9 @@ class TerminationNoticeAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return False
+
+    def get_queryset(self, request):
+        return super(TerminationNoticeAdmin, self).get_queryset(request).prefetch_related("person")
 
     def save_model(self, request, obj, form, change):
         obj.user = request.user
