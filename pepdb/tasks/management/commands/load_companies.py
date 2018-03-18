@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import re
+from random import randrange
 import requests
 import os.path
 import xml.etree.ElementTree as ET
@@ -14,6 +15,7 @@ from zipfile import ZipFile
 from cStringIO import StringIO
 
 from django.core.management.base import BaseCommand
+from django.conf import settings
 
 from elasticsearch_dsl import Index
 from elasticsearch_dsl.connections import connections
@@ -63,15 +65,20 @@ class EDR_Reader(object):
         if self.file_type == "zip":
             with ZipFile(self.file) as zip_arch:
                 for fname in zip_arch.namelist():
-                    if "uo" in fname.lower():
-                        logger.info("Reading {} file from archive {}".format(fname, self.file))
+                    try:
+                        dec_fname = unicode(fname)
+                    except UnicodeDecodeError:
+                        dec_fname = fname.decode("cp866")
 
-                        if fname.lower().endswith(".xml"):
+                    if "uo" in dec_fname.lower() or "юо" in dec_fname.lower():
+                        logger.info("Reading {} file from archive {}".format(dec_fname, self.file))
+
+                        if dec_fname.lower().endswith(".xml"):
                             with zip_arch.open(fname, 'r') as fp_raw:
                                 for l in self._iter_xml(fp_raw):
                                     yield EDRPOU(**l).to_dict(True)
 
-                        if fname.lower().endswith(".csv"):
+                        if dec_fname.lower().endswith(".csv"):
                             with zip_arch.open(fname, 'r') as fp_raw:
                                 for l in self._iter_csv(fp_raw):
                                     yield EDRPOU(**l).to_dict(True)
@@ -196,17 +203,26 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        self.proxies = {}
+        if hasattr(settings, "PROXY"):
+            self.proxies["http"] = settings.PROXY
+            self.proxies["https"] = settings.PROXY
+
         GUID = options["guid"]
 
         try:
             if not options["revision"]:
                 response = requests.get(
-                    "http://data.gov.ua/view-dataset/dataset.json", {"dataset-id": GUID}).json()
+                    "http://data.gov.ua/view-dataset/dataset.json",
+                    {"dataset-id": GUID, "nocache": randrange(100)},
+                    proxies=self.proxies
+                ).json()
                 timestamp = parse(response["changed"], dayfirst=True)
             else:
                 listing = requests.get(
                     "http://data.gov.ua/view-dataset/dataset.json",
-                    {"dataset-id": GUID}
+                    {"dataset-id": GUID, "nocache": randrange(100)},
+                    proxies=self.proxies
                 ).json()
 
                 for rev in listing["revisions"]:
@@ -217,12 +233,13 @@ class Command(BaseCommand):
                 sleep(0.2)
                 response = requests.get(
                     "http://data.gov.ua/view-dataset/dataset.json",
-                    {"dataset-id": GUID, "revision-id": options["revision"]}
+                    {"dataset-id": GUID, "revision-id": options["revision"], "nocache": randrange(100)},
+                    proxies=self.proxies
                 ).json()
 
             files_list = response["files"]
             revision = response["revision_id"]
-        except (TypeError, IndexError):
+        except (TypeError, IndexError, KeyError):
             self.stderr.write("Cannot obtain information about dump file")
             raise
 
