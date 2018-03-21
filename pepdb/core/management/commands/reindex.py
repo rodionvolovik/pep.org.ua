@@ -52,6 +52,11 @@ class Command(BaseCommand):
 
         self.bulk_write(conn, docs_to_index)
 
+        if options["drop_indices"]:
+            # invalidate old values and immediatelly cache again
+            ElasticPerson.get_all_persons.invalidate(ElasticPerson)
+            ElasticPerson.get_all_persons()
+
         self.stdout.write(
             'Loaded {} persons to persistence storage'.format(
                 len(docs_to_index)))
@@ -70,6 +75,11 @@ class Command(BaseCommand):
             for p in Company.objects.all().nocache()]
 
         self.bulk_write(conn, docs_to_index)
+
+        if options["drop_indices"]:
+            # invalidate old values and immediatelly cache again
+            ElasticCompany.get_all_companies.invalidate(ElasticCompany)
+            ElasticCompany.get_all_companies()
 
         self.stdout.write(
             'Loaded {} companies to persistence storage'.format(
