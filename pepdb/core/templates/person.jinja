@@ -90,9 +90,10 @@
                 {% endif %}
             </ul>
         </aside>
-        <section id="profile" class="{%- if person.parsed_names %}col-md-8{% else %}col-md-10{% endif -%}">
+        <section id="profile" class="{%- if person.parsed_names %}col-md-8{% else %}col-md-10{% endif -%} {% if person.is_dead %}not{% endif %}">
             <link itemprop="url" href="{{ person.get_absolute_url() }}" />
             <div id="profile-wrap" class="box">
+                {% if person.is_dead %}<div class="info-label">Помер</div>{% endif %}
                 <ul class="profileActions">
                     <li><a href="?format=pdf" class="tooltip-anchor" data-toggle="tooltip" data-placement="top" title="{{ _("Скачати PDF") }}" target="_blank"><i class="fa fa-file-pdf-o"></i></a></li>
                     <li><a href="#" class="tooltip-anchor print-me" data-toggle="tooltip" data-placement="top" title="{{ _("Роздрукувати профайл") }}"><i class="fa fa-print"></i></a></li>
