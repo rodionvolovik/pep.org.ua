@@ -1009,6 +1009,13 @@ tr.additional_hidden > td {
 #profile.not #profile-wrap {
   opacity: 0.6;
 }
+#profile.not #profile-wrap .non-pep-info {
+  background: #f42d33;
+  color: white;
+}
+#profile.not #profile-wrap .non-pep-info strong {
+  color: white;
+}
 #profile-wrap.box {
   margin-top: 10px;
   background: linear-gradient(180deg, #4285f4 120px, white 120px);
