@@ -54,7 +54,7 @@ class Person(DocType, RangeRelevantEntitiesMixin):
         "last_job_title", "last_job_title_en")
 
     @classmethod
-    @cached(timeout=24 * 60 * 60)
+    @cached(timeout=25 * 60 * 60)
     def get_all_persons(cls):
         return [
             blacklist(
@@ -80,7 +80,7 @@ class Company(DocType, RangeRelevantEntitiesMixin):
     translated_name = TranslatedField("name_uk", "name_en")
 
     @classmethod
-    @cached(timeout=24 * 60 * 60)
+    @cached(timeout=25 * 60 * 60)
     def get_all_companies(cls):
         return [
             blacklist(

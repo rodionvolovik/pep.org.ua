@@ -19,7 +19,8 @@ from core.model.connections import (
     Company2Country, RelationshipProof
 )
 from core.model.supplementaries import (
-    ActionLog, Document, FeedbackMessage)
+    ActionLog, Document, FeedbackMessage
+)
 
 __all__ = [
     Person, Company, Country, Declaration, DeclarationExtra,

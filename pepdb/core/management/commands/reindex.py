@@ -47,7 +47,8 @@ class Command(BaseCommand):
 
         docs_to_index = [
             ElasticPerson(**p.to_dict())
-            for p in Person.objects.all().nocache()
+            for p in Person.objects.all().nocache() if
+            not p.terminated
         ]
 
         self.bulk_write(conn, docs_to_index)

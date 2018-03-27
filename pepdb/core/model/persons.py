@@ -22,7 +22,7 @@ import select2.models
 
 from core.model.base import AbstractNode
 from core.model.translations import Ua2EnDictionary
-from core.utils import render_date, lookup_term, parse_fullname, translate_into
+from core.utils import render_date, lookup_term, parse_fullname, translate_into, ceil_date
 from core.model.declarations import Declaration
 
 # to_*_dict methods are used to convert two main entities that we have, Person
@@ -172,6 +172,25 @@ class Person(models.Model, AbstractNode):
     @property
     def date_of_birth(self):
         return render_date(self.dob, self.dob_details)
+
+    @property
+    def terminated(self):
+        # (1, _("Помер")),
+        # (2, _("Звільнився/склав повноваження")),
+        # (3, _("Пов'язана особа або член сім'ї - ПЕП помер")),
+        # (4, _("Пов'язана особа або член сім'ї - ПЕП припинив бути ПЕПом")),
+        # (5, _("Зміни у законодавстві що визначає статус ПЕПа")),
+        # (6, _("Зміни форми власності юр. особи посада в котрій давала статус ПЕПа")),
+
+        if self.reason_of_termination in [1, 3]:
+            return True
+
+        if self.reason_of_termination in [2, 4, 5, 6]:
+            if (ceil_date(self.termination_date, termination_date_details) +
+                    datetime.timedelta(year=3) <= datetime.date.today()):
+                return True
+
+        return False
 
     def _last_workplace(self):
         # Looking for a most recent appointment that has at least one date set

@@ -297,7 +297,7 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
 
     list_display = ("last_name_uk", "first_name_uk", "patronymic_uk",
                     "is_pep", "dob", "dob_details", "type_of_official",
-                    "publish")
+                    "terminated", "publish")
     readonly_fields = ('names', 'last_change', 'last_editor',)
     search_fields = ['last_name_uk', "first_name_uk", "patronymic_uk", "names"]
     list_editable = ("dob", "dob_details")
