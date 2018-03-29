@@ -90,7 +90,7 @@
                 {% endif %}
             </ul>
         </aside>
-        <section id="profile" class="{%- if person.parsed_names %}col-md-8{% else %}col-md-10{% endif -%} {% if person.is_dead %}not{% endif %}">
+        <section id="profile" class="{%- if person.parsed_names %}col-md-8{% else %}col-md-10{% endif -%} {% if person.is_not_pep %}not{% endif %}">
             <link itemprop="url" href="{{ person.get_absolute_url() }}" />
             <div id="profile-wrap" class="box">
                 {% if person.is_dead %}<div class="info-label">Помер</div>{% endif %}
@@ -152,7 +152,7 @@
                                 </td>
                             </tr>
                             {% endif %}
-                            {% if person.is_dead %}
+                            {% if person.is_not_pep %}
                             <tr class="non-pep-info">
                                 <td><strong>25.12.2018</strong></td>
                                 <td>Пов'язана особа або член сім'ї - ПЕП припинив бути ПЕПом</td>

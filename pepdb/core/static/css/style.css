@@ -1010,7 +1010,7 @@ tr.additional_hidden > td {
   opacity: 0.6;
 }
 #profile.not #profile-wrap .non-pep-info {
-  background: #f42d33;
+  background: black;
   color: white;
 }
 #profile.not #profile-wrap .non-pep-info strong {
