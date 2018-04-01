@@ -60,7 +60,7 @@
 {% macro render_company(c) %}
     <div class="small-profile yurik col-sm-6 {% if c.is_not_pep %}not{% endif %}" itemscope itemtype="http://schema.org/Organization">
         <link itemprop="url" href="{{ url("company_details", company_id=c.id) }}" />
-        {% if c.is_dead %}<div class="info-label">Помер</div>{% endif %}
+        {% if c.is_dead %}<div class="info-label">Не пеп</div>{% endif %}
         <div class="box active-box" data-url="{{ url("company_details", company_id=c.id) }}">
             <header class="profile-header">
                 <div class="avatar">
