@@ -1,7 +1,7 @@
 {% macro render_person(p, include_related_persons=True) %}
-    <div class="small-profile {% if p.is_pep %}fizik{% else %}linked{% endif %} col-sm-6 {% if p.is_dead %}not{% endif %}" itemscope itemtype="http://schema.org/Person">
+    <div class="small-profile {% if p.is_pep %}fizik{% else %}linked{% endif %} col-sm-6 {% if p.terminated %}not{% endif %}" itemscope itemtype="http://schema.org/Person">
         <link itemprop="url" href="{{ url("person_details", person_id=p.id) }}" />
-        {% if p.is_dead %}<div class="info-label">Помер</div>{% endif %}
+        {% if p.terminated %}<div class="info-label">{{ _("Припинив бути ПЕПом") }}</div>{% endif %}
         <div class="box active-box" data-url="{{ url("person_details", person_id=p.id) }}">
             <header class="profile-header">
                 <div class="avatar">
@@ -58,9 +58,8 @@
 {% endmacro %}
 
 {% macro render_company(c) %}
-    <div class="small-profile yurik col-sm-6 {% if c.is_dead %}not{% endif %}" itemscope itemtype="http://schema.org/Organization">
+    <div class="small-profile yurik col-sm-6" itemscope itemtype="http://schema.org/Organization">
         <link itemprop="url" href="{{ url("company_details", company_id=c.id) }}" />
-        {% if c.is_dead %}<div class="info-label">Помер</div>{% endif %}
         <div class="box active-box" data-url="{{ url("company_details", company_id=c.id) }}">
             <header class="profile-header">
                 <div class="avatar">

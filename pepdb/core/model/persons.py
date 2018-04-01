@@ -174,6 +174,11 @@ class Person(models.Model, AbstractNode):
         return render_date(self.dob, self.dob_details)
 
     @property
+    def termination_date_human(self):
+        return render_date(self.termination_date,
+                           self.termination_date_details)
+
+    @property
     def terminated(self):
         # (1, _("Помер")),
         # (2, _("Звільнився/склав повноваження")),
@@ -473,6 +478,10 @@ class Person(models.Model, AbstractNode):
         d["photo"] = settings.SITE_URL + self.photo.url if self.photo else ""
         d["photo_path"] = self.photo.name if self.photo else ""
         d["date_of_birth"] = self.date_of_birth
+        d["terminated"] = self.terminated
+        if d["terminated"]:
+            d["reason_of_termination"] = self.get_reason_of_termination_display()
+            d["termination_date_human"] = self.termination_date_human
 
         last_workplace = self.last_workplace
         if last_workplace:

@@ -62,10 +62,11 @@ class Person(DocType, RangeRelevantEntitiesMixin):
                 [
                     "full_name_suggest_en", "dob_details", "dob",
                     "full_name_suggest", "last_job_id", "risk_category",
-                    "photo_path"
+                    "photo_path", "terminated"
                 ]
             )
             for p in cls.search().scan()
+            if not p.terminated
         ]
 
     class Meta:
