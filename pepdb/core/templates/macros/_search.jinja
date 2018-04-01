@@ -58,7 +58,7 @@
 {% endmacro %}
 
 {% macro render_company(c) %}
-    <div class="small-profile yurik col-sm-6 {% if c.is_dead %}not{% endif %}" itemscope itemtype="http://schema.org/Organization">
+    <div class="small-profile yurik col-sm-6 {% if c.is_not_pep %}not{% endif %}" itemscope itemtype="http://schema.org/Organization">
         <link itemprop="url" href="{{ url("company_details", company_id=c.id) }}" />
         {% if c.is_dead %}<div class="info-label">Помер</div>{% endif %}
         <div class="box active-box" data-url="{{ url("company_details", company_id=c.id) }}">
@@ -91,6 +91,12 @@
                         {% endif %}<br />
                     {% endfor %}
                 </p>
+                {% endif %}
+
+                {% if c.is_not_pep %}
+                    <p class="non-pep-info">
+                        <span>25.12.2018</span> Пов'язана особа або член сім'ї - ПЕП припинив бути ПЕПом
+                    </p>
                 {% endif %}
             </div>
         </div>
