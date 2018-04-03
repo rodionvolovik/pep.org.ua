@@ -335,11 +335,12 @@ class TerminationNoticeAdmin(admin.ModelAdmin):
         "pep_position_readable",
         "new_person_status",
         "action",
+        "applied",
         "status",
     )
 
     list_editable = ("status", )
-    list_filter = ("status", "action", "new_person_status")
+    list_filter = ("status", "action", "new_person_status", "applied")
 
     ordering = ("termination_date_ceiled",)
 
@@ -374,7 +375,6 @@ class TerminationNoticeAdmin(admin.ModelAdmin):
     pep_name_readable.short_description = 'Прізвище керівника з БД ПЕП'
     pep_name_readable.allow_tags = True
     pep_name_readable.admin_order_field = 'pep_name'
-
 
     def pep_position_readable(self, obj):
         res = obj.pep_position
@@ -498,7 +498,6 @@ class AdHocMatchAdmin(admin.ModelAdmin):
         obj.user = request.user
         super(TerminationNoticeAdmin, self).save_model(
             request, obj, form, change)
-
 
 
 admin.site.register(PersonDeduplication, PersonDeduplicationAdmin)

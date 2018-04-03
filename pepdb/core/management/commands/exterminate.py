@@ -75,7 +75,6 @@ class Command(BaseCommand):
                     relationship_type_uk__in=["Клієнт банку"]
                 ).first()
 
-
             # Not creating termination notice yet as we need to check also if resigned PEP
             # has no relatives who are still PEPs
             probably_not_peps[pep.pk] = pep, last_date_on_job
@@ -122,7 +121,8 @@ class Command(BaseCommand):
             }
 
             # TODO: ignore those who is resigned recently
-            self.stdout.write("Reviewing {} who got {} friends in high places".format(pep, len(set(to_persons + from_persons))))
+            self.stdout.write("Reviewing {} who got {} friends in high places".format(
+                pep, len(set(to_persons + from_persons))))
 
             if to_persons + from_persons:
                 for friend in Person.objects.filter(pk__in=to_persons + from_persons):
@@ -211,7 +211,7 @@ class Command(BaseCommand):
                         "comments": '{} звільнився з посади "{}" у "{}" але залишився пов\'язаною особою до {}'.format(
                             last_date_on_job.date_finished_human,
                             last_date_on_job.relationship_type_uk,
-                            last_date_on_job.to_company.name, 
+                            last_date_on_job.to_company.name,
                             still_a_friend_of
                         ),
                     }
@@ -233,9 +233,10 @@ class Command(BaseCommand):
                         "comments": '{} звільнився з посади "{}" у "{}" але залишився пов\'язаною особою до {}, що теж звільнився {}'.format(
                             last_date_on_job.date_finished_human,
                             last_date_on_job.relationship_type_uk,
-                            last_date_on_job.to_company.name, 
+                            last_date_on_job.to_company.name,
                             still_a_friend_of,
-                            render_date(remove_him_from_related_since["dt"], remove_him_from_related_since["dt_details"])
+                            render_date(remove_him_from_related_since["dt"],
+                                        remove_him_from_related_since["dt_details"])
                         ),
                     }
                 )

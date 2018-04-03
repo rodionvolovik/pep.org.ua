@@ -310,6 +310,7 @@ class TerminationNotice(AbstractTask):
     pep_position = models.TextField("Посада", null=True, blank=True)
 
     person = models.ForeignKey(Person, null=True, on_delete=models.SET_NULL)
+    applied = models.BooleanField(verbose_name="Застосовано", default=False, db_index=True)
 
     class Meta:
         verbose_name = "Кандидат на виліт"
