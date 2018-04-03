@@ -161,7 +161,6 @@ class Person(models.Model, AbstractNode):
         null=True,
     )
 
-
     @staticmethod
     def autocomplete_search_fields():
         return ("id__iexact", "last_name__icontains", "first_name__icontains")
@@ -191,11 +190,15 @@ class Person(models.Model, AbstractNode):
             return True
 
         if self.reason_of_termination in [2, 4, 5, 6]:
-            if (ceil_date(self.termination_date, termination_date_details) +
-                    datetime.timedelta(year=3) <= datetime.date.today()):
+            if (ceil_date(self.termination_date, self.termination_date_details) +
+                    datetime.timedelta(days=3 * 365) <= datetime.date.today()):
                 return True
 
         return False
+
+    @property
+    def died(self):
+        return self.reason_of_termination == 1
 
     def _last_workplace(self):
         # Looking for a most recent appointment that has at least one date set
@@ -479,6 +482,7 @@ class Person(models.Model, AbstractNode):
         d["photo_path"] = self.photo.name if self.photo else ""
         d["date_of_birth"] = self.date_of_birth
         d["terminated"] = self.terminated
+        d["died"] = self.died
         if d["terminated"]:
             d["reason_of_termination"] = self.get_reason_of_termination_display()
             d["termination_date_human"] = self.termination_date_human

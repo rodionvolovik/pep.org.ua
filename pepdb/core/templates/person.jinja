@@ -93,7 +93,7 @@
         <section id="profile" class="{%- if person.parsed_names %}col-md-8{% else %}col-md-10{% endif -%} {% if person.terminated %} not{% endif %}">
             <link itemprop="url" href="{{ person.get_absolute_url() }}" />
             <div id="profile-wrap" class="box">
-                {% if person.terminated %}<div class="info-label">{{ _(person.get_reason_of_termination_display()) }}</div>{% endif %}
+                {% if person.died %}<div class="info-label">{{ _(person.get_reason_of_termination_display()) }}</div>{% endif %}
                 <ul class="profileActions">
                     <li><a href="?format=pdf" class="tooltip-anchor" data-toggle="tooltip" data-placement="top" title="{{ _("Скачати PDF") }}" target="_blank"><i class="fa fa-file-pdf-o"></i></a></li>
                     <li><a href="#" class="tooltip-anchor print-me" data-toggle="tooltip" data-placement="top" title="{{ _("Роздрукувати профайл") }}"><i class="fa fa-print"></i></a></li>
@@ -153,7 +153,7 @@
                             </tr>
                             {% endif %}
                             {% if person.terminated %}
-                                <tr class="non-pep-info">
+                                <tr class="non-pep-info{% if person.died %} dead-pep-info{% endif %}">
                                     {% if person.termination_date %}
                                         <td><strong>{{ person.termination_date_human }}</strong></td>
                                     {% else %}

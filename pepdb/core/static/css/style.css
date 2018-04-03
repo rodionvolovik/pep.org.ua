@@ -1010,6 +1010,10 @@ tr.additional_hidden > td {
   opacity: 0.6;
 }
 #profile.not #profile-wrap .non-pep-info {
+  background: black;
+  color: white;
+}
+#profile.not #profile-wrap .dead-pep-info {
   background: #f42d33;
   color: white;
 }
@@ -1147,6 +1151,16 @@ tr.additional_hidden > td {
   margin-bottom: 10px;
   font-size: 14px;
 }
+.small-profile.not .descr p.non-pep-info {
+  background: black;
+  color: white;
+  padding-left: 5px;
+}
+
+.small-profile.not .descr p.dead-pep-info {
+  background: #f42d33;
+}
+
 .small-profile .descr span {
   font-weight: bold;
 }
@@ -1215,7 +1229,7 @@ tr.additional_hidden > td {
   left: 0;
 }
 .small-profile.not .box {
-  opacity: 0.4;
+  opacity: 0.5;
   padding-top: 30px;
 }
 .pep-name {
