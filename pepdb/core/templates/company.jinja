@@ -98,13 +98,11 @@
                             {% if company.status %}
                             <tr>
                                 <td>{{ _("Поточний стан") }} </td>
-                                <td><strong>{{ _(company.get_status_display()) }}</strong></td>
-                            </tr>
-                            {% endif %}
-                            {% if company.closed_on %}
-                            <tr>
-                                <td>{{ _("Дата припинення") }} </td>
-                                <td><strong>{{ company.closed_on_human }}</strong></td>
+                                <td><strong>{{ _(company.get_status_display()) }}</strong>
+                                    {% if company.closed_on %}
+                                        {{ _("з") }} <strong>{{ company.closed_on_human }}</strong>
+                                    {% endif %}
+                                </td>
                             </tr>
                             {% endif %}
                             {% if not company.legal_entity %}
