@@ -486,21 +486,11 @@ def encrypted_redirect(request, enc, model):
     except User.DoesNotExist:
         return HttpResponseForbidden()
 
-    log_rec = ActionLog(
-        user=user,
-        action="view_{}".format(model.lower())
-    )
-
     model = apps.get_model('core', model)
     try:
         obj = model.objects.get(pk=obj_id)
     except model.DoesNotExist:
-        log_rec.details = "ID: %s" % obj_id
-        log_rec.save()
         return HttpResponseNotFound()
-
-    log_rec.details = str(obj)
-    log_rec.save()
 
     return redirect(
         obj.get_absolute_url()

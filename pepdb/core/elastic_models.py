@@ -66,7 +66,6 @@ class Person(DocType, RangeRelevantEntitiesMixin):
                 ]
             )
             for p in cls.search().scan()
-            if not p.terminated
         ]
 
     class Meta:
