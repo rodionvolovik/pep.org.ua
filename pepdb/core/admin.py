@@ -644,7 +644,7 @@ class FeedbackAdmin(admin.ModelAdmin):
     text_expanded.short_description = 'Інформація'
 
     list_display = ("text_expanded", "person", "link_expanded", "added",
-                    "contacts")
+                    "email", "contacts")
 
     def get_queryset(self, request):
         qs = super(FeedbackAdmin, self).get_queryset(request)

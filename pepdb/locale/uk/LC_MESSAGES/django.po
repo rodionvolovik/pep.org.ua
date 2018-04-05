@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-04 18:16+0300\n"
+"POT-Creation-Date: 2018-04-05 00:53+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -71,8 +71,12 @@ msgstr ""
 msgid "http://"
 msgstr ""
 
-#: core/forms.py:29
-msgid "Ваш імейл або телефон"
+#: core/forms.py:30
+msgid "Ваш імейл"
+msgstr ""
+
+#: core/forms.py:34
+msgid "Ваш телефон"
 msgstr ""
 
 #: core/model/companies.py:65
@@ -605,10 +609,14 @@ msgid "Підтвердження"
 msgstr ""
 
 #: core/model/supplementaries.py:39
+msgid "e-mail"
+msgstr ""
+
+#: core/model/supplementaries.py:41
 msgid "Контакти"
 msgstr ""
 
-#: core/model/supplementaries.py:40
+#: core/model/supplementaries.py:42
 msgid "Прочитано"
 msgstr ""
 
@@ -843,7 +851,7 @@ msgid ""
 "перейдіть на повну версію декларації."
 msgstr ""
 
-#: core/templates/_feedback_form.jinja:44
+#: core/templates/_feedback_form.jinja:51
 msgid "Надіслати"
 msgstr ""
 

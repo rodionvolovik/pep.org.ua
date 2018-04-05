@@ -397,8 +397,8 @@ h1 {
   -o-transition: all 1s ease;
   -ms-transition: all 1s ease;
   transition: all 1s ease;
-  height: 510px;
-  bottom: -510px;
+  height: 550px;
+  bottom: -550px;
 }
 #send-form .g-recaptcha {
   transform: scale(0.75);
@@ -1775,8 +1775,8 @@ tr.additional_hidden > td {
 }
 @media (max-width: 400px) {
   #send-form {
-    height: 450px;
-    bottom: -450px;
+    height: 480px;
+    bottom: -480px;
   }
   #send-form .form-control {
     max-height: 40px;
