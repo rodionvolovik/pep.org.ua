@@ -383,7 +383,7 @@ class Declaration(models.Model):
             }
 
             try:
-                total_area = total_area.replace(',', '.')
+                total_area = str(total_area).replace(',', '.')
 
                 if not total_area:
                     return 0
