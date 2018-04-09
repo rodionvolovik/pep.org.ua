@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#: core/model/companies.py:434 core/model/persons.py:627 core/utils.py:493
+#: core/model/companies.py:434 core/model/persons.py:639 core/utils.py:493
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-05 00:53+0300\n"
+"POT-Creation-Date: 2018-04-09 22:11+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -826,7 +826,7 @@ msgstr ""
 #: core/templates/_declaration.jinja:392 core/templates/_declaration.jinja:398
 #: core/templates/_declaration.jinja:404 core/templates/_declaration.jinja:415
 #: core/templates/_declaration.jinja:421 core/templates/_declaration.jinja:427
-#: core/templates/person.jinja:427
+#: core/templates/person.jinja:446
 msgid "м²"
 msgstr ""
 
@@ -982,7 +982,7 @@ msgstr ""
 msgid "Керівництво:"
 msgstr ""
 
-#: core/templates/company.jinja:204 core/templates/person.jinja:317
+#: core/templates/company.jinja:204 core/templates/person.jinja:336
 msgid "Зв'язки:"
 msgstr ""
 
@@ -996,24 +996,20 @@ msgid "Клієнти банку"
 msgstr ""
 
 #: core/templates/company.jinja:229
-msgid "Пов'язані країни"
-msgstr ""
-
-#: core/templates/company.jinja:253
 msgid "Пов'язані компанії"
 msgstr ""
 
-#: core/templates/company.jinja:291 core/templates/person.jinja:200
-#: core/templates/person.jinja:213
+#: core/templates/company.jinja:267 core/templates/person.jinja:219
+#: core/templates/person.jinja:232
 msgid "Досьє:"
 msgstr ""
 
-#: core/templates/company.jinja:299 core/templates/person.jinja:227
-#: core/templates/person.jinja:255
+#: core/templates/company.jinja:275 core/templates/person.jinja:246
+#: core/templates/person.jinja:274
 msgid "Санкції"
 msgstr ""
 
-#: core/templates/company.jinja:319 core/templates/person.jinja:396
+#: core/templates/company.jinja:295 core/templates/person.jinja:415
 msgid "Банківські рахунки:"
 msgstr ""
 
@@ -1071,7 +1067,7 @@ msgstr ""
 msgid "Дата народження"
 msgstr ""
 
-#: core/templates/macros/_search.jinja:27 core/templates/person.jinja:142
+#: core/templates/macros/_search.jinja:27 core/templates/person.jinja:153
 msgid "Остання посада"
 msgstr ""
 
@@ -1080,14 +1076,14 @@ msgstr ""
 msgid "Зв'язок"
 msgstr ""
 
-#: core/templates/macros/_search.jinja:55 core/templates/person.jinja:165
+#: core/templates/macros/_search.jinja:55 core/templates/person.jinja:184
 msgid ""
 "Відповідно до методології, національним публічним діячам присвоюється такі "
 "ступені ризику відмивання коштів: неприйнятно високий; високий; середній; "
 "низький"
 msgstr ""
 
-#: core/templates/macros/_search.jinja:56 core/templates/person.jinja:166
+#: core/templates/macros/_search.jinja:56 core/templates/person.jinja:185
 msgid "Рівень ризику"
 msgstr ""
 
@@ -1133,63 +1129,67 @@ msgstr ""
 msgid "Місце народження"
 msgstr ""
 
-#: core/templates/person.jinja:224 core/templates/person.jinja:252
+#: core/templates/person.jinja:142
+msgid "Громадянство"
+msgstr ""
+
+#: core/templates/person.jinja:243 core/templates/person.jinja:271
 msgid "Кримінальні провадження та санкції:"
 msgstr ""
 
-#: core/templates/person.jinja:231 core/templates/person.jinja:259
+#: core/templates/person.jinja:250 core/templates/person.jinja:278
 msgid "Кримінальні провадження"
 msgstr ""
 
-#: core/templates/person.jinja:235 core/templates/person.jinja:263
+#: core/templates/person.jinja:254 core/templates/person.jinja:282
 msgid "Перебування у розшуку"
 msgstr ""
 
-#: core/templates/person.jinja:239 core/templates/person.jinja:267
+#: core/templates/person.jinja:258 core/templates/person.jinja:286
 msgid "Наявність судимості"
 msgstr ""
 
-#: core/templates/person.jinja:277
+#: core/templates/person.jinja:296
 msgid "Кар'єра:"
 msgstr ""
 
-#: core/templates/person.jinja:290
+#: core/templates/person.jinja:309
 msgid "до"
 msgstr ""
 
-#: core/templates/person.jinja:326
+#: core/templates/person.jinja:345
 msgid "Члени сім'ї"
 msgstr ""
 
-#: core/templates/person.jinja:334
+#: core/templates/person.jinja:353
 msgid "Особисті зв'язки"
 msgstr ""
 
-#: core/templates/person.jinja:342
+#: core/templates/person.jinja:361
 msgid "Ділові зв'язки"
 msgstr ""
 
-#: core/templates/person.jinja:364 core/templates/person.jinja:375
+#: core/templates/person.jinja:383 core/templates/person.jinja:394
 msgid "Статки:"
 msgstr ""
 
-#: core/templates/person.jinja:387
+#: core/templates/person.jinja:406
 msgid "Пов'язані юридичні особи:"
 msgstr ""
 
-#: core/templates/person.jinja:405
+#: core/templates/person.jinja:424
 msgid "Можливо ви шукали:"
 msgstr ""
 
-#: core/templates/person.jinja:424
+#: core/templates/person.jinja:443
 msgid "meters"
 msgstr "м²"
 
-#: core/templates/person.jinja:425
+#: core/templates/person.jinja:444
 msgid "gectars"
 msgstr "га"
 
-#: core/templates/person.jinja:426
+#: core/templates/person.jinja:445
 msgid "sotok"
 msgstr "соток"
 
@@ -1201,10 +1201,10 @@ msgstr ""
 msgid "На жаль, пошук не дав результатів"
 msgstr ""
 
-#: pepdb/settings.py:172
+#: pepdb/settings.py:174
 msgid "Ukrainian"
 msgstr ""
 
-#: pepdb/settings.py:173
+#: pepdb/settings.py:175
 msgid "English"
 msgstr ""
