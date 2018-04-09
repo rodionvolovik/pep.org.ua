@@ -53,11 +53,9 @@
             {% else %}
                 {% if person.rtype %}{{ _(person.rtype) }},{% endif %}
             {% endif %}
-            {% set countries = person.foreign_citizenship %}
+            {% set countries = person.foreign_citizenship_or_registration %}
             {% for country in countries %}
                 <span class="flag flag-{{ country.to_country.iso3|lower }}" title="{{ country.to_country.name }}"></span>
-            {% else %}
-                <span class="flag flag-{{ default_country.iso3|lower }}" title="{{ default_country.name }}"></span>
             {% endfor %}
             {% if person.connection.has_additional_info %}
                 <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalPerson-{{ person.connection.pk }}">
@@ -92,11 +90,9 @@
                 </span>
             </a>
 
-            {% set countries = first_person.foreign_citizenship %}
+            {% set countries = first_person.foreign_citizenship_or_registration %}
             {% for country in countries %}
                 <span class="flag flag-{{ country.to_country.iso3|lower }}" title="{{ country.to_country.name }}"></span>
-            {% else %}
-                <span class="flag flag-{{ default_country.iso3|lower }}" title="{{ default_country.name }}"></span>
             {% endfor %}
             {% if first_person.dob %}<meta itemprop="birthDate" content="{{ first_person.dob }} "/>{% endif %}
 
@@ -158,8 +154,6 @@
                 {% set countries = company.foreign_registration %}
                 {% for country in countries %}
                     <span class="flag flag-{{ country.to_country.iso3|lower }}" title="{{ country.to_country.name }}"></span>
-                {% else %}
-                    <span class="flag flag-{{ default_country.iso3|lower }}" title="{{ default_country.name }}"></span>
                 {% endfor %}
             </div>
             <div class="panel-footer">
@@ -191,8 +185,6 @@
                 {% set countries = company.to_company.foreign_registration %}
                 {% for country in countries %}
                     <span class="flag flag-{{ country.to_country.iso3|lower }}" title="{{ country.to_country.name }}"></span>
-                {% else %}
-                    <span class="flag flag-{{ default_country.iso3|lower }}" title="{{ default_country.name }}"></span>
                 {% endfor %}
             </div>
             <div class="panel-footer">

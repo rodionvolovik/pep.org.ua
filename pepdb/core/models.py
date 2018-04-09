@@ -31,7 +31,6 @@ __all__ = [
 ]
 
 
-
 @receiver(post_save, sender=LogEntry, dispatch_uid="touch_signal")
 def touch_last_modification_time(sender, **kwargs):
     if "instance" not in kwargs:

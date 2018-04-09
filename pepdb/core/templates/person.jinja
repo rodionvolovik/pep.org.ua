@@ -137,6 +137,17 @@
                                 <td itemprop="birthPlace">{{ person.city_of_birth }}</td>
                             </tr>
                             {% endif %}
+                            {% if person.foreign_citizenship %}
+                            <tr>
+                                <td>{{ _("Громадянство") }}</td>
+                                <td>
+                                    {% set comma = joiner(", ") %}
+                                    {% for citizenship in person.foreign_citizenship -%}
+                                    {{ comma() }}{{ citizenship.to_country.name }}
+                                    {%- endfor %}
+                                </td>
+                            </tr>
+                            {% endif %}
                             {% if last_workplace %}
                             <tr>
                                 <td>{{ _("Остання посада") }}</td>
@@ -161,6 +172,14 @@
                                     {% endif %}
                                     <td>{{ _(person.get_reason_of_termination_display()) }}</td>
                                 </tr>
+                            {% else %}
+                                {% set day_of_dismissal = person.day_of_dismissal %}
+                                {% if day_of_dismissal %}
+                                <tr>
+                                    <td>Дата звільнення</td>
+                                    <td>{{ day_of_dismissal }}</td>
+                                </tr>
+                                {% endif %}
                             {% endif %}
                             {#<tr class="tooltip-anchor" data-toggle="tooltip" data-placement="bottom" title="{{ _("Відповідно до методології, національним публічним діячам присвоюється такі ступені ризику відмивання коштів: неприйнятно високий; високий; середній; низький") }}">
                                 <td>{{ _("Рівень ризику") }}</td>

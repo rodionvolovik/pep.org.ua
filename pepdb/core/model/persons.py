@@ -224,8 +224,8 @@ class Person(models.Model, AbstractNode):
             .only(
                 "to_company__short_name_uk", "to_company__name_uk",
                 "to_company__short_name_en", "to_company__name_en",
-                "to_company__id",
-                "relationship_type_uk", "relationship_type_en")
+                "to_company__id", "relationship_type_uk", "relationship_type_en",
+                "date_finished", "date_finished_details")
 
         if qs:
             return qs
@@ -240,10 +240,18 @@ class Person(models.Model, AbstractNode):
             .only(
                 "to_company__short_name_uk", "to_company__name_uk",
                 "to_company__short_name_en", "to_company__name_en",
-                "to_company__id",
-                "relationship_type_uk", "relationship_type_en")
+                "to_company__id", "relationship_type_uk", "relationship_type_en",
+                "date_finished", "date_finished_details")
 
         return qs
+
+    @property
+    def day_of_dismissal(self):
+        dday = self._last_workplace().filter(is_employee=True).first()
+        if dday:
+            return render_date(dday.date_finished, dday.date_finished_details)
+        else:
+            return False
 
     def _last_workplace_from_declaration(self):
         return Declaration.objects.filter(person=self, confirmed="a").order_by(
@@ -549,11 +557,15 @@ class Person(models.Model, AbstractNode):
         activate(curr_lang)
         return url
 
-    # TODO: Request in bulk in all_related_persons?
+    @property
+    def foreign_citizenship_or_registration(self):
+        return self.person2country_set.prefetch_related("to_country").filter(
+            relationship_type__in=["citizenship", "registered_in"])
+
     @property
     def foreign_citizenship(self):
         return self.person2country_set.prefetch_related("to_country").filter(
-            relationship_type__in=["citizenship", "registered_in"])
+            relationship_type="citizenship")
 
     @property
     def url_uk(self):

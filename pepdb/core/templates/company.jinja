@@ -224,30 +224,6 @@
                                             </ul>
                                         </li>
                                         {% endif %}
-                                        {% if related_countries.rest %}
-                                        <li>
-                                            <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Пов'язані країни") }}</span>
-                                            <ul class="h">
-                                                {% for country in related_countries.rest %}
-                                                    <li>
-                                                        <a href="{{ country.get_absolute_url() }}">
-                                                            <span class="name-pill">
-                                                                {{ country.name }}
-                                                            </span>
-                                                        </a> &ndash;
-                                                        {% if country.rtype %}{{ _(country.connection.get_relationship_type_display()) }}{% endif %}
-
-                                                        {% if country.connection.has_additional_info %}
-                                                            <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalCountry-{{ country.pk }}">
-                                                               <i class="fa fa-info-circle info-gray"></i>
-                                                            </a>
-                                                        {% endif %}
-                                                        {{ render_connection(country.connection, "modalCountry-{}".format(country.pk)) }}
-                                                    </li>
-                                                {% endfor %}
-                                            </ul>
-                                        </li>
-                                        {% endif %}
                                         {% if related_companies.rest %}
                                         <li>
                                             <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Пов'язані компанії") }}</span>
