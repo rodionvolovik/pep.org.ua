@@ -493,6 +493,9 @@ class Person(models.Model, AbstractNode):
         d["died"] = self.died
         if d["terminated"]:
             d["reason_of_termination"] = self.get_reason_of_termination_display()
+            d["reason_of_termination_en"] = translate_into(
+                self.get_reason_of_termination_display(), "en"
+            )
             d["termination_date_human"] = self.termination_date_human
 
         last_workplace = self.last_workplace
