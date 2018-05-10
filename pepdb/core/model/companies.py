@@ -162,6 +162,9 @@ class Company(models.Model, AbstractNode):
         null=True,
     )
 
+    works_for_peps = models.BooleanField("Обслуговує PEPів", default=False)
+    subject_of_monitoring = models.BooleanField("Суб'єкт фінансового моніторингу", default=False)
+
     @staticmethod
     def autocomplete_search_fields():
         return ("id__iexact", "short_name__icontains", "name__icontains")

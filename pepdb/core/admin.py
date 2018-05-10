@@ -622,8 +622,9 @@ class DocumentAdmin(TranslationAdmin):
     link.allow_tags = True
     link.short_description = 'Завантажити'
 
-    list_display = ("name", "link", "uploader", "uploaded")
+    list_display = ("pk", "name_uk", "link", "uploader", "uploaded", "doc")
     search_fields = ["name", "doc"]
+    list_editable = ("name_uk", "uploader", "doc")
 
 
 class FeedbackAdmin(admin.ModelAdmin):
