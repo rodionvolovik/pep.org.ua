@@ -158,6 +158,10 @@
             </div>
             <div class="panel-footer">
                 {{ company.connection.relationship_type }}
+                {% if company.connection.equity_part %}
+                , {{ _("Частка") }} {{ "{:2.3f}".format(company.connection.equity_part) }}%
+                {% endif %}
+
                 {% if company.connection.has_additional_info %}
                 <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modal{{ prefix }}-{{ loop.index }}">
                     <i class="fa fa-info-circle info-gray"></i>

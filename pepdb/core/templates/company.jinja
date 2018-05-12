@@ -236,6 +236,9 @@
                                                             </span>
                                                         </a> &ndash;
                                                         {% if company.rtype %}{{ _(company.rtype) }}{% endif %}
+                                                        {% if company.connection.equity_part %}
+                                                        , {{ _("Частка") }} {{ "{:2.3f}".format(company.connection.equity_part) }}%
+                                                        {% endif %}
 
                                                         {% if company.connection.has_additional_info %}
                                                             <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalCompany-{{ company.pk }}">

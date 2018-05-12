@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from pprint import pprint
 import json
 import logging
 import argparse
+from copy import copy
 from hashlib import sha1
-from collections import OrderedDict
 
 from django.core.management.base import BaseCommand
 from django.db.utils import IntegrityError
@@ -19,7 +18,6 @@ from tasks.models import AdHocMatch
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger("importer")
-
 
 
 class Command(BaseCommand):
@@ -54,6 +52,12 @@ and matches arbitrary datasets with names with the list of persons in DB"""
             '--render_field',
             nargs="*",
             help='fields from dataset to use for the search'
+        )
+
+        parser.add_argument(
+            '--dedup_field',
+            nargs="*",
+            help='fields from dataset to use to avoid duplicates after repeated runs'
         )
 
     def iter_dataset(self, fp, filetype):
@@ -96,25 +100,43 @@ and matches arbitrary datasets with names with the list of persons in DB"""
 
         return [], 0
 
-    def represent_entry_from_dataset(self, doc, name_fields, render_fields):
+    def get_default_render_fields(self, doc, name_fields):
+        return sorted(k for k in doc.keys() if k not in name_fields)
+
+    def represent_entry_from_dataset(self, doc, options):
+        render_fields = options.get("render_field")
         if render_fields is None:
-            render_fields = sorted(k for k in doc.keys() if k not in name_fields)
+            render_fields = self.get_default_render_fields(doc, options["name_field"])
 
         return (
-            tuple((k, doc.get(k)) for k in name_fields) +
+            tuple((k, doc.get(k)) for k in options["name_field"]) +
             tuple((k, doc.get(k)) for k in render_fields)
         )
 
+    def get_doc_hash(self, doc, options):
+        dedup_fields = options.get("dedup_field")
+
+        if dedup_fields is None:
+            if options.get("render_field") is None:
+                dedup_fields = self.get_default_render_fields(doc, options["name_field"])
+            else:
+                dedup_fields = copy(options["render_field"])
+
+            dedup_fields += options["name_field"]
+
+        return sha1(json.dumps(
+            {k: doc.get(k) for k in sorted(dedup_fields)}
+        )).hexdigest()
 
     def handle(self, *args, **options):
         with tqdm.tqdm() as pbar:
             for i, item in enumerate(self.iter_dataset(options["dataset_file"], options["filetype"])):
                 pbar.update(1)
-                doc_hash = sha1(json.dumps(item, sort_keys=True)).hexdigest()
+                doc_hash = self.get_doc_hash(item, options)
                 name = self.get_name(item, options["name_field"])
 
                 if name:
-                    rpr = self.represent_entry_from_dataset(item, options["name_field"], options["render_field"])
+                    rpr = self.represent_entry_from_dataset(item, options)
                     found_persons, fuzziness = self.search_for_person(name)
                     for res in found_persons:
                         try:
