@@ -171,6 +171,7 @@ gettext = lambda s: s
 LANGUAGES = (
     ('uk', gettext('Ukrainian')),
     ('en', gettext('English')),
+    ('ru', gettext('Russian')),
 )
 
 
