@@ -70,7 +70,6 @@ class Command(BaseCommand):
                 )
 
                 if options["real_run"]:
-                    AdHocMatch.objects.filter(person=person).update(person=None)
                     person.delete()
 
         cursor = connection.cursor()
@@ -232,6 +231,7 @@ class Command(BaseCommand):
                 )
 
                 if options["real_run"]:
+                    AdHocMatch.objects.filter(person=donor).update(person=None)
                     # Kill the donor!
                     # Raw SQL because otherwise django will also kill the old
                     # connections of donor person, which are stuck for some reason.
