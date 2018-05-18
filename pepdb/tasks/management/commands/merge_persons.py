@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand
 
 from core.models import (
     Person, Person2Company, Person2Country, Person2Person, Declaration)
-from tasks.models import PersonDeduplication
+from tasks.models import PersonDeduplication, AdHocMatch
 from django.db import connection
 
 
@@ -70,6 +70,7 @@ class Command(BaseCommand):
                 )
 
                 if options["real_run"]:
+                    AdHocMatch.objects.filter(person=person).update(person=None)
                     person.delete()
 
         cursor = connection.cursor()
