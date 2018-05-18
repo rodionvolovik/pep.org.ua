@@ -134,11 +134,11 @@ class Command(BaseCommand):
 
                 # Those to concatenate
                 for field in FIELDS_TO_CONCATENATE:
-                    donor_val = getattr(donor, field)
-                    master_val = getattr(master, field)
+                    donor_val = getattr(donor, field, "")
+                    master_val = getattr(master, field, "")
 
                     if donor_val and donor_val.strip():
-                        setattr(master, field, master_val + " " + donor_val)
+                        setattr(master, field, (master_val + " " + donor_val).strip())
 
                         self.stdout.write("\tconcatenating content of {}".format(
                             field))
