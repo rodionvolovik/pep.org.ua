@@ -43,7 +43,7 @@ class Command(BaseCommand):
                 )
 
         self.stderr.write(
-            "Cannot find bank %s (%s) in mapping at the declaration {}" % (name, edrpou, declaration.url)
+            "Cannot find bank %s (%s) in mapping at the declaration %s" % (name, edrpou, declaration.url)
         )
 
         return None
