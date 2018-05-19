@@ -43,7 +43,7 @@ class Command(BaseCommand):
                 )
 
         self.stderr.write(
-            "Cannot find bank %s (%s) in mapping" % (name, edrpou)
+            "Cannot find bank %s (%s) in mapping at the declaration {}" % (name, edrpou, d.url)
         )
 
         return None
@@ -142,7 +142,7 @@ class Command(BaseCommand):
                     bank_edrpou = bank_edrpou.lstrip("0").strip()
 
                     if bank_name or bank_edrpou:
-                        bank_matches = self.find_bank(bank_edrpou, bank_name)
+                        bank_matches = self.find_bank(bank_edrpou, bank_name, d)
                         if bank_matches is None:
                             failed += 1
                             continue

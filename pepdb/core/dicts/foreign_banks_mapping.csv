@@ -64,9 +64,9 @@ bnp paribas fortis nv,BNP PARIBAS FORTIS (FORTIS BANK SA/NV)
 сітізенс банк,"CITIZENS BANK, NA"
 татра банк,TATRA BANKA A.S.
 татра банк братислава,TATRA BANKA A.S.
-тбс,"TBC BANK"
-тбс банк,"TBC BANK"
-твс банк,"TBC BANK"
+тбс,TBC BANK
+тбс банк,TBC BANK
+твс банк,TBC BANK
 тоджиксодіротбонк,TOJIKSODIROTBONK
 уелс фарго банк,"WELLS FARGO BANK, N.A."
 уні кредіт банка ді рома,UNICREDIT S.P.A.
@@ -80,3 +80,5 @@ bnp paribas fortis nv,BNP PARIBAS FORTIS (FORTIS BANK SA/NV)
 інтернаціональний банк боденсе,INTERNATIONALES BANKHAUS BODENSEE AG
 рієтуму,RIETUMU BANKA
 мбанк,MBANK S.A.
+банк оф америка,"BANK OF AMERICA, N.A."
+"бенк оф америка, сша","BANK OF AMERICA, N.A."
