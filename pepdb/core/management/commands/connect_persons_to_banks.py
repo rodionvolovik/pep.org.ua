@@ -11,7 +11,7 @@ from core.universal_loggers import PythonLogger
 
 
 class Command(BaseCommand):
-    def find_bank(self, edrpou, name):
+    def find_bank(self, edrpou, name, declaration):
         if edrpou:
             if edrpou in self.edrpous_mapping:
                 return [self.banks_dict[
@@ -43,7 +43,7 @@ class Command(BaseCommand):
                 )
 
         self.stderr.write(
-            "Cannot find bank %s (%s) in mapping at the declaration {}" % (name, edrpou, d.url)
+            "Cannot find bank %s (%s) in mapping at the declaration {}" % (name, edrpou, declaration.url)
         )
 
         return None
