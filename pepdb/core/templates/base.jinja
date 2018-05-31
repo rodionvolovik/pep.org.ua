@@ -11,7 +11,7 @@
         {# Ugly! #}
         {%- if request.path.startswith("/" + LANGUAGE_CODE + "/") and lang.0 != LANGUAGE_CODE %}
 
-            <link rel="alternate" href="{{ request.path.replace("/" + LANGUAGE_CODE + "/", "/" + lang.0 + "/", 1) }}{% if request.GET %}?{% endif %}{{ request.GET.urlencode() }}" hreflang="{{ lang.0 }}" />
+            <link rel="alternate" href="{{ SITE_URL }}{{ request.path.replace("/" + LANGUAGE_CODE + "/", "/" + lang.0 + "/", 1) }}{% if request.GET %}?{% endif %}{{ request.GET.urlencode() }}" hreflang="{{ lang.0 }}" />
         {% endif -%}
     {% endfor -%}
 

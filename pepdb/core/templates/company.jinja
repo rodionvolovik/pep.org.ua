@@ -12,6 +12,11 @@
     {% endif %}
 {% endblock %}
 
+{% block og_tags %}
+    {{ super() }}
+    <link rel="canonical" href="{{ SITE_URL }}{{ company.get_absolute_url() }}" />
+{% endblock %}
+
 
 {% block content %}
 {% set related_persons = company.all_related_persons %}
