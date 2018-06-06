@@ -42,6 +42,8 @@ from core.forms import EDRImportForm, ForeignImportForm
 from core.importers.company import CompanyImporter
 from core.importers.company2country import Company2CountryImporter
 from core.universal_loggers import MessagesLogger
+from django_otp.plugins.otp_totp.admin import TOTPDeviceAdmin
+from django_otp.plugins.otp_totp.models import TOTPDevice
 from tasks.elastic_models import EDRPOU
 
 
@@ -1014,6 +1016,16 @@ class LogEntryAdmin(admin.ModelAdmin):
         return actions
 
 
+class RiggedTOTPDeviceAdmin(TOTPDeviceAdmin):
+    def get_queryset(self, request):
+        qs = super(RiggedTOTPDeviceAdmin, self).get_queryset(request)
+
+        if request.user.is_superuser and request.user.username in settings.SUPERADMINS:
+            return qs
+        else:
+            return qs.filter(user=request.user)
+
+
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(Country, CountryAdmin)
@@ -1025,3 +1037,6 @@ admin.site.register(DeclarationToLink, DeclarationAdmin)
 admin.site.register(DeclarationToWatch, DeclarationMonitorAdmin)
 admin.site.register(ActionLog, ActionLogAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
+
+admin.site.unregister(TOTPDevice)
+admin.site.register(TOTPDevice, RiggedTOTPDeviceAdmin)

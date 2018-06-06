@@ -79,6 +79,7 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -336,6 +337,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 OTP_TOTP_ISSUER = 'PEP.org.ua'
+SUPERADMINS = []
 
 try:
     from local_settings import *
