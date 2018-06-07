@@ -1,4 +1,5 @@
-from core.models import Declaration
+import json
+from core.models import Declaration, Company
 from unicodecsv import DictWriter
 
 countries = {
@@ -252,8 +253,41 @@ countries = {
 }
 
 
+def _search_db(company):
+    try:
+        # Search by code first
+        company_db = Company.objects.deep_get([
+            ("edrpou__iexact", (company["company_code"] or "").replace(" ", "")),
+        ])
+    except (Company.DoesNotExist, Company.MultipleObjectsReturned):
+        try:
+            # Then refine the search if needed
+            company_db = Company.objects.deep_get([
+                ("name_uk__iexact", company["company_name"]),
+                ("name_uk__iexact", company["en_name"]),
+                ("name_en__iexact", company["company_name"]),
+                ("name_en__iexact", company["en_name"])
+            ])
+
+        except Company.DoesNotExist:
+            return None
+        except Company.MultipleObjectsReturned:
+            print(
+                "Too much companies returned for record '%s'" % json.dumps(
+                    company, ensure_ascii=False)
+            )
+            return True
+
+    return {
+        "id": company_db.id,
+        "code": company_db.edrpou,
+        "name_uk": company_db.name_uk,
+        "name_en": company_db.name_en,
+    }
+
+
 fp = open("beneficiary.csv", "w")
-w = DictWriter(fp, fieldnames=["name", "legalForm, country, en_name, location, en_address, phone, address, mail"])
+w = DictWriter(fp, fieldnames=["company_name", "legalForm", "country", "en_name", "location", "en_address", "phone", "address", "mail", "company_code", "owner"])
 w.writeheader()
 
 for d in Declaration.objects.filter(nacp_declaration=True, confirmed="a").nocache().iterator():
@@ -266,8 +300,8 @@ for d in Declaration.objects.filter(nacp_declaration=True, confirmed="a").nocach
             if cash_rec.get("country", "1") or "1" == "1":
                 continue
 
-            w.writerow({
-                "name": cash_rec.get("name"),
+            rec_to_export = {
+                "company_name": cash_rec.get("name"),
                 "legalForm": cash_rec.get("legalForm"),
                 "country": countries[cash_rec.get("country", "1") or "1"],
                 "en_name": cash_rec.get("en_name"),
@@ -276,5 +310,13 @@ for d in Declaration.objects.filter(nacp_declaration=True, confirmed="a").nocach
                 "phone": cash_rec.get("phone"),
                 "address": cash_rec.get("address"),
                 "mail": cash_rec.get("mail"),
+                "company_code": cash_rec.get("source_eng_company_code"),
                 "owner": "DECLARANT" if cash_rec.get("person") == "1" else "FAMILY"
-            })
+            }
+
+            if _search_db(rec_to_export) is None:
+                w.writerow(rec_to_export)
+            else:
+                print("Company {} found in db, skippings".format(
+                    rec_to_export["company_name"])
+                )
