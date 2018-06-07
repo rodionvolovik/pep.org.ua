@@ -297,7 +297,7 @@ for d in Declaration.objects.filter(nacp_declaration=True, confirmed="a").nocach
             if not isinstance(cash_rec, dict):
                 continue
 
-            if cash_rec.get("country", "1") or "1" == "1":
+            if (cash_rec.get("country", "1") or "1") == "1":
                 continue
 
             rec_to_export = {
@@ -310,13 +310,13 @@ for d in Declaration.objects.filter(nacp_declaration=True, confirmed="a").nocach
                 "phone": cash_rec.get("phone"),
                 "address": cash_rec.get("address"),
                 "mail": cash_rec.get("mail"),
-                "company_code": cash_rec.get("source_eng_company_code"),
+                "company_code": cash_rec.get("beneficial_owner_company_code"),
                 "owner": "DECLARANT" if cash_rec.get("person") == "1" else "FAMILY"
             }
 
             if _search_db(rec_to_export) is None:
                 w.writerow(rec_to_export)
             else:
-                print("Company {} found in db, skippings".format(
+                print(u"Company {} found in db, skippings".format(
                     rec_to_export["company_name"])
                 )

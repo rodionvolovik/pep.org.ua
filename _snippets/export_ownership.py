@@ -1,4 +1,4 @@
-from core.models import Declaration
+from core.models import Declaration, Company
 from unicodecsv import DictWriter
 
 countries = {
@@ -251,8 +251,40 @@ countries = {
     "248": "Японія"
 }
 
+def _search_db(company):
+    try:
+        # Search by code first
+        company_db = Company.objects.deep_get([
+            ("edrpou__iexact", (company["company_code"] or "").replace(" ", "")),
+        ])
+    except (Company.DoesNotExist, Company.MultipleObjectsReturned):
+        try:
+            # Then refine the search if needed
+            company_db = Company.objects.deep_get([
+                ("name_uk__iexact", company["company_name"]),
+                ("name_uk__iexact", company["en_name"]),
+                ("name_en__iexact", company["company_name"]),
+                ("name_en__iexact", company["en_name"])
+            ])
+
+        except Company.DoesNotExist:
+            return None
+        except Company.MultipleObjectsReturned:
+            print(
+                "Too much companies returned for record '%s'" % json.dumps(
+                    company, ensure_ascii=False)
+            )
+            return True
+
+    return {
+        "id": company_db.id,
+        "code": company_db.edrpou,
+        "name_uk": company_db.name_uk,
+        "name_en": company_db.name_en,
+    }
+
 fp = open("ownership.csv", "w")
-w = DictWriter(fp, fieldnames=["declarant_name", "company_name", "beneficial_owner_company_code", "year_declared", "legalForm", "country", "en_name", "location", "en_address", "phone", "address", "mail", "owner"])
+w = DictWriter(fp, fieldnames=["declarant_name", "company_name", "company_code", "year_declared", "legalForm", "country", "en_name", "location", "en_address", "phone", "address", "mail", "owner"])
 w.writeheader()
 
 for d in Declaration.objects.filter(nacp_declaration=True, confirmed="a").nocache().iterator():
@@ -262,10 +294,10 @@ for d in Declaration.objects.filter(nacp_declaration=True, confirmed="a").nocach
             if not isinstance(cash_rec, dict):
                 continue
 
-            if cash_rec.get("country", "1") or "1" == "1":
+            if (cash_rec.get("country", "1") or "1") == "1":
                 continue
 
-            w.writerow({
+            rec_to_export = {
                 "declarant_name": str(d.person),
                 "company_name": cash_rec.get("name"),
                 "legalForm": cash_rec.get("legalForm"),
@@ -277,8 +309,15 @@ for d in Declaration.objects.filter(nacp_declaration=True, confirmed="a").nocach
                 "address": cash_rec.get("address"),
                 "mail": cash_rec.get("mail"),
                 "year_declared": d.year,
-                "beneficial_owner_company_code": cash_rec.get("beneficial_owner_company_code"),
+                "company_code": cash_rec.get("source_eng_company_code"),
                 "owner": "DECLARANT" if cash_rec.get("person") == "1" else "FAMILY"
-            })
+            }
+
+            if _search_db(rec_to_export) is None:
+                w.writerow(rec_to_export)
+            else:
+                print(u"Company {} found in db, skippings".format(
+                    rec_to_export["company_name"])
+                )
 
 fp.close()
