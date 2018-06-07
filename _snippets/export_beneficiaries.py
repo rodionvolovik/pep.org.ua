@@ -273,8 +273,8 @@ def _search_db(company):
             return None
         except Company.MultipleObjectsReturned:
             print(
-                "Too much companies returned for record '%s'" % json.dumps(
-                    company, ensure_ascii=False)
+                u"Too much companies returned for record '%s'" %
+                company["company_name"]
             )
             return True
 
