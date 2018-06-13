@@ -4,8 +4,9 @@ from datetime import datetime
 from cStringIO import StringIO
 from django.http import (
     JsonResponse, HttpResponseForbidden, HttpResponse, HttpResponseBadRequest,
-    HttpResponseNotFound)
+    HttpResponseNotFound, Http404)
 from django.utils import translation
+from django.core.paginator import PageNotAnInteger, EmptyPage
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
@@ -151,14 +152,19 @@ def search(request, sources=("persons", "related", "companies")):
                         kwargs={"company_id": company.id})
             )
 
-    if "persons" in sources:
-        params["persons"] = _search_person(request)
+    try:
+        if "persons" in sources:
+            params["persons"] = _search_person(request)
 
-    if "related" in sources:
-        params["related_persons"] = _search_related(request)
+        if "related" in sources:
+            params["related_persons"] = _search_related(request)
 
-    if "companies" in sources:
-        params["companies"] = _search_company(request)
+        if "companies" in sources:
+            params["companies"] = _search_company(request)
+    except EmptyPage:
+        raise Http404("Page is empty")
+    except PageNotAnInteger:
+        raise Http404("No page")
 
     return render(request, "search.jinja", params)
 
@@ -337,8 +343,13 @@ def countries(request, sources=("persons", "companies"), country_id=None):
             companies = ElasticCompany.search().query(
                 'match', related_countries__to_country_uk=country.name_uk)
 
-    params["persons"] = paginated_search(request, persons)
-    params["companies"] = paginated_search(request, companies)
+    try:
+        params["persons"] = paginated_search(request, persons)
+        params["companies"] = paginated_search(request, companies)
+    except EmptyPage:
+        raise Http404("Page is empty")
+    except PageNotAnInteger:
+        raise Http404("No page")
 
     return render(request, "countries.jinja", params)
 
