@@ -34,6 +34,11 @@ class Command(BaseCommand):
         activate(settings.LANGUAGE_CODE)
         conn = connections.get_connection('default')
 
+        docs_to_index = [
+            ElasticPerson(**p.to_dict())
+            for p in Person.objects.all().nocache().iterator()
+        ]
+
         if options["drop_indices"]:
             Index(ElasticPerson._doc_type.index).delete(ignore=404)
             ElasticPerson.init()
@@ -44,11 +49,6 @@ class Command(BaseCommand):
                     'index.max_result_window': 100000
                 }
             )
-
-        docs_to_index = [
-            ElasticPerson(**p.to_dict())
-            for p in Person.objects.all().nocache().iterator()
-        ]
 
         self.bulk_write(conn, docs_to_index)
 
@@ -61,7 +61,12 @@ class Command(BaseCommand):
             'Loaded {} persons to persistence storage'.format(
                 len(docs_to_index)))
 
+        docs_to_index = [
+            ElasticCompany(**p.to_dict())
+            for p in Company.objects.all().nocache().iterator()]
+
         if options["drop_indices"]:
+            Index(ElasticCompany._doc_type.index).delete(ignore=404)
             ElasticCompany.init()
             conn.indices.put_settings(
                 index=ElasticCompany._doc_type.index,
@@ -69,10 +74,6 @@ class Command(BaseCommand):
                     'index.max_result_window': 100000
                 }
             )
-
-        docs_to_index = [
-            ElasticCompany(**p.to_dict())
-            for p in Company.objects.all().nocache().iterator()]
 
         self.bulk_write(conn, docs_to_index)
 
