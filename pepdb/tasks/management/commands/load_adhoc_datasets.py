@@ -164,13 +164,13 @@ and matches arbitrary datasets with names with the list of persons in DB"""
                                     ),
                                     "matched_json": rpr,
                                     "name_match_score": fuzziness,
-                                    "last_updated_from_dataset": last_updated_from_dataset,
-                                    "first_updated_from_dataset": last_updated_from_dataset
+                                    "last_updated_from_dataset": last_updated,
+                                    "first_updated_from_dataset": last_updated
                                 }
                             )
 
                             if not created:
-                                obj.last_updated_from_dataset = last_updated_from_dataset
+                                obj.last_updated_from_dataset = last_updated
                                 obj.save()
 
                         except IntegrityError:

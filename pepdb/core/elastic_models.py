@@ -69,7 +69,7 @@ class Person(DocType, RangeRelevantEntitiesMixin):
         ]
 
     class Meta:
-        index = 'peps'
+        index = 'pep_persons'
 
 
 class Company(DocType, RangeRelevantEntitiesMixin):
@@ -94,4 +94,4 @@ class Company(DocType, RangeRelevantEntitiesMixin):
         ]
 
     class Meta:
-        index = 'peps'
+        index = 'pep_companies'
