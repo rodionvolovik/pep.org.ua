@@ -15,11 +15,12 @@ from django.db.models.functions import Coalesce
 from django.db.models import Q, Value
 from django.contrib.auth.models import User
 
-from core.fields import RedactorField
 from translitua import translitua
 import select2.fields
 import select2.models
+from dateutil.parser import parse as dt_parse
 
+from core.fields import RedactorField
 from core.model.base import AbstractNode
 from core.model.translations import Ua2EnDictionary
 from core.utils import render_date, lookup_term, parse_fullname, translate_into, ceil_date
@@ -675,6 +676,19 @@ class Person(models.Model, AbstractNode):
             res["connections"] = connections
 
         return res
+
+    @property
+    def manhunt_records(self):
+        return [
+            {
+                "last_updated_from_dataset": rec.last_updated_from_dataset,
+                "lost_date": dt_parse(rec.matched_json["LOST_DATE"], yearfirst=True),
+                "articles_uk": rec.matched_json["ARTICLE_CRIM"],
+                "articles_en": rec.matched_json["ARTICLE_CRIM"].lower().replace("ст.", "article ").replace("ч.", "pt. ")
+            }
+            for rec in self.adhoc_matches.filter(status="a", dataset_id="wanted_ia")
+        ]
+        
 
     class Meta:
         verbose_name = "Фізична особа"

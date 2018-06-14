@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
 from core.models import Person
+from django.contrib.postgres.fields import JSONField as DjangoJSONField
 from jsonfield import JSONField
 from jsonfield.encoder import JSONEncoder
 from django.contrib.postgres.fields import ArrayField
@@ -344,11 +345,17 @@ class AdHocMatch(AbstractTask):
     pep_name = models.CharField(
         "Прізвище", max_length=200, null=True, blank=True)
     pep_position = models.TextField("Посада", null=True, blank=True)
-    person = models.ForeignKey(Person, null=True, on_delete=models.SET_NULL)
+    person = models.ForeignKey(Person, null=True, on_delete=models.SET_NULL, related_name="adhoc_matches")
     matched_json_hash = models.CharField("Хеш", max_length=40)
-    matched_json = JSONField(verbose_name="Знайдено в датасеті", null=True)
+    matched_json = DjangoJSONField(verbose_name="Знайдено в датасеті", null=True)
     dataset_id = models.CharField("Походження датасету", max_length=200, null=True, blank=True)
     name_match_score = models.IntegerField("Ступінь співпадіння")
+
+    last_updated_from_dataset = models.DateTimeField(
+        verbose_name="Останній раз завантажено", null=True)
+
+    first_updated_from_dataset = models.DateTimeField(
+        verbose_name="Перший раз завантажено", null=True)
 
     class Meta:
         verbose_name = "Універсальний матчінг"

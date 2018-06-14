@@ -287,7 +287,7 @@ WAGTAIL_SITE_NAME = 'PEP'
 ELASTICSEARCH_CONNECTIONS = {
     'default': {
         'hosts': 'localhost',
-        'timeout': 20
+        'timeout': 120
     }
 }
 

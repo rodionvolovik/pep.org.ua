@@ -8,8 +8,10 @@ from hashlib import sha1
 
 from django.core.management.base import BaseCommand
 from django.db.utils import IntegrityError
+from django.utils import timezone
 
 import tqdm
+from dateutil.parser import parse as dt_parse
 from unicodecsv import DictReader
 
 from core.elastic_models import Person as ElasticPerson
@@ -58,6 +60,11 @@ and matches arbitrary datasets with names with the list of persons in DB"""
             '--dedup_field',
             nargs="*",
             help='fields from dataset to use to avoid duplicates after repeated runs'
+        )
+
+        parser.add_argument(
+            '--last_updated_from_dataset',
+            help='The date of the export of the dataset'
         )
 
     def iter_dataset(self, fp, filetype):
@@ -129,6 +136,11 @@ and matches arbitrary datasets with names with the list of persons in DB"""
         )).hexdigest()
 
     def handle(self, *args, **options):
+        if "last_updated_from_dataset" in options:
+            last_updated = dt_parse(options["last_updated_from_dataset"], dayfirst=True)
+        else:
+            last_updated = timezone.now()
+
         with tqdm.tqdm() as pbar:
             for i, item in enumerate(self.iter_dataset(options["dataset_file"], options["filetype"])):
                 pbar.update(1)
@@ -136,11 +148,11 @@ and matches arbitrary datasets with names with the list of persons in DB"""
                 name = self.get_name(item, options["name_field"])
 
                 if name:
-                    rpr = self.represent_entry_from_dataset(item, options)
+                    rpr = dict(self.represent_entry_from_dataset(item, options))
                     found_persons, fuzziness = self.search_for_person(name)
                     for res in found_persons:
                         try:
-                            AdHocMatch.objects.get_or_create(
+                            obj, created = AdHocMatch.objects.get_or_create(
                                 matched_json_hash=doc_hash,
                                 dataset_id=options["dataset_identifier"],
                                 person_id=res.id,
@@ -152,7 +164,14 @@ and matches arbitrary datasets with names with the list of persons in DB"""
                                     ),
                                     "matched_json": rpr,
                                     "name_match_score": fuzziness,
+                                    "last_updated_from_dataset": last_updated_from_dataset,
+                                    "first_updated_from_dataset": last_updated_from_dataset
                                 }
                             )
+
+                            if not created:
+                                obj.last_updated_from_dataset = last_updated_from_dataset
+                                obj.save()
+
                         except IntegrityError:
                             logger.warning("Cannot find person {} with key {} in db".format(res.full_name, res.id))

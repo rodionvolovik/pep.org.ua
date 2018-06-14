@@ -34,6 +34,7 @@
 {% set related_persons = person.all_related_persons %}
 {% set related_companies = person.all_related_companies %}
 {% set workplaces = person.workplaces %}
+{% set manhunt_records = person.manhunt_records %}
 <div class="container" itemscope itemtype="http://schema.org/Person">
     <div class="row">
         <div id="breadcrumbs">
@@ -57,11 +58,11 @@
                 {% endif %}
 
                 {% if LANGUAGE_CODE == "en" %}
-                    {% if person.reputation_sanctions_en or person.reputation_crimes_en or person.reputation_manhunt_en or person.reputation_convictions_en or person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk %}
+                    {% if person.reputation_sanctions_en or person.reputation_crimes_en or person.reputation_manhunt_en or person.reputation_convictions_en or person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk or manhunt_records %}
                     <li><a href="#reputation" class="btn btn-transp trans"><i class="fa fa-bullhorn"></i><span>{{ _("Кримінальні провадження та санкції") }}</span></a></li>
                     {% endif %}
                 {% else %}
-                    {% if person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk %}
+                    {% if person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk or manhunt_records %}
                     <li><a href="#reputation" class="btn btn-transp trans"><i class="fa fa-bullhorn"></i><span>{{ _("Кримінальні провадження та санкції") }}</span></a></li>
                     {% endif %}
                 {% endif %}
@@ -239,7 +240,7 @@
             {% endif %}
 
             {% if LANGUAGE_CODE == "en" %}
-                {% if person.reputation_sanctions_en or person.reputation_crimes_en or person.reputation_manhunt_en or person.reputation_convictions_en or person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk %}
+                {% if person.reputation_sanctions_en or person.reputation_crimes_en or person.reputation_manhunt_en or person.reputation_convictions_en or person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk or manhunt_records %}
                 <div id="reputation" class="sub box">
                     <h3>{{ _("Кримінальні провадження та санкції:") }}</h3>
                     <div class="printWrap">
@@ -251,8 +252,15 @@
                             <h4>{{ _("Кримінальні провадження") }}</h4>
                             {{ person.reputation_crimes_en|richtext }}
                         {% endif %}
-                        {% if person.reputation_manhunt_en %}
+                        {% if person.reputation_manhunt_en or manhunt_records %}
                             <h4>{{ _("Перебування у розшуку") }}</h4>
+                            {% for r in manhunt_records %}
+                            <p>
+                                {{ _("Станом на") }} {{ r.last_updated_from_dataset|date }}
+                                {{ _("перебуває у всеукраїнському розшуку за підозрою у вчиненні злочину, передбаченого") }} {{ r.articles_en }}
+                                {{ _("Кримінального кодексу України. Зник") }} {{ r.lost_date|date }}
+                            </p>
+                            {% endfor %}
                             {{ person.reputation_manhunt_en|richtext }}
                         {% endif %}
                         {% if person.reputation_convictions_en %}
@@ -267,7 +275,7 @@
                 </div>
                 {% endif %}
             {% else %}
-                {% if person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk %}
+                {% if person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk or manhunt_records %}
                 <div id="reputation" class="sub box">
                     <h3>{{ _("Кримінальні провадження та санкції:") }}</h3>
                     <div class="printWrap">
@@ -279,8 +287,15 @@
                             <h4>{{ _("Кримінальні провадження") }}</h4>
                             {{ person.reputation_crimes_uk|richtext }}
                         {% endif %}
-                        {% if person.reputation_manhunt_uk %}
+                        {% if person.reputation_manhunt_uk or manhunt_records %}
                             <h4>{{ _("Перебування у розшуку") }}</h4>
+                            {% for r in manhunt_records %}
+                            <p>
+                                {{ _("Станом на") }} {{ r.last_updated_from_dataset|date }}
+                                {{ _("перебуває у всеукраїнському розшуку за підозрою у вчиненні злочину, передбаченого") }} {{ r.articles_uk }}
+                                {{ _("Кримінального кодексу України. Зник") }} {{ r.lost_date|date }}
+                            </p>
+                            {% endfor %}
                             {{ person.reputation_manhunt_uk|richtext }}
                         {% endif %}
                         {% if person.reputation_convictions_uk %}
