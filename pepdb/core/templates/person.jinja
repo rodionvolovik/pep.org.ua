@@ -254,13 +254,7 @@
                         {% endif %}
                         {% if person.reputation_manhunt_en or manhunt_records %}
                             <h4>{{ _("Перебування у розшуку") }}</h4>
-                            {% for r in manhunt_records %}
-                            <p>
-                                {{ _("Станом на") }} {{ r.last_updated_from_dataset|date }}
-                                {{ _("перебуває у всеукраїнському розшуку за підозрою у вчиненні злочину, передбаченого") }} {{ r.articles_en }}
-                                {{ _("Кримінального кодексу України. Зник") }} {{ r.lost_date|date }}
-                            </p>
-                            {% endfor %}
+                            {% include "_manhunt_records_en.jinja" with context %}
                             {{ person.reputation_manhunt_en|richtext }}
                         {% endif %}
                         {% if person.reputation_convictions_en %}
@@ -289,13 +283,7 @@
                         {% endif %}
                         {% if person.reputation_manhunt_uk or manhunt_records %}
                             <h4>{{ _("Перебування у розшуку") }}</h4>
-                            {% for r in manhunt_records %}
-                            <p>
-                                {{ _("Станом на") }} {{ r.last_updated_from_dataset|date }}
-                                {{ _("перебуває у всеукраїнському розшуку за підозрою у вчиненні злочину, передбаченого") }} {{ r.articles_uk }}
-                                {{ _("Кримінального кодексу України. Зник") }} {{ r.lost_date|date }}
-                            </p>
-                            {% endfor %}
+                            {% include "_manhunt_records_uk.jinja" with context %}
                             {{ person.reputation_manhunt_uk|richtext }}
                         {% endif %}
                         {% if person.reputation_convictions_uk %}

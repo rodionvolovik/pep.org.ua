@@ -14,6 +14,7 @@ from django.conf import settings
 from django.db.models.functions import Coalesce
 from django.db.models import Q, Value
 from django.contrib.auth.models import User
+from django.template.loader import render_to_string
 
 from translitua import translitua
 import select2.fields
@@ -487,6 +488,23 @@ class Person(models.Model, AbstractNode):
             )
         ]
 
+        manhunt_records = self.manhunt_records
+        if manhunt_records:
+            curr_lang = get_language()
+
+            activate("uk")
+            d["reputation_manhunt_uk"] = render_to_string(
+                "_manhunt_records_uk.jinja",
+                {"manhunt_records": manhunt_records}
+            ) + d["reputation_manhunt_uk"]
+
+            activate("en")
+            d["reputation_manhunt_en"] = render_to_string(
+                "_manhunt_records_en.jinja",
+                {"manhunt_records": manhunt_records}
+            ) + d["reputation_manhunt_en"]
+            activate(curr_lang)
+    
         d["photo"] = settings.SITE_URL + self.photo.url if self.photo else ""
         d["photo_path"] = self.photo.name if self.photo else ""
         d["date_of_birth"] = self.date_of_birth
