@@ -26,6 +26,10 @@ class Command(BaseCommand):
                 rec.person.dob = dob
                 rec.person.dob_details == 0
                 rec.person.save()
+                self.stdout.write("Updated DOB of the person {} in pep db to {}".format(
+                    rec.person, dob
+                ))
+
                 successful += 1
             else:
                 if dob != rec.person.dob:
