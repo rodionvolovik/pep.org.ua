@@ -79,8 +79,8 @@ class Command(BaseCommand):
             r = DictReader(fp)
 
             for bank in r:
-                self.names_only_mapping[bank["name"]] = bank["real_name"]
-                self.names_only_mapping[bank["name"].strip('"\'')] = bank["real_name"]
+                self.names_only_mapping[bank["name"]] = bank["real_name"].strip()
+                self.names_only_mapping[bank["name"].strip('"\'')] = bank["real_name"].strip()
 
         # Reading mapping between names of bank and it's edrpous
         with open("core/dicts/bank_names_mapping.csv", "r") as fp:
