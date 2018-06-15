@@ -20,8 +20,8 @@ def set_import_dates(apps, schema_editor):
     )
 
     match.objects.filter(dataset_id="smida_10").update(
-        first_updated_from_dataset=datetime.datetime(2017, 12, 30, 0, 0),
-        last_updated_from_dataset=datetime.datetime(2017, 12, 30, 0, 0)
+        first_updated_from_dataset=datetime.datetime(2017, 9, 30, 0, 0),
+        last_updated_from_dataset=datetime.datetime(2017, 9, 30, 0, 0)
     )
 
 
