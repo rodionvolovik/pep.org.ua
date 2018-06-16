@@ -496,13 +496,13 @@ class Person(models.Model, AbstractNode):
             d["reputation_manhunt_uk"] = render_to_string(
                 "_manhunt_records_uk.jinja",
                 {"manhunt_records": manhunt_records}
-            ) + d["reputation_manhunt_uk"]
+            ) + (d["reputation_manhunt_uk"] or "")
 
             activate("en")
             d["reputation_manhunt_en"] = render_to_string(
                 "_manhunt_records_en.jinja",
                 {"manhunt_records": manhunt_records}
-            ) + d["reputation_manhunt_en"]
+            ) + (d["reputation_manhunt_en"] or "")
             activate(curr_lang)
     
         d["photo"] = settings.SITE_URL + self.photo.url if self.photo else ""
