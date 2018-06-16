@@ -71,7 +71,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-10 col-sm-offset-1 oursponsors-text">
-                    {{ root_page.translated_credits|richtext }}
+                    <div class="rich-text">
+                        <p>The Register is developed by the teams of <a href="https://www.facebook.com/antac.ua/?ref=bookmarks">Anti-corruption Action Centre</a>
+                            and <a href="http://sotnya.org.ua/">White Colar Hundred</a> jointly with specialists of the <a href="http://www.sdfm.gov.ua/index.php?lang=en">
+                                State Financial Monitoring Service of Ukraine</a> and the <a href="https://minjust.gov.ua/en">Ministry of Justice of Ukraine</a></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -82,16 +86,26 @@
     <section id="oursponsors-logo">
         <div class="container">
             <div class="row">
-                {% for banner in page.banner_items.all() %}
-                    {% if banner.image %}
-                    <div class="sponsor text-center col-md-3 col-xs-6">
-                        <a href="{{ banner.link }}" target="_blank">
-                        <img src="{{ banner.image.get_rendition("max-150x100").url }}" alt="{{ banner.translated_caption }}" class="img-responsive mc"
-                        title="{{ banner.translated_caption }}"/>
-                        </a>
+                <div class="col-sm-6">
+                    <div class="row-flex">
+                        <div class="col-flex col-logo">
+                            <img src="{{ static("images/60px-Flag_of_Europe.svg.png") }}">
+                        </div>
+                        <div class="col-flex">
+                            The Register is financed by the project “Enhancing the role of civil society in public finance oversight”, funded by the European Union.
+                        </div>
                     </div>
-                    {% endif %}
-                {% endfor %}
+                </div>
+                <div class="col-sm-6">
+                    <div class="row-flex">
+                        <div class="col-flex col-logo col-logo-x2">
+                            <img src="{{ static("images/tr_h_lg_rgb_ps.png") }}">
+                        </div>
+                        <div class="col-flex">
+                            The Register is an official Data Supplier to a <a href="https://www.thomsonreuters.com/en.html">Thomson Reuters company</a>.
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

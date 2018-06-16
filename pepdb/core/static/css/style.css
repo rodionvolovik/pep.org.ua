@@ -224,12 +224,34 @@ h1 {
   font-weight: bold;
   font-size: 20px;
 }
+#oursponsors {
+  height: 70px;
+}
 #oursponsors .oursponsors-text {
-  padding: 30px 15px 20px 15px;
+  padding: 10px 15px 0 15px;
+}
+#oursponsors .oursponsors-text p {
+  margin-bottom: 0;
+  text-align: center;
 }
 #oursponsors-logo {
-  overflow: hidden;
+  background: white;
   height: auto;
+  padding: 20px 0;
+}
+#oursponsors-logo .col-logo {
+  box-sizing: border-box;
+  padding: 0 30px;
+  text-align: center;
+  width: 180px;
+}
+#oursponsors-logo .col-logo.col-logo-x2 {
+  width: 270px;
+}
+#oursponsors-logo .col-logo img {
+  margin: 0 auto;
+  height: auto;
+  width: 100%;
 }
 #oursponsors-logo .sponsor {
   margin-bottom: 15px;
@@ -534,6 +556,20 @@ tr.additional_hidden > td {
 #data-send-form {
   max-width: 800px;
   margin: 0 auto;
+}
+.tooltip-hilite {
+  font-weight: bold;
+  text-decoration: underline;
+}
+#country-selection-form {
+  margin: 30px 0 20px;
+}
+.detailed_relations p {
+  display: inline;
+}
+.btn-16px {
+  font-size: 16px;
+  padding: 0;
 }
 #navbar {
   border: none;
@@ -1006,20 +1042,6 @@ tr.additional_hidden > td {
     max-width: 105px;
   }
 }
-#profile.not #profile-wrap {
-  opacity: 0.6;
-}
-#profile.not #profile-wrap .non-pep-info {
-  background: black;
-  color: white;
-}
-#profile.not #profile-wrap .dead-pep-info {
-  background: #f42d33;
-  color: white;
-}
-#profile.not #profile-wrap .non-pep-info strong {
-  color: white;
-}
 #profile-wrap.box {
   margin-top: 10px;
   background: linear-gradient(180deg, #4285f4 120px, white 120px);
@@ -1074,6 +1096,20 @@ tr.additional_hidden > td {
 }
 #profile td {
   vertical-align: middle;
+}
+#profile.not #profile-wrap {
+  opacity: 0.6;
+}
+#profile.not #profile-wrap .non-pep-info {
+  background: black;
+  color: white;
+}
+#profile.not #profile-wrap .dead-pep-info {
+  background: #f42d33;
+  color: white;
+}
+#profile.not #profile-wrap .non-pep-info strong {
+  color: white;
 }
 @media (min-width: 992px) {
   #personal {
@@ -1151,16 +1187,6 @@ tr.additional_hidden > td {
   margin-bottom: 10px;
   font-size: 14px;
 }
-.small-profile.not .descr p.non-pep-info {
-  background: black;
-  color: white;
-  padding-left: 5px;
-}
-
-.small-profile.not .descr p.dead-pep-info {
-  background: #f42d33;
-}
-
 .small-profile .descr span {
   font-weight: bold;
 }
@@ -1199,38 +1225,13 @@ tr.additional_hidden > td {
 .small-profile.linked .avatar {
   background-image: url(../images/short-avatar-linked.png);
 }
-.small-profile.not .info-label,
-#profile.not #profile-wrap .info-label {
-  position: absolute;
-  padding: 2px 8px;
-  color: white;
+.small-profile.not .descr p.non-pep-info {
   background: black;
-  z-index: 9;
-  border-radius: 3px;
-  text-transform: uppercase;
-  font-weight: bold;
-  font-size: 12px;
-  top: 7px;
-  left: 5px;
+  color: white;
+  padding-left: 5px;
 }
-#profile.not #profile-wrap .info-label {
-  top: 17px;
-}
-.small-profile.not .info-label:after,
-#profile.not #profile-wrap .info-label:after {
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 0 10px 10px 0;
-  border-color: transparent #000000 transparent transparent;
-  content: '';
-  display: block;
-  position: absolute;
-  left: 0;
-}
-.small-profile.not .box {
-  opacity: 0.5;
-  padding-top: 30px;
+.small-profile.not .descr p.dead-pep-info {
+  background: #f42d33;
 }
 .pep-name {
   font-size: 28px;
@@ -1606,6 +1607,26 @@ tr.additional_hidden > td {
   top: auto;
   bottom: 19px;
 }
+.search-by-country-page .dropdown.country-list {
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+.search-by-country-page .dropdown.country-list button {
+  min-width: 200px;
+  text-align: left;
+}
+.search-by-country-page .dropdown.country-list .dropdown-menu > li > a {
+  padding: 7px 20px;
+}
+.search-by-country-page .dropdown.country-list .dropdown-menu > li > a:focus,
+.search-by-country-page .dropdown.country-list .dropdown-menu > li > a:hover {
+  color: white;
+  text-decoration: none;
+  background-color: #355383;
+  -webkit-box-shadow: inset 0px 0px 9px 1px rgba(25, 54, 98, 0.75);
+  -moz-box-shadow: inset 0px 0px 9px 1px rgba(25, 54, 98, 0.75);
+  box-shadow: inset 0px 0px 9px 1px rgba(25, 54, 98, 0.75);
+}
 .company-profile .pep-name {
   font-size: 22px;
 }
@@ -1614,6 +1635,10 @@ tr.additional_hidden > td {
 }
 .company-profile #profile .profile-header {
   margin-bottom: 70px;
+}
+.country-list {
+  min-width: 200px;
+  text-align: left;
 }
 @media (max-width: 767px) {
   body {
@@ -1783,26 +1808,8 @@ tr.additional_hidden > td {
     max-width: 280px;
   }
 }
-
-.tooltip-hilite {
-  font-weight: bold;
-  text-decoration: underline;
-}
-
-.country-list {
-  min-width: 200px;
-  text-align: left;
-}
-
-#country-selection-form {
-  margin: 30px 0 20px;
-}
-
-.detailed_relations p {
-  display: inline;
-}
-
-.btn-16px {
-  font-size: 16px;
-  padding: 0;
+.row-flex {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
