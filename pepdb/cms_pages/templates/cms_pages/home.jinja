@@ -66,23 +66,16 @@
     </section>
     
 
-    {% if page.banner_items %}
     <section id="oursponsors">
         <div class="container">
             <div class="row">
                 <div class="col-sm-10 col-sm-offset-1 oursponsors-text">
-                    <div class="rich-text">
-                        <p>The Register is developed by the teams of <a href="https://www.facebook.com/antac.ua/?ref=bookmarks">Anti-corruption Action Centre</a>
-                            and <a href="http://sotnya.org.ua/">White Colar Hundred</a> jointly with specialists of the <a href="http://www.sdfm.gov.ua/index.php?lang=en">
-                                State Financial Monitoring Service of Ukraine</a> and the <a href="https://minjust.gov.ua/en">Ministry of Justice of Ukraine</a></p>
-                    </div>
+                    {{ root_page.translated_credits|richtext }}
                 </div>
             </div>
         </div>
     </section>
-    {% endif %}
     
-    {% if page.banner_items %}
     <section id="oursponsors-logo">
         <div class="container">
             <div class="row">
@@ -92,7 +85,7 @@
                             <img src="{{ static("images/60px-Flag_of_Europe.svg.png") }}">
                         </div>
                         <div class="col-flex">
-                            The Register is financed by the project “Enhancing the role of civil society in public finance oversight”, funded by the European Union.
+                            {{ root_page.translated_eu_desc|richtext }}
                         </div>
                     </div>
                 </div>
@@ -102,14 +95,13 @@
                             <img src="{{ static("images/tr_h_lg_rgb_ps.png") }}">
                         </div>
                         <div class="col-flex">
-                            The Register is an official Data Supplier to a <a href="https://www.thomsonreuters.com/en.html">Thomson Reuters company</a>.
+                            {{ root_page.translated_tr_desc|richtext }}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    {% endif %}
 
     <div class="cp"></div> <!--   clear padding  -->
 {% endblock %}
