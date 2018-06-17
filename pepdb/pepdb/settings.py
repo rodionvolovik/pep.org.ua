@@ -224,8 +224,7 @@ STATICFILES_FINDERS = (
 )
 
 PIPELINE = {
-    'COMPILERS': ('pipeline.compilers.sass.SASSCompiler',),
-    'SASS_ARGUMENTS': '-q',
+    'COMPILERS': ('pipeline.compilers.less.LessCompiler',),
     'JS_COMPRESSOR': 'pipeline.compressors.uglifyjs.UglifyJSCompressor',
     'STYLESHEETS': {
         'css_all': {
@@ -237,7 +236,7 @@ PIPELINE = {
                 'bower_components/featherlight/src/featherlight.css',
                 'css/flag-css.css',
                 'css/vis.css',
-                'css/style.css',
+                'css/less/main.less',
                 'css/graph.css',
                 'css/bootstrap-combobox.css',
             ),
