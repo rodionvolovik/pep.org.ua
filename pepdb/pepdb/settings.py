@@ -237,7 +237,7 @@ PIPELINE = {
                 'bower_components/featherlight/src/featherlight.css',
                 'css/flag-css.css',
                 'css/vis.css',
-                'css/less/main.less',
+                'less/main.less',
                 'css/graph.css',
                 'css/bootstrap-combobox.css',
             ),
