@@ -17,12 +17,8 @@ def menu_processor(request):
     bottom_menu = root_page.homepage.bottom_menu_links.select_related(
         "link_page").all()
 
-    banners = root_page.homepage.banner_items.select_related(
-        "link_page").all()
-
     return {
         'root_page': root_page,
         'top_menu': top_menu,
-        'bottom_menu': bottom_menu,
-        'banners': banners
+        'bottom_menu': bottom_menu
     }

@@ -82,3 +82,4 @@ pepdb/neo4j_out/
 .ipynb_checkpoints
 *.ipynb
 extra_urls.py
+pepdb/core/static/css/style.css
