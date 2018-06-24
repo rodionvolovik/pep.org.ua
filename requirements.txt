@@ -39,3 +39,4 @@ XlsxWriter==1.0.0
 django-compressor==2.2
 django-otp==0.4.3
 qrcode==6.0
+jmespath==0.9.3

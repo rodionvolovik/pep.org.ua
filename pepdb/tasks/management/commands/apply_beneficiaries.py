@@ -5,8 +5,6 @@ from django.core.management.base import BaseCommand
 from django.utils.translation import activate
 from django.conf import settings
 
-from elasticsearch_dsl import Q
-
 from core.models import Declaration, Person, Company
 from core.importers.company import CompanyImporter
 from core.importers.person2company import Person2CompanyImporter
@@ -66,28 +64,7 @@ class Command(BaseCommand):
                 self.failed += 1
                 continue
 
-            # Because open copy of registry has no dates and some of companies
-            # has more than one record we are using heuristic here to determine
-            # latest record using registration status (they have "priorities")
-            for order in self.status_order:
-                res = EDRPOU.search().query(
-                    "bool",
-                    must=[
-                        Q("term", edrpou=ownership.edrpou_match.lstrip("0")),
-                        Q("term", status=order)
-                    ]
-                )
-                ans = res.execute()
-                if ans:
-                    break
-
-            # Last attempt
-            if not ans:
-                res = EDRPOU.search().query(
-                    "term",
-                    edrpou=ownership.edrpou_match.lstrip("0"),
-                )
-                ans = res.execute()
+            ans = EDRPOU.find_by_edrpou(k)
 
             if len(ans) > 1:
                 self.stderr.write(
