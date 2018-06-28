@@ -191,7 +191,7 @@ class Person(models.Model, AbstractNode):
         if self.reason_of_termination in [1, 3]:
             return True
 
-        if self.reason_of_termination in [2, 4, 5, 6]:
+        if self.reason_of_termination in [2, 4, 5, 6] and self.termination_date is not None:
             if (ceil_date(self.termination_date, self.termination_date_details) +
                     datetime.timedelta(days=3 * 365) <= datetime.date.today()):
                 return True
