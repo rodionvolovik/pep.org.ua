@@ -257,6 +257,7 @@ class TerminationNotice(AbstractTask):
         ("change_type", "Змінити тип ПЕП на пов'язану особу"),
         ("change_and_fire", "Змінити тип ПЕП на пов'язану особу та встановити дату"),
         ("fire", "Припинити ПЕПство"),
+        ("fire_related", "Припинити ПЕПство пов'язаної особи"),
     )
 
     status = models.CharField(
