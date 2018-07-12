@@ -26,7 +26,7 @@ class Command(BaseCommand):
         type_changed = 0
         applied = 0
 
-        for t in TerminationNotice.objects.filter(status="a", applied=False).nocache():
+        for t in TerminationNotice.objects.filter(status="a", applied=False).nocache().iterator():
             self.stdout.write("Applying action {} to a person {} because of {}".format(
                 t.get_action_display(), t.pep_name, t.comments
             ))
@@ -34,7 +34,7 @@ class Command(BaseCommand):
             if t.person:
                 applied += 1
 
-                if t.action in ["fire", "change_and_fire"]:
+                if t.action in ["fire", "change_and_fire", "fire_related"]:
                     t.person.reason_of_termination = t.new_person_status
                     t.person.termination_date = t.termination_date
                     t.person.termination_date_details = t.termination_date_details

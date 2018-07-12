@@ -73,7 +73,7 @@ and matches arbitrary datasets with names with the list of persons in DB"""
                 yield l
 
         elif filetype == "jsonlines":
-            for l in fp.read():
+            for l in fp:
                 yield json.loads(l)
 
         elif filetype == "csv":
