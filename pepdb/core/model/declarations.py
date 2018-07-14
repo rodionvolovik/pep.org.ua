@@ -48,6 +48,9 @@ class Declaration(models.Model):
     person = models.ForeignKey("Person", default=None)
     nacp_declaration = models.BooleanField(
         "Декларація НАЗК", default=False, db_index=True)
+    declarator_declaration = models.BooleanField(
+        "Декларація з декларатора", default=False, db_index=True
+    )
 
     relatives_populated = models.BooleanField(
         "Родини немає, або вже внесена до БД", default=False, db_index=True)

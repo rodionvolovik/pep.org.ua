@@ -149,6 +149,11 @@ class Person(models.Model, AbstractNode):
         default=0
     )
 
+    declarator_id = models.IntegerField(
+        _("ID в системі declarator (RU)"),
+        null=True
+    )
+
     last_change = models.DateTimeField(
         _("Дата останньої зміни профіля або зв'язків профіля"), blank=True, null=True
     )

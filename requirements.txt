@@ -1,6 +1,8 @@
 Django==1.11.10
 django-jinja==2.3.1
-psycopg2==2.6
+psycopg2
+cairocffi==0.8.0
+CairoSVG==1.0.16
 django-select2-forms==2.0.2
 django-modeltranslation==0.12.1
 unicodecsv==0.9.4
@@ -30,3 +32,4 @@ django-cacheops==4.0.1
 Jinja2==2.9.6
 django-nested-admin==3.0.21
 fuzzywuzzy==0.16.0
+ijson==2.3
