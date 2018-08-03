@@ -13,6 +13,7 @@ def populate_names(apps, schema_editor):
 
     for m in matches.objects.filter(dataset_id="cvk_2015"):
         m.name_in_dataset = get_name(m.matched_json, ["name"])
+        m.save()
 
 
 class Migration(migrations.Migration):
