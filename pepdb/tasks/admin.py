@@ -437,11 +437,12 @@ class AdHocMatchAdmin(admin.ModelAdmin):
 
     def pep_name_readable(self, obj):
         if obj.person:
-            return ('<a href="%s" target="_blank">%s %s %s</a><br/> %s' % (
+            return ('<a href="%s" target="_blank">%s %s %s</a><br/> %s<br/>%s' % (
                 reverse("person_details", kwargs={"person_id": obj.person_id}),
                 obj.person.last_name_uk, obj.person.first_name_uk,
                 obj.person.patronymic_uk,
-                (obj.person.also_known_as_uk or "").replace("\n", " ,")
+                (obj.person.also_known_as_uk or "").replace("\n", " ,"),
+                obj.person.date_of_birth
             )).replace("  ", " ").strip()
         else:
             return obj.pep_name
