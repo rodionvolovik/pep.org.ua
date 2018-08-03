@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-13 13:34+0300\n"
+"POT-Creation-Date: 2018-08-03 21:48+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: cms_pages/templates/cms_pages/home.jinja:34 core/templates/base.jinja:73
+#: cms_pages/templates/cms_pages/home.jinja:34 core/templates/base.jinja:74
 msgid "Введіть ім'я або назву компанії"
 msgstr ""
 
@@ -856,7 +856,7 @@ msgid "Надіслати"
 msgstr ""
 
 #: core/templates/_manhunt_records_en.jinja:3
-#: core/templates/_manhunt_records_uk.jinja:3
+#: core/templates/_manhunt_records_uk.jinja:3 core/templates/search.jinja:49
 msgid "Станом на"
 msgstr ""
 
@@ -876,31 +876,31 @@ msgstr ""
 msgid "Дякуємо за надану інформацію"
 msgstr ""
 
-#: core/templates/base.jinja:61
+#: core/templates/base.jinja:62
 msgid "Menu"
 msgstr ""
 
-#: core/templates/base.jinja:106
+#: core/templates/base.jinja:107
 msgid "Домівка"
 msgstr ""
 
-#: core/templates/base.jinja:107 core/templates/countries.jinja:20
+#: core/templates/base.jinja:108 core/templates/countries.jinja:20
 msgid "Країни"
 msgstr ""
 
-#: core/templates/base.jinja:108
+#: core/templates/base.jinja:109
 msgid "Про реєстр"
 msgstr ""
 
-#: core/templates/base.jinja:109
+#: core/templates/base.jinja:110
 msgid "Повідомити"
 msgstr ""
 
-#: core/templates/base.jinja:110
+#: core/templates/base.jinja:111
 msgid "Дані"
 msgstr ""
 
-#: core/templates/base.jinja:152
+#: core/templates/base.jinja:153
 msgid "Надіслати інформацію"
 msgstr ""
 
@@ -1004,7 +1004,7 @@ msgid "Зв'язки:"
 msgstr ""
 
 #: core/templates/company.jinja:218 core/templates/search.jinja:19
-#: core/templates/search.jinja:73
+#: core/templates/search.jinja:72
 msgid "Пов'язані особи"
 msgstr ""
 
@@ -1049,12 +1049,12 @@ msgid "Оберіть країну"
 msgstr ""
 
 #: core/templates/countries.jinja:47 core/templates/search.jinja:15
-#: core/templates/search.jinja:35
+#: core/templates/search.jinja:32
 msgid "Фізичні особи"
 msgstr ""
 
 #: core/templates/countries.jinja:53 core/templates/search.jinja:17
-#: core/templates/search.jinja:54
+#: core/templates/search.jinja:53
 msgid "Юридичні особи"
 msgstr ""
 
@@ -1241,8 +1241,12 @@ msgstr "соток"
 msgid "Результати пошуку"
 msgstr ""
 
-#: core/templates/search.jinja:32
-msgid "На жаль, пошук не дав результатів"
+#: core/templates/search.jinja:49
+msgid "інформація про особу"
+msgstr ""
+
+#: core/templates/search.jinja:49
+msgid "в Реєстрі відсутня"
 msgstr ""
 
 #: pepdb/settings.py:179

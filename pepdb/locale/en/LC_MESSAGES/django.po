@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-13 13:34+0300\n"
+"POT-Creation-Date: 2018-08-03 21:48+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: cms_pages/templates/cms_pages/home.jinja:34 core/templates/base.jinja:73
+#: cms_pages/templates/cms_pages/home.jinja:34 core/templates/base.jinja:74
 msgid "Введіть ім'я або назву компанії"
 msgstr "Enter the name of individual or company"
 
@@ -907,7 +907,7 @@ msgid "Надіслати"
 msgstr "Send"
 
 #: core/templates/_manhunt_records_en.jinja:3
-#: core/templates/_manhunt_records_uk.jinja:3
+#: core/templates/_manhunt_records_uk.jinja:3 core/templates/search.jinja:49
 msgid "Станом на"
 msgstr "As of"
 
@@ -929,31 +929,31 @@ msgstr "of the Criminal Code of Ukraine. Wanted since"
 msgid "Дякуємо за надану інформацію"
 msgstr "Thank you for your message"
 
-#: core/templates/base.jinja:61
+#: core/templates/base.jinja:62
 msgid "Menu"
 msgstr ""
 
-#: core/templates/base.jinja:106
+#: core/templates/base.jinja:107
 msgid "Домівка"
 msgstr "Home"
 
-#: core/templates/base.jinja:107 core/templates/countries.jinja:20
+#: core/templates/base.jinja:108 core/templates/countries.jinja:20
 msgid "Країни"
 msgstr "Countries"
 
-#: core/templates/base.jinja:108
+#: core/templates/base.jinja:109
 msgid "Про реєстр"
 msgstr "About"
 
-#: core/templates/base.jinja:109
+#: core/templates/base.jinja:110
 msgid "Повідомити"
 msgstr "Feedback"
 
-#: core/templates/base.jinja:110
+#: core/templates/base.jinja:111
 msgid "Дані"
 msgstr "Data"
 
-#: core/templates/base.jinja:152
+#: core/templates/base.jinja:153
 msgid "Надіслати інформацію"
 msgstr "Contact us"
 
@@ -1057,7 +1057,7 @@ msgid "Зв'язки:"
 msgstr "Connections:"
 
 #: core/templates/company.jinja:218 core/templates/search.jinja:19
-#: core/templates/search.jinja:73
+#: core/templates/search.jinja:72
 msgid "Пов'язані особи"
 msgstr "Close associates"
 
@@ -1102,12 +1102,12 @@ msgid "Оберіть країну"
 msgstr "Choose country"
 
 #: core/templates/countries.jinja:47 core/templates/search.jinja:15
-#: core/templates/search.jinja:35
+#: core/templates/search.jinja:32
 msgid "Фізичні особи"
 msgstr "Individuals"
 
 #: core/templates/countries.jinja:53 core/templates/search.jinja:17
-#: core/templates/search.jinja:54
+#: core/templates/search.jinja:53
 msgid "Юридичні особи"
 msgstr "Legal entities"
 
@@ -1298,9 +1298,13 @@ msgstr "ares"
 msgid "Результати пошуку"
 msgstr "Search results"
 
-#: core/templates/search.jinja:32
-msgid "На жаль, пошук не дав результатів"
-msgstr "Your search gave no results"
+#: core/templates/search.jinja:49
+msgid "інформація про особу"
+msgstr "information on"
+
+#: core/templates/search.jinja:49
+msgid "в Реєстрі відсутня"
+msgstr "is not available in the Register"
 
 #: pepdb/settings.py:179
 msgid "Ukrainian"
@@ -1309,6 +1313,9 @@ msgstr "Ukrainian"
 #: pepdb/settings.py:180
 msgid "English"
 msgstr "English"
+
+#~ msgid "На жаль, пошук не дав результатів"
+#~ msgstr "Your search gave no results"
 
 #~ msgid "Перемкнути :)"
 #~ msgstr "Switch"

@@ -53,6 +53,7 @@
 {% set calling_page = page.url if page else "" %}
 
 <body class="{% block body_class %}not-front{% endblock %}"> 
+    <h1 class="navbar-brand print-only" href="{{ url("wagtail_serve", "") }}">PEP<span>.org.ua</span></h1>
     <div id="wrapper">
         <nav id="navbar" class="navbar navbar-inverse navbar-default" role="navigation">  
             <div class="container"> 
