@@ -1,3 +1,6 @@
+{% if obj.name_in_dataset %}
+	<h4>{{ obj.name_in_dataset }}</h4>
+{% endif %}
 {% for k in obj.matched_json %}
     <strong>{{ k }}: </strong>{{ obj.matched_json[k] }}<br/>
 {% endfor %}

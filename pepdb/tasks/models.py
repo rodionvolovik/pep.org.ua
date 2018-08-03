@@ -351,6 +351,8 @@ class AdHocMatch(AbstractTask):
     matched_json = DjangoJSONField(verbose_name="Знайдено в датасеті", null=True)
     dataset_id = models.CharField("Походження датасету", max_length=200, null=True, blank=True)
     name_match_score = models.IntegerField("Ступінь співпадіння")
+    name_in_dataset = models.CharField(
+        "ПІБ з датасету", max_length=200, null=True, blank=True)
 
     last_updated_from_dataset = models.DateTimeField(
         verbose_name="Останній раз завантажено", null=True)
