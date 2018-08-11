@@ -418,9 +418,14 @@ def export_persons(request, fmt):
     if not request.user.has_perm("core.export_persons"):
         return HttpResponseForbidden()
 
+    if request.user.has_perm("core.export_id_and_last_modified"):
+        fields_to_blacklist = []
+    else:
+        fields_to_blacklist = ["id", "last_change"]
+
     data = map(
         lambda p: blacklist(
-            add_encrypted_url(p, request.user, "encrypted_person_redirect"), ["id"]
+            add_encrypted_url(p, request.user, "encrypted_person_redirect"), fields_to_blacklist
         ),
         ElasticPerson.get_all_persons(),
     )

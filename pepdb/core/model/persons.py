@@ -464,7 +464,7 @@ class Person(models.Model, AbstractNode):
             "reputation_assets_uk", "reputation_assets_en",
             "reputation_crimes_uk", "reputation_crimes_en",
             "reputation_manhunt_uk", "reputation_manhunt_en",
-            "also_known_as_uk", "also_known_as_en"
+            "also_known_as_uk", "also_known_as_en", "last_change"
         ])
 
         d["related_persons"] = [
@@ -718,4 +718,5 @@ class Person(models.Model, AbstractNode):
 
         permissions = (
             ("export_persons", "Can export the dataset"),
+            ("export_id_and_last_modified", "Can export the dataset with person id and date of last modification"),
         )
