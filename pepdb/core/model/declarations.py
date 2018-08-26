@@ -39,6 +39,7 @@ class Declaration(models.Model):
     position = models.CharField("Посада", max_length=512, blank=True)
     office = models.CharField("Відомство", max_length=512, blank=True)
     region = models.CharField("Регіон", max_length=50, blank=True)
+    doc_type = models.CharField("Тип декларації", max_length=50, blank=True)
     year = models.CharField("Рік", max_length=4, blank=True, db_index=True)
     source = JSONField(blank=True)
     url = models.URLField("Посилання", max_length=512, blank=True)

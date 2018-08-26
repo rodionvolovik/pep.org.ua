@@ -256,7 +256,7 @@ class Person(models.Model, AbstractNode):
             return False
 
     def _last_workplace_from_declaration(self):
-        return Declaration.objects.filter(person=self, confirmed="a").order_by(
+        return Declaration.objects.filter(person=self, confirmed="a").exclude(doc_type="Кандидата на посаду").order_by(
             "-nacp_declaration", "-year").only(
             "year", "office_en", "position_en", "office_uk", "position_uk", "url")[:1]
 
