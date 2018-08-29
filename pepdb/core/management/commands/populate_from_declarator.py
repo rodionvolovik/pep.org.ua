@@ -125,7 +125,9 @@ class Command(BaseCommand):
                 "region": d["main"]["office"]["type"]["name"],
                 "year": d["main"]["year"],
                 "source": d,
-                "url": "https://declarator.org/person/{}/".format(d["main"]["person"]["id"]), 
+                "url": "https://declarator.org/person/{}/".format(
+                    d["main"]["person"]["id"]
+                ),
                 "confirmed": "a",
                 "fuzziness": 0,
                 "person": person,
@@ -144,14 +146,17 @@ class Command(BaseCommand):
 
         self.careers[person.pk][office.pk][d["main"]["year"]] = (decl.pk, decl.position)
 
-        if person.pk not in self.last_position or self.last_position[person.pk]["year"] < d["main"]["year"]:
+        if (
+            person.pk not in self.last_position
+            or self.last_position[person.pk]["year"] < d["main"]["year"]
+        ):
             self.last_position[person.pk] = {
                 "year": d["main"]["year"],
                 "office": office.pk,
                 "person": person.pk,
                 "position": decl.position,
                 "declaration": decl.pk,
-                "declarator_person_id": d["main"]["person"]["id"]
+                "declarator_person_id": d["main"]["person"]["id"],
             }
 
     def position_key(self, pos):
@@ -168,7 +173,10 @@ class Command(BaseCommand):
             set_autocommit(False)
             for item in ijson.items(options["declarator_dump"], "item"):
                 pbar.update(1)
-                if item["main"]["office"]["id"] in options["offices"]:
+                if (
+                    item["main"]["office"]["id"] in options["offices"]
+                    and item["main"]["document_type"]["id"] != 2
+                ):
                     self.process_declaration(item)
 
             if not options["real_run"]:
@@ -220,9 +228,11 @@ class Command(BaseCommand):
                     is_employee=True,
                     defaults={
                         "declarations": [position["declaration"]],
-                        "date_confirmed": datetime(year=position["year"], month=1, day=1),
-                        "date_confirmed_details": 2
-                    }
+                        "date_confirmed": datetime(
+                            year=position["year"], month=1, day=1
+                        ),
+                        "date_confirmed_details": 2,
+                    },
                 )
 
                 url = "https://declarator.org/person/{}/".format(position["person"])
@@ -232,10 +242,12 @@ class Command(BaseCommand):
                     connection.proofs.create(
                         proof=url,
                         proof_title_uk="Декларация за {} год".format(position["year"]),
-                        proof_title_en="Income and assets declaration, {}".format(position["year"])
+                        proof_title_en="Income and assets declaration, {}".format(
+                            position["year"]
+                        ),
                     )
                 except RelationshipProof.MultipleObjectsReturned:
-                    pass                
+                    pass
 
             if not options["real_run"]:
                 rollback()
