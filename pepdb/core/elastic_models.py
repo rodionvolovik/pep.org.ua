@@ -1,6 +1,9 @@
+from django.conf import settings
+
 from elasticsearch_dsl import DocType, Completion
-from core.utils import TranslatedField, blacklist
 from cacheops import cached
+
+from core.utils import TranslatedField, blacklist
 
 
 class RangeRelevantEntitiesMixin(object):
@@ -69,7 +72,7 @@ class Person(DocType, RangeRelevantEntitiesMixin):
         ]
 
     class Meta:
-        index = 'peps'
+        index = settings.PERSONS_INDEX_NAME
 
 
 class Company(DocType, RangeRelevantEntitiesMixin):
@@ -94,4 +97,4 @@ class Company(DocType, RangeRelevantEntitiesMixin):
         ]
 
     class Meta:
-        index = 'peps'
+        index = settings.COMPANIES_INDEX_NAME

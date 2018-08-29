@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 import argparse
 from collections import defaultdict
+from datetime import datetime
 
 from django.db.transaction import rollback, set_autocommit, commit
 
@@ -32,6 +33,7 @@ class Command(BaseCommand):
         self.careers = defaultdict(lambda: defaultdict(dict))
         self.persons = {}
         self.companies = {}
+        self.last_position = {}
         return super(Command, self).__init__(*args, **kwargs)
 
     def add_arguments(self, parser):
@@ -123,7 +125,7 @@ class Command(BaseCommand):
                 "region": d["main"]["office"]["type"]["name"],
                 "year": d["main"]["year"],
                 "source": d,
-                "url": "https://declarator.org/",  # WTF?
+                "url": "https://declarator.org/person/{}/".format(d["main"]["person"]["id"]), 
                 "confirmed": "a",
                 "fuzziness": 0,
                 "person": person,
@@ -142,6 +144,16 @@ class Command(BaseCommand):
 
         self.careers[person.pk][office.pk][d["main"]["year"]] = (decl.pk, decl.position)
 
+        if person.pk not in self.last_position or self.last_position[person.pk]["year"] < d["main"]["year"]:
+            self.last_position[person.pk] = {
+                "year": d["main"]["year"],
+                "office": office.pk,
+                "person": person.pk,
+                "position": decl.position,
+                "declaration": decl.pk,
+                "declarator_person_id": d["main"]["person"]["id"]
+            }
+
     def position_key(self, pos):
         return (
             pos.lower()
@@ -158,6 +170,11 @@ class Command(BaseCommand):
                 pbar.update(1)
                 if item["main"]["office"]["id"] in options["offices"]:
                     self.process_declaration(item)
+
+            if not options["real_run"]:
+                rollback()
+            else:
+                commit()
 
             for person_id, offices in self.careers.items():
                 person = self.persons[person_id]
@@ -195,8 +212,32 @@ class Command(BaseCommand):
                             )
                         self.stdout.write("=" * 80)
 
+            for position in self.last_position.values():
+                connection, conn_created = Person2Company.objects.get_or_create(
+                    from_person_id=position["person"],
+                    to_company_id=position["office"],
+                    relationship_type=position["position"],
+                    is_employee=True,
+                    defaults={
+                        "declarations": [position["declaration"]],
+                        "date_confirmed": datetime(year=position["year"], month=1, day=1),
+                        "date_confirmed_details": 2
+                    }
+                )
+
+                url = "https://declarator.org/person/{}/".format(position["person"])
+                try:
+                    connection.proofs.get(proof=url)
+                except RelationshipProof.DoesNotExist:
+                    connection.proofs.create(
+                        proof=url,
+                        proof_title_uk="Декларация за {} год".format(position["year"]),
+                        proof_title_en="Income and assets declaration, {}".format(position["year"])
+                    )
+                except RelationshipProof.MultipleObjectsReturned:
+                    pass                
+
             if not options["real_run"]:
                 rollback()
             else:
                 commit()
-            set_autocommit(True)

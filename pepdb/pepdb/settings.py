@@ -171,7 +171,7 @@ gettext = lambda s: s
 LANGUAGES = (
     ('uk', gettext('Ukrainian')),
     ('en', gettext('English')),
-    ('ru', gettext('Russian')),
+    # ('ru', gettext('Russian')),
 )
 
 
@@ -311,6 +311,8 @@ CACHEOPS = {
 }
 
 CACHEOPS_DEGRADE_ON_FAILURE = True
+PERSONS_INDEX_NAME = "rupeps_persons"
+COMPANIES_INDEX_NAME = "rupeps_companies"
 
 try:
     from local_settings import *
