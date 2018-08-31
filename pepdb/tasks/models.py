@@ -354,6 +354,10 @@ class AdHocMatch(AbstractTask):
     name_in_dataset = models.CharField(
         "ПІБ з датасету", max_length=200, null=True, blank=True)
 
+    applied = models.BooleanField(
+        "Матч було застосовано", default=False
+    )
+
     last_updated_from_dataset = models.DateTimeField(
         verbose_name="Останній раз завантажено", null=True)
 
