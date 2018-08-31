@@ -8,7 +8,7 @@ from django.db import migrations
 def add_doctypes(apps, schema_editor):
     Declaration = apps.get_model("core", "Declaration")
 
-    for d in Declaration.objects.all():
+    for d in Declaration.objects.all().iterator():
         d.doc_type = d.source["intro"].get("doc_type", "Щорічна")
         d.save()
 

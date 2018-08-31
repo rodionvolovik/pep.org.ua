@@ -1,0 +1,41 @@
+{% for rec in obj.matched_json %}
+    <div class="company_match">
+        <label>
+            <input type="radio" name="candidate__{{ obj.pk }}" value="{{ rec.title }}">
+
+            {% if rec.labels %}
+                {% for lang in ["uk", "ru", "en", "fr", "de", "it", "nl", "el", rec.labels.keys()[0]] %}
+                    {% if rec.labels[lang] %}
+                        {{ rec.labels[lang]["value"] }},
+                        {% break %}
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+            Ім'я не зазначено
+            {% endif %}
+            </a>
+        </label>
+
+        <p>
+            <a href="https://www.wikidata.org/wiki/{{ rec.title }}" target="_blank">
+            {% if rec.descriptions %}
+                {% for lang in ["uk", "ru", "en", "fr", "de", "it", "nl", "el"] %}
+                    {% if rec.descriptions[lang] %}
+                        {{ rec.descriptions[lang]["value"] }}
+                        {% break %}
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                Опис не вказано
+            {% endif %}
+            </a>
+        </p>
+    </div>
+{% endfor %}
+
+<div class="company_match no-match">
+    <label>
+        <input type="radio" name="candidate__{{ obj.pk }}" value="NONE" />
+        <span>ЗБІГУ НЕМАЄ</span>
+    </label>
+</div>

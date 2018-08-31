@@ -363,3 +363,31 @@ class AdHocMatch(AbstractTask):
     class Meta:
         verbose_name = "Універсальний матчінг"
         verbose_name_plural = "Універсальні матчінги"
+
+
+class WikiMatch(AbstractTask):
+    STATUS_CHOICES = (
+        ("p", "Не перевірено"),
+        ("a", "Застосовано"),
+        ("i", "Ігнорувати"),
+        ("r", "Потребує додаткової перевірки"),
+    )
+
+    status = models.CharField(
+        "Статус",
+        max_length=1,
+        choices=STATUS_CHOICES,
+        default="p",
+        db_index=True
+    )
+
+    pep_name = models.CharField(
+        "Прізвище", max_length=200, null=True, blank=True)
+    pep_position = models.TextField("Посада", null=True, blank=True)
+    person = models.ForeignKey(Person, null=True, on_delete=models.SET_NULL, related_name="wiki_matches")
+    matched_json = DjangoJSONField(verbose_name="Сутності, знайдені у вікі", null=True)
+    wikidata_id = models.CharField("Коректний WikiData ID", max_length=50, blank=True)
+
+    class Meta:
+        verbose_name = "Матчінг з WikiData"
+        verbose_name_plural = "Матчінги з WikiData"
