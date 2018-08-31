@@ -52,11 +52,12 @@ class Command(BaseCommand):
 
                     if dob != new_dob:
                         self.stderr.write(
-                            "DOB mismatch for profile {}{}, current {}, new {}".format(
+                            "DOB mismatch for profile {}{}, current {}, new {}, CVK details {}".format(
                                 settings.SITE_URL,
                                 match.person.get_absolute_url(),
                                 dob,
                                 render_date(new_dob_dt, 0),
+                                match.matched_json["url"]
                             )
                         )
                         dob_mismatch += 1
