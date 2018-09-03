@@ -52,6 +52,11 @@ class Command(BaseCommand):
                 )
                 wiki_updated += 1
 
+                self.stdout.write("Updating page {}{}".format(
+                    settings.SITE_URL,
+                    match.person.get_absolute_url())
+                )
+
                 match.applied = True
                 if options["real_run"]:
                     match.person.save()
