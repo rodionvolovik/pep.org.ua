@@ -200,7 +200,7 @@ class Command(BaseCommand):
                                         break
 
                         if smida_position_class == "o" or smida_position_body == "o":
-                            print(
+                            self.stdout.write(
                                 "Position: {} {} {}".format(
                                     position.text,
                                     smida_position_class,

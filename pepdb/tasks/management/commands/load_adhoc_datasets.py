@@ -170,7 +170,7 @@ and matches arbitrary datasets with names with the list of persons in DB"""
                                 }
                             )
 
-                            if not created:
+                            if not created and last_updated > obj.last_updated_from_dataset:
                                 obj.last_updated_from_dataset = last_updated
                                 obj.name_in_dataset = name
                                 obj.matched_json = rpr
