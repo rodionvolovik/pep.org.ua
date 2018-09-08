@@ -69,13 +69,18 @@ class Command(BaseCommand):
                         dob_updated += 1
 
                 addition_to_wiki = ""
+                is_male = True
                 if match.matched_json.get("description"):
                     addition_to_wiki += "<p>{}</p>\n".format(
                         match.matched_json["description"]
                     )
 
+                    if "громадянка" in match.matched_json["description"].lower():
+                        is_male = False
+
                 if match.matched_json.get("party"):
-                    addition_to_wiki += "<p>На місцевих виборах у 2015 році балотувався від партії “{}“ до органу “{}”</p>\n".format(
+                    addition_to_wiki += "<p>На місцевих виборах у 2015 році {} від партії “{}“ до органу “{}”</p>\n".format(
+                        "балотувався" if is_male else "балотувалася",
                         match.matched_json["party"], match.matched_json["body"]
                     )
 
