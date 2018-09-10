@@ -211,7 +211,13 @@
                     </div>
                 </div>
                 {% endif %}
-               
+
+                {% set last_modified = person.last_modified %}
+                {% if last_modified %}
+                    <div class="last_modified">
+                        {{ _("Остання зміна профілю: ") }}<strong>{{ last_modified|date }}</strong>
+                    </div>
+                {% endif %}
             </div>
 
 

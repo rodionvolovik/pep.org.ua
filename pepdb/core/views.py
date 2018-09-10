@@ -160,6 +160,9 @@ def search(request, sources=("persons", "companies")):
         if "persons" in sources:
             params["persons"] = _search_person(request)
 
+            if not params["persons"]:
+                params["suggested_person"] = _suggest_person(request)
+
         if "companies" in sources:
             params["companies"] = _search_company(request)
     except EmptyPage:
@@ -202,6 +205,31 @@ def _search_person(request):
         ),
         settings.CATALOG_PER_PAGE * 2,
     )
+
+
+def _suggest_person(request):
+    query = request.GET.get("q", "")
+    if query:
+        _fields = [
+            "full_name^3",
+            "names^2",
+            "full_name_en^3",
+            "also_known_as_uk^2",
+            "also_known_as_en^2"
+        ]
+
+        persons = ElasticPerson.search().query(
+            Q(
+                "bool",
+                should=[Q("match", is_pep=True)],
+                must=[Q("multi_match", query=query, operator="and", fields=_fields, fuzziness="auto")],
+            )
+        )[:1]
+
+        res = persons.execute()
+
+        if res:
+            return res[0]
 
 
 def _search_company(request):

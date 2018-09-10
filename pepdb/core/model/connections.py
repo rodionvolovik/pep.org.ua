@@ -6,8 +6,8 @@ from collections import OrderedDict
 from django.db import models
 from django.utils.translation import ugettext_noop as _
 from django.contrib.postgres.fields import ArrayField
-from core.fields import RedactorField
 
+from core.fields import RedactorField
 from core.utils import lookup_term, translate_into
 from core.model.base import AbstractRelationship
 from core.model.translations import Ua2EnDictionary

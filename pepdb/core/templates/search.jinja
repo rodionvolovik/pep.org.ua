@@ -46,7 +46,16 @@
                     </div>
                 {% endif %}
             {% else %}
-                <h2 class="text-center look-here">{{ _("Станом на") }} {{ today|date }} {{ _("інформація про особу") }} «{{ query }}» {{ _("в Реєстрі відсутня") }}</h2>
+                <h2 class="text-center look-here">{{ _("Станом на") }} {{ today|date }} {{ _("інформація про фізичну особу") }} «{{ query }}» {{ _("в Реєстрі відсутня") }}</h2>
+
+                {% if suggested_person %}
+                    <h4 class="text-center">{{ _("можливо ви шукали") }}
+                        <a href="{{ url("person_details", person_id=suggested_person.id) }}">
+                            “{{ suggested_person.translated_last_name }}
+                            {{ suggested_person.translated_first_name }}
+                            {{ suggested_person.translated_patronymic }}”</a>?
+                    </h4>
+                {% endif %}                
             {% endif %}
 
             {% if companies %}

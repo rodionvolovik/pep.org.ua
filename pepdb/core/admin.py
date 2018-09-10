@@ -72,7 +72,7 @@ class ProofsInline(nested_admin.NestedInlineModelAdminMixin, TranslationGenericS
         template = 'nesting/admin/inlines/stacked.html'
 
     formset = nested_admin.NestedBaseGenericInlineFormSet
-    inline_classes = ('grp-collapse grp-open',)
+    inline_classes = ('grp-collapse grp-closed',)
 
     model = RelationshipProof
     extra = 1
@@ -100,7 +100,7 @@ class Person2PersonInline(TranslationNestedStackedInline):
         ("date_confirmed", "date_confirmed_details")
     ]
 
-    inline_classes = ('grp-collapse grp-open',)
+    inline_classes = ('grp-collapse grp-closed',)
     classes = ('p2p-block',)
 
     raw_id_fields = ('to_person',)
@@ -124,7 +124,7 @@ class Person2PersonBackInline(TranslationNestedStackedInline):
     max_num = 0
 
     inlines = [ProofsInline]
-    inline_classes = ('grp-collapse grp-open',)
+    inline_classes = ('grp-collapse grp-closed',)
     classes = ('p2p-block',)
 
     raw_id_fields = ('from_person',)
@@ -154,7 +154,7 @@ class Person2CountryInline(nested_admin.NestedStackedInline):
               ("date_finished", "date_finished_details"),
               ("date_confirmed", "date_confirmed_details")]
 
-    inline_classes = ('grp-collapse grp-open',)
+    inline_classes = ('grp-collapse grp-closed',)
     classes = ('p2country-block', )
     inlines = [ProofsInline]
 
@@ -194,7 +194,7 @@ class Person2CompanyInline(TranslationNestedStackedInline):
         'fk': ['to_company'],
     }
 
-    inline_classes = ('grp-collapse grp-open',)
+    inline_classes = ('grp-collapse grp-closed',)
     classes = ('p2c-block',)
 
     inlines = [ProofsInline]
@@ -216,7 +216,7 @@ class Company2PersonInline(TranslationNestedStackedInline):
               ("date_finished", "date_finished_details"),
               ("date_confirmed", "date_confirmed_details")]
 
-    inline_classes = ('grp-collapse grp-open',)
+    inline_classes = ('grp-collapse grp-closed',)
     classes = ('p2c-block',)
     inlines = [ProofsInline]
 

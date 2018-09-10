@@ -6,7 +6,7 @@ from collections import defaultdict
 
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models import Q
+from django.db.models import Q, Max
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.translation import ugettext_noop as _
@@ -19,6 +19,7 @@ from core.fields import RedactorField
 from core.model.base import AbstractNode
 from core.model.translations import Ua2EnDictionary
 from core.utils import render_date, lookup_term, translate_into
+from core.model.connections import Company2Company, Company2Country, Person2Company
 
 
 class CompanyManager(models.Manager):
@@ -151,19 +152,20 @@ class Company(models.Model, AbstractNode):
         "self", through="Company2Company", symmetrical=False)
 
     last_change = models.DateTimeField(
-        "Дата останньої зміни профіля або зв'язків профіля", blank=True, null=True
+        "Дата останньої зміни сторінки профіля", blank=True, null=True
     )
 
     last_editor = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
-        verbose_name="Автор зміни",
+        verbose_name="Автор останньої зміни сторінки профілю",
         blank=True,
         null=True,
     )
 
     works_for_peps = models.BooleanField("Обслуговує PEPів", default=False)
     subject_of_monitoring = models.BooleanField("Суб'єкт фінансового моніторингу", default=False)
+    _last_modified = models.DateTimeField("Остання зміна", null=True)
 
     @staticmethod
     def autocomplete_search_fields():
@@ -198,6 +200,7 @@ class Company(models.Model, AbstractNode):
         d["status_en"] = translate_into(self.get_status_display())
         d["founded"] = self.founded_human
         d["closed"] = self.closed_on_human
+        d["last_modified"] = self.last_modified
 
         suggestions = []
 
@@ -458,6 +461,26 @@ class Company(models.Model, AbstractNode):
     def closed_on_human(self):
         return render_date(self.closed_on,
                            self.closed_on_details)
+
+
+    @property
+    def last_modified(self):
+        c2c_conn = Company2Company.objects.filter(
+            Q(from_company=self) | Q(to_company=self)
+        ).aggregate(mm=Max("_last_modified"))["mm"]
+
+        c2p_conn = Person2Company.objects.filter(to_company=self).aggregate(
+            mm=Max("_last_modified")
+        )["mm"]
+
+        c2cont_conn = Company2Country.objects.filter(from_company=self).aggregate(
+            mm=Max("_last_modified")
+        )["mm"]
+
+        seq = list(filter(None, [c2c_conn, c2p_conn, c2cont_conn, self.last_change]))
+        if seq:
+            return max(seq)
+
 
     objects = CompanyManager()
 

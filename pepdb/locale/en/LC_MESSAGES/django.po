@@ -1299,8 +1299,8 @@ msgid "Результати пошуку"
 msgstr "Search results"
 
 #: core/templates/search.jinja:49
-msgid "інформація про особу"
-msgstr "information on"
+msgid "інформація про фізичну особу"
+msgstr "information on a person"
 
 #: core/templates/search.jinja:49
 msgid "в Реєстрі відсутня"
