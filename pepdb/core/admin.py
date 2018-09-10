@@ -15,7 +15,7 @@ from django.conf import settings
 from django.conf.urls import url
 from django.shortcuts import redirect, render
 from django.core.urlresolvers import reverse
-from django.utils import formats
+from django.utils import formats, timezone
 from django.forms import widgets
 from django.http import HttpResponse
 from django.contrib.admin.models import LogEntry
@@ -630,6 +630,8 @@ class DocumentAdmin(TranslationAdmin):
 
 
 class FeedbackAdmin(admin.ModelAdmin):
+    readonly_fields = ("answered_by", )
+
     def link_expanded(self, obj):
         return (u'<a href="{0}" target="_blank">Лінк</a>'.format(obj.link)
                 if obj.link else "")
@@ -647,11 +649,21 @@ class FeedbackAdmin(admin.ModelAdmin):
     text_expanded.short_description = 'Інформація'
 
     list_display = ("text_expanded", "person", "link_expanded", "added",
-                    "email", "contacts")
+                    "email", "contacts", "short_answer", "answer_added", "answered_by")
 
     def get_queryset(self, request):
         qs = super(FeedbackAdmin, self).get_queryset(request)
         return qs.order_by("-pk")
+
+    def save_model(self, request, obj, form, change):
+        if change:
+            if obj.short_answer != FeedbackMessage.objects.get(pk=obj.pk).short_answer:
+                if not obj.answer_added:
+                    obj.answer_added = timezone.now()
+
+                obj.answered_by = request.user
+
+        super(FeedbackAdmin, self).save_model(request, obj, form, change)
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
         extra_context = extra_context or {}

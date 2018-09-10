@@ -42,6 +42,16 @@ class FeedbackMessage(models.Model):
     read = models.BooleanField(ugettext_lazy("Прочитано"), default=False)
     added = models.DateTimeField("Був надісланий", auto_now=True)
 
+    answered_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        verbose_name="Відповів",
+        blank=True,
+        null=True,
+    )
+    answer_added = models.DateTimeField("Була надіслана", blank=True, null=True)
+    short_answer = models.TextField("Суть відповіді", blank=True, null=True)
+
     class Meta:
         verbose_name = "Зворотній зв'язок"
         verbose_name_plural = "Зворотній зв'язок"
