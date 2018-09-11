@@ -229,13 +229,22 @@ $(function() {
         }
     });
 
-    $(".track-ga-event").each(function(){
-        var eventCategory = $(this).data('ga-event-category'),
-            eventAction = $(this).data('ga-event-action'),
-            eventLabel = $(this).data('ga-event-label');
-        
+    function track_element(el, action) {
+        var el = $(el);
+
+        var eventCategory = el.data('ga-event-category'),
+            eventAction = el.data('ga-event-action'),
+            eventLabel = el.data('ga-event-label');
+
+        if (action) {
+            eventAction += "-" + action
+        }
+
         if (typeof(ga) !== "undefined") {
             ga('send', 'event', eventCategory, eventAction, eventLabel);
         }
-    });
+    }
+
+    $(".track-ga-event").each(function() {track_element(this, "")});
+    $(".track-ga-event-click").on("click", function() {track_element(this, "click")});
 });
