@@ -255,8 +255,7 @@ class Company2CompanyBackInline(nested_admin.NestedTabularInline):
 
     model = Company2Company
     fk_name = "to_company"
-    extra = 0
-    max_num = 0
+    extra = 1
     fields = ["relationship_type", "from_company", "date_established",
               "date_finished", "date_confirmed", "equity_part"]
 
