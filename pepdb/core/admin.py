@@ -300,7 +300,7 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     list_display = ("last_name_uk", "first_name_uk", "patronymic_uk",
                     "is_pep", "dob", "dob_details", "type_of_official",
                     "terminated", "publish")
-    readonly_fields = ('names', 'last_change', 'last_editor',)
+    readonly_fields = ('names', 'last_change', 'last_editor', '_last_modified')
     search_fields = ['last_name_uk', "first_name_uk", "patronymic_uk", "names"]
     list_editable = ("dob", "dob_details")
 
@@ -357,7 +357,7 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     list_editable = ("name_uk", "short_name_uk", "edrpou", "state_company",
                      "legal_entity", "status")
     search_fields = ["name_uk", "short_name_uk", "edrpou"]
-    readonly_fields = ('last_change', 'last_editor',)
+    readonly_fields = ('last_change', 'last_editor', '_last_modified')
     actions = [make_published, make_unpublished]
 
     class Media:

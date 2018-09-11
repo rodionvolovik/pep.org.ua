@@ -164,7 +164,7 @@ class Person(models.Model, AbstractNode):
         null=True,
     )
 
-    _last_modified = models.DateTimeField("Остання зміна", null=True)
+    _last_modified = models.DateTimeField("Остання зміна", null=True, blank=True)
 
     @staticmethod
     def autocomplete_search_fields():

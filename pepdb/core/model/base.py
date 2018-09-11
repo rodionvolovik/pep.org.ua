@@ -96,7 +96,7 @@ class AbstractRelationship(models.Model):
 
         return bool(self.proofs.count())
 
-    _last_modified = models.DateTimeField("Остання зміна", null=True)
+    _last_modified = models.DateTimeField("Остання зміна", null=True, blank=True)
 
     class Meta:
         abstract = True
