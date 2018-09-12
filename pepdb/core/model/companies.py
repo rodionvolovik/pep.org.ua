@@ -477,7 +477,7 @@ class Company(models.Model, AbstractNode):
             mm=Max("_last_modified")
         )["mm"]
 
-        seq = list(filter(None, [c2c_conn, c2p_conn, c2cont_conn, self.last_change]))
+        seq = list(filter(None, [c2c_conn, c2p_conn, c2cont_conn, self.last_change, self._last_modified]))
         if seq:
             return max(seq)
 

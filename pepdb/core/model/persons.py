@@ -725,7 +725,7 @@ class Person(models.Model, AbstractNode):
             mm=Max("_last_modified")
         )["mm"]
 
-        seq = list(filter(None, [p2p_conn, p2comp_conn, p2cont_conn, self.last_change]))
+        seq = list(filter(None, [p2p_conn, p2comp_conn, p2cont_conn, self.last_change, self._last_modified]))
         if seq:
             return max(seq)
 
