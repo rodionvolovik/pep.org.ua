@@ -385,7 +385,10 @@ def countries(request, sources=("persons", "companies"), country_id=None):
             persons = ElasticPerson.search().query("match_all")
         else:
             persons = ElasticPerson.search().query(
-                "match", related_countries__to_country_uk=country.name_uk
+                "match",
+                related_countries__to_country_uk={
+                    "query": country.name_uk, "operator": "and"
+                }
             )
 
     if "companies" in sources:
@@ -393,7 +396,10 @@ def countries(request, sources=("persons", "companies"), country_id=None):
             companies = ElasticCompany.search().query("match_all")
         else:
             companies = ElasticCompany.search().query(
-                "match", related_countries__to_country_uk=country.name_uk
+                "match",
+                related_countries__to_country_uk={
+                    "query": country.name_uk, "operator": "and"
+                }
             )
 
     try:
