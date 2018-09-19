@@ -20,13 +20,13 @@ with open("/tmp/uk_companies.csv", "w") as fp:
         related = c2c.from_company.all_related_persons
 
         def joiner(persons):
-            return u"\n".join([u"{}, https://pep.org.ua/{}".format(p.full_name, p.get_absolute_url()) for p in persons])
+            return u"\n".join([u"{}, https://pep.org.ua{}".format(p.full_name, p.get_absolute_url()) for p in persons])
 
         w.writerow({
             "country": c2c.to_country.name_uk,
             "company_name": c2c.from_company.name_uk,
             "company_code": c2c.from_company.edrpou,
-            "company_url": "https://pep.org.ua/{}".format(c2c.from_company.get_absolute_url()),
+            "company_url": "https://pep.org.ua{}".format(c2c.from_company.get_absolute_url()),
             "founders": joiner(related["founders"]),
             "managers": joiner(related["managers"]),
             "rest": joiner(related["rest"]),
