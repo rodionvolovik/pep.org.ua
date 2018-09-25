@@ -34,6 +34,11 @@ class Command(BaseCommand):
         activate(settings.LANGUAGE_CODE)
         conn = connections.get_connection('default')
 
+        docs_to_index = [
+            ElasticPerson(**p.to_dict())
+            for p in Person.objects.all().nocache().iterator()
+        ]
+
         if options["drop_indices"]:
             Index(ElasticPerson._doc_type.index).delete(ignore=404)
             ElasticPerson.init()
@@ -45,18 +50,23 @@ class Command(BaseCommand):
                 }
             )
 
-        docs_to_index = [
-            ElasticPerson(**p.to_dict())
-            for p in Person.objects.all().nocache()
-        ]
-
         self.bulk_write(conn, docs_to_index)
+
+        if options["drop_indices"]:
+            # invalidate old values and immediatelly cache again
+            ElasticPerson.get_all_persons.invalidate(ElasticPerson)
+            ElasticPerson.get_all_persons()
 
         self.stdout.write(
             'Loaded {} persons to persistence storage'.format(
                 len(docs_to_index)))
 
+        docs_to_index = [
+            ElasticCompany(**p.to_dict())
+            for p in Company.objects.all().nocache().iterator()]
+
         if options["drop_indices"]:
+            Index(ElasticCompany._doc_type.index).delete(ignore=404)
             ElasticCompany.init()
             conn.indices.put_settings(
                 index=ElasticCompany._doc_type.index,
@@ -65,11 +75,12 @@ class Command(BaseCommand):
                 }
             )
 
-        docs_to_index = [
-            ElasticCompany(**p.to_dict())
-            for p in Company.objects.all().nocache()]
-
         self.bulk_write(conn, docs_to_index)
+
+        if options["drop_indices"]:
+            # invalidate old values and immediatelly cache again
+            ElasticCompany.get_all_companies.invalidate(ElasticCompany)
+            ElasticCompany.get_all_companies()
 
         self.stdout.write(
             'Loaded {} companies to persistence storage'.format(

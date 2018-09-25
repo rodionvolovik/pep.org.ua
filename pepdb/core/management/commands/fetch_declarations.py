@@ -53,7 +53,7 @@ class Command(BaseCommand):
             if task == "link":
                 allowed_types = ["Щорічна", "Після звільнення"]
                 if (person.is_pep and
-                        person.declaration_set.filter(nacp_declaration=True, confirmed="a").count() == 0):
+                        person.declarations.filter(nacp_declaration=True, confirmed="a").count() == 0):
 
                     self.stdout.write(
                         "There are no declarations for poor %s at all, thus extending the scope" % (person,)

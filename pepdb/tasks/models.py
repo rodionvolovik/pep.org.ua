@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
 from core.models import Person
+from django.contrib.postgres.fields import JSONField as DjangoJSONField
 from jsonfield import JSONField
 from jsonfield.encoder import JSONEncoder
 from django.contrib.postgres.fields import ArrayField
@@ -256,6 +257,7 @@ class TerminationNotice(AbstractTask):
         ("change_type", "Змінити тип ПЕП на пов'язану особу"),
         ("change_and_fire", "Змінити тип ПЕП на пов'язану особу та встановити дату"),
         ("fire", "Припинити ПЕПство"),
+        ("fire_related", "Припинити ПЕПство пов'язаної особи"),
     )
 
     status = models.CharField(
@@ -310,6 +312,7 @@ class TerminationNotice(AbstractTask):
     pep_position = models.TextField("Посада", null=True, blank=True)
 
     person = models.ForeignKey(Person, null=True, on_delete=models.SET_NULL)
+    applied = models.BooleanField(verbose_name="Застосовано", default=False, db_index=True)
 
     class Meta:
         verbose_name = "Кандидат на виліт"
@@ -322,3 +325,39 @@ class TerminationNotice(AbstractTask):
         index_together = [
             ["person", "pep_name", "termination_date", "termination_date_details"],
         ]
+
+
+class AdHocMatch(AbstractTask):
+    STATUS_CHOICES = (
+        ("p", "Не перевірено"),
+        ("a", "Застосовано"),
+        ("i", "Ігнорувати"),
+        ("r", "Потребує додаткової перевірки"),
+    )
+
+    status = models.CharField(
+        "Статус",
+        max_length=1,
+        choices=STATUS_CHOICES,
+        default="p",
+        db_index=True
+    )
+
+    pep_name = models.CharField(
+        "Прізвище", max_length=200, null=True, blank=True)
+    pep_position = models.TextField("Посада", null=True, blank=True)
+    person = models.ForeignKey(Person, null=True, on_delete=models.SET_NULL, related_name="adhoc_matches")
+    matched_json_hash = models.CharField("Хеш", max_length=40)
+    matched_json = DjangoJSONField(verbose_name="Знайдено в датасеті", null=True)
+    dataset_id = models.CharField("Походження датасету", max_length=200, null=True, blank=True)
+    name_match_score = models.IntegerField("Ступінь співпадіння")
+
+    last_updated_from_dataset = models.DateTimeField(
+        verbose_name="Останній раз завантажено", null=True)
+
+    first_updated_from_dataset = models.DateTimeField(
+        verbose_name="Перший раз завантажено", null=True)
+
+    class Meta:
+        verbose_name = "Універсальний матчінг"
+        verbose_name_plural = "Універсальні матчінги"

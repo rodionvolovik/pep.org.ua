@@ -42,6 +42,8 @@ from core.forms import EDRImportForm, ForeignImportForm
 from core.importers.company import CompanyImporter
 from core.importers.company2country import Company2CountryImporter
 from core.universal_loggers import MessagesLogger
+from django_otp.plugins.otp_totp.admin import TOTPDeviceAdmin
+from django_otp.plugins.otp_totp.models import TOTPDevice
 from tasks.elastic_models import EDRPOU
 
 
@@ -297,7 +299,7 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
 
     list_display = ("last_name_uk", "first_name_uk", "patronymic_uk",
                     "is_pep", "dob", "dob_details", "type_of_official",
-                    "publish")
+                    "terminated", "publish")
     readonly_fields = ('names', 'last_change', 'last_editor',)
     search_fields = ['last_name_uk', "first_name_uk", "patronymic_uk", "names"]
     list_editable = ("dob", "dob_details")
@@ -622,8 +624,9 @@ class DocumentAdmin(TranslationAdmin):
     link.allow_tags = True
     link.short_description = _('Завантажити')
 
-    list_display = ("name", "link", "uploader", "uploaded")
+    list_display = ("pk", "name_uk", "link", "uploader", "uploaded", "doc")
     search_fields = ["name", "doc"]
+    list_editable = ("name_uk", "uploader", "doc")
 
 
 class FeedbackAdmin(admin.ModelAdmin):
@@ -644,7 +647,7 @@ class FeedbackAdmin(admin.ModelAdmin):
     text_expanded.short_description = _('Інформація')
 
     list_display = ("text_expanded", "person", "link_expanded", "added",
-                    "contacts")
+                    "email", "contacts")
 
     def get_queryset(self, request):
         qs = super(FeedbackAdmin, self).get_queryset(request)
@@ -1013,6 +1016,16 @@ class LogEntryAdmin(admin.ModelAdmin):
         return actions
 
 
+class RiggedTOTPDeviceAdmin(TOTPDeviceAdmin):
+    def get_queryset(self, request):
+        qs = super(RiggedTOTPDeviceAdmin, self).get_queryset(request)
+
+        if request.user.is_superuser and request.user.username in settings.SUPERADMINS:
+            return qs
+        else:
+            return qs.filter(user=request.user)
+
+
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(Country, CountryAdmin)
@@ -1024,3 +1037,6 @@ admin.site.register(DeclarationToLink, DeclarationAdmin)
 admin.site.register(DeclarationToWatch, DeclarationMonitorAdmin)
 admin.site.register(ActionLog, ActionLogAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
+
+admin.site.unregister(TOTPDevice)
+admin.site.register(TOTPDevice, RiggedTOTPDeviceAdmin)

@@ -19,7 +19,8 @@ from core.model.connections import (
     Company2Country, RelationshipProof
 )
 from core.model.supplementaries import (
-    ActionLog, Document, FeedbackMessage)
+    ActionLog, Document, FeedbackMessage
+)
 
 __all__ = [
     Person, Company, Country, Declaration, DeclarationExtra,
@@ -28,7 +29,6 @@ __all__ = [
     ActionLog, Document, FeedbackMessage, RelationshipProof,
     DeclarationToLink, DeclarationToWatch
 ]
-
 
 
 @receiver(post_save, sender=LogEntry, dispatch_uid="touch_signal")

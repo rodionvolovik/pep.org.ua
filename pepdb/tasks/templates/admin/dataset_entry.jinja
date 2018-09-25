@@ -1,0 +1,6 @@
+{% for k in obj.matched_json %}
+    <strong>{{ k }}: </strong>{{ obj.matched_json[k] }}<br/>
+{% endfor %}
+<hr/>
+<strong>Імпортовано вперше:</strong> {{ obj.first_updated_from_dataset|date }}<br/>
+<strong>Імпортовано востаннє:</strong> {{ obj.last_updated_from_dataset|date }}

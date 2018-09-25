@@ -15,6 +15,7 @@
     <meta property="og:description" content="{{ _("Детальна інформація про членів сім'ї та інших пов'язаних осіб, задекларовані статки, зобов'язання та банківські рахунки, власність в юридичних особах") }}" />
     <meta property="profile:first_name" content="{{ person.first_name }} {{ person.patronymic }}" />
     <meta property="profile:last_name" content="{{ person.last_name }}" />
+    <link rel="canonical" href="{{ SITE_URL }}{{ person.get_absolute_url() }}" />
 {% endblock %}
 
 {% block page_title %}{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}{% if last_workplace %}, {{ last_workplace.company }}, {{ last_workplace.position }}{% endif %}{% endblock %}
@@ -33,6 +34,7 @@
 {% set related_persons = person.all_related_persons %}
 {% set related_companies = person.all_related_companies %}
 {% set workplaces = person.workplaces %}
+{% set manhunt_records = person.manhunt_records %}
 <div class="container" itemscope itemtype="http://schema.org/Person">
     <div class="row">
         <div id="breadcrumbs">
@@ -56,11 +58,11 @@
                 {% endif %}
 
                 {% if LANGUAGE_CODE == "en" %}
-                    {% if person.reputation_sanctions_en or person.reputation_crimes_en or person.reputation_manhunt_en or person.reputation_convictions_en or person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk %}
+                    {% if person.reputation_sanctions_en or person.reputation_crimes_en or person.reputation_manhunt_en or person.reputation_convictions_en or person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk or manhunt_records %}
                     <li><a href="#reputation" class="btn btn-transp trans"><i class="fa fa-bullhorn"></i><span>{{ _("Кримінальні провадження та санкції") }}</span></a></li>
                     {% endif %}
                 {% else %}
-                    {% if person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk %}
+                    {% if person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk or manhunt_records %}
                     <li><a href="#reputation" class="btn btn-transp trans"><i class="fa fa-bullhorn"></i><span>{{ _("Кримінальні провадження та санкції") }}</span></a></li>
                     {% endif %}
                 {% endif %}
@@ -90,9 +92,10 @@
                 {% endif %}
             </ul>
         </aside>
-        <section id="profile" class="{%- if person.parsed_names %}col-md-8{% else %}col-md-10{% endif -%}">
+        <section id="profile" class="{%- if person.parsed_names %}col-md-8{% else %}col-md-10{% endif -%} {% if person.terminated %} not{% endif %}">
             <link itemprop="url" href="{{ person.get_absolute_url() }}" />
             <div id="profile-wrap" class="box">
+                {% if person.died %}<div class="info-label">{{ _(person.get_reason_of_termination_display()) }}</div>{% endif %}
                 <ul class="profileActions">
                     <li><a href="?format=pdf" class="tooltip-anchor" data-toggle="tooltip" data-placement="top" title="{{ _("Скачати PDF") }}" target="_blank"><i class="fa fa-file-pdf-o"></i></a></li>
                     <li><a href="#" class="tooltip-anchor print-me" data-toggle="tooltip" data-placement="top" title="{{ _("Роздрукувати профайл") }}"><i class="fa fa-print"></i></a></li>
@@ -136,6 +139,17 @@
                                 <td itemprop="birthPlace">{{ person.city_of_birth }}</td>
                             </tr>
                             {% endif %}
+                            {% if person.foreign_citizenship %}
+                            <tr>
+                                <td>{{ _("Громадянство") }}</td>
+                                <td>
+                                    {% set comma = joiner(", ") %}
+                                    {% for citizenship in person.foreign_citizenship -%}
+                                    {{ comma() }}{{ citizenship.to_country.name }}
+                                    {%- endfor %}
+                                </td>
+                            </tr>
+                            {% endif %}
                             {% if last_workplace %}
                             <tr>
                                 <td>{{ _("Остання посада") }}</td>
@@ -150,6 +164,24 @@
                                     </strong>
                                 </td>
                             </tr>
+                            {% endif %}
+                            {% if person.terminated %}
+                                <tr class="non-pep-info{% if person.died %} dead-pep-info{% endif %}">
+                                    {% if person.termination_date %}
+                                        <td><strong>{{ person.termination_date_human }}</strong></td>
+                                    {% else %}
+                                        <td></td>
+                                    {% endif %}
+                                    <td>{{ _(person.get_reason_of_termination_display()) }}</td>
+                                </tr>
+                            {% else %}
+                                {% set day_of_dismissal = person.day_of_dismissal %}
+                                {% if day_of_dismissal %}
+                                <tr>
+                                    <td>Дата звільнення</td>
+                                    <td>{{ day_of_dismissal }}</td>
+                                </tr>
+                                {% endif %}
                             {% endif %}
                             {#<tr class="tooltip-anchor" data-toggle="tooltip" data-placement="bottom" title="{{ _("Відповідно до методології, національним публічним діячам присвоюється такі ступені ризику відмивання коштів: неприйнятно високий; високий; середній; низький") }}">
                                 <td>{{ _("Рівень ризику") }}</td>
@@ -208,7 +240,7 @@
             {% endif %}
 
             {% if LANGUAGE_CODE == "en" %}
-                {% if person.reputation_sanctions_en or person.reputation_crimes_en or person.reputation_manhunt_en or person.reputation_convictions_en or person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk %}
+                {% if person.reputation_sanctions_en or person.reputation_crimes_en or person.reputation_manhunt_en or person.reputation_convictions_en or person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk or manhunt_records %}
                 <div id="reputation" class="sub box">
                     <h3>{{ _("Кримінальні провадження та санкції:") }}</h3>
                     <div class="printWrap">
@@ -220,8 +252,9 @@
                             <h4>{{ _("Кримінальні провадження") }}</h4>
                             {{ person.reputation_crimes_en|richtext }}
                         {% endif %}
-                        {% if person.reputation_manhunt_en %}
+                        {% if person.reputation_manhunt_en or manhunt_records %}
                             <h4>{{ _("Перебування у розшуку") }}</h4>
+                            {% include "_manhunt_records_en.jinja" with context %}
                             {{ person.reputation_manhunt_en|richtext }}
                         {% endif %}
                         {% if person.reputation_convictions_en %}
@@ -236,7 +269,7 @@
                 </div>
                 {% endif %}
             {% else %}
-                {% if person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk %}
+                {% if person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk or manhunt_records %}
                 <div id="reputation" class="sub box">
                     <h3>{{ _("Кримінальні провадження та санкції:") }}</h3>
                     <div class="printWrap">
@@ -248,8 +281,9 @@
                             <h4>{{ _("Кримінальні провадження") }}</h4>
                             {{ person.reputation_crimes_uk|richtext }}
                         {% endif %}
-                        {% if person.reputation_manhunt_uk %}
+                        {% if person.reputation_manhunt_uk or manhunt_records %}
                             <h4>{{ _("Перебування у розшуку") }}</h4>
+                            {% include "_manhunt_records_uk.jinja" with context %}
                             {{ person.reputation_manhunt_uk|richtext }}
                         {% endif %}
                         {% if person.reputation_convictions_uk %}

@@ -162,6 +162,9 @@ class Company(models.Model, AbstractNode):
         null=True,
     )
 
+    works_for_peps = models.BooleanField("Обслуговує PEPів", default=False)
+    subject_of_monitoring = models.BooleanField("Суб'єкт фінансового моніторингу", default=False)
+
     @staticmethod
     def autocomplete_search_fields():
         return ("id__iexact", "short_name__icontains", "name__icontains")
@@ -352,7 +355,7 @@ class Company(models.Model, AbstractNode):
     @property
     def foreign_registration(self):
         return self.from_countries.prefetch_related("to_country").filter(
-            relationship_type="registered_in").exclude(to_country__iso2="UA")
+            relationship_type="registered_in")
 
     @property
     def all_related_companies(self):

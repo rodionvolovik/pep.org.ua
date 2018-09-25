@@ -57,7 +57,7 @@ class Person(DocType, RangeRelevantEntitiesMixin):
         "last_job_title", "last_job_title_en")
 
     @classmethod
-    @cached(timeout=24 * 60 * 60)
+    @cached(timeout=25 * 60 * 60)
     def get_all_persons(cls):
         return [
             blacklist(
@@ -65,7 +65,7 @@ class Person(DocType, RangeRelevantEntitiesMixin):
                 [
                     "full_name_suggest_en", "dob_details", "dob",
                     "full_name_suggest", "last_job_id", "risk_category",
-                    "photo_path"
+                    "photo_path", "terminated"
                 ]
             )
             for p in cls.search().scan()
@@ -83,7 +83,7 @@ class Company(DocType, RangeRelevantEntitiesMixin):
     translated_name = TranslatedField("name_uk", "name_en")
 
     @classmethod
-    @cached(timeout=24 * 60 * 60)
+    @cached(timeout=25 * 60 * 60)
     def get_all_companies(cls):
         return [
             blacklist(

@@ -4,8 +4,9 @@ from datetime import datetime
 from cStringIO import StringIO
 from django.http import (
     JsonResponse, HttpResponseForbidden, HttpResponse, HttpResponseBadRequest,
-    HttpResponseNotFound)
+    HttpResponseNotFound, Http404)
 from django.utils import translation
+from django.core.paginator import PageNotAnInteger, EmptyPage
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
@@ -126,7 +127,7 @@ def search(request, sources=("persons", "related", "companies")):
         persons = ElasticPerson.search().query(
             "multi_match", query=query,
             operator="and",
-            fields=["full_name", "names", "full_name_en"])
+            fields=["full_name", "names", "full_name_en", "also_known_as_uk", "also_known_as_en"])
 
         # Special case when we were looking for one exact person and found it.
         if persons.count() == 1:
@@ -151,21 +152,26 @@ def search(request, sources=("persons", "related", "companies")):
                         kwargs={"company_id": company.id})
             )
 
-    if "persons" in sources:
-        params["persons"] = _search_person(request)
+    try:
+        if "persons" in sources:
+            params["persons"] = _search_person(request)
 
-    if "related" in sources:
-        params["related_persons"] = _search_related(request)
+        if "related" in sources:
+            params["related_persons"] = _search_related(request)
 
-    if "companies" in sources:
-        params["companies"] = _search_company(request)
+        if "companies" in sources:
+            params["companies"] = _search_company(request)
+    except EmptyPage:
+        raise Http404("Page is empty")
+    except PageNotAnInteger:
+        raise Http404("No page")
 
     return render(request, "search.jinja", params)
 
 
 def _search_person(request):
     query = request.GET.get("q", "")
-    _fields = ["full_name", "names", "full_name_en"]
+    _fields = ["full_name", "names", "full_name_en", "also_known_as_uk", "also_known_as_en"]
 
     if query:
         persons = ElasticPerson.search().query(
@@ -337,8 +343,13 @@ def countries(request, sources=("persons", "companies"), country_id=None):
             companies = ElasticCompany.search().query(
                 'match', related_countries__to_country_uk=country.name_uk)
 
-    params["persons"] = paginated_search(request, persons)
-    params["companies"] = paginated_search(request, companies)
+    try:
+        params["persons"] = paginated_search(request, persons)
+        params["companies"] = paginated_search(request, companies)
+    except EmptyPage:
+        raise Http404("Page is empty")
+    except PageNotAnInteger:
+        raise Http404("No page")
 
     return render(request, "countries.jinja", params)
 
@@ -486,21 +497,11 @@ def encrypted_redirect(request, enc, model):
     except User.DoesNotExist:
         return HttpResponseForbidden()
 
-    log_rec = ActionLog(
-        user=user,
-        action="view_{}".format(model.lower())
-    )
-
     model = apps.get_model('core', model)
     try:
         obj = model.objects.get(pk=obj_id)
     except model.DoesNotExist:
-        log_rec.details = "ID: %s" % obj_id
-        log_rec.save()
         return HttpResponseNotFound()
-
-    log_rec.details = str(obj)
-    log_rec.save()
 
     return redirect(
         obj.get_absolute_url()

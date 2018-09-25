@@ -73,3 +73,54 @@ class Person2CompanyImporter(object):
             pass
 
         return conn, created
+
+    def get_or_create(self, person, company, relation, date_confirmed, url, url_desc_uk, url_desc_en, save=True):
+        """
+        Kind of get_or_create method, to create or update person2company model and relationship proof
+        instance using provided data 
+
+        Returns Person2Company instance and a created flag
+        """
+
+        created = False
+        conns = Person2Company.objects.filter(
+            from_person=person,
+            to_company=company,
+            relationship_type=relation)
+
+        if conns.count():
+            conn = conns[0]
+
+            if conn.date_confirmed:
+                if date_confirmed > conn.date_confirmed:
+                    conn.date_confirmed_details = 0
+                    conn.date_confirmed = date_confirmed
+            else:
+                conn.date_confirmed_details = 0
+                conn.date_confirmed = date_confirmed
+        else:
+            created = True
+            conn = Person2Company(
+                from_person=person,
+                to_company=company,
+                relationship_type=relation,
+                date_confirmed_details=0,
+                date_confirmed=date_confirmed,
+            )
+
+        if save:
+            conn.save()
+
+        try:
+            conn.proofs.get(proof=url)
+        except RelationshipProof.DoesNotExist:
+            if save:
+                conn.proofs.create(
+                    proof=url,
+                    proof_title_uk=url_desc_uk,
+                    proof_title_en=url_desc_en
+                )
+        except RelationshipProof.MultipleObjectsReturned:
+            pass
+
+        return conn, created

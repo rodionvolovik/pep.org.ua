@@ -3,6 +3,13 @@
 {% from "macros/_search.jinja" import render_person, render_company with context %}
 {% block body_class %}not-front search-by-country-page page{% endblock %}
 
+{% block og_tags %}
+    {{ super() }}
+    {% if country %}
+    <link rel="canonical" href="{{ SITE_URL }}{{ country.get_absolute_url() }}" />
+    {% endif %}
+{% endblock %}
+
 {% block content %}
     <div class="container">
         <div class="row">

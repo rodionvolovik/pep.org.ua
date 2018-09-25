@@ -11,7 +11,7 @@ from core.universal_loggers import PythonLogger
 
 
 class Command(BaseCommand):
-    def find_bank(self, edrpou, name):
+    def find_bank(self, edrpou, name, declaration):
         if edrpou:
             if edrpou in self.edrpous_mapping:
                 return [self.banks_dict[
@@ -43,7 +43,7 @@ class Command(BaseCommand):
                 )
 
         self.stderr.write(
-            "Cannot find bank %s (%s) in mapping" % (name, edrpou)
+            "Cannot find bank %s (%s) in mapping at the declaration %s" % (name, edrpou, declaration.url)
         )
 
         return None
@@ -79,8 +79,8 @@ class Command(BaseCommand):
             r = DictReader(fp)
 
             for bank in r:
-                self.names_only_mapping[bank["name"]] = bank["real_name"]
-                self.names_only_mapping[bank["name"].strip('"\'')] = bank["real_name"]
+                self.names_only_mapping[bank["name"]] = bank["real_name"].strip()
+                self.names_only_mapping[bank["name"].strip('"\'')] = bank["real_name"].strip()
 
         # Reading mapping between names of bank and it's edrpous
         with open("core/dicts/bank_names_mapping.csv", "r") as fp:
@@ -110,7 +110,7 @@ class Command(BaseCommand):
         created_records = 0
         updated_records = 0
         for d in Declaration.objects.filter(
-                nacp_declaration=True, confirmed="a").nocache():
+                nacp_declaration=True, confirmed="a").nocache().iterator():
             data = d.source["nacp_orig"]
 
             if isinstance(data.get("step_12"), dict):
@@ -142,7 +142,7 @@ class Command(BaseCommand):
                     bank_edrpou = bank_edrpou.lstrip("0").strip()
 
                     if bank_name or bank_edrpou:
-                        bank_matches = self.find_bank(bank_edrpou, bank_name)
+                        bank_matches = self.find_bank(bank_edrpou, bank_name, d)
                         if bank_matches is None:
                             failed += 1
                             continue

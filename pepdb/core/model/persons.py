@@ -14,15 +14,17 @@ from django.conf import settings
 from django.db.models.functions import Coalesce
 from django.db.models import Q, Value
 from django.contrib.auth.models import User
+from django.template.loader import render_to_string
 
-from core.fields import RedactorField
 from translitua import translitua
 import select2.fields
 import select2.models
+from dateutil.parser import parse as dt_parse
 
+from core.fields import RedactorField
 from core.model.base import AbstractNode
 from core.model.translations import Ua2EnDictionary
-from core.utils import render_date, lookup_term, parse_fullname, translate_into
+from core.utils import render_date, lookup_term, parse_fullname, translate_into, ceil_date
 from core.model.declarations import Declaration
 
 # to_*_dict methods are used to convert two main entities that we have, Person
@@ -166,7 +168,6 @@ class Person(models.Model, AbstractNode):
         null=True,
     )
 
-
     @staticmethod
     def autocomplete_search_fields():
         return ("id__iexact", "last_name__icontains", "first_name__icontains")
@@ -177,6 +178,34 @@ class Person(models.Model, AbstractNode):
     @property
     def date_of_birth(self):
         return render_date(self.dob, self.dob_details)
+
+    @property
+    def termination_date_human(self):
+        return render_date(self.termination_date,
+                           self.termination_date_details)
+
+    @property
+    def terminated(self):
+        # (1, _("Помер")),
+        # (2, _("Звільнився/склав повноваження")),
+        # (3, _("Пов'язана особа або член сім'ї - ПЕП помер")),
+        # (4, _("Пов'язана особа або член сім'ї - ПЕП припинив бути ПЕПом")),
+        # (5, _("Зміни у законодавстві що визначає статус ПЕПа")),
+        # (6, _("Зміни форми власності юр. особи посада в котрій давала статус ПЕПа")),
+
+        if self.reason_of_termination in [1, 3]:
+            return True
+
+        if self.reason_of_termination in [2, 4, 5, 6] and self.termination_date is not None:
+            if (ceil_date(self.termination_date, self.termination_date_details) +
+                    datetime.timedelta(days=3 * 365) <= datetime.date.today()):
+                return True
+
+        return False
+
+    @property
+    def died(self):
+        return self.reason_of_termination == 1
 
     def _last_workplace(self):
         # Looking for a most recent appointment that has at least one date set
@@ -202,8 +231,8 @@ class Person(models.Model, AbstractNode):
             .only(
                 "to_company__short_name_uk", "to_company__name_uk",
                 "to_company__short_name_en", "to_company__name_en",
-                "to_company__id",
-                "relationship_type_uk", "relationship_type_en")
+                "to_company__id", "relationship_type_uk", "relationship_type_en",
+                "date_finished", "date_finished_details")
 
         if qs:
             return qs
@@ -218,15 +247,23 @@ class Person(models.Model, AbstractNode):
             .only(
                 "to_company__short_name_uk", "to_company__name_uk",
                 "to_company__short_name_en", "to_company__name_en",
-                "to_company__id",
-                "relationship_type_uk", "relationship_type_en")
+                "to_company__id", "relationship_type_uk", "relationship_type_en",
+                "date_finished", "date_finished_details")
 
         return qs
+
+    @property
+    def day_of_dismissal(self):
+        dday = self._last_workplace().filter(is_employee=True).first()
+        if dday:
+            return render_date(dday.date_finished, dday.date_finished_details)
+        else:
+            return False
 
     def _last_workplace_from_declaration(self):
         return Declaration.objects.filter(person=self, confirmed="a").order_by(
             "-nacp_declaration", "-year").only(
-            "office_en", "position_en", "office_uk", "position_uk")[:1]
+            "year", "office_en", "position_en", "office_uk", "position_uk", "url")[:1]
 
     @property
     def last_workplace(self):
@@ -456,9 +493,34 @@ class Person(models.Model, AbstractNode):
             )
         ]
 
+        manhunt_records = self.manhunt_records
+        if manhunt_records:
+            curr_lang = get_language()
+
+            activate("uk")
+            d["reputation_manhunt_uk"] = render_to_string(
+                "_manhunt_records_uk.jinja",
+                {"manhunt_records": manhunt_records}
+            ) + (d["reputation_manhunt_uk"] or "")
+
+            activate("en")
+            d["reputation_manhunt_en"] = render_to_string(
+                "_manhunt_records_en.jinja",
+                {"manhunt_records": manhunt_records}
+            ) + (d["reputation_manhunt_en"] or "")
+            activate(curr_lang)
+    
         d["photo"] = settings.SITE_URL + self.photo.url if self.photo else ""
         d["photo_path"] = self.photo.name if self.photo else ""
         d["date_of_birth"] = self.date_of_birth
+        d["terminated"] = self.terminated
+        d["died"] = self.died
+        if d["terminated"]:
+            d["reason_of_termination"] = self.get_reason_of_termination_display()
+            d["reason_of_termination_en"] = translate_into(
+                self.get_reason_of_termination_display(), "en"
+            )
+            d["termination_date_human"] = self.termination_date_human
 
         last_workplace = self.last_workplace
         if last_workplace:
@@ -522,11 +584,15 @@ class Person(models.Model, AbstractNode):
         activate(curr_lang)
         return url
 
-    # TODO: Request in bulk in all_related_persons?
+    @property
+    def foreign_citizenship_or_registration(self):
+        return self.person2country_set.prefetch_related("to_country").filter(
+            relationship_type__in=["citizenship", "registered_in"])
+
     @property
     def foreign_citizenship(self):
         return self.person2country_set.prefetch_related("to_country").filter(
-            relationship_type__in=["citizenship", "registered_in"]).exclude(to_country__iso2="UA")
+            relationship_type="citizenship")
 
     @property
     def url_uk(self):
@@ -564,7 +630,7 @@ class Person(models.Model, AbstractNode):
 
     def get_declarations(self):
         decls = Declaration.objects.filter(
-            person=self, confirmed="a").order_by("year", "nacp_declaration")
+            person=self, confirmed="a").order_by("-year", "-nacp_declaration")
 
         corrected = []
         res = []
@@ -633,6 +699,19 @@ class Person(models.Model, AbstractNode):
             res["connections"] = connections
 
         return res
+
+    @property
+    def manhunt_records(self):
+        return [
+            {
+                "last_updated_from_dataset": rec.last_updated_from_dataset,
+                "lost_date": dt_parse(rec.matched_json["LOST_DATE"], yearfirst=True),
+                "articles_uk": rec.matched_json["ARTICLE_CRIM"],
+                "articles_en": rec.matched_json["ARTICLE_CRIM"].lower().replace("ст.", "article ").replace("ч.", "pt. ")
+            }
+            for rec in self.adhoc_matches.filter(status="a", dataset_id="wanted_ia")
+        ]
+        
 
     class Meta:
         verbose_name = _("Фізична особа")

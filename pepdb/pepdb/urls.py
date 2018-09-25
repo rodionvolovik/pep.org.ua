@@ -3,11 +3,10 @@ from django.conf.urls import include, url
 from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
-from django.contrib import admin
 import django.contrib.sitemaps.views as sitemaps_views
 
+
 from wagtail.wagtailcore import urls as wagtail_urls
-from wagtail.wagtailadmin import urls as wagtailadmin_urls
 from wagtail.wagtailsearch import urls as wagtailsearch_urls
 from wagtail.wagtaildocs import urls as wagtaildocs_urls
 
@@ -24,7 +23,6 @@ sitemaps = {
     'companies': CompanyXML,
     'countries': CountriesXML
 }
-
 
 urlpatterns = i18n_patterns(
     # '',
@@ -85,11 +83,7 @@ urlpatterns += [
 
     url(r'^grappelli/', include('grappelli.urls')),  # grappelli urls
     url(r'^redactor/', include('redactor.urls')),
-    url(r'^admin/', include(admin.site.urls)),
-
-    url(r'^cms/', include(wagtailadmin_urls)),
     url(r'^wg_search/', include(wagtailsearch_urls)),
-    url(r'^nested_admin/', include('nested_admin.urls')),
 
     # PEP dataset
     url(r'^opendata/persons/(?P<fmt>(json|xml))',
@@ -113,8 +107,9 @@ urlpatterns += [
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-if "debug_toolbar" in settings.INSTALLED_APPS:
-    import debug_toolbar
-    urlpatterns += [
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-    ]
+
+try:
+    from extra_urls import urlpatterns as extra_patterns
+    urlpatterns += extra_patterns
+except ImportError:
+    pass

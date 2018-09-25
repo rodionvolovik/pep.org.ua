@@ -12,6 +12,11 @@
     {% endif %}
 {% endblock %}
 
+{% block og_tags %}
+    {{ super() }}
+    <link rel="canonical" href="{{ SITE_URL }}{{ company.get_absolute_url() }}" />
+{% endblock %}
+
 
 {% block content %}
 {% set related_persons = company.all_related_persons %}
@@ -98,13 +103,11 @@
                             {% if company.status %}
                             <tr>
                                 <td>{{ _("Поточний стан") }} </td>
-                                <td><strong>{{ _(company.get_status_display()) }}</strong></td>
-                            </tr>
-                            {% endif %}
-                            {% if company.closed_on %}
-                            <tr>
-                                <td>{{ _("Дата припинення") }} </td>
-                                <td><strong>{{ company.closed_on_human }}</strong></td>
+                                <td><strong>{{ _(company.get_status_display()) }}</strong>
+                                    {% if company.closed_on %}
+                                        {{ _("з") }} <strong>{{ company.closed_on_human }}</strong>
+                                    {% endif %}
+                                </td>
                             </tr>
                             {% endif %}
                             {% if not company.legal_entity %}
@@ -226,30 +229,6 @@
                                             </ul>
                                         </li>
                                         {% endif %}
-                                        {% if related_countries.rest %}
-                                        <li>
-                                            <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Пов'язані країни") }}</span>
-                                            <ul class="h">
-                                                {% for country in related_countries.rest %}
-                                                    <li>
-                                                        <a href="{{ country.get_absolute_url() }}">
-                                                            <span class="name-pill">
-                                                                {{ country.name }}
-                                                            </span>
-                                                        </a> &ndash;
-                                                        {% if country.rtype %}{{ _(country.connection.get_relationship_type_display()) }}{% endif %}
-
-                                                        {% if country.connection.has_additional_info %}
-                                                            <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalCountry-{{ country.pk }}">
-                                                               <i class="fa fa-info-circle info-gray"></i>
-                                                            </a>
-                                                        {% endif %}
-                                                        {{ render_connection(country.connection, "modalCountry-{}".format(country.pk)) }}
-                                                    </li>
-                                                {% endfor %}
-                                            </ul>
-                                        </li>
-                                        {% endif %}
                                         {% if related_companies.rest %}
                                         <li>
                                             <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Пов'язані компанії") }}</span>
@@ -262,6 +241,9 @@
                                                             </span>
                                                         </a> &ndash;
                                                         {% if company.rtype %}{{ _(company.rtype) }}{% endif %}
+                                                        {% if company.connection.equity_part %}
+                                                        , {{ _("Частка") }} {{ "{:2.3f}".format(company.connection.equity_part) }}%
+                                                        {% endif %}
 
                                                         {% if company.connection.has_additional_info %}
                                                             <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalCompany-{{ company.pk }}">

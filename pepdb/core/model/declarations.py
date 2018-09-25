@@ -45,7 +45,7 @@ class Declaration(models.Model):
         "Підтверджено", max_length=1, choices=STATUS_CHOICES, default="p",
         db_index=True)
     fuzziness = models.IntegerField("Відстань", default=0)
-    person = models.ForeignKey("Person", default=None)
+    person = models.ForeignKey("Person", default=None, related_name="declarations")
     nacp_declaration = models.BooleanField(
         "Декларація НАЗК", default=False, db_index=True)
     declarator_declaration = models.BooleanField(
@@ -386,7 +386,7 @@ class Declaration(models.Model):
             }
 
             try:
-                total_area = total_area.replace(',', '.')
+                total_area = str(total_area).replace(',', '.')
 
                 if not total_area:
                     return 0

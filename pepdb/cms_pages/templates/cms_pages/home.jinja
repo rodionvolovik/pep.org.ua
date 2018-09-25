@@ -66,7 +66,6 @@
     </section>
     
 
-    {% if page.banner_items %}
     <section id="oursponsors">
         <div class="container">
             <div class="row">
@@ -76,26 +75,33 @@
             </div>
         </div>
     </section>
-    {% endif %}
     
-    {% if page.banner_items %}
     <section id="oursponsors-logo">
         <div class="container">
             <div class="row">
-                {% for banner in page.banner_items.all() %}
-                    {% if banner.image %}
-                    <div class="sponsor text-center col-md-3 col-xs-6">
-                        <a href="{{ banner.link }}" target="_blank">
-                        <img src="{{ banner.image.get_rendition("max-150x100").url }}" alt="{{ banner.translated_caption }}" class="img-responsive mc"
-                        title="{{ banner.translated_caption }}"/>
-                        </a>
+                <div class="col-sm-6">
+                    <div class="row-flex">
+                        <div class="col-flex col-logo">
+                            <img src="{{ static("images/60px-Flag_of_Europe.svg.png") }}">
+                        </div>
+                        <div class="col-flex">
+                            {{ root_page.translated_eu_desc|richtext }}
+                        </div>
                     </div>
-                    {% endif %}
-                {% endfor %}
+                </div>
+                <div class="col-sm-6">
+                    <div class="row-flex">
+                        <div class="col-flex col-logo col-logo-x2">
+                            <img src="{{ static("images/tr_h_lg_rgb_ps.png") }}">
+                        </div>
+                        <div class="col-flex">
+                            {{ root_page.translated_tr_desc|richtext }}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
-    {% endif %}
 
     <div class="cp"></div> <!--   clear padding  -->
 {% endblock %}

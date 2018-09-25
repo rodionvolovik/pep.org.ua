@@ -1,8 +1,8 @@
-from core.models import *
+from core.models import Declaration
 
 changes = []
 
-for d in Declaration.objects.filter(confirmed="a", nacp_declaration=True):
+for d in Declaration.objects.filter(confirmed="a", nacp_declaration=True).nocache().iterator():
     step_1 = d.source["nacp_orig"].get("step_1", {})
     step_2 = d.source["nacp_orig"].get("step_2", {})
 
