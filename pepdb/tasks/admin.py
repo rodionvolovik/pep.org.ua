@@ -610,7 +610,7 @@ class SMIDACandidateAdmin(admin.ModelAdmin):
     )
     list_filter = ("status",)
 
-    search_fields = ("smida_name", "smida_position", "smida_edrpou", "smida_company_name")
+    search_fields = ("smida_name", "smida_position", "smida_edrpou", "smida_company_name", "smida_parsed_name")
 
     def company_readable(self, obj):
         edrpou = unicode(obj.smida_edrpou).rjust(8, "0")
