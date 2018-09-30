@@ -137,7 +137,7 @@ and matches arbitrary datasets with names with the list of persons in DB"""
 
     def handle(self, *args, **options):
         if "last_updated_from_dataset" in options:
-            last_updated = dt_parse(options["last_updated_from_dataset"], dayfirst=True)
+            last_updated = timezone.make_aware(dt_parse(options["last_updated_from_dataset"], dayfirst=True))
         else:
             last_updated = timezone.now()
 
@@ -165,12 +165,15 @@ and matches arbitrary datasets with names with the list of persons in DB"""
                                     "matched_json": rpr,
                                     "name_match_score": fuzziness,
                                     "last_updated_from_dataset": last_updated,
-                                    "first_updated_from_dataset": last_updated
+                                    "first_updated_from_dataset": last_updated,
+                                    "name_in_dataset": name
                                 }
                             )
 
-                            if not created:
+                            if not created and last_updated > obj.last_updated_from_dataset:
                                 obj.last_updated_from_dataset = last_updated
+                                obj.name_in_dataset = name
+                                obj.matched_json = rpr
                                 obj.save()
 
                         except IntegrityError:

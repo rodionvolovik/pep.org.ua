@@ -306,7 +306,8 @@ NOCAPTCHA = True
 RECAPTCHA_USE_SSL = True
 
 DECLARATIONS_SEARCH_ENDPOINT = "https://declarations.com.ua/fuzzy_search"
-DECLARATION_DETAILS_ENDPOINT ="https://declarations.com.ua/declaration/{}"
+DECLARATION_DETAILS_ENDPOINT = "https://declarations.com.ua/declaration/{}"
+DECLARATION_DETAILS_EN_ENDPOINT = "https://declarations.com.ua/en/declaration/{}"
 CACHEOPS_REDIS = "redis://localhost:6379/1"
 
 CACHEOPS = {
@@ -341,6 +342,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 OTP_TOTP_ISSUER = 'PEP.org.ua'
+SITEHEART_ID = None
+GA_ID = None
 SUPERADMINS = []
 
 

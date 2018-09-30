@@ -135,6 +135,10 @@ def is_ukr(name):
     return re.search("['іїєґ]+", name.lower(), re.UNICODE) is not None
 
 
+def is_eng(name):
+    return re.search("[a-z]+", name.lower(), re.UNICODE) is not None
+
+
 def is_greek(name):
     return re.search("[α-ωίϊΐόάέύϋΰήώ]+", name.lower(), re.UNICODE) is not None
 

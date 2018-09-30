@@ -65,7 +65,7 @@ class Person(DocType, RangeRelevantEntitiesMixin):
                 [
                     "full_name_suggest_en", "dob_details", "dob",
                     "full_name_suggest", "last_job_id", "risk_category",
-                    "photo_path", "terminated"
+                    "photo_path", "terminated", "last_modified"
                 ]
             )
             for p in cls.search().scan()
@@ -90,7 +90,7 @@ class Company(DocType, RangeRelevantEntitiesMixin):
                 p.to_dict(),
                 [
                     "code_chunks", "name_suggest", "name_suggest_output",
-                    "name_suggest_output_en"
+                    "name_suggest_output_en", "last_modified"
                 ]
             )
             for p in cls.search().scan()

@@ -351,6 +351,12 @@ class AdHocMatch(AbstractTask):
     matched_json = DjangoJSONField(verbose_name="Знайдено в датасеті", null=True)
     dataset_id = models.CharField("Походження датасету", max_length=200, null=True, blank=True)
     name_match_score = models.IntegerField("Ступінь співпадіння")
+    name_in_dataset = models.CharField(
+        "ПІБ з датасету", max_length=200, null=True, blank=True)
+
+    applied = models.BooleanField(
+        "Матч було застосовано", default=False
+    )
 
     last_updated_from_dataset = models.DateTimeField(
         verbose_name="Останній раз завантажено", null=True)
@@ -361,3 +367,90 @@ class AdHocMatch(AbstractTask):
     class Meta:
         verbose_name = "Універсальний матчінг"
         verbose_name_plural = "Універсальні матчінги"
+
+
+class WikiMatch(AbstractTask):
+    STATUS_CHOICES = (
+        ("p", "Не перевірено"),
+        ("a", "Застосовано"),
+        ("i", "Ігнорувати"),
+        ("r", "Потребує додаткової перевірки"),
+    )
+
+    status = models.CharField(
+        "Статус",
+        max_length=1,
+        choices=STATUS_CHOICES,
+        default="p",
+        db_index=True
+    )
+
+    pep_name = models.CharField(
+        "Прізвище", max_length=200, null=True, blank=True)
+    pep_position = models.TextField("Посада", null=True, blank=True)
+    person = models.ForeignKey(Person, null=True, on_delete=models.SET_NULL, related_name="wiki_matches")
+    matched_json = DjangoJSONField(verbose_name="Сутності, знайдені у вікі", null=True)
+    wikidata_id = models.CharField("Коректний WikiData ID", max_length=50, blank=True)
+
+    class Meta:
+        verbose_name = "Матчінг з WikiData"
+        verbose_name_plural = "Матчінги з WikiData"
+
+
+class SMIDACandidate(AbstractTask):
+    STATUS_CHOICES = (
+        ("p", "Не перевірено"),
+        ("a", "Застосовано"),
+        ("i", "Ігнорувати"),
+        ("r", "Потребує додаткової перевірки"),
+    )
+
+    POSITION_BODIES = (
+        ("sc", "Правління"),
+        ("wc", "Наглядова рада"),
+        ("ac", "Ревізійна комісія"),
+        ("a", "Бухгалтерія"),
+        ("s", "Секретаріат"),
+        ("o", "Інше"),
+        ("h", "Керівник"),
+    )
+
+    POSITION_CLASSES = (
+        ("h", "Голова"),
+        ("d", "Заступник голови"),
+        ("m", "Член"),
+        ("a", "Головний бухгалтер"),
+        ("s", "Корпоративний секретар"),
+        ("o", "Інше")
+    )
+
+    status = models.CharField(
+        "Статус",
+        max_length=1,
+        choices=STATUS_CHOICES,
+        default="p",
+        db_index=True
+    )
+
+    smida_edrpou = models.CharField("Код компанії", max_length=15, null=True, blank=True)
+    smida_company_name = models.CharField("Назва компанії", max_length=200, null=True, blank=True)
+    smida_level = models.IntegerField("Відстань", null=True)
+    smida_shares = models.FloatField("% держави", null=True)
+
+    smida_name = models.CharField("ПІБ зі звіту", max_length=200, blank=True)
+    smida_parsed_name = models.CharField("'Чистий 'ПІБ зі звіту", max_length=200, blank=True)
+    smida_dt = models.DateTimeField("Дата звіту")
+    smida_position = models.CharField("Посада зі звіту", max_length=200, blank=True)
+    smida_prev_position = models.TextField("Попередня посада", blank=True)
+    smida_yob = models.IntegerField("Рік народження", null=True)
+
+    smida_is_real_person = models.BooleanField("Фізособа", default=True)
+    smida_position_body = models.CharField("Орган", max_length=2, choices=POSITION_BODIES)
+    smida_position_class = models.CharField("Рівень", max_length=1, choices=POSITION_CLASSES)
+
+    matched_json = DjangoJSONField(verbose_name="Запис зі звіту", null=True)
+    matched_json_hash = models.CharField("Хеш", max_length=40, null=True)
+
+    class Meta:
+        verbose_name = "Матчінг зі звітами SMIDA"
+        verbose_name_plural = "Матчінги зі звітами SMIDA"

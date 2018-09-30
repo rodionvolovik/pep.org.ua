@@ -5,9 +5,10 @@ import logging
 from collections import defaultdict
 
 from django.db import models
+from django.conf import settings
 from django.forms.models import model_to_dict
 from django.utils.translation import ugettext_noop as _
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext_lazy, get_language
 
 from jsonfield import JSONField
 
@@ -38,6 +39,7 @@ class Declaration(models.Model):
     position = models.CharField("Посада", max_length=512, blank=True)
     office = models.CharField("Відомство", max_length=512, blank=True)
     region = models.CharField("Регіон", max_length=50, blank=True)
+    doc_type = models.CharField("Тип декларації", max_length=50, blank=True)
     year = models.CharField("Рік", max_length=4, blank=True, db_index=True)
     source = JSONField(blank=True)
     url = models.URLField("Посилання", max_length=512, blank=True)
@@ -68,6 +70,13 @@ class Declaration(models.Model):
         "Подана", blank=True, null=True, db_index=True)
 
     batch_number = models.IntegerField("Номер теки", default=0, db_index=True)
+
+    def get_url(self):
+        url = self.url
+        if get_language() == "en" and self.nacp_declaration:
+            return settings.DECLARATION_DETAILS_EN_ENDPOINT.format(self.declaration_id)
+
+        return url
 
     def to_dict(self):
         d = model_to_dict(self, fields=[
@@ -137,7 +146,7 @@ class Declaration(models.Model):
             "year": self.year,
             "position": self.position,
             "office": self.office,
-            "url": self.url,
+            "url": self.get_url(),
             "income_of_declarant": ugettext_lazy("Не зазначено"),
             "income_of_family": ugettext_lazy("Не зазначено"),
             "expenses_of_declarant": ugettext_lazy("Не зазначено"),
@@ -181,7 +190,7 @@ class Declaration(models.Model):
     def get_assets(self):
         resp = {
             "year": self.year,
-            "url": self.url,
+            "url": self.get_url(),
             "nacp_declaration": self.nacp_declaration,
             "cash": {
                 "declarant": {
@@ -281,7 +290,7 @@ class Declaration(models.Model):
     def get_gifts(self):
         resp = {
             "year": self.year,
-            "url": self.url,
+            "url": self.get_url(),
             "gifts_of_declarant": ugettext_lazy("Не зазначено"),
             "gifts_of_family": ugettext_lazy("Не зазначено"),
         }
@@ -321,7 +330,7 @@ class Declaration(models.Model):
     def get_liabilities(self):
         resp = {
             "year": self.year,
-            "url": self.url,
+            "url": self.get_url(),
             "liabilities_of_declarant": defaultdict(float),
             "liabilities_of_family": defaultdict(float),
         }
@@ -363,7 +372,7 @@ class Declaration(models.Model):
     def get_active_assets(self):
         resp = {
             "year": self.year,
-            "url": self.url,
+            "url": self.get_url(),
             "assets_of_declarant": defaultdict(list),
             "assets_of_family": defaultdict(list),
         }
@@ -406,7 +415,7 @@ class Declaration(models.Model):
 
         resp = {
             "year": self.year,
-            "url": self.url,
+            "url": self.get_url(),
             "assets_of_declarant": defaultdict(list),
             "assets_of_family": defaultdict(list),
         }
@@ -535,7 +544,7 @@ class Declaration(models.Model):
 
         resp = {
             "year": self.year,
-            "url": self.url,
+            "url": self.get_url(),
             "assets_of_declarant": defaultdict(list),
             "assets_of_family": defaultdict(list),
         }

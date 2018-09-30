@@ -12,7 +12,7 @@ from django.utils.translation import ugettext_lazy, activate, get_language
 from django.forms.models import model_to_dict
 from django.conf import settings
 from django.db.models.functions import Coalesce
-from django.db.models import Q, Value
+from django.db.models import Q, Value, Max
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 
@@ -26,6 +26,7 @@ from core.model.base import AbstractNode
 from core.model.translations import Ua2EnDictionary
 from core.utils import render_date, lookup_term, parse_fullname, translate_into, ceil_date
 from core.model.declarations import Declaration
+from core.model.connections import Person2Person, Person2Company, Person2Country
 
 # to_*_dict methods are used to convert two main entities that we have, Person
 # and Company into document indexable by ElasticSearch.
@@ -157,16 +158,18 @@ class Person(models.Model, AbstractNode):
     )
 
     last_change = models.DateTimeField(
-        _("Дата останньої зміни профіля або зв'язків профіля"), blank=True, null=True
+        _("Дата останньої зміни сторінки профіля"), blank=True, null=True
     )
 
     last_editor = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
-        verbose_name=_("Автор зміни"),
+        verbose_name=_("Автор останньої зміни сторінки профілю",)
         blank=True,
         null=True,
     )
+
+    _last_modified = models.DateTimeField("Остання зміна", null=True, blank=True)
 
     @staticmethod
     def autocomplete_search_fields():
@@ -261,7 +264,7 @@ class Person(models.Model, AbstractNode):
             return False
 
     def _last_workplace_from_declaration(self):
-        return Declaration.objects.filter(person=self, confirmed="a").order_by(
+        return Declaration.objects.filter(person=self, confirmed="a").exclude(doc_type="Кандидата на посаду").order_by(
             "-nacp_declaration", "-year").only(
             "year", "office_en", "position_en", "office_uk", "position_uk", "url")[:1]
 
@@ -469,7 +472,7 @@ class Person(models.Model, AbstractNode):
             "reputation_assets_uk", "reputation_assets_en",
             "reputation_crimes_uk", "reputation_crimes_en",
             "reputation_manhunt_uk", "reputation_manhunt_en",
-            "also_known_as_uk", "also_known_as_en"
+            "also_known_as_uk", "also_known_as_en", "last_change"
         ])
 
         d["related_persons"] = [
@@ -514,6 +517,7 @@ class Person(models.Model, AbstractNode):
         d["photo_path"] = self.photo.name if self.photo else ""
         d["date_of_birth"] = self.date_of_birth
         d["terminated"] = self.terminated
+        d["last_modified"] = self.last_modified
         d["died"] = self.died
         if d["terminated"]:
             d["reason_of_termination"] = self.get_reason_of_termination_display()
@@ -711,7 +715,25 @@ class Person(models.Model, AbstractNode):
             }
             for rec in self.adhoc_matches.filter(status="a", dataset_id="wanted_ia")
         ]
-        
+
+    @property
+    def last_modified(self):
+        p2p_conn = Person2Person.objects.filter(
+            Q(from_person=self) | Q(to_person=self)
+        ).aggregate(mm=Max("_last_modified"))["mm"]
+
+        p2comp_conn = Person2Company.objects.filter(Q(from_person=self)).aggregate(
+            mm=Max("_last_modified")
+        )["mm"]
+
+        p2cont_conn = Person2Country.objects.filter(Q(from_person=self)).aggregate(
+            mm=Max("_last_modified")
+        )["mm"]
+
+        seq = list(filter(None, [p2p_conn, p2comp_conn, p2cont_conn, self.last_change, self._last_modified]))
+        if seq:
+            return max(seq)
+
 
     class Meta:
         verbose_name = _("Фізична особа")
@@ -723,4 +745,5 @@ class Person(models.Model, AbstractNode):
 
         permissions = (
             ("export_persons", "Can export the dataset"),
+            ("export_id_and_last_modified", "Can export the dataset with person id and date of last modification"),
         )

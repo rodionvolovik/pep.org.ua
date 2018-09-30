@@ -15,7 +15,7 @@ from django.conf import settings
 from django.conf.urls import url
 from django.shortcuts import redirect, render
 from django.core.urlresolvers import reverse
-from django.utils import formats
+from django.utils import formats, timezone
 from django.forms import widgets
 from django.http import HttpResponse
 from django.contrib.admin.models import LogEntry
@@ -72,7 +72,7 @@ class ProofsInline(nested_admin.NestedInlineModelAdminMixin, TranslationGenericS
         template = 'nesting/admin/inlines/stacked.html'
 
     formset = nested_admin.NestedBaseGenericInlineFormSet
-    inline_classes = ('grp-collapse grp-open',)
+    inline_classes = ('grp-collapse grp-closed',)
 
     model = RelationshipProof
     extra = 1
@@ -100,7 +100,7 @@ class Person2PersonInline(TranslationNestedStackedInline):
         ("date_confirmed", "date_confirmed_details")
     ]
 
-    inline_classes = ('grp-collapse grp-open',)
+    inline_classes = ('grp-collapse grp-closed',)
     classes = ('p2p-block',)
 
     raw_id_fields = ('to_person',)
@@ -124,7 +124,7 @@ class Person2PersonBackInline(TranslationNestedStackedInline):
     max_num = 0
 
     inlines = [ProofsInline]
-    inline_classes = ('grp-collapse grp-open',)
+    inline_classes = ('grp-collapse grp-closed',)
     classes = ('p2p-block',)
 
     raw_id_fields = ('from_person',)
@@ -154,7 +154,7 @@ class Person2CountryInline(nested_admin.NestedStackedInline):
               ("date_finished", "date_finished_details"),
               ("date_confirmed", "date_confirmed_details")]
 
-    inline_classes = ('grp-collapse grp-open',)
+    inline_classes = ('grp-collapse grp-closed',)
     classes = ('p2country-block', )
     inlines = [ProofsInline]
 
@@ -194,7 +194,7 @@ class Person2CompanyInline(TranslationNestedStackedInline):
         'fk': ['to_company'],
     }
 
-    inline_classes = ('grp-collapse grp-open',)
+    inline_classes = ('grp-collapse grp-closed',)
     classes = ('p2c-block',)
 
     inlines = [ProofsInline]
@@ -216,7 +216,7 @@ class Company2PersonInline(TranslationNestedStackedInline):
               ("date_finished", "date_finished_details"),
               ("date_confirmed", "date_confirmed_details")]
 
-    inline_classes = ('grp-collapse grp-open',)
+    inline_classes = ('grp-collapse grp-closed',)
     classes = ('p2c-block',)
     inlines = [ProofsInline]
 
@@ -255,8 +255,7 @@ class Company2CompanyBackInline(nested_admin.NestedTabularInline):
 
     model = Company2Company
     fk_name = "to_company"
-    extra = 0
-    max_num = 0
+    extra = 1
     fields = ["relationship_type", "from_company", "date_established",
               "date_finished", "date_confirmed", "equity_part"]
 
@@ -300,7 +299,7 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     list_display = ("last_name_uk", "first_name_uk", "patronymic_uk",
                     "is_pep", "dob", "dob_details", "type_of_official",
                     "terminated", "publish")
-    readonly_fields = ('names', 'last_change', 'last_editor',)
+    readonly_fields = ('names', 'last_change', 'last_editor', '_last_modified')
     search_fields = ['last_name_uk', "first_name_uk", "patronymic_uk", "names"]
     list_editable = ("dob", "dob_details")
 
@@ -357,7 +356,7 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     list_editable = ("name_uk", "short_name_uk", "edrpou", "state_company",
                      "legal_entity", "status")
     search_fields = ["name_uk", "short_name_uk", "edrpou"]
-    readonly_fields = ('last_change', 'last_editor',)
+    readonly_fields = ('last_change', 'last_editor', '_last_modified')
     actions = [make_published, make_unpublished]
 
     class Media:
@@ -630,6 +629,8 @@ class DocumentAdmin(TranslationAdmin):
 
 
 class FeedbackAdmin(admin.ModelAdmin):
+    readonly_fields = ("answered_by", )
+
     def link_expanded(self, obj):
         return (u'<a href="{0}" target="_blank">Лінк</a>'.format(obj.link)
                 if obj.link else "")
@@ -647,11 +648,21 @@ class FeedbackAdmin(admin.ModelAdmin):
     text_expanded.short_description = _('Інформація')
 
     list_display = ("text_expanded", "person", "link_expanded", "added",
-                    "email", "contacts")
+                    "email", "contacts", "short_answer", "answer_added", "answered_by")
 
     def get_queryset(self, request):
         qs = super(FeedbackAdmin, self).get_queryset(request)
         return qs.order_by("-pk")
+
+    def save_model(self, request, obj, form, change):
+        if change:
+            if obj.short_answer != FeedbackMessage.objects.get(pk=obj.pk).short_answer:
+                if not obj.answer_added:
+                    obj.answer_added = timezone.now()
+
+                obj.answered_by = request.user
+
+        super(FeedbackAdmin, self).save_model(request, obj, form, change)
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
         extra_context = extra_context or {}

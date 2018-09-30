@@ -3,7 +3,7 @@
 cairocffi==0.8.0
 CairoSVG==1.0.16
 cffi==1.11.5
-cryptography==2.1.4
+cryptography==2.3.1
 django-cacheops==4.0.1
 django-compressor==2.2
 django-grappelli==2.10.1

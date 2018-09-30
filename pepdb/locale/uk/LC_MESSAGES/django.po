@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#: core/model/companies.py:437 core/model/persons.py:666 core/utils.py:493
+#: core/model/companies.py:440 core/model/persons.py:665 core/utils.py:497
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-25 12:09+0300\n"
+"POT-Creation-Date: 2018-09-11 12:57+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: cms_pages/templates/cms_pages/home.jinja:34 core/templates/base.jinja:73
+#: cms_pages/templates/cms_pages/home.jinja:34 core/templates/base.jinja:74
 msgid "Введіть ім'я або назву компанії"
 msgstr ""
 
@@ -47,62 +47,6 @@ msgstr ""
 msgid "Головна"
 msgstr ""
 
-#: core/admin.py:52 core/model/companies.py:82 core/model/persons.py:63
-msgid "Опублікувати"
-msgstr ""
-
-#: core/admin.py:57
-msgid "Приховати"
-msgstr ""
-
-#: core/admin.py:119
-msgid "Зворотній зв'язок з іншою персоною"
-msgstr ""
-
-#: core/admin.py:120
-msgid "Зворотні зв'язки з іншими персонами"
-msgstr ""
-
-#: core/admin.py:208 core/model/connections.py:145
-msgid "Зв'язок з іншою персоною"
-msgstr ""
-
-#: core/admin.py:209 core/model/connections.py:146
-msgid "Зв'язки з іншими персонами"
-msgstr ""
-
-#: core/admin.py:253
-msgid "Зворотній зв'язок з іншою компанією"
-msgstr ""
-
-#: core/admin.py:254
-msgid "Зворотні зв'язки з іншими компаніями"
-msgstr ""
-
-#: core/admin.py:277 core/admin.py:278
-msgid "Додаткова інформація про статки"
-msgstr ""
-
-#: core/admin.py:310
-msgid "Загальна інформація"
-msgstr ""
-
-#: core/admin.py:316
-msgid "Припинення статусу ПЕП"
-msgstr ""
-
-#: core/admin.py:319
-msgid "Додаткова інформація"
-msgstr ""
-
-#: core/admin.py:322
-msgid "Ділова репутація"
-msgstr ""
-
-#: core/admin.py:326
-msgid "Остання зміна"
-msgstr ""
-
 #: core/admin.py:548
 msgid "Наявність перекладу"
 msgstr ""
@@ -113,22 +57,6 @@ msgstr ""
 
 #: core/admin.py:556
 msgid "Є"
-msgstr ""
-
-#: core/admin.py:593
-msgid "Експортувати в Excel"
-msgstr ""
-
-#: core/admin.py:625
-msgid "Завантажити"
-msgstr ""
-
-#: core/admin.py:638
-msgid "Джерело"
-msgstr ""
-
-#: core/admin.py:647 core/model/supplementaries.py:35
-msgid "Інформація"
 msgstr ""
 
 #: core/forms.py:18
@@ -151,777 +79,529 @@ msgstr ""
 msgid "Ваш телефон"
 msgstr ""
 
-#: core/model/base.py:36
-msgid "Зв'язок почався"
-msgstr ""
-
-#: core/model/base.py:39 core/model/base.py:51 core/model/base.py:63
-msgid "точність"
-msgstr ""
-
-#: core/model/base.py:41 core/model/base.py:53 core/model/base.py:65
-#: core/model/companies.py:87 core/model/companies.py:102
-#: core/model/persons.py:73 core/model/persons.py:147
-msgid "Точна дата"
-msgstr ""
-
-#: core/model/base.py:42 core/model/base.py:54 core/model/base.py:66
-#: core/model/companies.py:88 core/model/companies.py:103
-#: core/model/persons.py:74 core/model/persons.py:148
-msgid "Рік та місяць"
-msgstr ""
-
-#: core/model/base.py:43 core/model/base.py:55 core/model/base.py:67
-#: core/model/companies.py:89 core/model/companies.py:104
-#: core/model/persons.py:75 core/model/persons.py:149
-msgid "Тільки рік"
-msgstr ""
-
-#: core/model/base.py:48
-msgid "Зв'язок скінчився"
-msgstr ""
-
-#: core/model/base.py:60
-msgid "Підтверджено"
-msgstr ""
-
-#: core/model/base.py:89 core/model/connections.py:461
-msgid "Назва доказу зв'язку"
-msgstr ""
-
-#: core/model/base.py:91
-msgid "Посилання на доказ зв'язку"
-msgstr ""
-
-#: core/model/companies.py:65
+#: core/model/companies.py:66
 msgid "інформація відсутня"
 msgstr ""
 
-#: core/model/companies.py:66
+#: core/model/companies.py:67
 msgid "зареєстровано"
 msgstr ""
 
-#: core/model/companies.py:67
+#: core/model/companies.py:68
 msgid "припинено"
 msgstr ""
 
-#: core/model/companies.py:68
+#: core/model/companies.py:69
 msgid "в стані припинення"
 msgstr ""
 
-#: core/model/companies.py:69
+#: core/model/companies.py:70
 msgid "зареєстровано, свідоцтво про державну реєстрацію недійсне"
 msgstr ""
 
-#: core/model/companies.py:70
+#: core/model/companies.py:71
 msgid "порушено справу про банкрутство"
 msgstr ""
 
-#: core/model/companies.py:71
+#: core/model/companies.py:72
 msgid "порушено справу про банкрутство (санація)"
 msgstr ""
 
-#: core/model/companies.py:72
+#: core/model/companies.py:73
 msgid "розпорядження майном"
 msgstr ""
 
-#: core/model/companies.py:73
+#: core/model/companies.py:74
 msgid "ліквідація"
 msgstr ""
 
-#: core/model/companies.py:76
-msgid "Повна назва"
-msgstr ""
-
-#: core/model/companies.py:77
-msgid "Скорочена назва"
-msgstr ""
-
-#: core/model/companies.py:80
-msgid "Назви іншими мовами або варіації"
-msgstr ""
-
-#: core/model/companies.py:83 core/templates/company.jinja:99
-msgid "Дата створення"
-msgstr ""
-
-#: core/model/companies.py:85
-msgid "Дата створення: точність"
-msgstr ""
-
-#: core/model/companies.py:94 core/templates/company.jinja:105
-msgid "Поточний стан"
-msgstr ""
-
-#: core/model/companies.py:98
-msgid "Дата припинення"
-msgstr ""
-
-#: core/model/companies.py:100
-msgid "Дата припинення: точність"
-msgstr ""
-
-#: core/model/companies.py:114
-msgid "Керівник — ПЕП"
-msgstr ""
-
-#: core/model/companies.py:117
-msgid "Юрособа"
-msgstr ""
-
-#: core/model/companies.py:120 core/templates/company.jinja:86
-#: core/templates/macros/_connections.jinja:183
-#: core/templates/macros/_search.jinja:81
-msgid "ЄДРПОУ"
-msgstr ""
-
-#: core/model/companies.py:122
-msgid "Індекс"
-msgstr ""
-
-#: core/model/companies.py:123
-msgid "Місто"
-msgstr ""
-
-#: core/model/companies.py:124
-msgid "Вулиця"
-msgstr ""
-
-#: core/model/companies.py:125
-msgid "№ будинку, офісу"
-msgstr ""
-
-#: core/model/companies.py:126
-msgid "\"Сира\" адреса"
-msgstr ""
-
-#: core/model/companies.py:128 core/model/persons.py:107
-msgid "Вікі-стаття"
-msgstr ""
-
-#: core/model/companies.py:131 core/templates/company.jinja:172
-#: core/templates/company.jinja:175
-msgid "Інші засновники"
-msgstr ""
-
-#: core/model/companies.py:132 core/model/companies.py:140
-#: core/model/companies.py:144
-msgid "Через кому, не PEP"
-msgstr ""
-
-#: core/model/companies.py:135
-msgid "Бенефіціарій"
-msgstr ""
-
-#: core/model/companies.py:135
-msgid "Якщо не є PEPом"
-msgstr ""
-
-#: core/model/companies.py:139 core/templates/company.jinja:180
-#: core/templates/company.jinja:183
-msgid "Інші власники"
-msgstr ""
-
-#: core/model/companies.py:143
-msgid "Інші керуючі"
-msgstr ""
-
-#: core/model/companies.py:146
-msgid "Фінансова інформація"
-msgstr ""
-
-#: core/model/companies.py:148 core/templates/company.jinja:283
-#: core/templates/person.jinja:248 core/templates/person.jinja:277
-msgid "Санкції"
-msgstr ""
-
-#: core/model/companies.py:154 core/model/persons.py:160
-msgid "Дата останньої зміни профіля або зв'язків профіля"
-msgstr ""
-
-#: core/model/companies.py:160 core/model/persons.py:166
-msgid "Автор зміни"
-msgstr ""
-
-#: core/model/companies.py:415
+#: core/model/companies.py:418
 msgid "Державна компанія чи установа"
 msgstr ""
 
-#: core/model/companies.py:417
+#: core/model/companies.py:420
 msgid "Приватна компанія"
 msgstr ""
 
-#: core/model/companies.py:465
-msgid "Юридична особа"
+#: core/model/connections.py:21 core/model/connections.py:22
+msgid "чоловік"
 msgstr ""
 
-#: core/model/companies.py:466 core/templates/countries.jinja:53
-#: core/templates/search.jinja:17 core/templates/search.jinja:54
-msgid "Юридичні особи"
+#: core/model/connections.py:21 core/model/connections.py:22
+msgid "дружина"
 msgstr ""
 
-#: core/model/connections.py:66
-msgid "Персона 1"
+#: core/model/connections.py:23
+msgid "чоловік/дружина"
 msgstr ""
 
-#: core/model/connections.py:68
-msgid "Персона 2"
+#: core/model/connections.py:24 core/model/connections.py:27
+#: core/model/connections.py:28 core/model/connections.py:29
+msgid "батько"
 msgstr ""
 
-#: core/model/connections.py:71
-msgid "Персона 1 є"
+#: core/model/connections.py:24 core/model/connections.py:25
+#: core/model/connections.py:26 core/model/connections.py:27
+msgid "син"
 msgstr ""
 
-#: core/model/connections.py:78
-msgid "Персона 2 є"
+#: core/model/connections.py:24 core/model/connections.py:25
+#: core/model/connections.py:26 core/model/connections.py:28
+msgid "дочка"
 msgstr ""
 
-#: core/model/connections.py:85
-msgid "Детальний опис зв'язку"
+#: core/model/connections.py:24 core/model/connections.py:25
+#: core/model/connections.py:26 core/model/connections.py:29
+msgid "син/дочка"
 msgstr ""
 
-#: core/model/connections.py:90 core/model/connections.py:208
-msgid "Декларації, що підтверджують зв'язок"
+#: core/model/connections.py:25 core/model/connections.py:27
+#: core/model/connections.py:28 core/model/connections.py:29
+msgid "мати"
 msgstr ""
 
-#: core/model/connections.py:189
-msgid "Компанія або установа"
+#: core/model/connections.py:26 core/model/connections.py:27
+#: core/model/connections.py:28 core/model/connections.py:29
+msgid "батько/мати"
 msgstr ""
 
-#: core/model/connections.py:193 core/model/connections.py:344
-#: core/model/connections.py:387 core/model/connections.py:427
-msgid "Тип зв'язку"
+#: core/model/connections.py:30 core/model/connections.py:32
+#: core/model/connections.py:33
+msgid "вітчим"
 msgstr ""
 
-#: core/model/connections.py:197
-msgid "Працює(-вав)"
+#: core/model/connections.py:30 core/model/connections.py:31
+#: core/model/connections.py:32
+msgid "пасинок"
 msgstr ""
 
-#: core/model/connections.py:202
-msgid "Запис створено з інформації ЄДР"
+#: core/model/connections.py:30 core/model/connections.py:31
+#: core/model/connections.py:33
+msgid "падчерка"
 msgstr ""
 
-#: core/model/connections.py:218
-msgid "Розмір частки (відсотки)"
+#: core/model/connections.py:31 core/model/connections.py:32
+#: core/model/connections.py:33
+msgid "мачуха"
 msgstr ""
 
-#: core/model/connections.py:273
-msgid "Зв'язок з компанією/установою"
+#: core/model/connections.py:34 core/model/connections.py:35
+msgid "рідний брат"
 msgstr ""
 
-#: core/model/connections.py:274
-msgid "Зв'язки з компаніями/установами"
+#: core/model/connections.py:34 core/model/connections.py:35
+msgid "рідна сестра"
 msgstr ""
 
-#: core/model/connections.py:279 core/model/connections.py:310
+#: core/model/connections.py:36 core/model/connections.py:40
+#: core/model/connections.py:41
+msgid "дід"
+msgstr ""
+
+#: core/model/connections.py:36 core/model/connections.py:37
+#: core/model/connections.py:40
+msgid "внук"
+msgstr ""
+
+#: core/model/connections.py:36 core/model/connections.py:37
+#: core/model/connections.py:41
+msgid "внучка"
+msgstr ""
+
+#: core/model/connections.py:37 core/model/connections.py:40
+#: core/model/connections.py:41
+msgid "баба"
+msgstr ""
+
+#: core/model/connections.py:38 core/model/connections.py:42
+#: core/model/connections.py:43
+msgid "прадід"
+msgstr ""
+
+#: core/model/connections.py:38 core/model/connections.py:39
+#: core/model/connections.py:42
+msgid "правнук"
+msgstr ""
+
+#: core/model/connections.py:38 core/model/connections.py:39
+#: core/model/connections.py:43
+msgid "правнучка"
+msgstr ""
+
+#: core/model/connections.py:39 core/model/connections.py:42
+#: core/model/connections.py:43
+msgid "прабаба"
+msgstr ""
+
+#: core/model/connections.py:44 core/model/connections.py:46
+#: core/model/connections.py:47
+msgid "зять"
+msgstr ""
+
+#: core/model/connections.py:44 core/model/connections.py:47
+msgid "теща"
+msgstr ""
+
+#: core/model/connections.py:44 core/model/connections.py:46
+msgid "тесть"
+msgstr ""
+
+#: core/model/connections.py:45 core/model/connections.py:48
+#: core/model/connections.py:49
+msgid "невістка"
+msgstr ""
+
+#: core/model/connections.py:45 core/model/connections.py:48
+msgid "свекор"
+msgstr ""
+
+#: core/model/connections.py:45 core/model/connections.py:49
+msgid "свекруха"
+msgstr ""
+
+#: core/model/connections.py:50 core/model/connections.py:51
+msgid "усиновлювач"
+msgstr ""
+
+#: core/model/connections.py:50 core/model/connections.py:51
+msgid "усиновлений"
+msgstr ""
+
+#: core/model/connections.py:52 core/model/connections.py:55
+msgid "опікун чи піклувальник"
+msgstr ""
+
+#: core/model/connections.py:53 core/model/connections.py:54
+msgid "особа, яка перебуває під опікою або піклуванням"
+msgstr ""
+
+#: core/model/connections.py:56 core/model/connections.py:57
+msgid "особи, які спільно проживають"
+msgstr ""
+
+#: core/model/connections.py:58 core/model/connections.py:59
+msgid "пов'язані спільним побутом і мають взаємні права та обов'язки"
+msgstr ""
+
+#: core/model/connections.py:60
+msgid "ділові зв'язки"
+msgstr ""
+
+#: core/model/connections.py:61
+msgid "особисті зв'язки"
+msgstr ""
+
+#: core/model/connections.py:278 core/model/connections.py:309
 msgid "Власник"
 msgstr ""
 
-#: core/model/connections.py:280 core/model/connections.py:311
+#: core/model/connections.py:279 core/model/connections.py:310
 msgid "Співвласник"
 msgstr ""
 
-#: core/model/connections.py:281 core/model/connections.py:314
+#: core/model/connections.py:280 core/model/connections.py:313
 msgid "Споріднена"
 msgstr ""
 
-#: core/model/connections.py:282 core/model/connections.py:315
+#: core/model/connections.py:281 core/model/connections.py:314
 msgid "Засновник"
 msgstr ""
 
-#: core/model/connections.py:283 core/model/connections.py:316
+#: core/model/connections.py:282 core/model/connections.py:315
 msgid "Співзасновник"
 msgstr ""
 
-#: core/model/connections.py:284 core/model/connections.py:317
+#: core/model/connections.py:283 core/model/connections.py:316
 msgid "Кредитор (фінансовий партнер)"
 msgstr ""
 
-#: core/model/connections.py:285 core/model/connections.py:318
+#: core/model/connections.py:284 core/model/connections.py:317
 msgid "Надавач професійних послуг"
 msgstr ""
 
-#: core/model/connections.py:286 core/model/connections.py:319
-#: core/model/connections.py:336 core/model/connections.py:337
+#: core/model/connections.py:285 core/model/connections.py:318
+#: core/model/connections.py:335 core/model/connections.py:336
 msgid "Клієнт"
 msgstr ""
 
-#: core/model/connections.py:287 core/model/connections.py:320
+#: core/model/connections.py:286 core/model/connections.py:319
 msgid "Клієнт банку"
 msgstr ""
 
-#: core/model/connections.py:288 core/model/connections.py:321
-#: core/model/connections.py:322
+#: core/model/connections.py:287 core/model/connections.py:320
+#: core/model/connections.py:321
 msgid "Виконавець"
 msgstr ""
 
-#: core/model/connections.py:289 core/model/connections.py:321
-#: core/model/connections.py:322 core/model/connections.py:323
+#: core/model/connections.py:288 core/model/connections.py:320
+#: core/model/connections.py:321 core/model/connections.py:322
 msgid "Замовник"
 msgstr ""
 
-#: core/model/connections.py:290 core/model/connections.py:323
-#: core/model/connections.py:324
+#: core/model/connections.py:289 core/model/connections.py:322
+#: core/model/connections.py:323
 msgid "Підрядник"
 msgstr ""
 
-#: core/model/connections.py:291 core/model/connections.py:324
+#: core/model/connections.py:290 core/model/connections.py:323
 msgid "Субпідрядник"
 msgstr ""
 
-#: core/model/connections.py:292 core/model/connections.py:325
+#: core/model/connections.py:291 core/model/connections.py:324
 msgid "Постачальник"
 msgstr ""
 
-#: core/model/connections.py:293 core/model/connections.py:326
-#: core/model/connections.py:327
+#: core/model/connections.py:292 core/model/connections.py:325
+#: core/model/connections.py:326
 msgid "Орендар"
 msgstr ""
 
-#: core/model/connections.py:294 core/model/connections.py:326
-#: core/model/connections.py:327
+#: core/model/connections.py:293 core/model/connections.py:325
+#: core/model/connections.py:326
 msgid "Орендодавець"
 msgstr ""
 
-#: core/model/connections.py:295 core/model/connections.py:328
+#: core/model/connections.py:294 core/model/connections.py:327
 msgid "Контрагент"
 msgstr ""
 
-#: core/model/connections.py:296 core/model/connections.py:329
+#: core/model/connections.py:295 core/model/connections.py:328
 msgid "Правонаступник"
 msgstr ""
 
-#: core/model/connections.py:297 core/model/connections.py:330
+#: core/model/connections.py:296 core/model/connections.py:329
 msgid "Правовласник"
 msgstr ""
 
-#: core/model/connections.py:298 core/model/connections.py:331
-#: core/model/connections.py:332
+#: core/model/connections.py:297 core/model/connections.py:330
+#: core/model/connections.py:331
 msgid "Материнська компанія"
 msgstr ""
 
-#: core/model/connections.py:299 core/model/connections.py:331
-#: core/model/connections.py:332
+#: core/model/connections.py:298 core/model/connections.py:330
+#: core/model/connections.py:331
 msgid "Дочірня компанія"
 msgstr ""
 
-#: core/model/connections.py:300
+#: core/model/connections.py:299
 msgid "Член наглядового органу"
 msgstr ""
 
-#: core/model/connections.py:301 core/model/connections.py:312
+#: core/model/connections.py:300 core/model/connections.py:311
 msgid "Колишній власник/засновник"
 msgstr ""
 
-#: core/model/connections.py:302 core/model/connections.py:313
+#: core/model/connections.py:301 core/model/connections.py:312
 msgid "Колишній співвласник/співзасновник"
 msgstr ""
 
-#: core/model/connections.py:303 core/model/connections.py:334
-#: core/model/connections.py:335
+#: core/model/connections.py:302 core/model/connections.py:333
+#: core/model/connections.py:334
 msgid "Самостійний структурний підрозділ"
 msgstr ""
 
-#: core/model/connections.py:304 core/model/connections.py:334
-#: core/model/connections.py:335
+#: core/model/connections.py:303 core/model/connections.py:333
+#: core/model/connections.py:334
 msgid "Головне підприємство"
 msgstr ""
 
-#: core/model/connections.py:305 core/model/connections.py:336
+#: core/model/connections.py:304 core/model/connections.py:335
 msgid "Секретар"
 msgstr ""
 
-#: core/model/connections.py:306 core/model/connections.py:337
+#: core/model/connections.py:305 core/model/connections.py:336
 msgid "Директор"
 msgstr ""
 
-#: core/model/connections.py:310 core/model/connections.py:311
-#: core/model/connections.py:312 core/model/connections.py:313
-#: core/model/connections.py:315 core/model/connections.py:316
-#: core/model/connections.py:333
+#: core/model/connections.py:309 core/model/connections.py:310
+#: core/model/connections.py:311 core/model/connections.py:312
+#: core/model/connections.py:314 core/model/connections.py:315
+#: core/model/connections.py:332
 msgid "Підконтрольна"
 msgstr ""
 
-#: core/model/connections.py:317
+#: core/model/connections.py:316
 msgid "Боржник, фінансовий партнер"
 msgstr ""
 
-#: core/model/connections.py:318
+#: core/model/connections.py:317
 msgid "Отримувач професійних послуг"
 msgstr ""
 
-#: core/model/connections.py:319
+#: core/model/connections.py:318
 msgid "Надавач товарів/послуг"
 msgstr ""
 
-#: core/model/connections.py:320
+#: core/model/connections.py:319
 msgid "Банк"
 msgstr ""
 
-#: core/model/connections.py:325
+#: core/model/connections.py:324
 msgid "Отримувач/покупець"
 msgstr ""
 
-#: core/model/connections.py:329
+#: core/model/connections.py:328
 msgid "Попередник"
 msgstr ""
 
-#: core/model/connections.py:330
+#: core/model/connections.py:329
 msgid "Об'єкт правовласності"
 msgstr ""
 
-#: core/model/connections.py:333
+#: core/model/connections.py:332
 msgid "Член наглядового органу)"
 msgstr ""
 
-#: core/model/connections.py:378
-msgid "Зв'язок з компанією"
-msgstr ""
-
-#: core/model/connections.py:379
-msgid "Зв'язки з компаніями"
-msgstr ""
-
-#: core/model/connections.py:383
-msgid "Персона"
-msgstr ""
-
-#: core/model/connections.py:384 core/model/connections.py:424
-#: core/templates/company.jinja:120
-msgid "Країна"
-msgstr ""
-
-#: core/model/connections.py:389
+#: core/model/connections.py:388
 msgid "Народився(-лась)"
 msgstr ""
 
-#: core/model/connections.py:390
+#: core/model/connections.py:389
 msgid "Зареєстрований(-а)"
 msgstr ""
 
-#: core/model/connections.py:391
+#: core/model/connections.py:390
 msgid "Проживав(-ла)"
 msgstr ""
 
-#: core/model/connections.py:392
+#: core/model/connections.py:391
 msgid "Громадянин(-ка)"
 msgstr ""
 
-#: core/model/connections.py:393
+#: core/model/connections.py:392
 msgid "Має зареєстрований бізнес"
 msgstr ""
 
-#: core/model/connections.py:394
+#: core/model/connections.py:393
 msgid "Має нерухомість"
 msgstr ""
 
-#: core/model/connections.py:395 core/model/connections.py:430
+#: core/model/connections.py:394 core/model/connections.py:429
 msgid "Під санкціями"
 msgstr ""
 
-#: core/model/connections.py:416 core/model/connections.py:451
-msgid "Зв'язок з країною"
-msgstr ""
-
-#: core/model/connections.py:417 core/model/connections.py:452
-msgid "Зв'язки з країнами"
-msgstr ""
-
-#: core/model/connections.py:422
-msgid "Компанія"
-msgstr ""
-
-#: core/model/connections.py:429
+#: core/model/connections.py:428
 msgid "Зареєстрована"
 msgstr ""
 
-#: core/model/connections.py:462
-msgid "Наприклад: склад ВР 7-го скликання"
-msgstr ""
-
-#: core/model/connections.py:465
-msgid "Документ-доказ зв'язку"
-msgstr ""
-
-#: core/model/connections.py:467
-msgid "або посилання на доказ зв'язку"
-msgstr ""
-
-#: core/model/connections.py:472 core/model/connections.py:473
-msgid "Поле документа або посилання має бути заповнено"
-msgstr ""
-
-#: core/model/connections.py:478 core/model/connections.py:479
-msgid "Тільки поле документа або посилання має бути заповнено"
-msgstr ""
-
-#: core/model/connections.py:486 core/templates/macros/_connections.jinja:8
-msgid "Підтвердження зв'язку"
-msgstr ""
-
-#: core/model/connections.py:487
-msgid "Підтвердження зв'язків"
-msgstr ""
-
-#: core/model/countries.py:14
-msgid "Назва"
-msgstr ""
-
-#: core/model/countries.py:15
-msgid "iso2 код"
-msgstr ""
-
-#: core/model/countries.py:16
-msgid "iso3 код"
-msgstr ""
-
-#: core/model/countries.py:17
-msgid "Не є країною"
-msgstr ""
-
-#: core/model/countries.py:40
-msgid "Країна/юрісдикція"
-msgstr ""
-
-#: core/model/countries.py:41
-msgid "Країни/юрісдикції"
-msgstr ""
-
-#: core/model/declarations.py:141 core/model/declarations.py:142
-#: core/model/declarations.py:143 core/model/declarations.py:175
-#: core/model/declarations.py:177 core/model/declarations.py:285
-#: core/model/declarations.py:286 core/model/declarations.py:314
-#: core/model/declarations.py:317
+#: core/model/declarations.py:147 core/model/declarations.py:148
+#: core/model/declarations.py:149 core/model/declarations.py:181
+#: core/model/declarations.py:183 core/model/declarations.py:291
+#: core/model/declarations.py:292 core/model/declarations.py:320
+#: core/model/declarations.py:323
 msgid "Не зазначено"
 msgstr ""
 
-#: core/model/declarations.py:171
+#: core/model/declarations.py:177
 msgid "Не зазначалось"
 msgstr ""
 
-#: core/model/declarations.py:778
+#: core/model/declarations.py:784
 msgid "Загальна сума сукупного доходу, гривні"
 msgstr ""
 
-#: core/model/declarations.py:779
+#: core/model/declarations.py:785
 msgid "Дарунки, призи, виграші"
 msgstr ""
 
-#: core/model/declarations.py:780
+#: core/model/declarations.py:786
 msgid "Земельні ділянки"
 msgstr ""
 
-#: core/model/declarations.py:781
+#: core/model/declarations.py:787
 msgid "Житлові будинки"
 msgstr ""
 
-#: core/model/declarations.py:782 core/templates/_declaration.jinja:334
+#: core/model/declarations.py:788 core/templates/_declaration.jinja:334
 msgid "Квартири"
 msgstr ""
 
-#: core/model/declarations.py:783
+#: core/model/declarations.py:789
 msgid "Інше нерухоме майно"
 msgstr ""
 
-#: core/model/declarations.py:784 core/templates/_declaration.jinja:474
+#: core/model/declarations.py:790 core/templates/_declaration.jinja:474
 msgid "Транспортні засоби"
 msgstr ""
 
-#: core/model/declarations.py:785
+#: core/model/declarations.py:791
 msgid "Вклади у банках"
 msgstr ""
 
-#: core/model/declarations.py:786
+#: core/model/declarations.py:792
 msgid "Фінансові зобов’язання"
 msgstr ""
 
-#: core/model/declarations.py:787
+#: core/model/declarations.py:793
 msgid "Інші активи"
 msgstr ""
 
-#: core/model/persons.py:42 core/templates/macros/_search.jinja:5
+#: core/model/persons.py:43 core/templates/macros/_search.jinja:5
 msgid "Помер"
 msgstr ""
 
-#: core/model/persons.py:43
+#: core/model/persons.py:44
 msgid "Звільнився/склав повноваження"
 msgstr ""
 
-#: core/model/persons.py:44
+#: core/model/persons.py:45
 msgid "Пов'язана особа або член сім'ї - ПЕП помер"
 msgstr ""
 
-#: core/model/persons.py:45
+#: core/model/persons.py:46
 msgid "Пов'язана особа або член сім'ї - ПЕП припинив бути ПЕПом"
 msgstr ""
 
-#: core/model/persons.py:46
+#: core/model/persons.py:47
 msgid "Зміни у законодавстві що визначає статус ПЕПа"
 msgstr ""
 
-#: core/model/persons.py:47
+#: core/model/persons.py:48
 msgid "Зміни форми власності юр. особи посада в котрій давала статус ПЕПа"
 msgstr ""
 
-#: core/model/persons.py:51
+#: core/model/persons.py:52
 msgid "Національний публічний діяч"
 msgstr ""
 
-#: core/model/persons.py:52
+#: core/model/persons.py:53
 msgid "Іноземний публічний діяч"
 msgstr ""
 
-#: core/model/persons.py:54
+#: core/model/persons.py:55
 msgid "Діяч, що виконуює значні функції в міжнародній організації"
 msgstr ""
 
-#: core/model/persons.py:55
+#: core/model/persons.py:56
 msgid "Пов'язана особа"
 msgstr ""
 
-#: core/model/persons.py:56
+#: core/model/persons.py:57
 msgid "Член сім'ї"
 msgstr ""
 
-#: core/model/persons.py:59
-msgid "Прізвище"
-msgstr ""
-
-#: core/model/persons.py:60
-msgid "Ім'я"
-msgstr ""
-
-#: core/model/persons.py:61
-msgid "По батькові"
-msgstr ""
-
-#: core/model/persons.py:64
-msgid "Є PEPом"
-msgstr ""
-
-#: core/model/persons.py:65
-msgid "Був імпортований з гугл-таблиці"
-msgstr ""
-
-#: core/model/persons.py:68
-msgid "Світлина"
-msgstr ""
-
-#: core/model/persons.py:69 core/templates/macros/_search.jinja:23
-#: core/templates/person.jinja:129
-msgid "Дата народження"
-msgstr ""
-
-#: core/model/persons.py:71
-msgid "Дата народження: точність"
-msgstr ""
-
-#: core/model/persons.py:80
-msgid "Місто народження"
-msgstr ""
-
-#: core/model/persons.py:83
-msgid "Пов'язані країни"
-msgstr ""
-
-#: core/model/persons.py:87 core/templates/person.jinja:80
-#: core/templates/person.jinja:84
-msgid "Статки"
-msgstr ""
-
-#: core/model/persons.py:90
-msgid "Наявність санкцій"
-msgstr ""
-
-#: core/model/persons.py:92 core/templates/person.jinja:252
-#: core/templates/person.jinja:281
-msgid "Кримінальні провадження"
-msgstr ""
-
-#: core/model/persons.py:94 core/templates/person.jinja:256
-#: core/templates/person.jinja:285
-msgid "Перебування у розшуку"
-msgstr ""
-
-#: core/model/persons.py:96 core/templates/person.jinja:261
-#: core/templates/person.jinja:290
-msgid "Наявність судимості"
-msgstr ""
-
-#: core/model/persons.py:108
-msgid "Чернетка вікі-статті"
-msgstr ""
-
-#: core/model/persons.py:109
-msgid "Варіанти написання імені"
-msgstr ""
-
-#: core/model/persons.py:111 core/templates/person.jinja:116
-msgid "Інші імена"
-msgstr ""
-
-#: core/model/persons.py:114
-msgid "Тип ПЕП"
-msgstr ""
-
-#: core/model/persons.py:120 core/templates/macros/_search.jinja:56
-#: core/templates/person.jinja:187
-msgid "Рівень ризику"
-msgstr ""
-
-#: core/model/persons.py:122
+#: core/model/persons.py:123
 msgid "Неприйнятно високий"
 msgstr ""
 
-#: core/model/persons.py:123
+#: core/model/persons.py:124
 msgid "Високий"
 msgstr ""
 
-#: core/model/persons.py:124
+#: core/model/persons.py:125
 msgid "Середній"
 msgstr ""
 
-#: core/model/persons.py:125
+#: core/model/persons.py:126
 msgid "Низький"
-msgstr ""
-
-#: core/model/persons.py:132
-msgid "Хеш"
-msgstr ""
-
-#: core/model/persons.py:135
-msgid "Причина припинення статусу ПЕП"
-msgstr ""
-
-#: core/model/persons.py:141
-msgid "Дата припинення статусу ПЕП"
-msgstr ""
-
-#: core/model/persons.py:142
-msgid ""
-"Вказується реальна дата зміни без врахування 3 років (реальна дата "
-"звільнення, тощо)"
-msgstr ""
-
-#: core/model/persons.py:145
-msgid "Дата припинення статусу ПЕП: точність"
-msgstr ""
-
-#: core/model/persons.py:155
-msgid "ID в системі declarator (RU)"
-msgstr ""
-
-#: core/model/persons.py:717
-msgid "Фізична особа"
-msgstr ""
-
-#: core/model/persons.py:718 core/templates/countries.jinja:47
-#: core/templates/search.jinja:15 core/templates/search.jinja:35
-msgid "Фізичні особи"
 msgstr ""
 
 #: core/model/supplementaries.py:33
 msgid "Про кого"
+msgstr ""
+
+#: core/model/supplementaries.py:35
+msgid "Інформація"
 msgstr ""
 
 #: core/model/supplementaries.py:37
@@ -1146,7 +826,7 @@ msgstr ""
 #: core/templates/_declaration.jinja:392 core/templates/_declaration.jinja:398
 #: core/templates/_declaration.jinja:404 core/templates/_declaration.jinja:415
 #: core/templates/_declaration.jinja:421 core/templates/_declaration.jinja:427
-#: core/templates/person.jinja:450
+#: core/templates/person.jinja:456
 msgid "м²"
 msgstr ""
 
@@ -1176,7 +856,7 @@ msgid "Надіслати"
 msgstr ""
 
 #: core/templates/_manhunt_records_en.jinja:3
-#: core/templates/_manhunt_records_uk.jinja:3
+#: core/templates/_manhunt_records_uk.jinja:3 core/templates/search.jinja:49
 msgid "Станом на"
 msgstr ""
 
@@ -1196,31 +876,31 @@ msgstr ""
 msgid "Дякуємо за надану інформацію"
 msgstr ""
 
-#: core/templates/base.jinja:61
+#: core/templates/base.jinja:62
 msgid "Menu"
 msgstr ""
 
-#: core/templates/base.jinja:106
+#: core/templates/base.jinja:107
 msgid "Домівка"
 msgstr ""
 
-#: core/templates/base.jinja:107 core/templates/countries.jinja:20
+#: core/templates/base.jinja:108 core/templates/countries.jinja:20
 msgid "Країни"
 msgstr ""
 
-#: core/templates/base.jinja:108
+#: core/templates/base.jinja:109
 msgid "Про реєстр"
 msgstr ""
 
-#: core/templates/base.jinja:109
+#: core/templates/base.jinja:110
 msgid "Повідомити"
 msgstr ""
 
-#: core/templates/base.jinja:110
+#: core/templates/base.jinja:111
 msgid "Дані"
 msgstr ""
 
-#: core/templates/base.jinja:152
+#: core/templates/base.jinja:153
 msgid "Надіслати інформацію"
 msgstr ""
 
@@ -1266,8 +946,21 @@ msgstr ""
 msgid "Реєстраційний №"
 msgstr ""
 
+#: core/templates/company.jinja:86 core/templates/macros/_connections.jinja:183
+#: core/templates/macros/_search.jinja:81
+msgid "ЄДРПОУ"
+msgstr ""
+
 #: core/templates/company.jinja:93
 msgid "Також відома як"
+msgstr ""
+
+#: core/templates/company.jinja:99
+msgid "Дата створення"
+msgstr ""
+
+#: core/templates/company.jinja:105
+msgid "Поточний стан"
 msgstr ""
 
 #: core/templates/company.jinja:108
@@ -1278,6 +971,10 @@ msgstr ""
 msgid "Не є окремою юридичною особою"
 msgstr ""
 
+#: core/templates/company.jinja:120
+msgid "Країна"
+msgstr ""
+
 #: core/templates/company.jinja:126
 msgid "Адреса"
 msgstr ""
@@ -1286,43 +983,60 @@ msgstr ""
 msgid "Бенефіціарний власник"
 msgstr ""
 
-#: core/templates/company.jinja:165
+#: core/templates/company.jinja:163 core/templates/person.jinja:218
+msgid "Остання зміна профілю: "
+msgstr ""
+
+#: core/templates/company.jinja:171
 msgid "Засновники:"
 msgstr ""
 
-#: core/templates/company.jinja:194
+#: core/templates/company.jinja:178 core/templates/company.jinja:181
+msgid "Інші засновники"
+msgstr ""
+
+#: core/templates/company.jinja:186 core/templates/company.jinja:189
+msgid "Інші власники"
+msgstr ""
+
+#: core/templates/company.jinja:200
 msgid "Керівництво:"
 msgstr ""
 
-#: core/templates/company.jinja:209 core/templates/person.jinja:340
+#: core/templates/company.jinja:215 core/templates/person.jinja:346
 msgid "Зв'язки:"
 msgstr ""
 
-#: core/templates/company.jinja:218 core/templates/search.jinja:19
-#: core/templates/search.jinja:73
+#: core/templates/company.jinja:224 core/templates/search.jinja:19
+#: core/templates/search.jinja:81
 msgid "Пов'язані особи"
 msgstr ""
 
-#: core/templates/company.jinja:226
+#: core/templates/company.jinja:232
 msgid "Клієнти банку"
 msgstr ""
 
-#: core/templates/company.jinja:234
+#: core/templates/company.jinja:240
 msgid "Пов'язані компанії"
 msgstr ""
 
-#: core/templates/company.jinja:245
+#: core/templates/company.jinja:251
 #: core/templates/macros/_connections.jinja:162
 #: core/templates/macros/_connections.jinja:187
 msgid "Частка"
 msgstr ""
 
-#: core/templates/company.jinja:275 core/templates/person.jinja:221
-#: core/templates/person.jinja:234
+#: core/templates/company.jinja:281 core/templates/person.jinja:227
+#: core/templates/person.jinja:240
 msgid "Досьє:"
 msgstr ""
 
-#: core/templates/company.jinja:303 core/templates/person.jinja:419
+#: core/templates/company.jinja:289 core/templates/person.jinja:254
+#: core/templates/person.jinja:283
+msgid "Санкції"
+msgstr ""
+
+#: core/templates/company.jinja:309 core/templates/person.jinja:425
 msgid "Банківські рахунки:"
 msgstr ""
 
@@ -1338,8 +1052,47 @@ msgstr ""
 msgid "Оберіть країну"
 msgstr ""
 
+#: core/templates/countries.jinja:47 core/templates/search.jinja:15
+#: core/templates/search.jinja:32
+msgid "Фізичні особи"
+msgstr ""
+
+#: core/templates/countries.jinja:53 core/templates/search.jinja:17
+#: core/templates/search.jinja:62
+msgid "Юридичні особи"
+msgstr ""
+
 #: core/templates/feedback.jinja:10 core/templates/feedback.jinja:15
 msgid "Напишіть нам листа"
+msgstr ""
+
+#: core/templates/grappelli_admin_login.html:26
+#: core/templates/grappelli_admin_login.html:77
+msgid "Log in"
+msgstr ""
+
+#: core/templates/grappelli_admin_login.html:31
+msgid "Please correct the error below."
+msgstr ""
+
+#: core/templates/grappelli_admin_login.html:31
+msgid "Please correct the errors below."
+msgstr ""
+
+#: core/templates/grappelli_admin_login.html:59
+msgid "OTP Device:"
+msgstr ""
+
+#: core/templates/grappelli_admin_login.html:64
+msgid "OTP Token:"
+msgstr ""
+
+#: core/templates/grappelli_admin_login.html:70
+msgid "Forgotten your password or username?"
+msgstr ""
+
+#: core/templates/macros/_connections.jinja:8
+msgid "Підтвердження зв'язку"
 msgstr ""
 
 #: core/templates/macros/_connections.jinja:12
@@ -1358,6 +1111,10 @@ msgstr ""
 msgid "Інформація з декларації"
 msgstr ""
 
+#: core/templates/macros/_search.jinja:23 core/templates/person.jinja:129
+msgid "Дата народження"
+msgstr ""
+
 #: core/templates/macros/_search.jinja:27 core/templates/person.jinja:155
 msgid "Остання посада"
 msgstr ""
@@ -1372,6 +1129,10 @@ msgid ""
 "Відповідно до методології, національним публічним діячам присвоюється такі "
 "ступені ризику відмивання коштів: неприйнятно високий; високий; середній; "
 "низький"
+msgstr ""
+
+#: core/templates/macros/_search.jinja:56 core/templates/person.jinja:187
+msgid "Рівень ризику"
 msgstr ""
 
 #: core/templates/person.jinja:15
@@ -1396,8 +1157,16 @@ msgstr ""
 msgid "Декларації"
 msgstr ""
 
+#: core/templates/person.jinja:80 core/templates/person.jinja:84
+msgid "Статки"
+msgstr ""
+
 #: core/templates/person.jinja:88
 msgid "Пов'язані юридичні особи"
+msgstr ""
+
+#: core/templates/person.jinja:116
+msgid "Інші імена"
 msgstr ""
 
 #: core/templates/person.jinja:123
@@ -1412,51 +1181,63 @@ msgstr ""
 msgid "Громадянство"
 msgstr ""
 
-#: core/templates/person.jinja:245 core/templates/person.jinja:274
+#: core/templates/person.jinja:251 core/templates/person.jinja:280
 msgid "Кримінальні провадження та санкції:"
 msgstr ""
 
-#: core/templates/person.jinja:300
+#: core/templates/person.jinja:258 core/templates/person.jinja:287
+msgid "Кримінальні провадження"
+msgstr ""
+
+#: core/templates/person.jinja:262 core/templates/person.jinja:291
+msgid "Перебування у розшуку"
+msgstr ""
+
+#: core/templates/person.jinja:267 core/templates/person.jinja:296
+msgid "Наявність судимості"
+msgstr ""
+
+#: core/templates/person.jinja:306
 msgid "Кар'єра:"
 msgstr ""
 
-#: core/templates/person.jinja:313
+#: core/templates/person.jinja:319
 msgid "до"
 msgstr ""
 
-#: core/templates/person.jinja:349
+#: core/templates/person.jinja:355
 msgid "Члени сім'ї"
 msgstr ""
 
-#: core/templates/person.jinja:357
+#: core/templates/person.jinja:363
 msgid "Особисті зв'язки"
 msgstr ""
 
-#: core/templates/person.jinja:365
+#: core/templates/person.jinja:371
 msgid "Ділові зв'язки"
 msgstr ""
 
-#: core/templates/person.jinja:387 core/templates/person.jinja:398
+#: core/templates/person.jinja:393 core/templates/person.jinja:404
 msgid "Статки:"
 msgstr ""
 
-#: core/templates/person.jinja:410
+#: core/templates/person.jinja:416
 msgid "Пов'язані юридичні особи:"
 msgstr ""
 
-#: core/templates/person.jinja:428
+#: core/templates/person.jinja:434
 msgid "Можливо ви шукали:"
 msgstr ""
 
-#: core/templates/person.jinja:447
+#: core/templates/person.jinja:453
 msgid "meters"
 msgstr "м²"
 
-#: core/templates/person.jinja:448
+#: core/templates/person.jinja:454
 msgid "gectars"
 msgstr "га"
 
-#: core/templates/person.jinja:449
+#: core/templates/person.jinja:455
 msgid "sotok"
 msgstr "соток"
 
@@ -1464,14 +1245,22 @@ msgstr "соток"
 msgid "Результати пошуку"
 msgstr ""
 
-#: core/templates/search.jinja:32
-msgid "На жаль, пошук не дав результатів"
+#: core/templates/search.jinja:49
+msgid "інформація про фізичну особу"
 msgstr ""
 
-#: pepdb/local_settings.py:47 pepdb/settings.py:179
+#: core/templates/search.jinja:49
+msgid "в Реєстрі відсутня"
+msgstr ""
+
+#: core/templates/search.jinja:52
+msgid "можливо ви шукали"
+msgstr ""
+
+#: pepdb/settings.py:179
 msgid "Ukrainian"
 msgstr ""
 
-#: pepdb/local_settings.py:48 pepdb/settings.py:180
+#: pepdb/settings.py:180
 msgid "English"
 msgstr ""
