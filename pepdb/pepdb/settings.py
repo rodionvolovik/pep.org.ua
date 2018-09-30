@@ -177,8 +177,7 @@ LANGUAGE_CODE = 'uk'
 gettext = lambda s: s
 LANGUAGES = (
     ('uk', gettext('Ukrainian')),
-    ('en', gettext('English')),
-    # ('ru', gettext('Russian')),
+    ('en', gettext('English'))
 )
 
 
