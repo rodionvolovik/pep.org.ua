@@ -11,6 +11,8 @@ def feedback_processor(request):
 def config_processor(request):
     return {
         'SITE_URL': settings.SITE_URL,
+        'SITEHEART_ID': settings.SITEHEART_ID,
+        'GA_ID': settings.GA_ID
     }
 
 
