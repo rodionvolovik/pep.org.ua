@@ -24,7 +24,7 @@ from dateutil.parser import parse as dt_parse
 from core.fields import RedactorField
 from core.model.base import AbstractNode
 from core.model.translations import Ua2EnDictionary
-from core.utils import render_date, lookup_term, parse_fullname, translate_into, ceil_date
+from core.utils import render_date, lookup_term, parse_fullname, translate_into, ceil_date, localized_fields, localized_field
 from core.model.declarations import Declaration
 from core.model.connections import Person2Person, Person2Company, Person2Country
 
@@ -169,7 +169,7 @@ class Person(models.Model, AbstractNode):
         null=True,
     )
 
-    _last_modified = models.DateTimeField("Остання зміна", null=True, blank=True)
+    _last_modified = models.DateTimeField(_("Остання зміна"), null=True, blank=True)
 
     @staticmethod
     def autocomplete_search_fields():
@@ -432,9 +432,9 @@ class Person(models.Model, AbstractNode):
             p.reverse_rtype = rrtp
             p.connection = rel
 
-            if rtp in ["особисті зв'язки"]:
+            if rtp in [_("особисті зв'язки")]:
                 res["personal"].append(p)
-            elif rtp in ["ділові зв'язки"]:
+            elif rtp in [_("ділові зв'язки")]:
                 res["business"].append(p)
             else:
                 res["family"].append(p)
@@ -447,33 +447,32 @@ class Person(models.Model, AbstractNode):
     def parsed_names(self):
         return filter(None, self.names.split("\n"))
 
+    def localized_full_name(self, lang):
+        return ("%s %s %s" % (
+            getattr(self, localized_field("first_name", lang)),
+            getattr(self, localized_field("patronymic", lang)),
+            getattr(self, localized_field("last_name", lang)))
+        ).replace("  ", " ")
+
     @property
     def full_name(self):
-        return ("%s %s %s" % (self.first_name, self.patronymic,
-                              self.last_name)).replace("  ", " ")
+        return self.localized_full_name(get_language())
 
     @property
     def full_name_en(self):
-        return ("%s %s %s" % (self.first_name_en, self.patronymic_en,
-                              self.last_name_en)).replace("  ", " ")
+        return self.localized_full_name("en")
 
     def to_dict(self):
         """
         Convert Person model to an indexable presentation for ES.
         """
         d = model_to_dict(self, fields=[
-            "id", "last_name", "first_name", "patronymic", "dob",
-            "last_name_en", "first_name_en", "patronymic_en",
-            "dob_details", "is_pep", "names",
-            "wiki_uk", "wiki_en",
-            "city_of_birth_uk", "city_of_birth_en",
-            "reputation_sanctions_uk", "reputation_sanctions_en",
-            "reputation_convictions_uk", "reputation_convictions_en",
-            "reputation_assets_uk", "reputation_assets_en",
-            "reputation_crimes_uk", "reputation_crimes_en",
-            "reputation_manhunt_uk", "reputation_manhunt_en",
-            "also_known_as_uk", "also_known_as_en", "last_change"
-        ])
+            "id", "dob", "dob_details",
+            "is_pep", "names", "last_change"] + localized_fields([
+                "last_name", "first_name", "patronymic", "wiki", "city_of_birth",
+                "reputation_sanctions", "reputation_convictions", "reputation_assets",
+                "reputation_crimes", "reputation_manhunt", "also_known_as",
+            ], settings.LANGUAGE_CODES))
 
         d["related_persons"] = [
             i.to_dict()
@@ -520,10 +519,11 @@ class Person(models.Model, AbstractNode):
         d["last_modified"] = self.last_modified
         d["died"] = self.died
         if d["terminated"]:
-            d["reason_of_termination"] = self.get_reason_of_termination_display()
-            d["reason_of_termination_en"] = translate_into(
-                self.get_reason_of_termination_display(), "en"
-            )
+            for lang in settings.LANGUAGE_CODES:
+                d[localized_field("reason_of_termination", lang)] = translate_into(
+                    self.get_reason_of_termination_display(), lang
+                )
+
             d["termination_date_human"] = self.termination_date_human
 
         last_workplace = self.last_workplace
@@ -536,14 +536,12 @@ class Person(models.Model, AbstractNode):
             d["last_workplace_en"] = last_workplace_en["company"]
             d["last_job_title_en"] = last_workplace_en["position"]
 
-        d["type_of_official"] = self.get_type_of_official_display()
+        for lang in settings.LANGUAGE_CODES:
+            d[localized_field("type_of_official", lang)] = translate_into(
+                self.get_type_of_official_display(), lang
+            )
 
-        d["type_of_official_en"] = translate_into(
-            self.get_type_of_official_display(), "en"
-        )
-
-        d["full_name"] = self.full_name
-        d["full_name_en"] = self.full_name_en
+            d[localized_field("full_name", lang)] = self.localized_full_name(lang)
 
         def generate_suggestions(last_name, first_name, patronymic, *args):
             if not last_name:
@@ -565,7 +563,10 @@ class Person(models.Model, AbstractNode):
             ]
 
         input_variants = [generate_suggestions(
-            d["last_name"], d["first_name"], d["patronymic"])]
+            d[localized_field("last_name")],
+            d[localized_field("first_name")],
+            d[localized_field("patronymic")])
+        ]
 
         input_variants += list(map(
             lambda x: generate_suggestions(*parse_fullname(x)),

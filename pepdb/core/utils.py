@@ -178,17 +178,18 @@ def parse_fullname(person_name):
 
 
 class TranslatedField(object):
-    def __init__(self, ua_field, en_field):
-        self.ua_field = ua_field
-        self.en_field = en_field
+    def __init__(self, **fields):
+        self.fields = fields
 
     def __get__(self, instance, owner):
+        lang = get_language()
+        if lang in self.fields:
+            return (
+                getattr(instance, self.fields[lang], "") or
+                getattr(instance, self.fields[settings.LANGUAGE_CODE], "")
+            )
 
-        if get_language() == 'en':
-            return (getattr(instance, self.en_field, "") or
-                    getattr(instance, self.ua_field, ""))
-        else:
-            return getattr(instance, self.ua_field, "")
+        return ""
 
 
 VALID_POSITIONS = [
@@ -502,3 +503,22 @@ def translate_into(chunk, lang="en"):
 
 def localized_field(field_name, lang=settings.LANGUAGE_CODE):
     return "{}_{}".format(field_name, lang)
+
+
+def localized_fields(field_names, langs=None):
+    if langs is None:
+        langs = [settings.LANGUAGE_CODE]
+
+    return [
+        localized_field(field, lang)
+        for field in field_names
+        for lang in langs
+    ]
+
+def localized_field_map(field_name):
+    mp = {}
+
+    for lang in settings.LANGUAGE_CODES:
+        mp[lang] = localized_field(field_name, lang)
+
+    return mp

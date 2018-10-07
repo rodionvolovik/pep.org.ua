@@ -178,7 +178,6 @@ LANGUAGES = (
     ('en', gettext('English'))
 )
 
-
 TIME_ZONE = 'Europe/Kiev'
 
 USE_I18N = True
@@ -356,3 +355,5 @@ connections.connections.configure(**ELASTICSEARCH_CONNECTIONS)
 # Init fernet instance
 from cryptography.fernet import Fernet
 SYMMETRIC_ENCRYPTOR = Fernet(FERNET_SECRET_KEY)
+
+LANGUAGE_CODES = list(dict(LANGUAGES).keys())

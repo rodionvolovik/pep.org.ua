@@ -3,41 +3,55 @@ from django.conf import settings
 from elasticsearch_dsl import DocType, Completion
 from cacheops import cached
 
-from core.utils import TranslatedField, blacklist
+from core.utils import (
+    TranslatedField,
+    blacklist,
+    localized_field,
+    localized_field_map,
+    localized_fields,
+)
 
 
 class RangeRelevantEntitiesMixin(object):
     def relevant_related_persons(self):
         hl = getattr(self.meta, "highlight", None)
 
-        if hl is not None:
-            hl_uk = getattr(hl, "related_persons.person_uk", [])
+        hls = {k: [] for k in settings.LANGUAGE_CODES}
 
-            hl_en = getattr(hl, "related_persons.person_en", [])
-        else:
-            hl_en = []
-            hl_uk = []
+        if hl is not None:
+            for lang in settings.LANGUAGE_CODES:
+                hls[lang] = getattr(
+                    hl, localized_field("related_persons.person", lang), []
+                )
 
         highlighted = []
         peps = []
         rest = []
 
         for p in getattr(self, "related_persons", []):
-            if p.person_uk in hl_uk:
-                highlighted.append(p)
-            elif p.person_en in hl_en:
-                highlighted.append(p)
-            elif p.is_pep:
-                peps.append(p)
+            for lang in settings.LANGUAGE_CODES:
+                if getattr(p, localized_field("person", lang)) in hls[lang]:
+                    highlighted.append(p)
+                    break
             else:
-                rest.append(p)
+                if p.is_pep:
+                    peps.append(p)
+                else:
+                    rest.append(p)
 
         res = highlighted + peps + rest
 
         # Sorting the list so best matches will appear on top
-        res.sort(key=lambda x: min(
-            hl_en.index(x.person_en) if x.person_en in hl_en else 10000,
-            hl_uk.index(x.person_uk) if x.person_uk in hl_uk else 10000))
+        res.sort(
+            key=lambda x: min(
+                [
+                    hls[lang].index(getattr(x, localized_field("person", lang)))
+                    if getattr(x, localized_field("person", lang)) in hls[lang]
+                    else 10000
+                    for lang in settings.LANGUAGE_CODES
+                ]
+            )
+        )
 
         return res
 
@@ -47,14 +61,12 @@ class Person(DocType, RangeRelevantEntitiesMixin):
 
     full_name_suggest = Completion(preserve_separators=False)
 
-    translated_first_name = TranslatedField("first_name", "first_name_en")
-    translated_last_name = TranslatedField("last_name", "last_name_en")
-    translated_patronymic = TranslatedField("patronymic", "patronymic_en")
+    translated_first_name = TranslatedField(**localized_field_map("first_name"))
+    translated_last_name = TranslatedField(**localized_field_map("last_name"))
+    translated_patronymic = TranslatedField(**localized_field_map("patronymic"))
 
-    translated_last_workplace = TranslatedField(
-        "last_workplace", "last_workplace_en")
-    translated_last_job_title = TranslatedField(
-        "last_job_title", "last_job_title_en")
+    translated_last_workplace = TranslatedField(**localized_field_map("last_workplace"))
+    translated_last_job_title = TranslatedField(**localized_field_map("last_job_title"))
 
     @classmethod
     @cached(timeout=25 * 60 * 60)
@@ -62,11 +74,16 @@ class Person(DocType, RangeRelevantEntitiesMixin):
         return [
             blacklist(
                 p.to_dict(),
-                [
-                    "full_name_suggest_en", "dob_details", "dob",
-                    "full_name_suggest", "last_job_id", "risk_category",
-                    "photo_path", "terminated", "last_modified"
-                ]
+                localized_fields("full_name_suggest")
+                + [
+                    "dob_details",
+                    "dob",
+                    "last_job_id",
+                    "risk_category",
+                    "photo_path",
+                    "terminated",
+                    "last_modified",
+                ],
             )
             for p in cls.search().scan()
         ]
@@ -80,7 +97,7 @@ class Company(DocType, RangeRelevantEntitiesMixin):
 
     name_suggest = Completion(preserve_separators=False)
 
-    translated_name = TranslatedField("name_uk", "name_en")
+    translated_name = TranslatedField(**localized_field_map("name"))
 
     @classmethod
     @cached(timeout=25 * 60 * 60)
@@ -88,10 +105,8 @@ class Company(DocType, RangeRelevantEntitiesMixin):
         return [
             blacklist(
                 p.to_dict(),
-                [
-                    "code_chunks", "name_suggest", "name_suggest_output",
-                    "name_suggest_output_en", "last_modified"
-                ]
+                localized_fields("name_suggest_output")
+                + ["code_chunks", "name_suggest", "last_modified"],
             )
             for p in cls.search().scan()
         ]

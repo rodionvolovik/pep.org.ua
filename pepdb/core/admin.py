@@ -45,6 +45,7 @@ from core.universal_loggers import MessagesLogger
 from django_otp.plugins.otp_totp.admin import TOTPDeviceAdmin
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from tasks.elastic_models import EDRPOU
+from core.utils import localized_fields
 
 
 def make_published(modeladmin, request, queryset):
@@ -296,11 +297,11 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
         Person2CountryInline,
     )
 
-    list_display = ("last_name_uk", "first_name_uk", "patronymic_uk",
-                    "is_pep", "dob", "dob_details", "type_of_official",
-                    "terminated", "publish")
+    list_display = localized_fields(["last_name", "first_name", "patronymic"]) + ["is_pep",
+        "dob", "dob_details", "type_of_official", "terminated", "publish"]
+
     readonly_fields = ('names', 'last_change', 'last_editor', '_last_modified')
-    search_fields = ['last_name_uk', "first_name_uk", "patronymic_uk", "names"]
+    search_fields = localized_fields(["last_name", "first_name", "patronymic"]) + ["names"]
     list_editable = ("dob", "dob_details")
 
     actions = [make_published, make_unpublished]
@@ -351,11 +352,11 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     inlines = (Company2PersonInline, Company2CompanyInline,
                Company2CompanyBackInline, Company2CountryInline)
 
-    list_display = ("pk", "name_uk", "short_name_uk", "edrpou",
-                    "state_company", "legal_entity", "status", "management")
-    list_editable = ("name_uk", "short_name_uk", "edrpou", "state_company",
-                     "legal_entity", "status")
-    search_fields = ["name_uk", "short_name_uk", "edrpou"]
+    list_display = ["pk",] + localized_fields(["name", "short_name"]) + [
+        "edrpou", "state_company", "legal_entity", "status", "management"]
+
+    list_editable = localized_fields(["name", "short_name"]) + ["edrpou", "state_company", "legal_entity", "status"]
+    search_fields = localized_fields(["name", "short_name"]) + ["edrpou"]
     readonly_fields = ('last_change', 'last_editor', '_last_modified')
     actions = [make_published, make_unpublished]
 
@@ -613,7 +614,10 @@ class Ua2EnDictionaryAdmin(admin.ModelAdmin):
 
 
 class CountryAdmin(TranslationAdmin):
-    list_display = ("name_uk", "name_en", "iso2", "iso3", "is_jurisdiction")
+    list_display = (
+        localized_fields(["name"], langs=settings.LANGUAGE_CODES) +
+        ["iso2", "iso3", "is_jurisdiction"]
+    )
 
 
 class DocumentAdmin(TranslationAdmin):
@@ -623,9 +627,9 @@ class DocumentAdmin(TranslationAdmin):
     link.allow_tags = True
     link.short_description = _('Завантажити')
 
-    list_display = ("pk", "name_uk", "link", "uploader", "uploaded", "doc")
-    search_fields = ["name", "doc"]
-    list_editable = ("name_uk", "uploader", "doc")
+    list_display = ["pk"] + localized_fields(["name"]) + ["link", "uploader", "uploaded", "doc"]
+    search_fields = localized_fields(["name"], langs=settings.LANGUAGE_CODES) + ["doc"]
+    list_editable = localized_fields(["name"]) + ["uploader", "doc"]
 
 
 class FeedbackAdmin(admin.ModelAdmin):
@@ -678,24 +682,25 @@ class DeclarationBaseAdmin(TranslationAdmin):
             obj.url, obj.last_name, obj.first_name, obj.patronymic)).replace(
             "  ", " ").strip()
 
-    fullname_decl.short_description = 'ПІБ з декларації'
+    fullname_decl.short_description = _('ПІБ з декларації')
     fullname_decl.admin_order_field = 'last_name'
     fullname_decl.allow_tags = True
 
     def fullname_pep(self, obj):
         return ('<a href="%s" target="_blank">%s %s %s</a><br/> %s' % (
             reverse("person_details", kwargs={"person_id": obj.person_id}),
+            # TODO: address the issue of field names for default language
             obj.person.last_name_uk, obj.person.first_name_uk,
             obj.person.patronymic_uk,
             (obj.person.also_known_as_uk or "").replace("\n", " ,")
         )).replace("  ", " ").strip()
-    fullname_pep.short_description = 'ПІБ з БД PEP'
+    fullname_pep.short_description = _('ПІБ з БД PEP')
     fullname_pep.allow_tags = True
-    fullname_pep.admin_order_field = 'person__last_name_uk'
+    fullname_pep.admin_order_field = localized_fields(["person__last_name"])
 
     def position_decl(self, obj):
         return ("%s @ %s, %s" % (obj.position, obj.office, obj.declaration_type))
-    position_decl.short_description = 'Посада з декларації'
+    position_decl.short_description = _('Посада з декларації')
 
     def position_pep(self, obj):
         last_workplace = obj.person.last_workplace
@@ -708,7 +713,7 @@ class DeclarationBaseAdmin(TranslationAdmin):
 
         return ""
 
-    position_pep.short_description = 'Посада з БД PEP'
+    position_pep.short_description = _('Посада з БД PEP')
     position_pep.allow_tags = True
 
     list_select_related = ("person",)
@@ -722,7 +727,7 @@ def populate_relatives(modeladmin, request, queryset):
         "relations": Person2Person._relationships_explained.keys()
     })
 
-populate_relatives.short_description = "Створити родичів"
+populate_relatives.short_description = _("Створити родичів")
 
 
 class DeclarationAdmin(DeclarationBaseAdmin):
@@ -734,15 +739,15 @@ class DeclarationAdmin(DeclarationBaseAdmin):
 
     def approve(self, request, queryset):
         queryset.update(confirmed="a")
-    approve.short_description = "Опублікувати"
+    approve.short_description = _("Опублікувати")
 
     def reject(self, request, queryset):
         queryset.update(confirmed="r")
-    reject.short_description = "Відхилити"
+    reject.short_description = _("Відхилити")
 
     def doublecheck(self, request, queryset):
         queryset.update(confirmed="c")
-    doublecheck.short_description = "На повторну перевірку"
+    doublecheck.short_description = _("На повторну перевірку")
 
     def get_urls(self):
         urls = super(DeclarationAdmin, self).get_urls()
@@ -848,6 +853,7 @@ class DeclarationAdmin(DeclarationBaseAdmin):
             except RelationshipProof.DoesNotExist:
                 relation.proofs.create(
                     proof=url,
+                    # TODO: decide what to do with that _uk field
                     proof_title_uk="Декларація за %s рік" % declaration.year,
                     proof_title_en="Income and assets declaration, %s" % declaration.year
                 )
@@ -858,11 +864,11 @@ class DeclarationAdmin(DeclarationBaseAdmin):
             declaration.save()
 
         self.message_user(
-            request, "%s осіб та %s зв'язків було створено." % (
+            request, _("%s осіб та %s зв'язків було створено.") % (
                 persons_created, connections_created))
 
         self.message_user(
-            request, "%s осіб та %s зв'язків було оновлено." % (
+            request, _("%s осіб та %s зв'язків було оновлено.") % (
                 persons_updated, connections_updated))
 
         if request.POST.get("redirect_back"):
@@ -874,7 +880,7 @@ class DeclarationAdmin(DeclarationBaseAdmin):
         family = obj.family
         if family:
             return "".join(
-                ["<strong>Родину вже було внесено до БД</strong>"
+                ["<strong>" + _("Родину вже було внесено до БД") + "</strong>"
                  if obj.relatives_populated else ""] +
                 ["<table>"] +
                 [("<tr><td>{name}</td><td>{relation}</td>" +
@@ -882,20 +888,19 @@ class DeclarationAdmin(DeclarationBaseAdmin):
                  for x in family if x] +
                 ["</table>"])
 
-        return ("<strong>Родини нема</strong>"
+        return ("<strong>" + _("Родини нема") + "</strong>"
                 if obj.relatives_populated else "")
 
-    family_table.short_description = 'Родина'
+    family_table.short_description = _('Родина')
     family_table.allow_tags = True
 
     list_display = (
         "pk", "fullname_pep", "fullname_decl", "position_pep", "position_decl",
         "region", "year", "family_table", "confirmed", "fuzziness", "batch_number")
 
-    search_fields = [
-        'last_name', "first_name", "patronymic",
-        'person__last_name_uk', 'person__first_name_uk',
-        'person__patronymic_uk', 'declaration_id']
+    search_fields = localized_fields([
+        'last_name', "first_name", "patronymic", 'person__last_name', 'person__first_name',
+        'person__patronymic']) + ['declaration_id']
 
     raw_id_fields = ('person',)
     autocomplete_lookup_fields = {
@@ -970,11 +975,11 @@ class DeclarationMonitorAdmin(DeclarationBaseAdmin):
 
     def make_monitored(self, request, queryset):
         queryset.update(acknowledged=True)
-    make_monitored.short_description = "Помітити як оброблене"
+    make_monitored.short_description = _("Помітити як оброблене")
 
     def make_unmonitored(self, request, queryset):
         queryset.update(acknowledged=False)
-    make_unmonitored.short_description = "Помітити як необроблене"
+    make_unmonitored.short_description = _("Помітити як необроблене")
 
     actions = [make_monitored, make_unmonitored]
 
@@ -982,10 +987,9 @@ class DeclarationMonitorAdmin(DeclarationBaseAdmin):
         "pk", "fullname_pep", "fullname_decl", "position_pep", "position_decl",
         "region", "year", "fuzziness", "acknowledged", "to_link", "submitted")
 
-    search_fields = [
-        'last_name', "first_name", "patronymic",
-        'person__last_name_uk', 'person__first_name_uk',
-        'person__patronymic_uk', 'declaration_id']
+    search_fields = localized_fields([
+        'last_name', "first_name", "patronymic", 'person__last_name', 'person__first_name',
+        'person__patronymic']) + ['declaration_id']
 
     def has_add_permission(self, request):
         return False

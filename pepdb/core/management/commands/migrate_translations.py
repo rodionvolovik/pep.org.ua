@@ -16,12 +16,12 @@ class Command(BaseCommand):
         parser.add_argument(
             "from",
             help="Language to take values from",
-            choices=dict(settings.LANGUAGES).keys(),
+            choices=settings.LANGUAGE_CODES,
         )
         parser.add_argument(
             "to",
             help="Language to store values to",
-            choices=dict(settings.LANGUAGES).keys(),
+            choices=settings.LANGUAGE_CODES,
         )
 
     def handle(self, *args, **options):

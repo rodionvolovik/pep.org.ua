@@ -91,13 +91,17 @@ class StaticPage(AbstractJinjaPage, Page):
         verbose_name="[EN] Текст сторінки")
 
     translated_title = TranslatedField(
-        'title',
-        'title_en',
+        **{
+            settings.LANGUAGE_CODE: "title",
+            "en": 'title_en'
+        }
     )
 
     translated_body = TranslatedField(
-        'body',
-        'body_en',
+        **{
+            settings.LANGUAGE_CODE: "body",
+            "en": 'body_en'
+        }
     )
 
     class Meta:
@@ -119,8 +123,10 @@ class LinkFields(models.Model):
                                   verbose_name="[EN] Заголовок")
 
     translated_caption = TranslatedField(
-        'caption',
-        'caption_en',
+        **{
+            settings.LANGUAGE_CODE: "caption",
+            "en": 'caption_en'
+        }
     )
 
     link_external = models.URLField("Зовнішнє посилання", blank=True)
@@ -222,38 +228,52 @@ class HomePage(AbstractJinjaPage, Page):
         verbose_name="[EN] Текст внизу кожної сторінки")
 
     translated_title = TranslatedField(
-        'title',
-        'title_en',
+        **{
+            settings.LANGUAGE_CODE: "title",
+            "en": 'title_en'
+        }
     )
 
     translated_subtitle = TranslatedField(
-        'subtitle',
-        'subtitle_en',
+        **{
+            settings.LANGUAGE_CODE: "subtitle",
+            "en": 'subtitle_en'
+        }
     )
 
     translated_body = TranslatedField(
-        'body',
-        'body_en',
+        **{
+            settings.LANGUAGE_CODE: "body",
+            "en": 'body_en'
+        }
     )
 
     translated_credits = TranslatedField(
-        'credits',
-        'credits_en',
+        **{
+            settings.LANGUAGE_CODE: "credits",
+            "en": 'credits_en'
+        }
     )
 
     translated_tr_desc = TranslatedField(
-        'tr_desc',
-        'tr_desc_en',
+        **{
+            settings.LANGUAGE_CODE: "tr_desc",
+            "en": 'tr_desc_en'
+        }
     )
 
     translated_eu_desc = TranslatedField(
-        'eu_desc',
-        'eu_desc_en',
+        **{
+            settings.LANGUAGE_CODE: "eu_desc",
+            "en": 'eu_desc_en'
+        }
     )
 
     translated_footer = TranslatedField(
-        'footer',
-        'footer_en',
+        **{
+            settings.LANGUAGE_CODE: "footer",
+            "en": 'footer_en'
+        }
     )
 
     class Meta:
