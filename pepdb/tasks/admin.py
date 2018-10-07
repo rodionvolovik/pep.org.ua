@@ -3,8 +3,10 @@ from __future__ import unicode_literals
 from datetime import timedelta, datetime, date
 
 from django.contrib import admin
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
+from django.utils.translation import ugettext_lazy as _
 from django.utils import formats
 
 from core.models import Declaration, Person2Company
@@ -43,13 +45,13 @@ class PersonDeduplicationAdmin(admin.ModelAdmin):
     def person1(self, obj):
         return self._person(obj.person1_json)
 
-    person1.short_description = "Персона 1"
+    person1.short_description = _("Персона 1")
     person1.allow_tags = True
 
     def person2(self, obj):
         return self._person(obj.person2_json)
 
-    person2.short_description = "Персона 2"
+    person2.short_description = _("Персона 2")
     person2.allow_tags = True
 
     def has_add_permission(self, request):
@@ -74,7 +76,7 @@ class CompanyMatchingAdmin(admin.ModelAdmin):
     def company(self, obj):
         return render_to_string("admin/company.jinja", {"company": obj.company_json})
 
-    company.short_description = "Компанія PEP"
+    company.short_description = _("Компанія PEP")
     company.allow_tags = True
 
     def candidates(self, obj):
@@ -87,7 +89,7 @@ class CompanyMatchingAdmin(admin.ModelAdmin):
             },
         )
 
-    candidates.short_description = "Компанії з реєстру"
+    candidates.short_description = _("Компанії з реєстру")
     candidates.allow_tags = True
 
     def has_add_permission(self, request):
@@ -118,7 +120,7 @@ class BeneficiariesMatchingAdmin(admin.ModelAdmin):
     def person_readable(self, obj):
         return render_to_string("admin/dup_person.jinja", {"person": obj.person_json})
 
-    person_readable.short_description = "Персона"
+    person_readable.short_description = _("Персона")
     person_readable.allow_tags = True
 
     def declarations_readable(self, obj):
@@ -127,7 +129,7 @@ class BeneficiariesMatchingAdmin(admin.ModelAdmin):
             {"declarations": Declaration.objects.filter(pk__in=obj.declarations)},
         )
 
-    declarations_readable.short_description = "Декларації"
+    declarations_readable.short_description = _("Декларації")
     declarations_readable.allow_tags = True
 
     list_filter = ("status", "type_of_connection")
@@ -142,7 +144,7 @@ class BeneficiariesMatchingAdmin(admin.ModelAdmin):
         )
 
     pep_company_information_readable.short_description = (
-        "Інформація про компанію з декларацій"
+        _("Інформація про компанію з декларацій")
     )
     pep_company_information_readable.allow_tags = True
 
@@ -156,7 +158,7 @@ class BeneficiariesMatchingAdmin(admin.ModelAdmin):
             },
         )
 
-    candidates.short_description = "Компанії з реєстру"
+    candidates.short_description = _("Компанії з реєстру")
     candidates.allow_tags = True
 
     def has_add_permission(self, request):
@@ -189,13 +191,13 @@ class CompanyDeduplicationAdmin(admin.ModelAdmin):
     def company1(self, obj):
         return self._company(obj.company1_json)
 
-    company1.short_description = "Юр. особа 1"
+    company1.short_description = _("Юр. особа 1")
     company1.allow_tags = True
 
     def company2(self, obj):
         return self._company(obj.company2_json)
 
-    company2.short_description = "Юр. особа 2"
+    company2.short_description = _("Юр. особа 2")
     company2.allow_tags = True
 
     def has_add_permission(self, request):
@@ -208,7 +210,7 @@ class CompanyDeduplicationAdmin(admin.ModelAdmin):
     def ignore(self, request, queryset):
         queryset.update(status="a")
 
-    ignore.short_description = "Залишити все як є"
+    ignore.short_description = _("Залишити все як є")
 
     actions = [ignore]
 
@@ -235,22 +237,22 @@ class EDRMonitoringAdmin(admin.ModelAdmin):
     def mark_for_application(self, request, queryset):
         queryset.update(status="a")
 
-    mark_for_application.short_description = "Статус: Застосувати зміну"
+    mark_for_application.short_description = _("Статус: Застосувати зміну")
 
     def ignore(self, request, queryset):
         queryset.update(status="i")
 
-    ignore.short_description = "Статус: Ігнорувати зміну"
+    ignore.short_description = _("Статус: Ігнорувати зміну")
 
     def doublecheck(self, request, queryset):
         queryset.update(status="r")
 
-    doublecheck.short_description = "Статус: Потребує додаткової перевірки"
+    doublecheck.short_description = _("Статус: Потребує додаткової перевірки")
 
     def apply_manually(self, request, queryset):
         queryset.update(applied=True)
 
-    apply_manually.short_description = "Було застосовано вручну"
+    apply_manually.short_description = _("Було застосовано вручну")
 
     actions = [mark_for_application, ignore, doublecheck, apply_manually]
 
@@ -259,7 +261,7 @@ class EDRMonitoringAdmin(admin.ModelAdmin):
             reverse("person_details", kwargs={"person_id": obj.person_id}), obj.pep_name
         )
 
-    pep_name_readable.short_description = "Прізвище керівника з БД ПЕП"
+    pep_name_readable.short_description = _("Прізвище керівника з БД ПЕП")
     pep_name_readable.allow_tags = True
     pep_name_readable.admin_order_field = "pep_name"
 
@@ -277,7 +279,7 @@ class EDRMonitoringAdmin(admin.ModelAdmin):
             pass
         return obj.pep_position
 
-    pep_position_readable.short_description = "Посада ПЕП"
+    pep_position_readable.short_description = _("Посада ПЕП")
     pep_position_readable.allow_tags = True
     pep_position_readable.admin_order_field = "pep_position"
 
@@ -294,7 +296,7 @@ class EDRMonitoringAdmin(admin.ModelAdmin):
             edrpou,
         )
 
-    company_readable.short_description = "Компанія де ПЕП є керівником"
+    company_readable.short_description = _("Компанія де ПЕП є керівником")
     company_readable.allow_tags = True
     company_readable.admin_order_field = "company_edrpou"
 
@@ -333,12 +335,12 @@ class TerminationNoticeAdmin(admin.ModelAdmin):
         dt = formats.date_format(obj.termination_date_ceiled, "SHORT_DATE_FORMAT")
 
         if obj.termination_date_ceiled + timedelta(days=3 * 365) < date.today():
-            return "<strong>{}</strong><br/>Три роки пройшло".format(dt)
+            return _("<strong>{}</strong><br/>Три роки пройшло").format(dt)
         else:
             return dt
 
     termination_date_ceiled_readable.short_description = (
-        "Дата припинення (округлена вгору)"
+        _("Дата припинення (округлена вгору)")
     )
     termination_date_ceiled_readable.allow_tags = True
     termination_date_ceiled_readable.admin_order_field = "termination_date_ceiled"
@@ -351,7 +353,7 @@ class TerminationNoticeAdmin(admin.ModelAdmin):
         else:
             return obj.pep_name
 
-    pep_name_readable.short_description = "Прізвище керівника з БД ПЕП"
+    pep_name_readable.short_description = _("Прізвище керівника з БД ПЕП")
     pep_name_readable.allow_tags = True
     pep_name_readable.admin_order_field = "pep_name"
 
@@ -362,29 +364,29 @@ class TerminationNoticeAdmin(admin.ModelAdmin):
 
         pd = obj.person._last_workplace_from_declaration()
         if pd:
-            res += '<br/><br/> Декларація за {}: <a href="{}" target="blank">{} @ {}</a>'.format(
+            res += _('<br/><br/> Декларація за {}: <a href="{}" target="blank">{} @ {}</a>').format(
                 pd[0].year, pd[0].url, pd[0].office_uk, pd[0].position_uk
             )
         return res
 
-    pep_position_readable.short_description = "Посада/остання декларація"
+    pep_position_readable.short_description = _("Посада/остання декларація")
     pep_position_readable.allow_tags = True
     pep_position_readable.admin_order_field = "pep_position"
 
     def mark_for_application(self, request, queryset):
         queryset.update(status="a")
 
-    mark_for_application.short_description = "Статус: Застосувати зміну"
+    mark_for_application.short_description = _("Статус: Застосувати зміну")
 
     def ignore(self, request, queryset):
         queryset.update(status="i")
 
-    ignore.short_description = "Статус: Ігнорувати зміну"
+    ignore.short_description = _("Статус: Ігнорувати зміну")
 
     def doublecheck(self, request, queryset):
         queryset.update(status="r")
 
-    doublecheck.short_description = "Статус: Потребує додаткової перевірки"
+    doublecheck.short_description = _("Статус: Потребує додаткової перевірки")
 
     actions = [mark_for_application, ignore, doublecheck]
 
@@ -439,7 +441,7 @@ class AdHocMatchAdmin(admin.ModelAdmin):
         else:
             return obj.pep_name
 
-    pep_name_readable.short_description = "Прізвище з БД ПЕП"
+    pep_name_readable.short_description = _("Прізвище з БД ПЕП")
     pep_name_readable.allow_tags = True
     pep_name_readable.admin_order_field = "pep_name"
 
@@ -449,12 +451,13 @@ class AdHocMatchAdmin(admin.ModelAdmin):
         else:
             return ""
 
-    dataset_entry_readable.short_description = "Запис з датасету"
+    dataset_entry_readable.short_description = _("Запис з датасету")
     dataset_entry_readable.allow_tags = True
 
     def pep_position_readable(self, obj):
         if obj.person:
             last_workplace = obj.person.last_workplace
+            # TODO: Check I18n
             if last_workplace and last_workplace["position"] != "Клієнт банку":
                 return '%s @ %s,<br/><span style="color: silver">%s</span>' % (
                     last_workplace["position"],
@@ -464,23 +467,23 @@ class AdHocMatchAdmin(admin.ModelAdmin):
         else:
             return obj.pep_position
 
-    pep_position_readable.short_description = "Посада з БД PEP"
+    pep_position_readable.short_description = _("Посада з БД PEP")
     pep_position_readable.allow_tags = True
 
     def mark_for_application(self, request, queryset):
         queryset.update(status="a")
 
-    mark_for_application.short_description = "Статус: Застосовано"
+    mark_for_application.short_description = _("Статус: Застосовано")
 
     def ignore(self, request, queryset):
         queryset.update(status="i")
 
-    ignore.short_description = "Статус: Ігнорувати"
+    ignore.short_description = _("Статус: Ігнорувати")
 
     def doublecheck(self, request, queryset):
         queryset.update(status="r")
 
-    doublecheck.short_description = "Статус: Потребує додаткової перевірки"
+    doublecheck.short_description = _("Статус: Потребує додаткової перевірки")
 
     actions = [mark_for_application, ignore, doublecheck]
 
@@ -531,7 +534,7 @@ class WikiMatchAdmin(admin.ModelAdmin):
         else:
             return obj.pep_name
 
-    pep_name_readable.short_description = "Прізвище з БД ПЕП"
+    pep_name_readable.short_description = _("Прізвище з БД ПЕП")
     pep_name_readable.allow_tags = True
     pep_name_readable.admin_order_field = "pep_name"
 
@@ -541,12 +544,13 @@ class WikiMatchAdmin(admin.ModelAdmin):
         else:
             return ""
 
-    dataset_entry_readable.short_description = "Записи з датасету"
+    dataset_entry_readable.short_description = _("Записи з датасету")
     dataset_entry_readable.allow_tags = True
 
     def pep_position_readable(self, obj):
         if obj.person:
             last_workplace = obj.person.last_workplace
+            # TODO: check I18n
             if last_workplace and last_workplace["position"] != "Клієнт банку":
                 return '%s @ %s,<br/><span style="color: silver">%s</span>' % (
                     last_workplace["position"],
@@ -556,23 +560,23 @@ class WikiMatchAdmin(admin.ModelAdmin):
         else:
             return obj.pep_position
 
-    pep_position_readable.short_description = "Посада з БД PEP"
+    pep_position_readable.short_description = _("Посада з БД PEP")
     pep_position_readable.allow_tags = True
 
     def mark_for_application(self, request, queryset):
         queryset.update(status="a")
 
-    mark_for_application.short_description = "Статус: Застосовано"
+    mark_for_application.short_description = _("Статус: Застосовано")
 
     def ignore(self, request, queryset):
         queryset.update(status="i")
 
-    ignore.short_description = "Статус: Ігнорувати"
+    ignore.short_description = _("Статус: Ігнорувати")
 
     def doublecheck(self, request, queryset):
         queryset.update(status="r")
 
-    doublecheck.short_description = "Статус: Потребує додаткової перевірки"
+    doublecheck.short_description = _("Статус: Потребує додаткової перевірки")
 
     actions = [mark_for_application, ignore, doublecheck]
 
@@ -623,24 +627,24 @@ class SMIDACandidateAdmin(admin.ModelAdmin):
             edrpou,
         )
 
-    company_readable.short_description = "Компанія"
+    company_readable.short_description = _("Компанія")
     company_readable.allow_tags = True
     company_readable.admin_order_field = "smida_company_name"
 
     def mark_for_application(self, request, queryset):
         queryset.update(status="a")
 
-    mark_for_application.short_description = "Статус: Застосовано"
+    mark_for_application.short_description = _("Статус: Застосовано")
 
     def ignore(self, request, queryset):
         queryset.update(status="i")
 
-    ignore.short_description = "Статус: Ігнорувати"
+    ignore.short_description = _("Статус: Ігнорувати")
 
     def doublecheck(self, request, queryset):
         queryset.update(status="r")
 
-    doublecheck.short_description = "Статус: Потребує додаткової перевірки"
+    doublecheck.short_description = _("Статус: Потребує додаткової перевірки")
 
     actions = [mark_for_application, ignore, doublecheck]
 
@@ -653,11 +657,13 @@ class SMIDACandidateAdmin(admin.ModelAdmin):
 
 
 admin.site.register(PersonDeduplication, PersonDeduplicationAdmin)
-admin.site.register(CompanyMatching, CompanyMatchingAdmin)
-admin.site.register(BeneficiariesMatching, BeneficiariesMatchingAdmin)
 admin.site.register(CompanyDeduplication, CompanyDeduplicationAdmin)
-admin.site.register(EDRMonitoring, EDRMonitoringAdmin)
 admin.site.register(TerminationNotice, TerminationNoticeAdmin)
 admin.site.register(AdHocMatch, AdHocMatchAdmin)
 admin.site.register(WikiMatch, WikiMatchAdmin)
-admin.site.register(SMIDACandidate, SMIDACandidateAdmin)
+
+if settings.LANGUAGE_CODE == "uk":
+    admin.site.register(CompanyMatching, CompanyMatchingAdmin)
+    admin.site.register(BeneficiariesMatching, BeneficiariesMatchingAdmin)
+    admin.site.register(EDRMonitoring, EDRMonitoringAdmin)
+    admin.site.register(SMIDACandidate, SMIDACandidateAdmin)

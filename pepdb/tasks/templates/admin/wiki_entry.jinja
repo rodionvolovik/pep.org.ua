@@ -11,7 +11,7 @@
                     {% endif %}
                 {% endfor %}
             {% else %}
-            Ім'я не зазначено
+            {{ _("Ім'я не зазначено") }}
             {% endif %}
             </a>
         </label>
@@ -26,7 +26,7 @@
                     {% endif %}
                 {% endfor %}
             {% else %}
-                Опис не вказано
+                {{ _("Опис не вказано") }}
             {% endif %}
             </a>
         </p>
@@ -36,6 +36,6 @@
 <div class="company_match no-match">
     <label>
         <input type="radio" name="candidate__{{ obj.pk }}" value="NONE" />
-        <span>ЗБІГУ НЕМАЄ</span>
+        <span>{{ _("ЗБІГУ НЕМАЄ") }}</span>
     </label>
 </div>

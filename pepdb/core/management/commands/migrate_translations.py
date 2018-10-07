@@ -31,8 +31,8 @@ class Command(BaseCommand):
             update_clause = {}
 
             for field in opts.fields:
-                update_clause[localized_field(field, options["from"])] = F(
-                    localized_field(field, options["to"])
+                update_clause[localized_field(field, options["to"])] = F(
+                    localized_field(field, options["from"])
                 )
 
             model.objects.update(**update_clause)

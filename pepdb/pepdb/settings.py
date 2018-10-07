@@ -114,7 +114,6 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "core.context_processors.feedback_processor",
                 "core.context_processors.config_processor",
-                "core.context_processors.default_country",
                 "cms_pages.context_processors.menu_processor"
             ),
             "extensions": DEFAULT_EXTENSIONS + [
@@ -150,7 +149,6 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "core.context_processors.feedback_processor",
                 "core.context_processors.config_processor",
-                "core.context_processors.default_country",
                 "cms_pages.context_processors.menu_processor"
             )
         },
@@ -320,8 +318,6 @@ CACHEOPS_DEGRADE_ON_FAILURE = True
 
 PERSONS_INDEX_NAME = "pep_persons"
 COMPANIES_INDEX_NAME = "pep_companies"
-
-DEFAULT_COUNTRY_ISO3 = "UKR"
 
 AUTH_PASSWORD_VALIDATORS = [
     {
