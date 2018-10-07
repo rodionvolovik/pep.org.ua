@@ -498,3 +498,7 @@ def translate_into(chunk, lang="en"):
     activate(curr_lang)
 
     return res
+
+
+def localized_field(field_name, lang=settings.LANGUAGE_CODE):
+    return "{}_{}".format(field_name, lang)

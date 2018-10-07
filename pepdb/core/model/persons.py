@@ -164,7 +164,7 @@ class Person(models.Model, AbstractNode):
     last_editor = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
-        verbose_name=_("Автор останньої зміни сторінки профілю",)
+        verbose_name=_("Автор останньої зміни сторінки профілю"),
         blank=True,
         null=True,
     )
