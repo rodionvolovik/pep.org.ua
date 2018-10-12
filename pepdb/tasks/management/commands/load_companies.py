@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import re
+import codecs
 from random import randrange
 import requests
 import os.path
@@ -9,13 +10,14 @@ import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import ParseError
 import logging
 from time import sleep
-from io import TextIOWrapper
+from io import TextIOWrapper, open
 from unicodecsv import DictReader
 from zipfile import ZipFile
 from cStringIO import StringIO
 
 from django.core.management.base import BaseCommand
 from django.conf import settings
+from django.utils import timezone
 
 from elasticsearch_dsl import Index
 from elasticsearch_dsl.connections import connections
@@ -202,6 +204,16 @@ class Command(BaseCommand):
             help='Dataset to retrieve',
         )
 
+        parser.add_argument(
+            '--filename',
+            help='Filename of the dump to load file manually',
+        )
+
+        parser.add_argument(
+            '--dump_date',
+            help='Date of dump, obtained manually, day first',
+        )
+
     def handle(self, *args, **options):
         self.proxies = {}
         if hasattr(settings, "PROXY"):
@@ -209,58 +221,71 @@ class Command(BaseCommand):
             self.proxies["https"] = settings.PROXY
 
         GUID = options["guid"]
+        fp = None
 
-        try:
-            if not options["revision"]:
-                response = requests.get(
-                    "http://data.gov.ua/view-dataset/dataset.json",
-                    {"dataset-id": GUID, "nocache": randrange(100)},
-                    proxies=self.proxies
-                ).json()
-                timestamp = parse(response["changed"], dayfirst=True)
-            else:
-                listing = requests.get(
-                    "http://data.gov.ua/view-dataset/dataset.json",
-                    {"dataset-id": GUID, "nocache": randrange(100)},
-                    proxies=self.proxies
-                ).json()
+        if not options["filename"]:
+            try:
+                if not options["revision"]:
+                    response = requests.get(
+                        "http://data.gov.ua/view-dataset/dataset.json",
+                        {"dataset-id": GUID, "nocache": randrange(100)},
+                        proxies=self.proxies
+                    ).json()
+                    timestamp = parse(response["changed"], dayfirst=True)
+                else:
+                    listing = requests.get(
+                        "http://data.gov.ua/view-dataset/dataset.json",
+                        {"dataset-id": GUID, "nocache": randrange(100)},
+                        proxies=self.proxies
+                    ).json()
 
-                for rev in listing["revisions"]:
-                    if rev["revision_id"] == options["revision"]:
-                        timestamp = parse(rev["created"], dayfirst=True)
+                    for rev in listing["revisions"]:
+                        if rev["revision_id"] == options["revision"]:
+                            timestamp = parse(rev["created"], dayfirst=True)
+                            break
+
+                    sleep(0.2)
+                    response = requests.get(
+                        "http://data.gov.ua/view-dataset/dataset.json",
+                        {"dataset-id": GUID, "revision-id": options["revision"], "nocache": randrange(100)},
+                        proxies=self.proxies
+                    ).json()
+
+                files_list = response["files"]
+                revision = response["revision_id"]
+            except (TypeError, IndexError, KeyError):
+                self.stderr.write("Cannot obtain information about dump file")
+                raise
+
+            if len(files_list) != 1:
+                self.stderr.write("Too many files in API response, trying to find a proper one")
+                for f in files_list:
+                    if "uo" in f["url"].lower():
+                        files_list = [f]
                         break
+                else:
+                    self.stderr.write("Nothing suitable found")
+                    return
 
-                sleep(0.2)
-                response = requests.get(
-                    "http://data.gov.ua/view-dataset/dataset.json",
-                    {"dataset-id": GUID, "revision-id": options["revision"], "nocache": randrange(100)},
-                    proxies=self.proxies
-                ).json()
+            dump = files_list[0]
+            _, ext = os.path.splitext(dump["url"])
 
-            files_list = response["files"]
-            revision = response["revision_id"]
-        except (TypeError, IndexError, KeyError):
-            self.stderr.write("Cannot obtain information about dump file")
-            raise
+            r = requests.get(dump["url"], stream=True)
+            reader = EDR_Reader(StringIO(r.content), timestamp, revision, ext.lower().lstrip("."))
+        elif options["revision"] and options["dump_date"]:
+            dump_date = timezone.make_aware(parse(options["dump_date"], dayfirst=True))
+            _, ext = os.path.splitext(options["filename"])
 
-        if len(files_list) != 1:
-            self.stderr.write("Too many files in API response, trying to find a proper one")
-            for f in files_list:
-                if "uo" in f["url"].lower():
-                    files_list = [f]
-                    break
-            else:
-                self.stderr.write("Nothing suitable found")
-                return
-
-        dump = files_list[0]
-        _, ext = os.path.splitext(dump["url"])
-
-        r = requests.get(dump["url"], stream=True)
-        reader = EDR_Reader(StringIO(r.content), timestamp, revision, ext.lower().lstrip("."))
+            fp = open(options["filename"], "rb")
+            reader = EDR_Reader(fp, dump_date, options["revision"], ext.lower().lstrip("."))
+        else:
+            self.stderr.write("You should provide (possibly fake) revision id and date of dump when loading files manually")
 
         Index(EDRPOU._doc_type.index).delete(ignore=404)
         EDRPOU.init()
         es = connections.get_connection()
 
         bulk(es, reader.iter_docs(), chunk_size=10000)
+
+        if fp:
+            fp.close()
