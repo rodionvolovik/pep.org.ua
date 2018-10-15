@@ -33,7 +33,7 @@ Pillow==5.0.0
 tqdm==4.19.8
 translitua==1.2.1
 unicodecsv==0.9.4
-wagtail==1.11.1
+wagtail==1.13.4
 WeasyPrint==0.24
 XlsxWriter==1.0.0
 django-compressor==2.2
