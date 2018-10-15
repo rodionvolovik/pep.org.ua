@@ -7,15 +7,24 @@ from django.utils.html import mark_safe
 from django.utils import translation
 
 from modelcluster.fields import ParentalKey
+from modelcluster.contrib.taggit import ClusterTaggableManager
+from taggit.models import Tag, TaggedItemBase
 
 from wagtail.wagtailcore import hooks
-from wagtail.wagtailcore.fields import RichTextField
+from wagtail.wagtailcore.fields import RichTextField, StreamField
 from wagtail.wagtailcore.models import Page, Orderable
 from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 from wagtail.wagtailcore.whitelist import (
     attribute_rule, allow_without_attributes)
 from wagtail.wagtailadmin.edit_handlers import (
-    InlinePanel, FieldPanel, PageChooserPanel, MultiFieldPanel)
+    InlinePanel, FieldPanel, PageChooserPanel, MultiFieldPanel, StreamFieldPanel)
+
+from wagtail.wagtailsearch import index
+from wagtail.wagtailembeds.blocks import EmbedBlock
+from wagtail.wagtailimages.blocks import ImageChooserBlock
+from wagtail.wagtailcore.blocks import (
+    CharBlock, ChoiceBlock, RichTextBlock, StreamBlock, StructBlock, TextBlock,
+)
 
 from core.utils import TranslatedField
 from core.models import Person
@@ -292,3 +301,222 @@ class HomePage(AbstractJinjaPage, Page):
         ctx["persons_related"] = Person.objects.exclude(
             type_of_official=1).count()
         return ctx
+
+
+class ImageBlock(StructBlock):
+    """
+    Custom `StructBlock` for utilizing images with associated caption and
+    attribution data
+    """
+    image = ImageChooserBlock(required=True)
+    caption = CharBlock(required=False)
+    attribution = CharBlock(required=False)
+
+    class Meta:
+        icon = 'image'
+        template = "blocks/image_block.html"
+
+
+class HeadingBlock(StructBlock):
+    """
+    Custom `StructBlock` that allows the user to select h2 - h4 sizes for headers
+    """
+    heading_text = CharBlock(classname="title", required=True)
+    size = ChoiceBlock(choices=[
+        ('', 'Select a header size'),
+        ('h2', 'H2'),
+        ('h3', 'H3'),
+        ('h4', 'H4')
+    ], blank=True, required=False)
+
+    class Meta:
+        icon = "title"
+        template = "blocks/heading_block.html"
+
+
+class BlockQuote(StructBlock):
+    """
+    Custom `StructBlock` that allows the user to attribute a quote to the author
+    """
+    text = TextBlock()
+    attribute_name = CharBlock(
+        blank=True, required=False, label='e.g. Mary Berry')
+
+    class Meta:
+        icon = "snippet"
+        template = "blocks/blockquote.html"
+
+
+class BaseStreamBlock(StreamBlock):
+    """
+    Define the custom blocks that `StreamField` will utilize
+    """
+    heading_block = HeadingBlock()
+    paragraph_block = RichTextBlock(
+        icon="doc-full",
+        template="blocks/paragraph_block.html"
+    )
+    image_block = ImageBlock()
+    block_quote = BlockQuote()
+    embed_block = EmbedBlock(
+        help_text='Insert an embed URL e.g https://www.youtube.com/embed/SGJFWirQ3ks',
+        icon="fa-s15",
+        template="blocks/embed_block.html")
+
+
+class BlogPageTag(TaggedItemBase):
+    """
+    This model allows us to create a many-to-many relationship between
+    the BlogPage object and tags. There's a longer guide on using it at
+    http://docs.wagtail.io/en/latest/reference/pages/model_recipes.html#tagging
+    """
+    content_object = ParentalKey('BlogPage', related_name='tagged_items', on_delete=models.CASCADE)
+
+
+class BlogPage(AbstractJinjaPage, Page):
+    """
+    A Blog Page
+    """
+    introduction = models.TextField(
+        help_text='Text to describe the page',
+        blank=True)
+    image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        help_text='Landscape mode only; horizontal width between 1000px and 3000px.'
+    )
+    body = StreamField(
+        BaseStreamBlock(), verbose_name="Page body", blank=True
+    )
+    subtitle = models.CharField(blank=True, max_length=255)
+    tags = ClusterTaggableManager(through=BlogPageTag, blank=True)
+    date_published = models.DateField(
+        "Date article published", blank=True, null=True
+        )
+
+    content_panels = Page.content_panels + [
+        FieldPanel('subtitle', classname="full"),
+        FieldPanel('introduction', classname="full"),
+        ImageChooserPanel('image'),
+        StreamFieldPanel('body'),
+        FieldPanel('date_published'),
+        FieldPanel('tags'),
+    ]
+
+    search_fields = Page.search_fields + [
+        index.SearchField('body'),
+    ]
+
+    @property
+    def get_tags(self):
+        """
+        Similar to the authors function above we're returning all the tags that
+        are related to the blog post into a list we can access on the template.
+        We're additionally adding a URL to access BlogPage objects with that tag
+        """
+        tags = self.tags.all()
+        for tag in tags:
+            tag.url = '/'+'/'.join(s.strip('/') for s in [
+                self.get_parent().url,
+                'tags',
+                tag.slug
+            ])
+        return tags
+
+    # Specifies parent to BlogPage as being BlogIndexPages
+    parent_page_types = ['BlogIndexPage']
+
+    # Specifies what content types can exist as children of BlogPage.
+    # Empty list means that no child content types are allowed.
+    subpage_types = []
+
+
+class BlogIndexPage(AbstractJinjaPage, Page):
+    """
+    Index page for blogs.
+    We need to alter the page model's context to return the child page objects,
+    the BlogPage objects, so that it works as an index page
+    RoutablePageMixin is used to allow for a custom sub-URL for the tag views
+    defined above.
+    """
+    introduction = models.TextField(
+        help_text='Text to describe the page',
+        blank=True)
+    image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        help_text='Landscape mode only; horizontal width between 1000px and 3000px.'
+    )
+
+    content_panels = Page.content_panels + [
+        FieldPanel('introduction', classname="full"),
+        ImageChooserPanel('image'),
+    ]
+
+    # Speficies that only BlogPage objects can live under this index page
+    subpage_types = ['BlogPage']
+
+    # Defines a method to access the children of the page (e.g. BlogPage
+    # objects). On the demo site we use this on the HomePage
+    def children(self):
+        return self.get_children().specific().live()
+
+    # Overrides the context to list all child items, that are live, by the
+    # date that they were published
+    # http://docs.wagtail.io/en/latest/getting_started/tutorial.html#overriding-context
+    def get_context(self, request):
+        context = super(BlogIndexPage, self).get_context(request)
+        context['posts'] = BlogPage.objects.descendant_of(
+            self).live().order_by(
+            '-date_published')
+        return context
+
+    # # This defines a Custom view that utilizes Tags. This view will return all
+    # # related BlogPages for a given Tag or redirect back to the BlogIndexPage.
+    # # More information on RoutablePages is at
+    # # http://docs.wagtail.io/en/latest/reference/contrib/routablepage.html
+    # @route('^tags/$', name='tag_archive')
+    # @route('^tags/([\w-]+)/$', name='tag_archive')
+    # def tag_archive(self, request, tag=None):
+
+    #     try:
+    #         tag = Tag.objects.get(slug=tag)
+    #     except Tag.DoesNotExist:
+    #         if tag:
+    #             msg = 'There are no blog posts tagged with "{}"'.format(tag)
+    #             messages.add_message(request, messages.INFO, msg)
+    #         return redirect(self.url)
+
+    #     posts = self.get_posts(tag=tag)
+    #     context = {
+    #         'tag': tag,
+    #         'posts': posts
+    #     }
+    #     return render(request, 'blog/blog_index_page.html', context)
+
+    def serve_preview(self, request, mode_name):
+        # Needed for previews to work
+        return self.serve(request)
+
+    # Returns the child BlogPage objects for this BlogPageIndex.
+    # If a tag is used then it will filter the posts by tag.
+    def get_posts(self, tag=None):
+        posts = BlogPage.objects.live().descendant_of(self)
+        if tag:
+            posts = posts.filter(tags=tag)
+        return posts
+
+    # Returns the list of Tags for all child posts of this BlogPage.
+    def get_child_tags(self):
+        tags = []
+        for post in self.get_posts():
+            # Not tags.append() because we don't want a list of lists
+            tags += post.get_tags
+        tags = sorted(set(tags))
+        return tags
