@@ -2,7 +2,10 @@
 from __future__ import unicode_literals
 import tqdm
 import jmespath
+import hashlib
+import requests
 from django.core.management.base import BaseCommand
+from django.core.files.base import ContentFile
 from tasks.models import WikiMatch
 from dateutil.parser import parse as dt_parse
 from core.utils import render_date
@@ -13,6 +16,8 @@ from django.conf import settings
 class Command(BaseCommand):
 
     help = "Add data from matches with wikidata to the PEP db"
+
+    wikimedia = "https://upload.wikimedia.org/wikipedia/commons/"
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -26,6 +31,7 @@ class Command(BaseCommand):
         self.stdout.write("Starting matching job ...")
 
         self.wikidata_path_dob = jmespath.compile("[0].claims.P569[0].mainsnak.datavalue.value")
+        self.wikidata_path_photo = jmespath.compile("[0].claims.P18[0].mainsnak.datavalue.value")
 
         self.dob_mismatch = 0
         self.dob_updated = 0
@@ -57,14 +63,42 @@ class Command(BaseCommand):
         )
 
     def match_photo(self):
-        pass
+        match = self.current_match
+
+        wikidata_photo_name = self.wikidata_path_photo.search(match.matched_json)
+
+        if not wikidata_photo_name:
+            return
+
+        wikidata_photo_name = wikidata_photo_name.replace(" ", "_")
+        md5 = hashlib.md5()
+        md5.update(wikidata_photo_name.encode("utf-8"))
+        hash = md5.hexdigest()
+
+        a, b = tuple(hash[:2])
+        photo_url = "{}{}/{}{}/{}".format(self.wikimedia, a, a, b, wikidata_photo_name)
+
+        resp = requests.get(photo_url)
+
+        if resp.status_code == 200:
+            match.person.photo.save(
+                wikidata_photo_name,
+                ContentFile(resp.content))
+        else:
+            self.stdout.write("Can not download image {} for profile {}{}".format(
+                photo_url,
+                settings.SITE_URL,
+                match.person.get_absolute_url()
+            ))
+
+        return
+
 
     def match_links(self):
         pass
 
     def match_dob(self):
         match = self.current_match
-
         person_dob = match.person.date_of_birth
 
         wikidata_dob_obj = self.wikidata_path_dob.search(match.matched_json)
