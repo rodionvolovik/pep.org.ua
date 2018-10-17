@@ -30,11 +30,15 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write("Starting matching job ...")
 
-        self.wikidata_path_dob = jmespath.compile("[0].claims.P569[0].mainsnak.datavalue.value")
-        self.wikidata_path_photo = jmespath.compile("[0].claims.P18[0].mainsnak.datavalue.value")
+        path_dob = jmespath.compile("[0].claims.P569[0].mainsnak.datavalue.value")
+        path_photo = jmespath.compile("[0].claims.P18[0].mainsnak.datavalue.value")
+        path_uk_wiki = jmespath.compile("[0].sitelinks.ukwiki.url")
+        path_en_wiki = jmespath.compile("[0].sitelinks.enwiki.url")
+        path_ru_wiki = jmespath.compile("[0].sitelinks.ruwiki.url")
 
         self.dob_mismatch = 0
         self.dob_updated = 0
+        self.photo_updated = 0
 
         activate(settings.LANGUAGE_CODE)
 
@@ -44,30 +48,43 @@ class Command(BaseCommand):
 
             for match in wiki_matches.select_related("person").nocache().iterator():
                 pbar.update(1)
+                wikidata = match.matched_json
 
                 if not match.person:
                     continue
 
                 self.current_match = match
 
-                self.match_dob()
+                self.match_dob(path_dob.search(wikidata))
 
-                self.match_photo()
+                self.match_photo(path_photo.search(wikidata), options["real_run"])
 
-                self.match_links()
+                self.match_links(path_uk_wiki.search(wikidata),
+                                 path_en_wiki.search(wikidata),
+                                 path_ru_wiki.search(wikidata))
+
+                if options["real_run"]:
+                    match.person.save()
+                    match.save()
 
         self.stdout.write(
-            "DOB mismatches: {}\nDOB updated: {}".format(
-                self.dob_mismatch, self.dob_updated
+            "DOB mismatches: {}\nDOB updated: {}\nPhotos updated: {} ".format(
+                self.dob_mismatch, self.dob_updated, self.photo_updated
             )
         )
 
-    def match_photo(self):
+    def match_links(self, uk_wiki_url, en_wiki_url, ru_wiki_url):
+
+        pass
+
+
+
+    def match_photo(self, wikidata_photo_name, save_photo=False):
         match = self.current_match
 
-        wikidata_photo_name = self.wikidata_path_photo.search(match.matched_json)
+        person_photo = match.person.photo
 
-        if not wikidata_photo_name:
+        if person_photo or not wikidata_photo_name:
             return
 
         wikidata_photo_name = wikidata_photo_name.replace(" ", "_")
@@ -81,9 +98,12 @@ class Command(BaseCommand):
         resp = requests.get(photo_url)
 
         if resp.status_code == 200:
-            match.person.photo.save(
-                wikidata_photo_name,
-                ContentFile(resp.content))
+            if save_photo:
+                match.person.photo.save(
+                    wikidata_photo_name,
+                    ContentFile(resp.content))
+
+            self.photo_updated += 1
         else:
             self.stdout.write("Can not download image {} for profile {}{}".format(
                 photo_url,
@@ -93,15 +113,9 @@ class Command(BaseCommand):
 
         return
 
-
-    def match_links(self):
-        pass
-
-    def match_dob(self):
+    def match_dob(self, wikidata_dob_obj):
         match = self.current_match
         person_dob = match.person.date_of_birth
-
-        wikidata_dob_obj = self.wikidata_path_dob.search(match.matched_json)
 
         if not wikidata_dob_obj:
             return
