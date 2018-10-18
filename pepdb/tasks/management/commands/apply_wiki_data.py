@@ -65,7 +65,6 @@ class Command(BaseCommand):
 
                 if options["real_run"]:
                     match.person.save()
-                    match.save()
 
         self.stdout.write(
             "DOB mismatches: {}\nDOB updated: {}\nPhotos updated: {} ".format(
@@ -74,10 +73,11 @@ class Command(BaseCommand):
         )
 
     def match_links(self, uk_wiki_url, en_wiki_url, ru_wiki_url):
+        match = self.current_match
 
-        pass
-
-
+        match.person.uk_wiki_url = uk_wiki_url or ""
+        match.person.en_wiki_url = en_wiki_url or ""
+        match.person.ru_wiki_url = ru_wiki_url or ""
 
     def match_photo(self, wikidata_photo_name, save_photo=False):
         match = self.current_match
@@ -102,6 +102,11 @@ class Command(BaseCommand):
                 match.person.photo.save(
                     wikidata_photo_name,
                     ContentFile(resp.content))
+
+                self.stdout.write("Added missing photo for profile {}{}".format(
+                    settings.SITE_URL,
+                    match.person.get_absolute_url()
+                ))
 
             self.photo_updated += 1
         else:
@@ -153,7 +158,3 @@ class Command(BaseCommand):
 
         if dob_obj["precision"] == 11:
             return dt_parse(dob_obj["time"][1:])
-
-        # if dob_obj["precision"] == 9:
-        #     dob_obj["time"] = dob_obj["time"].replace("-00", "-01", 2)
-        #     return (dt_parse(dob_obj["time"][1:]), 2)
