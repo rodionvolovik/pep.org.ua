@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import tqdm
 import jmespath
 import hashlib
 import requests
+from tqdm import tqdm
 from django.core.management.base import BaseCommand
 from django.core.files.base import ContentFile
 from tasks.models import WikiMatch
@@ -44,27 +44,24 @@ class Command(BaseCommand):
 
         wiki_matches = WikiMatch.objects.filter(status="a")
 
-        with tqdm.tqdm(total=wiki_matches.count()) as pbar:
+        for match in tqdm(wiki_matches.select_related("person").nocache().iterator(), total=wiki_matches.count()):
+            wikidata = match.matched_json
 
-            for match in wiki_matches.select_related("person").nocache().iterator():
-                pbar.update(1)
-                wikidata = match.matched_json
+            if not match.person:
+                continue
 
-                if not match.person:
-                    continue
+            self.current_match = match
 
-                self.current_match = match
+            self.match_dob(path_dob.search(wikidata))
 
-                self.match_dob(path_dob.search(wikidata))
+            self.match_photo(path_photo.search(wikidata), options["real_run"])
 
-                self.match_photo(path_photo.search(wikidata), options["real_run"])
+            self.match_links(path_uk_wiki.search(wikidata),
+                             path_en_wiki.search(wikidata),
+                             path_ru_wiki.search(wikidata))
 
-                self.match_links(path_uk_wiki.search(wikidata),
-                                 path_en_wiki.search(wikidata),
-                                 path_ru_wiki.search(wikidata))
-
-                if options["real_run"]:
-                    match.person.save()
+            if options["real_run"]:
+                match.person.save()
 
         self.stdout.write(
             "DOB mismatches: {}\nDOB updated: {}\nPhotos updated: {} ".format(
@@ -87,12 +84,13 @@ class Command(BaseCommand):
         if person_photo or not wikidata_photo_name:
             return
 
+        # https://stackoverflow.com/questions/34393884/how-to-get-image-url-property-from-wikidata-item-by-api
         wikidata_photo_name = wikidata_photo_name.replace(" ", "_")
         md5 = hashlib.md5()
         md5.update(wikidata_photo_name.encode("utf-8"))
-        hash = md5.hexdigest()
+        img_name_hash = md5.hexdigest()
 
-        a, b = tuple(hash[:2])
+        a, b = tuple(img_name_hash[:2])
         photo_url = "{}{}/{}{}/{}".format(self.wikimedia, a, a, b, wikidata_photo_name)
 
         resp = requests.get(photo_url)
@@ -125,36 +123,65 @@ class Command(BaseCommand):
         if not wikidata_dob_obj:
             return
 
-        wikidata_dob = self.parse_wikidata_dob(wikidata_dob_obj)
+        wikidata_dob, dob_details = self.parse_wikidata_dob(wikidata_dob_obj)
 
         if not wikidata_dob:
             return
 
         if not person_dob:
             match.person.dob = wikidata_dob
-            match.person.dob_details = 0
+            match.person.dob_details = dob_details
             self.dob_updated += 1
-        else:
-            new_dob = render_date(wikidata_dob, match.person.dob_details)
 
-            if person_dob != new_dob:
+            self.stdout.write(
+                "Updated DOB for profile {}{}. Old: {}. New {}".format(
+                    settings.SITE_URL,
+                    match.person.get_absolute_url(),
+                    person_dob,
+                    render_date(wikidata_dob, dob_details)
+                )
+            )
+        else:
+            dd = max(match.person.dob_details, dob_details)
+            current_dob = render_date(match.person.dob, dd)
+            new_dob = render_date(wikidata_dob, dd)
+
+            if current_dob != new_dob:
                 self.stderr.write(
                     "DOB mismatch for profile {}{}, current {}, new {}".format(
                         settings.SITE_URL,
                         match.person.get_absolute_url(),
                         person_dob,
-                        render_date(wikidata_dob, 0)
+                        render_date(wikidata_dob, dob_details)
                     )
                 )
                 self.dob_mismatch += 1
                 return
 
-            if match.person.dob_details > 0:
+            if match.person.dob_details > dob_details:
                 match.person.dob = wikidata_dob
-                match.person.dob_details = 0
+                match.person.dob_details = dob_details
                 self.dob_updated += 1
+
+                self.stdout.write(
+                    "Updated DOB for profile {}{}. Old: {}. New {}".format(
+                        settings.SITE_URL,
+                        match.person.get_absolute_url(),
+                        person_dob,
+                        render_date(wikidata_dob, dob_details)
+                    )
+                )
 
     def parse_wikidata_dob(self, dob_obj):
 
         if dob_obj["precision"] == 11:
-            return dt_parse(dob_obj["time"][1:])
+            return dt_parse(dob_obj["time"][1:]), 0
+
+        if dob_obj["precision"] == 10:
+            dob_obj["time"] = dob_obj["time"].replace("-00", "-01")
+            return dt_parse(dob_obj["time"][1:]), 1
+
+        if dob_obj["precision"] == 9:
+            # sometimes date field from wiki contain value like '+1883-00-00T00:00:00Z'
+            dob_obj["time"] = dob_obj["time"].replace("-00", "-01")
+            return dt_parse(dob_obj["time"][1:]), 2
