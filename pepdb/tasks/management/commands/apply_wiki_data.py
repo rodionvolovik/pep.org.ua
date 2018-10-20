@@ -39,6 +39,7 @@ class Command(BaseCommand):
         self.dob_mismatch = 0
         self.dob_updated = 0
         self.photo_updated = 0
+        self.wiki_urls_added = 0
 
         activate(settings.LANGUAGE_CODE)
 
@@ -64,17 +65,23 @@ class Command(BaseCommand):
                 match.person.save()
 
         self.stdout.write(
-            "DOB mismatches: {}\nDOB updated: {}\nPhotos updated: {} ".format(
-                self.dob_mismatch, self.dob_updated, self.photo_updated
+            "DOB mismatches: {}\nDOB updated: {}\nPhotos updated: {}\nWiki urls added: {} ".format(
+                self.dob_mismatch, self.dob_updated, self.photo_updated, self.wiki_urls_added
             )
         )
 
     def match_links(self, uk_wiki_url, en_wiki_url, ru_wiki_url):
         match = self.current_match
 
-        match.person.uk_wiki_url = uk_wiki_url or ""
-        match.person.en_wiki_url = en_wiki_url or ""
-        match.person.ru_wiki_url = ru_wiki_url or ""
+        wiki_url_uk = uk_wiki_url or ru_wiki_url or en_wiki_url
+
+        if not uk_wiki_url:
+            return
+
+        self.wiki_urls_added += 1
+
+        match.person.wiki_url_uk = wiki_url_uk
+        match.person.wiki_url_en = en_wiki_url or uk_wiki_url or ru_wiki_url
 
     def match_photo(self, wikidata_photo_name, save_photo=False):
         match = self.current_match
