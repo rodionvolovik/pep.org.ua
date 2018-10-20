@@ -107,6 +107,9 @@ class Person(models.Model, AbstractNode):
 
     wiki = RedactorField("Вікі-стаття", blank=True)
     wiki_draft = RedactorField("Чернетка вікі-статті", blank=True)
+
+    wiki_url = models.URLField("Посилання на вікі", blank=True, max_length=1023)
+
     names = models.TextField("Варіанти написання імені", blank=True)
 
     also_known_as = models.TextField("Інші імена", blank=True)
