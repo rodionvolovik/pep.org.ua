@@ -32,11 +32,10 @@ class Command(BaseCommand):
         activate(settings.LANGUAGE_CODE)
 
         companies_created = 0
-        companies_updated = 0
 
         smida_candidates = SMIDACandidate.objects.filter(status="a")
 
-        companies_created_dict = {}
+        companies_dict = {}
 
         #for candidate in tqdm(smida_candidates.nocache().iterator(), total=smida_candidates.count()):
         for candidate in smida_candidates.nocache().iterator():
@@ -44,7 +43,7 @@ class Command(BaseCommand):
             edrpou = unicode(candidate.smida_edrpou).rjust(8, "0")
 
             try:
-                company = companies_created_dict.get(edrpou) or Company.objects.get(edrpou=edrpou)
+                company = companies_dict.get(edrpou) or Company.objects.nocache().get(edrpou=edrpou)
             except Company.DoesNotExist:
                 company = Company(
                     edrpou=edrpou,
@@ -52,12 +51,13 @@ class Command(BaseCommand):
                 )
                 self.stdout.write("Created company {}".format(company))
                 companies_created += 1
-                companies_created_dict[edrpou] = company
 
                 if options["real_run"]:
                     company.save()
 
+            companies_dict[edrpou] = company
+
 
         self.stdout.write(
-            "Companies created: {}, companies updated: {}".format(companies_created, companies_updated)
+            "Companies created: {}".format(companies_created)
         )
