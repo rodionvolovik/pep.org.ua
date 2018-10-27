@@ -36,8 +36,8 @@ class Command(BaseCommand):
         self.stdout.write("Starting import Companies.")
 
         companies_dict = {}
-        created_cnt = 0
-        matched_cnt = 0
+        created_companies_total = 0
+        matched_companies_total = 0
 
         smida_candidates = SMIDACandidate.objects.filter(status="a")
 
@@ -50,23 +50,21 @@ class Command(BaseCommand):
 
             try:
                 company = Company.objects.nocache().get(edrpou=edrpou)
-                matched_cnt += 1
+                matched_companies_total += 1
             except Company.DoesNotExist:
                 company = Company(
                     edrpou=edrpou,
                     name_uk=candidate.smida_company_name.strip()
                 )
                 tqdm.write("Created company {}".format(company))
-                created_cnt += 1
+                created_companies_total += 1
 
                 if options["real_run"]:
                     company.save()
 
             companies_dict[edrpou] = company
 
-        self.stdout.write(
-            "Finished import companies.\nFound existing: {}\nCreated new: {}."
-            .format(matched_cnt, created_cnt))
+        self.stdout.write("Finished import companies.")
         # endregion
 
         # region Persons and P2C
@@ -88,7 +86,8 @@ class Command(BaseCommand):
             if not person:
                 person = self.create_person(person_name, is_pep,
                                             persons_dict, options["real_run"])
-                persons_created_total += 1
+                if person:
+                    persons_created_total += 1
 
             if person:
                 edrpou = unicode(candidate.smida_edrpou).rjust(8, "0")
@@ -109,18 +108,15 @@ class Command(BaseCommand):
                 if options["real_run"]:
                     p2c.save()
 
-        self.stdout.write(
-            "Finished import Persons and Person2Company relations.\n"
-            "Created new persons {}.\nCreated P2C links {}."
-            .format(persons_created_total, p2c_links_total)
-        )
+        self.stdout.write("Finished import Persons and Person2Company relations.")
         # endregion
 
         # region Create P2P connections
         p2p_links_total = 0
         heads = self.company_heads_mapping()
 
-        for candidate in smida_candidates.nocache().iterator():
+        for candidate in tqdm(smida_candidates.nocache().iterator(),
+                              total=smida_candidates.count()):
             edrpou = unicode(candidate.smida_edrpou).rjust(8, "0")
             person_name = candidate.smida_parsed_name
 
@@ -142,6 +138,9 @@ class Command(BaseCommand):
                                " as unique person".format(head))
                     continue
 
+                if from_person == to_person:
+                    continue
+
                 p2p = Person2Person(from_person=from_person,
                                     to_person=to_person,
                                     from_relationship_type="ділові зв'язки",
@@ -157,12 +156,21 @@ class Command(BaseCommand):
                 if options["real_run"]:
                     p2p.save()
 
-        self.stdout.write(
-            "Finished import Person2Person relations.\n"
-            "Total P2P links created {}."
-                .format(persons_created_total, p2p_links_total)
-        )
+        self.stdout.write("Finished import Person2Person relations.")
         # endregion
+
+        self.stdout.write(
+            "Found existing companies: {}.\n"
+            "Created new companies: {}.\n"
+            "Created new persons: {}.\n"
+            "Created P2C links: {}.\n"
+            "Created P2P links: {}."
+                .format(matched_companies_total,
+                        created_companies_total,
+                        persons_created_total,
+                        p2c_links_total,
+                        p2p_links_total)
+        )
 
     def create_person(self, person_name, is_pep, created_persons, real_run=False):
         qs = Person.objects.all()
