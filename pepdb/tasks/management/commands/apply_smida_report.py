@@ -175,10 +175,16 @@ class Command(BaseCommand):
     def create_person(self, person_name, is_pep, created_persons, real_run=False):
         qs = Person.objects.all()
 
-        for term in person_name.split():
-            qs = qs.filter(Q(first_name_uk__icontains=term) |
-                           Q(last_name_uk__icontains=term) |
-                           Q(patronymic_uk__icontains=term))
+        names = [n.strip() for n in person_name.split()]
+        if len(names) < 2:
+            tqdm.write("Can not split name: {}".format(person_name))
+            return
+
+        qs = qs.filter(last_name_uk__icontains=names[0],
+                       first_name_uk__icontains=names[1])
+
+        if len(names) == 3:
+            qs = qs.filter(patronymic_uk__icontains=names[2])
 
         name_matches = qs.nocache().count()
 
@@ -189,11 +195,6 @@ class Command(BaseCommand):
         if name_matches == 0:
             tqdm.write("No matches for: {}. Person will be created"
                        .format(person_name))
-            names = person_name.split()
-
-            if len(names) < 2:
-                tqdm.write("Can not split name: {}".format(person_name))
-                return
 
             # Create new person
             person = Person(
