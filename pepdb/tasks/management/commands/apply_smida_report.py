@@ -113,7 +113,7 @@ class Command(BaseCommand):
         for candidate in tqdm(smida_candidates.nocache().iterator(),
                               total=smida_candidates.count()):
             person_name = candidate.smida_parsed_name
-            is_pep = person_name in peps
+            is_pep = person_name.strip().lower() in peps
 
             person = persons_dict.get(person_name)
             if not person:
@@ -273,8 +273,8 @@ class Command(BaseCommand):
         return companies_heads_dict
 
     def all_peps_names(self):
-        return list(SMIDACandidate.objects.filter(status="a",
+        return [name.strip().lower() for name in SMIDACandidate.objects.filter(status="a",
                                                   smida_is_real_person=True,
                                                   smida_position_class="h")
                     .values_list("smida_parsed_name", flat=True)
-                    .distinct("smida_parsed_name"))
+                    .distinct("smida_parsed_name")]
