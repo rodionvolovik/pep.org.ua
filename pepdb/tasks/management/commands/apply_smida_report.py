@@ -297,29 +297,30 @@ class Command(BaseCommand):
 
         elif p2c.date_established:
             # try to match by regex
+            years = None
             match = re.search(r'(^\d$|^\d\D|\D\d р)', termin_obr)
             if match and match.group(1):
                 years = filter(lambda x: x.isdigit() and x != "0", match.group(1))
 
-                if not years:
-                    # try find in dictionary
-                    for k, v in DT_LENGTH_MAP.items():
-                        if k in termin_obr:
-                            years = v
-                            break
+            if not years:
+                # try find in dictionary
+                for k, v in DT_LENGTH_MAP.items():
+                    if k in termin_obr:
+                        years = v
+                        break
 
-                if years:
-                    dt = p2c.date_established
-                    p2c.date_finished = dt.replace(year=dt.year + int(years))
+            if years:
+                dt = p2c.date_established
+                p2c.date_finished = dt.replace(year=dt.year + int(years))
 
 DT_LENGTH_MAP = {
-    'дин рiк': 1,
-    'один рiк': 1,
-    'два роки': 2,
-    'три роки': 3,
-    '3(три) роки': 3,
-    'чотири роки': 4,
-    'п\'ять рокiв': 5,
-    'п’ять рокiв': 5,
-    'п"ять рокiв': 5
+    u'дин рiк': 1,
+    u'один рiк': 1,
+    u'два роки': 2,
+    u'три роки': 3,
+    u'3(три) роки': 3,
+    u'чотири роки': 4,
+    u'п\'ять рокiв': 5,
+    u'п’ять рокiв': 5,
+    u'п"ять рокiв': 5
 }
