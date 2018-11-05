@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import re
 from collections import defaultdict
 
 from tqdm import tqdm
@@ -142,12 +143,22 @@ class Command(BaseCommand):
                                          relationship_type=relationship_type,
                                          is_employee=True)
 
+                    dat_obr = candidate.matched_json.get("DAT_OBR") or ""
+                    if dat_obr:
+                        p2c.date_established = dt_parse(dat_obr)
+
+                    termin_obr = candidate.matched_json.get("TERM_OBR") or ""
+                    if termin_obr:
+                        self.try_set_p2p_date_finished(p2c, termin_obr)
+
                     p2c_links_total += 1
-                    tqdm.write("Created P2C relation: id: {} ({}) <=> id: {} ({})"
+                    tqdm.write("Created P2C relation: id: {} ({}) <=> id: {} ({}) EST. {}, FIN. {}"
                                .format(person.id or "N/A",
                                        person_name,
                                        company.id or "N/A",
-                                       company.name_uk))
+                                       company.name_uk,
+                                       p2c.date_established or "N/A",
+                                       p2c.date_finished or "N/A"))
 
                     if options["real_run"]:
                         p2c.save()
@@ -278,3 +289,38 @@ class Command(BaseCommand):
                                                   smida_position_class="h")
                     .values_list("smida_parsed_name", flat=True)
                     .distinct("smida_parsed_name")]
+
+    def try_set_p2p_date_finished(self, p2c, termin_obr):
+        match = re.search(r'(\d{2}\.\d{2}\.\d{4})', termin_obr)
+        if match and match.group(1):
+            p2c.date_finished = dt_parse(match.group(1))
+
+        elif p2c.date_established:
+            # try to match by regex
+            years = None
+            match = re.search(r'(^\d$|^\d\D|\D\d р)', termin_obr)
+            if match and match.group(1):
+                years = filter(lambda x: x.isdigit() and x != "0", match.group(1))
+
+            if not years:
+                # try find in dictionary
+                for k, v in DT_LENGTH_MAP.items():
+                    if k in termin_obr:
+                        years = v
+                        break
+
+            if years:
+                dt = p2c.date_established
+                p2c.date_finished = dt.replace(year=dt.year + int(years))
+
+DT_LENGTH_MAP = {
+    u'дин рiк': 1,
+    u'один рiк': 1,
+    u'два роки': 2,
+    u'три роки': 3,
+    u'3(три) роки': 3,
+    u'чотири роки': 4,
+    u'п\'ять рокiв': 5,
+    u'п’ять рокiв': 5,
+    u'п"ять рокiв': 5
+}
