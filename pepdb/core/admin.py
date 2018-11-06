@@ -331,6 +331,7 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
         extra_context = extra_context or {}
         extra_context['person2person_rels'] = json.dumps(
             Person2Person._relationships_explained)
+
         extra_context['person2company_rels'] = json.dumps(
             Person2Company._relationships_explained)
 
@@ -618,6 +619,10 @@ class CountryAdmin(TranslationAdmin):
         localized_fields(["name"], langs=settings.LANGUAGE_CODES) +
         ["iso2", "iso3", "is_jurisdiction"]
     )
+
+    list_display_links = ("iso2",)
+    list_editable = localized_fields(["name"])
+    search_fields = localized_fields(["name"])
 
 
 class DocumentAdmin(TranslationAdmin):

@@ -24,7 +24,18 @@ from dateutil.parser import parse as dt_parse
 from core.fields import RedactorField
 from core.model.base import AbstractNode
 from core.model.translations import Ua2EnDictionary
-from core.utils import render_date, lookup_term, parse_fullname, translate_into, ceil_date, localized_fields, localized_field
+from core.utils import (
+    render_date,
+    lookup_term,
+    parse_fullname,
+    translate_into,
+    ceil_date,
+    localized_fields,
+    localized_field,
+    get_localized_field,
+    translit_from,
+    translate_through_dict,
+)
 from core.model.declarations import Declaration
 from core.model.connections import Person2Person, Person2Company, Person2Country
 
@@ -224,18 +235,29 @@ class Person(models.Model, AbstractNode):
         # you are sorting in decreasing order. So without exclude clause this
         # query will return the positions without both dates on the top of the
         # list
-        qs = self.person2company_set.order_by(
-            "-is_employee", "-date_finished", "-date_established") \
-            .exclude(
-                date_finished__isnull=True,  # AND!
-                date_established__isnull=True) \
-            .exclude(relationship_type_uk="Клієнт банку") \
-            .prefetch_related("to_company") \
+        base_qs = (
+            self.person2company_set.prefetch_related("to_company")
+            .exclude(**{localized_field("relationship_type"): "Клієнт банку"})
             .only(
-                "to_company__short_name_uk", "to_company__name_uk",
-                "to_company__short_name_en", "to_company__name_en",
-                "to_company__id", "relationship_type_uk", "relationship_type_en",
-                "date_finished", "date_finished_details")
+                *(
+                    ["to_company__id", "date_finished", "date_finished_details"]
+                    + localized_fields(
+                        [
+                            "to_company__short_name",
+                            "to_company__name",
+                            "relationship_type",
+                        ],
+                        langs=settings.LANGUAGE_CODES
+                    )
+                )
+            )
+        )
+
+        qs = base_qs.order_by(
+            "-is_employee", "-date_finished", "-date_established"
+        ).exclude(
+            date_finished__isnull=True, date_established__isnull=True  # AND!
+        )
 
         if qs:
             return qs
@@ -244,16 +266,11 @@ class Person(models.Model, AbstractNode):
         # has finished date set to null or the most recent one.
         # In contrast with previous query it'll also return those positions
         # where date_finished and date_established == null.
-        qs = self.person2company_set.order_by(
-            "-is_employee", "-date_finished").prefetch_related("to_company") \
-            .exclude(relationship_type_uk="Клієнт банку") \
-            .only(
-                "to_company__short_name_uk", "to_company__name_uk",
-                "to_company__short_name_en", "to_company__name_en",
-                "to_company__id", "relationship_type_uk", "relationship_type_en",
-                "date_finished", "date_finished_details")
+        qs = base_qs.order_by("-is_employee", "-date_finished")
 
         return qs
+
+
 
     @property
     def day_of_dismissal(self):
@@ -264,79 +281,48 @@ class Person(models.Model, AbstractNode):
             return False
 
     def _last_workplace_from_declaration(self):
-        return Declaration.objects.filter(person=self, confirmed="a").exclude(doc_type="Кандидата на посаду").order_by(
-            "-nacp_declaration", "-year").only(
-            "year", "office_en", "position_en", "office_uk", "position_uk", "url")[:1]
+        return (
+            Declaration.objects.filter(person=self, confirmed="a")
+            .exclude(doc_type="Кандидата на посаду")
+            .order_by("-nacp_declaration", "-year")
+            .only(*(["year", "url"] + localized_fields(["office", "position"], langs=settings.LANGUAGE_CODES)))[:1]
+        )
+
+    def last_workplace_in_lang(self, lang):
+        qs = self._last_workplace()
+        if qs:
+            l = qs[0]
+            return {
+                "company": get_localized_field(l.to_company, "short_name", lang) or get_localized_field(l.to_company, "name", lang),
+                "company_id": l.to_company.pk,
+                "position": get_localized_field(l, "relationship_type", lang)
+            }
+        else:
+            qs = self._last_workplace_from_declaration()
+            if qs:
+                d = qs[0]
+                return {
+                    "company": get_localized_field(d, "office", lang),
+                    "company_id": None,
+                    "position": get_localized_field(d, "position", lang)
+                }
+
+        return ""
 
     @property
+    # Deprecated
     def last_workplace(self):
-        qs = self._last_workplace()
-        if qs:
-            l = qs[0]
-            return {
-                "company": l.to_company.short_name_uk or l.to_company.name_uk,
-                "company_id": l.to_company.pk,
-                "position": l.relationship_type_uk
-            }
-        else:
-            qs = self._last_workplace_from_declaration()
-            if qs:
-                d = qs[0]
-                return {
-                    "company": d.office_uk,
-                    "company_id": None,
-                    "position": d.position_uk
-                }
+        return self.last_workplace_in_lang(settings.LANGUAGE_CODE)
 
-        return ""
-
-    # Fuuugly hack
     @property
+    # Deprecated
     def last_workplace_en(self):
-        qs = self._last_workplace()
-        if qs:
-            l = qs[0]
-
-            return {
-                "company": l.to_company.short_name_en or l.to_company.name_en,
-                "company_id": l.to_company.pk,
-                "position": l.relationship_type_en
-            }
-        else:
-            qs = self._last_workplace_from_declaration()
-            if qs:
-                d = qs[0]
-                return {
-                    "company": d.office_en,
-                    "company_id": None,
-                    "position": d.position_en
-                }
-
-        return ""
+        return self.last_workplace_in_lang("en")
 
     # Fuuugly hack
     @property
     def translated_last_workplace(self):
-        qs = self._last_workplace()
-        if qs:
-            l = qs[0]
-
-            return {
-                "company": l.to_company.short_name or l.to_company.name,
-                "company_id": l.to_company.pk,
-                "position": l.relationship_type
-            }
-        else:
-            qs = self._last_workplace_from_declaration()
-            if qs:
-                d = qs[0]
-                return {
-                    "company": d.office,
-                    "company_id": None,
-                    "position": d.position
-                }
-
-        return ""
+        return self.last_workplace_in_lang(get_language())
 
     @property
     def workplaces(self):
@@ -532,9 +518,10 @@ class Person(models.Model, AbstractNode):
             d["last_job_title"] = last_workplace["position"]
             d["last_job_id"] = last_workplace["company_id"]
 
-            last_workplace_en = self.last_workplace_en
-            d["last_workplace_en"] = last_workplace_en["company"]
-            d["last_job_title_en"] = last_workplace_en["position"]
+            for lang in settings.LANGUAGE_CODES:
+                last_workplace_translated = self.last_workplace_in_lang(lang)
+                d[localized_field("last_workplace", lang)] = last_workplace_translated["company"]
+                d[localized_field("last_job_title", lang)] = last_workplace_translated["position"]
 
         for lang in settings.LANGUAGE_CODES:
             d[localized_field("type_of_official", lang)] = translate_into(
@@ -604,32 +591,19 @@ class Person(models.Model, AbstractNode):
         return settings.SITE_URL + self.localized_url("uk")
 
     def save(self, *args, **kwargs):
-        if self.first_name_uk:
-            self.first_name_en = translitua(self.first_name_uk)
-        else:
-            self.first_name_en = ""
+        for lang in settings.LANGUAGE_CODES:
+            if lang == settings.LANGUAGE_CODE:
+                continue
 
-        if self.last_name_uk:
-            self.last_name_en = translitua(self.last_name_uk)
-        else:
-            self.last_name_en = ""
+            for field in ["first_name", "last_name", "patronymic", "also_known_as"]:
+                val = get_localized_field(self, field, settings.LANGUAGE_CODE)
+                setattr(self, localized_field(field, lang), translit_from(val or "", settings.LANGUAGE_CODE))
 
-        if self.patronymic_uk:
-            self.patronymic_en = translitua(self.patronymic_uk)
-        else:
-            self.patronymic_en = ""
+            if localized_field("city_of_birth", settings.LANGUAGE_CODE) and not localized_field("city_of_birth", lang):
+                val = translate_through_dict(localized_field("city_of_birth", lang), settings.LANGUAGE_CODE, lang)
 
-        if self.also_known_as_uk:
-            self.also_known_as_en = translitua(self.also_known_as_uk)
-        else:
-            self.also_known_as_en = ""
-
-        if self.city_of_birth_uk and not self.city_of_birth_en:
-            t = Ua2EnDictionary.objects.filter(
-                term__iexact=lookup_term(self.city_of_birth_uk)).first()
-
-            if t and t.translation:
-                self.city_of_birth_en = t.translation
+                if val is not None:
+                    setattr(self, localized_field("city_of_birth", lang), val)
 
         super(Person, self).save(*args, **kwargs)
 

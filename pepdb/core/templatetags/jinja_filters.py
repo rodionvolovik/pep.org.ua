@@ -4,9 +4,13 @@ from __future__ import unicode_literals
 from itertools import groupby
 
 from django.utils.safestring import mark_safe
+from django.utils.translation import get_language
+from django.conf import settings
 from django_markdown.utils import markdown as _markdown
 from django_jinja import library
 from jinja2.filters import _GroupTuple
+import jinja2
+from core.utils import get_localized_field
 
 
 @library.filter
@@ -78,3 +82,18 @@ def groupbyandsort(value, attribute, reverse):
     ]
 
     return sorted(grouped, key=lambda x: len(x.list), reverse=reverse)
+
+
+@library.filter
+def translated(value, field, fallback=True):
+    lang = get_language()
+    val = get_localized_field(value, field, lang)
+    if val or not fallback:
+        return val
+    else:
+        return get_localized_field(value, field, settings.LANGUAGE_CODE)
+    
+
+@library.filter
+def translate_into(value, field, lang):
+    return get_localized_field(value, field, lang)

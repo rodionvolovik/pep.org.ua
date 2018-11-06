@@ -46,16 +46,18 @@
                     </div>
                 {% endif %}
             {% else %}
-                <h2 class="text-center look-here track-ga-event" data-ga-event-category="search" data-ga-event-action="search-gave-no-results" data-ga-event-label="{{ query }}">{{ _("Станом на") }} {{ today|date }} {{ _("інформація про фізичну особу") }} «{{ query }}» {{ _("в Реєстрі відсутня") }}</h2>
+                {% if "person" in sources %}
+                    <h2 class="text-center look-here track-ga-event" data-ga-event-category="search" data-ga-event-action="search-gave-no-results" data-ga-event-label="{{ query }}">{{ _("Станом на") }} {{ today|date }} {{ _("інформація про фізичну особу") }} «{{ query }}» {{ _("в Реєстрі відсутня") }}</h2>
 
-                {% if suggested_person %}
-                    <h4 class="text-center">{{ _("можливо ви шукали") }}
-                        <a href="{{ url("person_details", person_id=suggested_person.id) }}" class="track-ga-event track-ga-event-click" data-ga-event-category="search" data-ga-event-action="suggested_person" data-ga-event-label="{{ suggested_person.translated_last_name }} {{ suggested_person.translated_first_name }} {{ suggested_person.translated_patronymic }}">
-                            “{{ suggested_person.translated_last_name }}
-                            {{ suggested_person.translated_first_name }}
-                            {{ suggested_person.translated_patronymic }}”</a>?
-                    </h4>
-                {% endif %}                
+                    {% if suggested_person %}
+                        <h4 class="text-center">{{ _("можливо ви шукали") }}
+                            <a href="{{ url("person_details", person_id=suggested_person.id) }}" class="track-ga-event track-ga-event-click" data-ga-event-category="search" data-ga-event-action="suggested_person" data-ga-event-label="{{ suggested_person.translated_last_name }} {{ suggested_person.translated_first_name }} {{ suggested_person.translated_patronymic }}">
+                                “{{ suggested_person.translated_last_name }}
+                                {{ suggested_person.translated_first_name }}
+                                {{ suggested_person.translated_patronymic }}”</a>?
+                        </h4>
+                    {% endif %}
+                {% endif %}
             {% endif %}
 
             {% if companies %}

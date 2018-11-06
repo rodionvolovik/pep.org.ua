@@ -26,7 +26,7 @@ from cryptography.fernet import InvalidToken
 
 from core.models import Person, Declaration, Country, Company, ActionLog
 from core.pdf import pdf_response
-from core.utils import is_cyr, add_encrypted_url, unique, blacklist
+from core.utils import is_cyr, add_encrypted_url, unique, blacklist, localized_field, localized_fields, get_localized_field
 from core.paginator import paginated_search
 from core.forms import FeedbackForm
 from core.auth import logged_in_or_basicauth
@@ -37,12 +37,9 @@ from core.elastic_models import Person as ElasticPerson, Company as ElasticCompa
 
 
 def suggest(request):
-    if translation.get_language() == "en":
-        field = "full_name_en"
-        company_field = "name_suggest_output_en"
-    else:
-        field = "full_name"
-        company_field = "name_suggest_output"
+    lang = translation.get_language()
+    field = localized_field("full_name", lang)
+    company_field = localized_field("name_suggest_output", lang)
 
     def assume(q, fuzziness):
         results = []
@@ -127,12 +124,8 @@ def search(request, sources=("persons", "companies")):
             query=query,
             operator="and",
             fields=[
-                "full_name",
                 "names",
-                "full_name_en",
-                "also_known_as_uk",
-                "also_known_as_en",
-            ],
+            ] + localized_fields(["full_name", "also_known_as"], langs=settings.LANGUAGE_CODES),
         )
 
         # Special case when we were looking for one exact person and found it.
@@ -145,7 +138,7 @@ def search(request, sources=("persons", "companies")):
             "multi_match",
             query=query,
             operator="and",
-            fields=["short_name_en", "short_name_uk", "name_en", "name_uk"],
+            fields=localized_fields(["short_name", "name"], langs=settings.LANGUAGE_CODES),
         )
 
         # Special case when we were looking for one exact company and found it.
@@ -175,15 +168,12 @@ def search(request, sources=("persons", "companies")):
 
 def _search_person(request):
     query = request.GET.get("q", "")
-    _fields = [
-        "full_name^3",
-        "names^2",
-        "full_name_en^3",
-        "also_known_as_uk^2",
-        "also_known_as_en^2",
-        "related_persons.person_uk",
-        "related_persons.person_en",
-    ]
+    _fields = ["names^2"]
+
+    for lang in settings.LANGUAGE_CODES:
+        _fields.append(localized_field("full_name", lang) + "^3")
+        _fields.append(localized_field("also_known_as", lang) + "^2")
+        _fields.append(localized_field("related_persons.person", lang))
 
     if query:
         persons = ElasticPerson.search().query(
@@ -196,27 +186,29 @@ def _search_person(request):
     else:
         persons = ElasticPerson.search().query("match_all")
 
-    return paginated_search(
-        request,
-        persons.highlight(
-            "related_persons.person_uk", order="score", pre_tags=[""], post_tags=[""]
-        ).highlight(
-            "related_persons.person_en", order="score", pre_tags=[""], post_tags=[""]
-        ),
-        settings.CATALOG_PER_PAGE * 2,
-    )
+    for lang in settings.LANGUAGE_CODES:
+        persons = persons.highlight(
+            localized_field("related_persons.person", lang),
+            order="score",
+            pre_tags=[""],
+            post_tags=[""],
+        )
+
+    return paginated_search(request, persons, settings.CATALOG_PER_PAGE * 2)
 
 
 def _suggest_person(request):
     query = request.GET.get("q", "")
     if query:
         _fields = [
-            "full_name^3",
             "names^2",
-            "full_name_en^3",
-            "also_known_as_uk^2",
-            "also_known_as_en^2"
         ]
+
+        for lang in settings.LANGUAGE_CODES:
+            _fields.append(localized_field("full_name", lang) + "^3")
+            _fields.append(localized_field("also_known_as", lang) + "^2")
+            _fields.append(localized_field("related_persons.person", lang))
+
 
         persons = ElasticPerson.search().query(
             Q(
@@ -235,12 +227,6 @@ def _suggest_person(request):
 def _search_company(request):
     query = request.GET.get("q", "")
     _fields = [
-        "name_uk",
-        "short_name_uk",
-        "name_en",
-        "short_name_en",
-        "related_persons.person_uk",
-        "related_persons.person_en",
         "other_founders",
         "other_recipient",
         "other_owners",
@@ -248,7 +234,9 @@ def _search_company(request):
         "bank_name",
         "edrpou",
         "code_chunks",
-    ]
+    ] + localized_fields(
+        ["name", "short_name", "related_persons.person"], langs=settings.LANGUAGE_CODES
+    )
 
     if query:
         companies = ElasticCompany.search().query(
@@ -268,56 +256,12 @@ def _search_company(request):
     else:
         companies = ElasticCompany.search().query("match_all")
 
-    return paginated_search(
-        request,
-        # We are using highlight here to find which exact related person
-        # caused the match to show it in the person's card on the top of the
-        # list. Check Person.relevant_related_persons method for details
-        companies.highlight(
-            "related_persons.person_uk", order="score", pre_tags=[""], post_tags=[""]
-        ).highlight(
-            "related_persons.person_en", order="score", pre_tags=[""], post_tags=[""]
-        ),
-    )
-
-
-def _search_related(request):
-    query = request.GET.get("q", "")
-    _fields = ["related_persons.person_uk", "related_persons.person_en"]
-    _fields_pep = ["full_name", "names"]
-
-    if query:
-        all_related = Q("multi_match", query=query, operator="and", fields=_fields)
-
-        non_peps = Q(
-            "multi_match", query=query, operator="and", fields=_fields_pep
-        ) & Q("match", is_pep=False)
-
-        related_persons = ElasticPerson.search().query(all_related | non_peps)
-
-        if related_persons.count() == 0:
-            # PLAN B, PLAN B
-            all_related = Q(
-                "multi_match",
-                query=query,
-                operator="or",
-                minimum_should_match="2",
-                fields=_fields,
-            )
-
-            non_peps = Q(
-                "multi_match",
-                query=query,
-                operator="or",
-                minimum_should_match="2",
-                fields=_fields_pep,
-            ) & Q("match", is_pep=False)
-
-            related_persons = ElasticPerson.search().query(all_related | non_peps)
-
-    else:
-        related_persons = (
-            ElasticPerson.search().query("match_all").filter("term", is_pep=False)
+    for lang in settings.LANGUAGE_CODES:
+        companies = companies.highlight(
+            localized_field("related_persons.person", lang),
+            order="score",
+            pre_tags=[""],
+            post_tags=[""],
         )
 
     return paginated_search(
@@ -325,11 +269,7 @@ def _search_related(request):
         # We are using highlight here to find which exact related person
         # caused the match to show it in the person's card on the top of the
         # list. Check Person.relevant_related_persons method for details
-        related_persons.highlight(
-            "related_persons.person_uk", order="score", pre_tags=[""], post_tags=[""]
-        ).highlight(
-            "related_persons.person_en", order="score", pre_tags=[""], post_tags=[""]
-        ),
+        companies,
     )
 
 
@@ -343,9 +283,9 @@ def person_details(request, person_id):
     }
 
     full_name = "%s %s %s" % (
-        person.last_name_uk,
-        person.first_name_uk,
-        person.patronymic_uk,
+        person.last_name,
+        person.first_name,
+        person.patronymic,
     )
 
     if is_cyr(full_name):
@@ -386,8 +326,11 @@ def countries(request, sources=("persons", "companies"), country_id=None):
         else:
             persons = ElasticPerson.search().query(
                 "match",
-                related_countries__to_country_uk={
-                    "query": country.name_uk, "operator": "and"
+                **{
+                    localized_field("related_countries__to_country"): {
+                        "query": get_localized_field(country, "name"),
+                        "operator": "and",
+                    }
                 }
             )
 
@@ -397,8 +340,11 @@ def countries(request, sources=("persons", "companies"), country_id=None):
         else:
             companies = ElasticCompany.search().query(
                 "match",
-                related_countries__to_country_uk={
-                    "query": country.name_uk, "operator": "and"
+                **{
+                    localized_field("related_countries__to_country"): {
+                        "query": get_localized_field(country, "name"),
+                        "operator": "and",
+                    }
                 }
             )
 
@@ -418,9 +364,9 @@ def company_details(request, company_id):
     company = get_object_or_404(Company, pk=company_id)
     context = {"company": company}
 
-    if is_cyr(company.name_uk):
+    if is_cyr(company.name):
         context["filename"] = translit(
-            company.name_uk.lower().strip().replace(" ", "_").replace("\n", "")
+            company.name.lower().strip().replace(" ", "_").replace("\n", "")
         )
     else:
         context["filename"] = company.pk

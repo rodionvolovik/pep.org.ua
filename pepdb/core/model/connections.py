@@ -141,40 +141,40 @@ class Person2Person(AbstractRelationship):
 
 class Person2Company(AbstractRelationship):
     _relationships_explained = [
-        _("Президент"),
-        _("Прем’єр-міністр"),
-        _("Міністр"),
-        _("Перший заступник міністра"),
-        _("Заступник міністра"),
-        _("Керівник"),
-        _("Перший заступник керівника"),
-        _("Заступник керівника"),
-        _("Народний депутат"),
-        _("Голова"),
-        _("Заступник Голови"),
-        _("Перший заступник Голови"),
-        _("Член Правління"),
-        _("Член Ради"),
-        _("Суддя"),
-        _("Член"),
-        _("Генеральний прокурор"),
-        _("Заступник Генерального прокурора"),
-        _("Надзвичайний і повноважний посол"),
-        _("Головнокомандувач"),
-        _("Службовець першої категорії посад"),
-        _("Член центрального статутного органу"),
-        _("Повірений у справах"),
-        _("Засновник/учасник"),
-        _("Колишній засновник/учасник"),
-        _("Бенефіціарний власник"),
-        _("Номінальний власник"),
-        _("Номінальний директор"),
-        _("Фінансові зв'язки"),
-        _("Секретар"),
-        _("Керуючий"),
-        _("Контролер"),
-        _("Клієнт"),
-        _("Клієнт банку"),
+        __("Президент"),
+        __("Прем’єр-міністр"),
+        __("Міністр"),
+        __("Перший заступник міністра"),
+        __("Заступник міністра"),
+        __("Керівник"),
+        __("Перший заступник керівника"),
+        __("Заступник керівника"),
+        __("Народний депутат"),
+        __("Голова"),
+        __("Заступник Голови"),
+        __("Перший заступник Голови"),
+        __("Член Правління"),
+        __("Член Ради"),
+        __("Суддя"),
+        __("Член"),
+        __("Генеральний прокурор"),
+        __("Заступник Генерального прокурора"),
+        __("Надзвичайний і повноважний посол"),
+        __("Головнокомандувач"),
+        __("Службовець першої категорії посад"),
+        __("Член центрального статутного органу"),
+        __("Повірений у справах"),
+        __("Засновник/учасник"),
+        __("Колишній засновник/учасник"),
+        __("Бенефіціарний власник"),
+        __("Номінальний власник"),
+        __("Номінальний директор"),
+        __("Фінансові зв'язки"),
+        __("Секретар"),
+        __("Керуючий"),
+        __("Контролер"),
+        __("Клієнт"),
+        __("Клієнт банку"),
     ]
 
     from_person = models.ForeignKey("Person")
@@ -346,24 +346,33 @@ class Company2Company(AbstractRelationship):
         return self._relationships_mapping.get(self.relationship_type)
 
     def to_dict(self):
-        return {
+        res = {
             "date_established": self.date_established_human,
             "date_finished": self.date_finished_human,
             "date_confirmed": self.date_confirmed_human,
-            "relationship_type": self.relationship_type,
             "state_company": self.to_company.state_company,
-            "company": self.to_company.name
         }
 
+        for lang in settings.LANGUAGE_CODES:
+            res[localized_field("company", lang)] = getattr(self.to_company, localized_field("name", lang))
+            res[localized_field("relationship_type", lang)] = translate_into(self.relationship_type, lang)
+
+        return res
+
     def to_dict_reverse(self):
-        return {
+        res = {
             "date_established": self.date_established_human,
             "date_finished": self.date_finished_human,
             "date_confirmed": self.date_confirmed_human,
-            "relationship_type": self.relationship_type,
             "state_company": self.from_company.state_company,
-            "company": self.from_company.name
         }
+
+        for lang in settings.LANGUAGE_CODES:
+            res[localized_field("company", lang)] = getattr(self.from_company, localized_field("name", lang))
+            res[localized_field("relationship_type", lang)] = translate_into(self.relationship_type, lang)
+
+        return res
+
 
     class Meta:
         verbose_name = _("Зв'язок з компанією")
@@ -394,14 +403,18 @@ class Person2Country(AbstractRelationship):
             self.get_relationship_type_display(), self.to_country)
 
     def to_dict(self):
-        return {
+        res = {
             "date_established": self.date_established_human,
             "date_finished": self.date_finished_human,
             "date_confirmed": self.date_confirmed_human,
+            # TODO
             "relationship_type": self.relationship_type,
-            "to_country_en": self.to_country.name_en,
-            "to_country_uk": self.to_country.name_uk
         }
+
+        for lang in settings.LANGUAGE_CODES:
+            res[localized_field("to_country", lang)] = getattr(self.to_country, localized_field("name", lang))
+
+        return res
 
     class Meta:
         verbose_name = _("Зв'язок з країною")
@@ -425,14 +438,19 @@ class Company2Country(AbstractRelationship):
         blank=False)
 
     def to_dict(self):
-        return {
+        res = {
             "date_established": self.date_established_human,
             "date_finished": self.date_finished_human,
             "date_confirmed": self.date_confirmed_human,
+
+            # TODO
             "relationship_type": self.relationship_type,
-            "to_country_en": self.to_country.name_en,
-            "to_country_uk": self.to_country.name_uk
         }
+
+        for lang in settings.LANGUAGE_CODES:
+            res[localized_field("to_country", lang)] = getattr(self.to_country, localized_field("name", lang))
+
+        return res
 
     def __unicode__(self):
         return "%s у %s" % (

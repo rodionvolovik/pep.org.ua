@@ -82,7 +82,7 @@
                 <div class="collapse navbar-collapse navbar-ex1-collapse pull-right">
                     <div id="languageSelect" class="dropdown asSelect pull-right">
                     <button class="dropdown-toggle" type="button" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        <span class="btn-text"><img src="{{ static("images/" + LANGUAGE_CODE + ".png") }}" /></span>                        
+                        <span class="btn-text"><img src="{{ static("images/" + LANGUAGE_CODE + ".png") }}" width="20" height="14" /></span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
                         {% for lang in LANGUAGES %}
@@ -96,7 +96,7 @@
                                     <input type="hidden" name="next" value="/" />
                                 {% endif %}
                                 <input type="hidden" name="language" value="{{ lang.0 }}" />
-                                <button><img src="{{ static("images/" + lang[0] + ".png") }}" /></button>
+                                <button><img src="{{ static("images/" + lang[0] + ".png") }}"  width="20" height="14" /></button>
                             </form>
                         </li>
                         {% endfor %}

@@ -17,6 +17,7 @@ import gspread
 from dateutil import parser, relativedelta
 from rfc6266 import parse_requests_response
 from oauth2client.client import SignedJwtAssertionCredentials
+from translitua import translitua, UkrainianKMU, RussianInternationalPassport
 
 import logging
 logger = logging.getLogger(__name__)
@@ -505,6 +506,10 @@ def localized_field(field_name, lang=settings.LANGUAGE_CODE):
     return "{}_{}".format(field_name, lang)
 
 
+def get_localized_field(obj, field_name, lang=settings.LANGUAGE_CODE):
+    return getattr(obj, localized_field(field_name, lang))
+
+
 def localized_fields(field_names, langs=None):
     if langs is None:
         langs = [settings.LANGUAGE_CODE]
@@ -522,3 +527,34 @@ def localized_field_map(field_name):
         mp[lang] = localized_field(field_name, lang)
 
     return mp
+
+
+def translit_from(value, lang):
+    assert lang in ["ru", "uk", "en"]
+
+    if lang == "ru":
+        return translitua(value, RussianInternationalPassport)
+    elif lang == "uk":
+        return translitua(value, UkrainianKMU)
+    elif lang == "en":
+        return value
+
+
+def translate_through_dict(value, from_lang, to_lang):
+    # Temporary workaround that is going to stay here forever
+
+    assert to_lang in ["en", "ru"]
+
+    from core.models import Ua2EnDictionary, Ua2RuDictionary
+
+    if to_lang == "en":
+        model = Ua2EnDictionary
+    elif to_lang == "ru":
+        model = Ua2RuDictionary
+
+    t = model.objects.filter(term__iexact=lookup_term(value)).first()
+
+    if t and t.translation:
+        return t.translation
+
+    return None

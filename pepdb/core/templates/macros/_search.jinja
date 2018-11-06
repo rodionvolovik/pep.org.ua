@@ -40,14 +40,14 @@
                     <p>
                         {% for rel in relevant_related_persons %}
                             <span>{{ _("Зв'язок") }}:</span> {% if rel.relationship_type %}{{ _(rel.relationship_type) }}, {% endif %}
-                            {% if LANGUAGE_CODE =="en" %}{{ rel.person_en }}{% else %}{{ rel.person_uk }}{% endif %}<br />
+                            {{ rel|translated("person") }}<br />
                         {% endfor %}
                     </p>
                     {% endif %}
                 {% endif %}
                 {% if p.terminated %}
                     <p class="non-pep-info{% if p.died %} dead-pep-info{% endif %}">
-                        <span>{{ p.termination_date_human }}</span> {{ _(p.reason_of_termination) }}
+                        <span>{{ p.termination_date_human }}</span> {{ _(p|translated("reason_of_termination")) }}
                     </p>
                 {% endif %}
                 {#% if p.risk_category %}
@@ -86,14 +86,9 @@
                 <p>
                     {% for rel in relevant_related_persons %}
                         <span>{{ _("Зв'язок") }}:</span>
-                        {% if LANGUAGE_CODE =="en" %}
-                            {# fugly! #}
-                            {% if rel.relationship_type_en or rel.relationship_type_uk %}{{ rel.relationship_type_en|default(rel.relationship_type_uk) }}, {% endif %}
-                            {{ rel.person_en }}
-                        {% else %}
-                            {% if rel.relationship_type_uk %}{{ rel.relationship_type_uk }}, {% endif %}
-                            {{ rel.person_uk }}
-                        {% endif %}<br />
+
+                        {% if rel|translated("relationship_type") %}{{ rel|translated("relationship_type") }}, {% endif %}
+                        {{ rel|translated("person") }}<br />
                     {% endfor %}
                 </p>
                 {% endif %}

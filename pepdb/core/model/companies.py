@@ -18,7 +18,7 @@ from core.fields import RedactorField
 
 from core.model.base import AbstractNode
 from core.model.translations import Ua2EnDictionary
-from core.utils import render_date, lookup_term, translate_into
+from core.utils import render_date, lookup_term, translate_into, localized_fields, localized_field, get_localized_field, translate_through_dict
 from core.model.connections import Company2Company, Company2Country, Person2Company
 
 
@@ -175,11 +175,24 @@ class Company(models.Model, AbstractNode):
         return self.short_name or self.name
 
     def to_dict(self):
-        d = model_to_dict(self, fields=[
-            "id", "name_uk", "short_name_uk", "name_en", "short_name_en",
-            "state_company", "edrpou", "wiki", "city", "street",
-            "other_founders", "other_recipient", "other_owners",
-            "other_managers", "bank_name", "also_known_as"])
+        d = model_to_dict(
+            self,
+            fields=[
+                "id",
+                "state_company",
+                "edrpou",
+                "wiki",
+                "city",
+                "street",
+                "other_founders",
+                "other_recipient",
+                "other_owners",
+                "other_managers",
+                "bank_name",
+                "also_known_as",
+            ]
+            + localized_fields(["name", "short_name"], settings.LANGUAGE_CODES),
+        )
 
         d["related_persons"] = [
             i.to_person_dict()
@@ -197,15 +210,16 @@ class Company(models.Model, AbstractNode):
         ]
 
         d["status"] = self.get_status_display()
-        d["status_en"] = translate_into(self.get_status_display())
+        for lang in settings.LANGUAGE_CODES:
+            d[localized_field("status", lang)] = translate_into(self.get_status_display(), lang)
+
         d["founded"] = self.founded_human
         d["closed"] = self.closed_on_human
         d["last_modified"] = self.last_modified
 
         suggestions = []
 
-        for field in (d["name_uk"], d["short_name_uk"],
-                      d["name_en"], d["short_name_en"]):
+        for field in localized_fields(["name", "short_name"], settings.LANGUAGE_CODES):
             if not field:
                 continue
 
@@ -235,27 +249,26 @@ class Company(models.Model, AbstractNode):
             {"input": x} for x in set(suggestions)
         ]
 
-        d["name_suggest_output"] = d["short_name_uk"] or d["name_uk"]
-        d["name_suggest_output_en"] = d["short_name_en"] or d["name_en"]
+        for lang in settings.LANGUAGE_CODES:
+            d[localized_field("name_suggest_output")] = d[localized_field("short_name")] or d[localized_field("name")]
 
         d["_id"] = d["id"]
 
         return d
 
     def save(self, *args, **kwargs):
-        if not self.name_en:
-            t = Ua2EnDictionary.objects.filter(
-                term__iexact=lookup_term(self.name_uk)).first()
+        for lang in settings.LANGUAGE_CODES:
+            if lang == settings.LANGUAGE_CODE:
+                continue
 
-            if t and t.translation:
-                self.name_en = t.translation
+            for field in ["name", "short_name"]:
+                if not get_localized_field(self, field, lang) or get_localized_field(self, field, lang) == get_localized_field(self, field):
+                    val = translate_through_dict(get_localized_field(self, field), settings.LANGUAGE_CODE, lang)
 
-        if not self.short_name_en:
-            t = Ua2EnDictionary.objects.filter(
-                term__iexact=lookup_term(self.short_name_uk)).first()
-
-            if t and t.translation:
-                self.short_name_en = t.translation
+                    if val is not None:
+                        setattr(self, localized_field(field, lang), val)
+                    else:
+                        setattr(self, localized_field(field, lang), get_localized_field(self, field))
 
         edrpou = self.edrpou or ""
         if " " in edrpou and edrpou.strip() and ":" not in edrpou:
@@ -273,6 +286,7 @@ class Company(models.Model, AbstractNode):
         activate(curr_lang)
         return url
 
+    # Deprecated
     @property
     def url_uk(self):
         return settings.SITE_URL + self.localized_url("uk")
@@ -280,7 +294,7 @@ class Company(models.Model, AbstractNode):
     @property
     def all_related_persons(self):
         related_persons = [
-            (i.relationship_type_uk, deepcopy(i.from_person), i)
+            (get_localized_field(i, "relationship_type"), deepcopy(i.from_person), i)
             for i in self.from_persons.prefetch_related("from_person").defer(
                 "from_person__reputation_assets",
                 "from_person__reputation_crimes",
@@ -289,7 +303,7 @@ class Company(models.Model, AbstractNode):
                 "from_person__wiki",
                 "from_person__names",
                 "from_person__hash"
-            ).order_by("from_person__last_name_uk", "from_person__first_name_uk")
+            ).order_by(*localized_fields(["from_person__last_name", "from_person__first_name"]))
         ]
 
         res = {
@@ -393,7 +407,7 @@ class Company(models.Model, AbstractNode):
             "all": []
         }
 
-        for rtp, p, rel in sorted(related_companies, key=lambda x: x[1].name_uk):
+        for rtp, p, rel in sorted(related_companies, key=lambda x: get_localized_field(x[1], "name")):
             p.rtype = rtp
             p.connection = rel
 
