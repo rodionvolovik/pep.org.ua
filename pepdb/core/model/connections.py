@@ -251,6 +251,7 @@ class Person2Company(AbstractRelationship):
 
 
     def save(self, *args, **kwargs):
+        # TODO: fix
         if not self.relationship_type_en:
             t = Ua2EnDictionary.objects.filter(
                 term__iexact=lookup_term(self.relationship_type_uk)).first()

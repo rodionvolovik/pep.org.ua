@@ -35,12 +35,12 @@
         <aside id="profile-nav" role="complementary" class="col-sm-2 hidden-xs">
             <ul id="side-profilemenu">
                 <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-info"></i><span>{{ _("Дані юридичної особи") }}</span></a></li>
-                {% if related_persons.founders or related_companies.founders or company|translate_into("other_founders", LANGUAGE_CODE) or 
-                    company|translate_into("other_owners", LANGUAGE_CODE) %}
+                {% if related_persons.founders or related_companies.founders or company|get_translated_field("other_founders", LANGUAGE_CODE) or 
+                    company|get_translated_field("other_owners", LANGUAGE_CODE) %}
                 <li><a href="#founders" class="btn btn-transp trans"><i class="fa fa-male"></i><span>{{ _("Засновники") }}</span></a></li>
                 {% endif %}
 
-                {% if related_persons.managers or company|translate_into("other_managers", LANGUAGE_CODE) %}
+                {% if related_persons.managers or company|get_translated_field("other_managers", LANGUAGE_CODE) %}
                 <li><a href="#managers" class="btn btn-transp trans"><i class="fa fa-users"></i><span>{{ _("Керівництво") }}</span></a></li>
                 {% endif %}
 
@@ -49,13 +49,13 @@
                 {% endif %}
 
                 {% if 
-                    company|translate_into("wiki", LANGUAGE_CODE) or company|translate_into("wiki", DEFAULT_LANGUAGE_CODE) or
-                    company|translate_into("sanctions", LANGUAGE_CODE) or company|translate_into("sanctions", DEFAULT_LANGUAGE_CODE) or
+                    company|get_translated_field("wiki", LANGUAGE_CODE) or company|get_translated_field("wiki", DEFAULT_LANGUAGE_CODE) or
+                    company|get_translated_field("sanctions", LANGUAGE_CODE) or company|get_translated_field("sanctions", DEFAULT_LANGUAGE_CODE) or
                     related_persons.sanctions %}
                     <li><a href="#dossier" class="btn btn-transp trans"><i class="fa fa-briefcase"></i><span>{{ _("Досьє") }}</span></a></li>
                 {% endif %}
 
-                {% if related_companies.banks or company|translate_into("bank_name", LANGUAGE_CODE) or company|translate_into("bank_name", DEFAULT_LANGUAGE_CODE) %}
+                {% if related_companies.banks or company|get_translated_field("bank_name", LANGUAGE_CODE) or company|get_translated_field("bank_name", DEFAULT_LANGUAGE_CODE) %}
                 <li><a href="#bank" class="btn btn-transp trans"><i class="fa fa-money"></i><span>{{ _("Банківські рахунки") }}</span></a></li>
                 {% endif %}
             </ul>
@@ -138,10 +138,10 @@
                                 </strong></td>
                             </tr>
                             {% endif %}
-                            {% if company|translate_into("other_recipient", LANGUAGE_CODE) %}
+                            {% if company|get_translated_field("other_recipient", LANGUAGE_CODE) %}
                             <tr>
                                 <td>{{ _("Бенефіціарний власник") }} </td>
-                                <td><strong>{{ company|translate_into("other_recipient", LANGUAGE_CODE) }}</strong></td>
+                                <td><strong>{{ company|get_translated_field("other_recipient", LANGUAGE_CODE) }}</strong></td>
                             </tr>
                             {% endif %}
                         </table>
@@ -155,8 +155,8 @@
                 {% endif %}
             </div>
             {% if related_persons.founders or related_companies.founders or
-                    company|translate_into("other_founders", LANGUAGE_CODE) or 
-                    company|translate_into("other_owners", LANGUAGE_CODE) %}
+                    company|get_translated_field("other_founders", LANGUAGE_CODE) or 
+                    company|get_translated_field("other_owners", LANGUAGE_CODE) %}
                 <div id="founders" class="sub box">
                     <h3>{{ _("Засновники:") }}</h3>
                     <div class="printWrap">
@@ -164,28 +164,28 @@
 
                         {{ render_company_persons(related_persons.founders, "Founders") }}
 
-                        {% if company|translate_into("other_founders", LANGUAGE_CODE) %}
+                        {% if company|get_translated_field("other_founders", LANGUAGE_CODE) %}
                             <h4>{{ _("Інші засновники") }}</h4>
-                            {{ company|translate_into("other_founders", LANGUAGE_CODE)|richtext }}
+                            {{ company|get_translated_field("other_founders", LANGUAGE_CODE)|richtext }}
                         {% endif %}
 
-                        {% if company|translate_into("other_owners", LANGUAGE_CODE) %}
+                        {% if company|get_translated_field("other_owners", LANGUAGE_CODE) %}
                             <h4>{{ _("Інші власники") }}</h4>
-                            {{ company|translate_into("other_owners", LANGUAGE_CODE)|richtext }}
+                            {{ company|get_translated_field("other_owners", LANGUAGE_CODE)|richtext }}
                         {% endif %}
                     </div>
                 </div>
             {% endif %}
 
             {% if related_persons.managers or
-                company|translate_into("other_managers", LANGUAGE_CODE) %}
+                company|get_translated_field("other_managers", LANGUAGE_CODE) %}
                 <div id="managers" class="sub box">
                     <h3>{{ _("Керівництво:") }}</h3>
                     <div class="printWrap">
                         {{ render_company_persons(related_persons.managers, "Managers") }}
 
 
-                        {{ company|translate_into("other_managers", LANGUAGE_CODE)|richtext }}
+                        {{ company|get_translated_field("other_managers", LANGUAGE_CODE)|richtext }}
                     </div>
                 </div>
             {% endif %}
@@ -252,29 +252,29 @@
 
 
             {% if 
-                company|translate_into("wiki", LANGUAGE_CODE) or company|translate_into("wiki", DEFAULT_LANGUAGE_CODE) or
-                company|translate_into("sanctions", LANGUAGE_CODE) or company|translate_into("sanctions", DEFAULT_LANGUAGE_CODE) or
+                company|get_translated_field("wiki", LANGUAGE_CODE) or company|get_translated_field("wiki", DEFAULT_LANGUAGE_CODE) or
+                company|get_translated_field("sanctions", LANGUAGE_CODE) or company|get_translated_field("sanctions", DEFAULT_LANGUAGE_CODE) or
                 related_persons.sanctions %}
 
                 <div id="dossier" class="sub box">
                     <h3>{{ _("Досьє:") }}</h3>
                     <div class="printWrap">
-                        {% if company|translate_into("wiki", LANGUAGE_CODE) %}
-                            {{ company|translate_into("wiki", LANGUAGE_CODE)|richtext }}
+                        {% if company|get_translated_field("wiki", LANGUAGE_CODE) %}
+                            {{ company|get_translated_field("wiki", LANGUAGE_CODE)|richtext }}
                         {% endif %}
-                        {% if company|translate_into("sanctions", LANGUAGE_CODE) or related_persons.sanctions %}
+                        {% if company|get_translated_field("sanctions", LANGUAGE_CODE) or related_persons.sanctions %}
                             <h4>{{ _("Санкції") }}</h4>
 
-                            {% if company|translate_into("sanctions", LANGUAGE_CODE) %}
-                                {{ company|translate_into("sanctions", LANGUAGE_CODE)|richtext }}
+                            {% if company|get_translated_field("sanctions", LANGUAGE_CODE) %}
+                                {{ company|get_translated_field("sanctions", LANGUAGE_CODE)|richtext }}
                             {% endif %}
 
                             {{ render_company_persons(related_persons.sanctions, "Sanctions") }}
                         {% endif %}
 
                         {% if LANGUAGE_CODE != DEFAULT_LANGUAGE_CODE and (
-                                company|translate_into("wiki", DEFAULT_LANGUAGE_CODE) or
-                                company|translate_into("sanctions", DEFAULT_LANGUAGE_CODE))
+                                company|get_translated_field("wiki", DEFAULT_LANGUAGE_CODE) or
+                                company|get_translated_field("sanctions", DEFAULT_LANGUAGE_CODE))
                         %}
                             <p><a href="{{ company.localized_url(DEFAULT_LANGUAGE_CODE) }}#dossier">more information is available in {{DEFAULT_LANGUAGE_CODE }} version of the dossier</a></p>
                         {% endif %}
@@ -282,14 +282,14 @@
                 </div>
             {% endif %}
 
-            {% if related_companies.banks or company|translate_into("bank_name", LANGUAGE_CODE) %}
+            {% if related_companies.banks or company|get_translated_field("bank_name", LANGUAGE_CODE) %}
                 <div id="bank" class="sub box">
                     <h3>{{ _("Банківські рахунки:") }}</h3>
                     <div class="printWrap">
                         {{ render_company_companies(related_companies.banks, "Banks") }}
 
-                        {% if company|translate_into("bank_name", LANGUAGE_CODE) %}
-                            {{ company|translate_into("bank_name", LANGUAGE_CODE)|richtext }}
+                        {% if company|get_translated_field("bank_name", LANGUAGE_CODE) %}
+                            {{ company|get_translated_field("bank_name", LANGUAGE_CODE)|richtext }}
                         {% endif %}
                     </div>
                 </div>

@@ -95,5 +95,5 @@ def translated(value, field, fallback=True):
     
 
 @library.filter
-def translate_into(value, field, lang):
+def get_translated_field(value, field, lang):
     return get_localized_field(value, field, lang)

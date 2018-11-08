@@ -599,11 +599,13 @@ class Person(models.Model, AbstractNode):
                 val = get_localized_field(self, field, settings.LANGUAGE_CODE)
                 setattr(self, localized_field(field, lang), translit_from(val or "", settings.LANGUAGE_CODE))
 
-            if localized_field("city_of_birth", settings.LANGUAGE_CODE) and not localized_field("city_of_birth", lang):
-                val = translate_through_dict(localized_field("city_of_birth", lang), settings.LANGUAGE_CODE, lang)
+            if get_localized_field(self, "city_of_birth", settings.LANGUAGE_CODE) and not get_localized_field(self, "city_of_birth", lang):
+                val = translate_through_dict(get_localized_field(self, "city_of_birth", lang), settings.LANGUAGE_CODE, lang)
 
                 if val is not None:
                     setattr(self, localized_field("city_of_birth", lang), val)
+                else:
+                    setattr(self, localized_field("city_of_birth", lang), get_localized_field(self, "city_of_birth", settings.LANGUAGE_CODE))
 
         super(Person, self).save(*args, **kwargs)
 

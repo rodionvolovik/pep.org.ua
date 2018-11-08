@@ -47,20 +47,20 @@
         <aside id="profile-nav" role="complementary" class="col-md-2">
             <ul id="side-profilemenu">
                 <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-male"></i><span>{{ _("Персональні дані") }}</span></a></li>
-                {% if person|translate_into("wiki", LANGUAGE_CODE) or person|translate_into("wiki", DEFAULT_LANGUAGE_CODE) %}
+                {% if person|get_translated_field("wiki", LANGUAGE_CODE) or person|get_translated_field("wiki", DEFAULT_LANGUAGE_CODE) %}
                     <li><a href="#profile" class="btn btn-transp trans"><i class="fa fa-briefcase"></i><span>{{ _("Досьє") }}</span></a></li>
                 {% endif %}
 
                 {% if
-                        person|translate_into("reputation_sanctions", LANGUAGE_CODE) or
-                        person|translate_into("reputation_crimes", LANGUAGE_CODE) or
-                        person|translate_into("reputation_manhunt", LANGUAGE_CODE) or
-                        person|translate_into("reputation_convictions", LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_sanctions", LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_crimes", LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_manhunt", LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_convictions", LANGUAGE_CODE) or
 
-                        person|translate_into("reputation_sanctions", DEFAULT_LANGUAGE_CODE) or
-                        person|translate_into("reputation_crimes", DEFAULT_LANGUAGE_CODE) or
-                        person|translate_into("reputation_manhunt", DEFAULT_LANGUAGE_CODE) or
-                        person|translate_into("reputation_convictions", DEFAULT_LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_sanctions", DEFAULT_LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_crimes", DEFAULT_LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_manhunt", DEFAULT_LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_convictions", DEFAULT_LANGUAGE_CODE) or
                         manhunt_records %}
                     <li><a href="#reputation" class="btn btn-transp trans"><i class="fa fa-bullhorn"></i><span>{{ _("Кримінальні провадження та санкції") }}</span></a></li>
                 {% endif %}
@@ -74,7 +74,7 @@
                 {% if all_declarations %}
                     <li><a href="#declarations" class="btn btn-transp trans"><i class="fa fa-file-text-o"></i><span>{{ _("Декларації") }}</span></a></li>
                 {% endif %}
-                {% if person|translate_into("reputation_assets", LANGUAGE_CODE) %}
+                {% if person|get_translated_field("reputation_assets", LANGUAGE_CODE) %}
                     <li><a href="#assets" class="btn btn-transp trans"><i class="fa fa-cubes"></i><span>{{ _("Статки") }}</span></a></li>
                 {% endif %}
 
@@ -210,13 +210,13 @@
                 {% endif %}
             </div>
 
-            {% if person|translate_into("wiki", LANGUAGE_CODE) or person|translate_into("wiki", DEFAULT_LANGUAGE_CODE) %}
+            {% if person|get_translated_field("wiki", LANGUAGE_CODE) or person|get_translated_field("wiki", DEFAULT_LANGUAGE_CODE) %}
                 <div id="profile-wiki" class="sub box" itemprop="description">
                     <h3>{{ _("Досьє:") }}</h3>
                     <div class="printWrap">
-                        {{ person|translate_into("wiki", LANGUAGE_CODE)|richtext }}
+                        {{ person|get_translated_field("wiki", LANGUAGE_CODE)|richtext }}
 
-                        {% if LANGUAGE_CODE != DEFAULT_LANGUAGE_CODE and person|translate_into("wiki", DEFAULT_LANGUAGE_CODE) %}
+                        {% if LANGUAGE_CODE != DEFAULT_LANGUAGE_CODE and person|get_translated_field("wiki", DEFAULT_LANGUAGE_CODE) %}
                             <p><a href="{{ person.localized_url(DEFAULT_LANGUAGE_CODE) }}#dossier">more information is available in {{DEFAULT_LANGUAGE_CODE }} version of the dossier</a></p>
                         {% endif %}
                     </div>
@@ -224,44 +224,44 @@
             {% endif %}
 
             {% if
-                    person|translate_into("reputation_sanctions", LANGUAGE_CODE) or
-                    person|translate_into("reputation_crimes", LANGUAGE_CODE) or
-                    person|translate_into("reputation_manhunt", LANGUAGE_CODE) or
-                    person|translate_into("reputation_convictions", LANGUAGE_CODE) or
+                    person|get_translated_field("reputation_sanctions", LANGUAGE_CODE) or
+                    person|get_translated_field("reputation_crimes", LANGUAGE_CODE) or
+                    person|get_translated_field("reputation_manhunt", LANGUAGE_CODE) or
+                    person|get_translated_field("reputation_convictions", LANGUAGE_CODE) or
 
-                    person|translate_into("reputation_sanctions", DEFAULT_LANGUAGE_CODE) or
-                    person|translate_into("reputation_crimes", DEFAULT_LANGUAGE_CODE) or
-                    person|translate_into("reputation_manhunt", DEFAULT_LANGUAGE_CODE) or
-                    person|translate_into("reputation_convictions", DEFAULT_LANGUAGE_CODE) or
+                    person|get_translated_field("reputation_sanctions", DEFAULT_LANGUAGE_CODE) or
+                    person|get_translated_field("reputation_crimes", DEFAULT_LANGUAGE_CODE) or
+                    person|get_translated_field("reputation_manhunt", DEFAULT_LANGUAGE_CODE) or
+                    person|get_translated_field("reputation_convictions", DEFAULT_LANGUAGE_CODE) or
                     manhunt_records %}
 
             <div id="reputation" class="sub box">
                 <h3>{{ _("Кримінальні провадження та санкції:") }}</h3>
                 <div class="printWrap">
-                    {% if person|translate_into("reputation_sanctions", LANGUAGE_CODE) %}
+                    {% if person|get_translated_field("reputation_sanctions", LANGUAGE_CODE) %}
                         <h4>{{ _("Санкції") }}</h4>
-                        {{ person|translate_into("reputation_sanctions", LANGUAGE_CODE)|richtext }}
+                        {{ person|get_translated_field("reputation_sanctions", LANGUAGE_CODE)|richtext }}
                     {% endif %}
-                    {% if person|translate_into("reputation_crimes", LANGUAGE_CODE) %}
+                    {% if person|get_translated_field("reputation_crimes", LANGUAGE_CODE) %}
                         <h4>{{ _("Кримінальні провадження") }}</h4>
-                        {{ person|translate_into("reputation_crimes", LANGUAGE_CODE)|richtext }}
+                        {{ person|get_translated_field("reputation_crimes", LANGUAGE_CODE)|richtext }}
                     {% endif %}
-                    {% if person|translate_into("reputation_manhunt", LANGUAGE_CODE) or manhunt_records %}
+                    {% if person|get_translated_field("reputation_manhunt", LANGUAGE_CODE) or manhunt_records %}
                         <h4>{{ _("Перебування у розшуку") }}</h4>
                         {% include "_manhunt_records_en.jinja" with context %}
-                        {{ person|translate_into("reputation_manhunt", LANGUAGE_CODE)|richtext }}
+                        {{ person|get_translated_field("reputation_manhunt", LANGUAGE_CODE)|richtext }}
                     {% endif %}
-                    {% if person|translate_into("reputation_convictions", LANGUAGE_CODE) %}
+                    {% if person|get_translated_field("reputation_convictions", LANGUAGE_CODE) %}
                         <h4>{{ _("Наявність судимості") }}</h4>
-                        {{ person|translate_into("reputation_convictions", LANGUAGE_CODE) }}
+                        {{ person|get_translated_field("reputation_convictions", LANGUAGE_CODE) }}
                     {% endif %}
 
                     {% if 
                         LANGUAGE_CODE != DEFAULT_LANGUAGE_CODE and (
-                        person|translate_into("reputation_sanctions", DEFAULT_LANGUAGE_CODE) or
-                        person|translate_into("reputation_crimes", DEFAULT_LANGUAGE_CODE) or
-                        person|translate_into("reputation_manhunt", DEFAULT_LANGUAGE_CODE) or
-                        person|translate_into("reputation_convictions", DEFAULT_LANGUAGE_CODE)) %}
+                        person|get_translated_field("reputation_sanctions", DEFAULT_LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_crimes", DEFAULT_LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_manhunt", DEFAULT_LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_convictions", DEFAULT_LANGUAGE_CODE)) %}
                         <p><a href="{{ person.localized_url(DEFAULT_LANGUAGE_CODE) }}#reputation">more information is available in {{ DEFAULT_LANGUAGE_CODE }} version of the dossier</a></p>
                     {% endif %}
                 </div>
@@ -353,12 +353,12 @@
                 {% include "_declaration.jinja" %}
             {% endif %}
 
-            {% if person|translate_into("reputation_assets", LANGUAGE_CODE) %}
+            {% if person|get_translated_field("reputation_assets", LANGUAGE_CODE) %}
                 <div id="assets" class="sub box">
                     <h3>{{ _("Статки:") }}</h3>
                     <div class="printWrap">
-                        {% if person|translate_into("reputation_assets", LANGUAGE_CODE) %}
-                            {{ person|translate_into("reputation_assets", LANGUAGE_CODE)|richtext }}
+                        {% if person|get_translated_field("reputation_assets", LANGUAGE_CODE) %}
+                            {{ person|get_translated_field("reputation_assets", LANGUAGE_CODE)|richtext }}
                         {% endif %}
                     </div>
                 </div>
