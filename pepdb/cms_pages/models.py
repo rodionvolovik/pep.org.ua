@@ -91,13 +91,17 @@ class StaticPage(AbstractJinjaPage, Page):
         verbose_name="[EN] Текст сторінки")
 
     translated_title = TranslatedField(
-        'title',
-        'title_en',
+        **{
+            settings.LANGUAGE_CODE: "title",
+            "en": 'title_en'
+        }
     )
 
     translated_body = TranslatedField(
-        'body',
-        'body_en',
+        **{
+            settings.LANGUAGE_CODE: "body",
+            "en": 'body_en'
+        }
     )
 
     class Meta:
@@ -119,8 +123,10 @@ class LinkFields(models.Model):
                                   verbose_name="[EN] Заголовок")
 
     translated_caption = TranslatedField(
-        'caption',
-        'caption_en',
+        **{
+            settings.LANGUAGE_CODE: "caption",
+            "en": 'caption_en'
+        }
     )
 
     link_external = models.URLField("Зовнішнє посилання", blank=True)
@@ -159,58 +165,12 @@ class LinkFields(models.Model):
         abstract = True
 
 
-class BannerItem(LinkFields):
-    panels = [
-        MultiFieldPanel(LinkFields.panels, "Link"),
-    ]
-
-    class Meta:
-        abstract = True
-
-
-class ColumnFields(models.Model):
-    title = models.CharField(
-        max_length=255, blank=True, verbose_name="Заголовок")
-    body = RichTextField(verbose_name="Текст колонки")
-
-    title_en = models.CharField(
-        verbose_name="[EN] Заголовок", default="", max_length=255)
-
-    body_en = RichTextField(
-        default="", verbose_name="[EN] Текст колонки")
-
-    translated_title = TranslatedField(
-        'title',
-        'title_en',
-    )
-
-    translated_body = TranslatedField(
-        'body',
-        'body_en',
-    )
-
-    panels = [
-        FieldPanel('title', classname="full title"),
-        FieldPanel('title_en', classname="full title"),
-        FieldPanel('body', classname="full"),
-        FieldPanel('body_en', classname="full"),
-    ]
-
-
-class HomePageBannerItem(Orderable, BannerItem):
-    page = ParentalKey('cms_pages.HomePage', related_name='banner_items')
-
-
 class HomePageTopMenuLink(Orderable, LinkFields):
     page = ParentalKey('cms_pages.HomePage', related_name='top_menu_links')
 
 
 class HomePageBottomMenuLink(Orderable, LinkFields):
     page = ParentalKey('cms_pages.HomePage', related_name='bottom_menu_links')
-
-
-class HomePageColumn(Orderable, ColumnFields):
-    page = ParentalKey('cms_pages.HomePage', related_name='columns')
 
 
 class HomePage(AbstractJinjaPage, Page):
@@ -243,6 +203,22 @@ class HomePage(AbstractJinjaPage, Page):
         default="",
         verbose_name="[EN] Текст під статистикою")
 
+    eu_desc = RichTextField(
+        default="",
+        verbose_name="[UA] Текст про EU")
+
+    eu_desc_en = RichTextField(
+        default="",
+        verbose_name="[EN] Текст про EU")
+
+    tr_desc = RichTextField(
+        default="",
+        verbose_name="[UA] Текст про Thomson Reuters")
+
+    tr_desc_en = RichTextField(
+        default="",
+        verbose_name="[EN] Текст про Thomson Reuters")
+
     footer = RichTextField(
         default="",
         verbose_name="[UA] Текст внизу кожної сторінки")
@@ -252,28 +228,52 @@ class HomePage(AbstractJinjaPage, Page):
         verbose_name="[EN] Текст внизу кожної сторінки")
 
     translated_title = TranslatedField(
-        'title',
-        'title_en',
+        **{
+            settings.LANGUAGE_CODE: "title",
+            "en": 'title_en'
+        }
     )
 
     translated_subtitle = TranslatedField(
-        'subtitle',
-        'subtitle_en',
+        **{
+            settings.LANGUAGE_CODE: "subtitle",
+            "en": 'subtitle_en'
+        }
     )
 
     translated_body = TranslatedField(
-        'body',
-        'body_en',
+        **{
+            settings.LANGUAGE_CODE: "body",
+            "en": 'body_en'
+        }
     )
 
     translated_credits = TranslatedField(
-        'credits',
-        'credits_en',
+        **{
+            settings.LANGUAGE_CODE: "credits",
+            "en": 'credits_en'
+        }
+    )
+
+    translated_tr_desc = TranslatedField(
+        **{
+            settings.LANGUAGE_CODE: "tr_desc",
+            "en": 'tr_desc_en'
+        }
+    )
+
+    translated_eu_desc = TranslatedField(
+        **{
+            settings.LANGUAGE_CODE: "eu_desc",
+            "en": 'eu_desc_en'
+        }
     )
 
     translated_footer = TranslatedField(
-        'footer',
-        'footer_en',
+        **{
+            settings.LANGUAGE_CODE: "footer",
+            "en": 'footer_en'
+        }
     )
 
     class Meta:
@@ -292,9 +292,12 @@ class HomePage(AbstractJinjaPage, Page):
         FieldPanel('credits', classname="full"),
         FieldPanel('credits_en', classname="full"),
 
+        FieldPanel('eu_desc', classname="full"),
+        FieldPanel('eu_desc_en', classname="full"),
+        FieldPanel('tr_desc', classname="full"),
+        FieldPanel('tr_desc_en', classname="full"),
+
         InlinePanel('top_menu_links', label="Меню зверху"),
-        # InlinePanel('columns', label="Колонки під пошуком"),
-        InlinePanel('banner_items', label="Банери спонсорів"),
         InlinePanel('bottom_menu_links', label="Меню знизу"),
 
         FieldPanel('footer', classname="full"),

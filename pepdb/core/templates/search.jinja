@@ -28,9 +28,6 @@
         </div>
 
         <section id="search-results">
-            {% if not persons and not companies and not related_persons %}
-            <h2 class="text-center track-ga-event" data-ga-event-category="search" data-ga-event-action="search-gave-no-results" data-ga-event-label="{{ query }}">{{ _("На жаль, пошук не дав результатів") }}</h2>
-            {% endif %}
             {% if persons %}
                 <h2 class="text-center">{{ _("Фізичні особи") }}</h2>
                 {% for p in persons %}
@@ -47,6 +44,19 @@
                         {{ render_pagination(persons, url("search_person")) }}
                         </nav>
                     </div>
+                {% endif %}
+            {% else %}
+                {% if "person" in sources %}
+                    <h2 class="text-center look-here track-ga-event" data-ga-event-category="search" data-ga-event-action="search-gave-no-results" data-ga-event-label="{{ query }}">{{ _("Станом на") }} {{ today|date }} {{ _("інформація про фізичну особу") }} «{{ query }}» {{ _("в Реєстрі відсутня") }}</h2>
+
+                    {% if suggested_person %}
+                        <h4 class="text-center">{{ _("можливо ви шукали") }}
+                            <a href="{{ url("person_details", person_id=suggested_person.id) }}" class="track-ga-event track-ga-event-click" data-ga-event-category="search" data-ga-event-action="suggested_person" data-ga-event-label="{{ suggested_person.translated_last_name }} {{ suggested_person.translated_first_name }} {{ suggested_person.translated_patronymic }}">
+                                “{{ suggested_person.translated_last_name }}
+                                {{ suggested_person.translated_first_name }}
+                                {{ suggested_person.translated_patronymic }}”</a>?
+                        </h4>
+                    {% endif %}
                 {% endif %}
             {% endif %}
 

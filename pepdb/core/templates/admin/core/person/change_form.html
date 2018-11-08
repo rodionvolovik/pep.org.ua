@@ -11,7 +11,7 @@
             var $ = django.jQuery;
 
             function init() {
-                $(".mt-field-relationship_type-uk").each(function(i, box) {
+                $(".mt-field-relationship_type-{{ DEFAULT_LANGUAGE_CODE }}").each(function(i, box) {
                     box = $(box);
                     box.autocomplete({
                         "source": person2company_rels
@@ -50,7 +50,7 @@
 
 				var details_block = el
 					.closest("fieldset")
-					.find("[name$=relationship_details_uk]")
+					.find("[name$=relationship_details_{{ DEFAULT_LANGUAGE_CODE }}]")
 					.closest(".mt-switcher-container");
 
 				details_block.toggle(el.val() == "ділові зв'язки");

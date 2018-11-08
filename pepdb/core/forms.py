@@ -11,22 +11,27 @@ class FeedbackForm(ModelForm):
 
     class Meta:
         model = FeedbackMessage
-        fields = ['person', 'text', 'link', 'contacts']
+        fields = ['person', 'text', 'link', 'email', 'contacts']
 
         widgets = {
             'person': TextInput(attrs={"class": "form-control input-md",
                                        "placeholder": _("ПІБ")}),
             'text': Textarea(attrs={"class": "form-control",
                                     "required": "",
-                                    "rows": "5",
+                                    "rows": "3",
                                     "placeholder": _("Текст повідомлення")}),
 
             'link': TextInput(attrs={"class": "form-control input-md",
                                      "placeholder": _("http://")}),
 
+            'email': TextInput(
+                attrs={"class": "form-control input-md",
+                       "required": "",
+                       "placeholder": _("Ваш імейл")}),
+
             'contacts': TextInput(
                 attrs={"class": "form-control input-md",
-                       "placeholder": _("Ваш імейл або телефон")}),
+                       "placeholder": _("Ваш телефон")}),
         }
 
 

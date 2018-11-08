@@ -7,9 +7,10 @@ from translitua import (
 
 from django.core.management.base import BaseCommand
 from django.db.utils import IntegrityError
+from django.conf import settings
 
 from core.models import Person, Ua2RuDictionary
-from core.utils import is_cyr, is_ukr, parse_fullname, title
+from core.utils import is_cyr, is_ukr, parse_fullname, title, get_localized_field, localized_field
 
 
 class Command(BaseCommand):
@@ -54,35 +55,41 @@ class Command(BaseCommand):
         return r
 
     def transliterate(self, person_last_name, person_first_name,
-                      person_patronymic):
+                      person_patronymic, lang):
         first_names = []
         last_names = []
         patronymics = []
 
-        original = [(person_last_name, person_first_name, person_patronymic)]
-
         result = set()
 
-        if (person_first_name.lower() in self.ru_translations and
-                is_cyr(person_first_name)):
-            first_names = self.ru_translations[person_first_name.lower()]
+        if lang == "uk":
+            original = [(person_last_name, person_first_name, person_patronymic)]
+
+            if (person_first_name.lower() in self.ru_translations and
+                    is_cyr(person_first_name)):
+                first_names = self.ru_translations[person_first_name.lower()]
+            else:
+                first_names = [person_first_name]
+                self.add_for_translation(person_first_name)
+
+            if (person_last_name.lower() in self.ru_translations and
+                    is_cyr(person_last_name)):
+                last_names = self.ru_translations[person_last_name.lower()]
+            else:
+                last_names = [person_last_name]
+                self.add_for_translation(person_last_name)
+
+            if (person_patronymic.lower() in self.ru_translations and
+                    is_cyr(person_patronymic)):
+                patronymics = self.ru_translations[person_patronymic.lower()]
+            else:
+                patronymics = [person_patronymic]
+                self.add_for_translation(person_patronymic)
         else:
+            original = []
             first_names = [person_first_name]
-            self.add_for_translation(person_first_name)
-
-        if (person_last_name.lower() in self.ru_translations and
-                is_cyr(person_last_name)):
-            last_names = self.ru_translations[person_last_name.lower()]
-        else:
             last_names = [person_last_name]
-            self.add_for_translation(person_last_name)
-
-        if (person_patronymic.lower() in self.ru_translations and
-                is_cyr(person_patronymic)):
-            patronymics = self.ru_translations[person_patronymic.lower()]
-        else:
             patronymics = [person_patronymic]
-            self.add_for_translation(person_patronymic)
 
         translated = [
             (l, f, p)
@@ -133,33 +140,34 @@ class Command(BaseCommand):
         return result | set(map(self.get_name, translated))
 
     def handle(self, *args, **options):
-        for person in Person.objects.all():
-            person.last_name_uk = person.last_name_uk or ""
-            person.first_name_uk = person.first_name_uk or ""
-            person.patronymic_uk = person.patronymic_uk or ""
+        for person in Person.objects.all().nocache().iterator():
+            last_name = get_localized_field(person, "last_name")
+            first_name = get_localized_field(person, "first_name")
+            patronymic = get_localized_field(person, "patronymic")
+            aka = get_localized_field(person, "also_known_as")
 
             names = self.transliterate(
-                person.last_name_uk, person.first_name_uk,
-                person.patronymic_uk
+                last_name, first_name,
+                patronymic, settings.LANGUAGE_CODE
             )
 
-            if person.also_known_as_uk:
-                for aka_name in filter(None, person.also_known_as_uk.split("\n")):
+            if aka:
+                for aka_name in filter(None, aka.split("\n")):
                     last_name, first_name, patronymic, _ = parse_fullname(aka_name)
                     names |= self.transliterate(
-                        last_name, first_name, patronymic
+                        last_name, first_name, patronymic, settings.LANGUAGE_CODE
                     )
 
             person.names = "\n".join(names)
 
-            person.first_name_uk = person.first_name_uk.strip()
-            person.last_name_uk = person.last_name_uk.strip()
-            person.patronymic_uk = person.patronymic_uk.strip()
+            if len(first_name) == 1:
+                first_name += "."
 
-            if len(person.first_name) == 1:
-                person.first_name += "."
+            if len(patronymic) == 1:
+                patronymic += "."
 
-            if len(person.patronymic) == 1:
-                person.patronymic += "."
+            setattr(person, localized_field("first_name"), (first_name or "").strip())
+            setattr(person, localized_field("last_name"), (last_name or "").strip())
+            setattr(person, localized_field("patronymic"), (patronymic or "").strip())
 
             person.save()

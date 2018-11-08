@@ -17,6 +17,7 @@ import gspread
 from dateutil import parser, relativedelta
 from rfc6266 import parse_requests_response
 from oauth2client.client import SignedJwtAssertionCredentials
+from translitua import translitua, UkrainianKMU, RussianInternationalPassport
 
 import logging
 logger = logging.getLogger(__name__)
@@ -135,6 +136,10 @@ def is_ukr(name):
     return re.search("['іїєґ]+", name.lower(), re.UNICODE) is not None
 
 
+def is_eng(name):
+    return re.search("[a-z]+", name.lower(), re.UNICODE) is not None
+
+
 def is_greek(name):
     return re.search("[α-ωίϊΐόάέύϋΰήώ]+", name.lower(), re.UNICODE) is not None
 
@@ -174,17 +179,18 @@ def parse_fullname(person_name):
 
 
 class TranslatedField(object):
-    def __init__(self, ua_field, en_field):
-        self.ua_field = ua_field
-        self.en_field = en_field
+    def __init__(self, **fields):
+        self.fields = fields
 
     def __get__(self, instance, owner):
+        lang = get_language()
+        if lang in self.fields:
+            return (
+                getattr(instance, self.fields[lang], "") or
+                getattr(instance, self.fields[settings.LANGUAGE_CODE], "")
+            )
 
-        if get_language() == 'en':
-            return (getattr(instance, self.en_field, "") or
-                    getattr(instance, self.ua_field, ""))
-        else:
-            return getattr(instance, self.ua_field, "")
+        return ""
 
 
 VALID_POSITIONS = [
@@ -494,3 +500,61 @@ def translate_into(chunk, lang="en"):
     activate(curr_lang)
 
     return res
+
+
+def localized_field(field_name, lang=settings.LANGUAGE_CODE):
+    return "{}_{}".format(field_name, lang)
+
+
+def get_localized_field(obj, field_name, lang=settings.LANGUAGE_CODE):
+    return getattr(obj, localized_field(field_name, lang))
+
+
+def localized_fields(field_names, langs=None):
+    if langs is None:
+        langs = [settings.LANGUAGE_CODE]
+
+    return [
+        localized_field(field, lang)
+        for field in field_names
+        for lang in langs
+    ]
+
+def localized_field_map(field_name):
+    mp = {}
+
+    for lang in settings.LANGUAGE_CODES:
+        mp[lang] = localized_field(field_name, lang)
+
+    return mp
+
+
+def translit_from(value, lang):
+    assert lang in ["ru", "uk", "en"]
+
+    if lang == "ru":
+        return translitua(value, RussianInternationalPassport)
+    elif lang == "uk":
+        return translitua(value, UkrainianKMU)
+    elif lang == "en":
+        return value
+
+
+def translate_through_dict(value, from_lang, to_lang):
+    # Temporary workaround that is going to stay here forever
+
+    assert to_lang in ["en", "ru"]
+
+    from core.models import Ua2EnDictionary, Ua2RuDictionary
+
+    if to_lang == "en":
+        model = Ua2EnDictionary
+    elif to_lang == "ru":
+        model = Ua2RuDictionary
+
+    t = model.objects.filter(term__iexact=lookup_term(value)).first()
+
+    if t and t.translation:
+        return t.translation
+
+    return None

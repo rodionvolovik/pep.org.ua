@@ -5,9 +5,10 @@ import logging
 from collections import defaultdict
 
 from django.db import models
+from django.conf import settings
 from django.forms.models import model_to_dict
 from django.utils.translation import ugettext_noop as _
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext_lazy, get_language
 
 from jsonfield import JSONField
 
@@ -23,51 +24,59 @@ logger = logging.getLogger(__name__)
 
 class Declaration(models.Model):
     STATUS_CHOICES = (
-        ('p', 'Не перевірено'),
-        ('r', 'Не підходить'),
-        ('a', 'Опубліковано'),
-        ('c', 'Перевірити'),
+        ('p', _('Не перевірено')),
+        ('r', _('Не підходить')),
+        ('a', _('Опубліковано')),
+        ('c', _('Перевірити')),
     )
 
     declaration_id = models.CharField(
-        "Ідентифікатор", max_length=50, db_index=True)
+        _("Ідентифікатор"), max_length=50, db_index=True)
 
-    last_name = models.CharField("Прізвище", max_length=40, blank=True)
-    first_name = models.CharField("Ім'я", max_length=40, blank=True)
-    patronymic = models.CharField("По-батькові", max_length=40, blank=True)
-    position = models.CharField("Посада", max_length=512, blank=True)
-    office = models.CharField("Відомство", max_length=512, blank=True)
-    region = models.CharField("Регіон", max_length=50, blank=True)
-    year = models.CharField("Рік", max_length=4, blank=True, db_index=True)
+    last_name = models.CharField(_("Прізвище"), max_length=40, blank=True)
+    first_name = models.CharField(_("Ім'я"), max_length=40, blank=True)
+    patronymic = models.CharField(_("По-батькові"), max_length=40, blank=True)
+    position = models.CharField(_("Посада"), max_length=512, blank=True)
+    office = models.CharField(_("Відомство"), max_length=512, blank=True)
+    region = models.CharField(_("Регіон"), max_length=50, blank=True)
+    doc_type = models.CharField(_("Тип декларації"), max_length=50, blank=True)
+    year = models.CharField(_("Рік"), max_length=4, blank=True, db_index=True)
     source = JSONField(blank=True)
-    url = models.URLField("Посилання", max_length=512, blank=True)
+    url = models.URLField(_("Посилання"), max_length=512, blank=True)
     confirmed = models.CharField(
-        "Підтверджено", max_length=1, choices=STATUS_CHOICES, default="p",
+        _("Підтверджено"), max_length=1, choices=STATUS_CHOICES, default="p",
         db_index=True)
-    fuzziness = models.IntegerField("Відстань", default=0)
-    person = models.ForeignKey("Person", default=None)
+    fuzziness = models.IntegerField(_("Відстань"), default=0)
+    person = models.ForeignKey(_("Person"), default=None, related_name="declarations")
     nacp_declaration = models.BooleanField(
-        "Декларація НАЗК", default=False, db_index=True)
+        _("Декларація НАЗК"), default=False, db_index=True)
     declarator_declaration = models.BooleanField(
-        "Декларація з декларатора", default=False, db_index=True
+        _("Декларація з декларатора"), default=False, db_index=True
     )
 
     relatives_populated = models.BooleanField(
-        "Родини немає, або вже внесена до БД", default=False, db_index=True)
+        _("Родини немає, або вже внесена до БД"), default=False, db_index=True)
 
     to_link = models.BooleanField(
-        "Декларація для профілів", default=False, db_index=True)
+        _("Декларація для профілів"), default=False, db_index=True)
 
     to_watch = models.BooleanField(
-        "Декларація для моніторінгу звільнень", default=False, db_index=True)
+        _("Декларація для моніторінгу звільнень"), default=False, db_index=True)
 
     acknowledged = models.BooleanField(
-        "Відмоніторено", default=False, db_index=True)
+        _("Відмоніторено"), default=False, db_index=True)
 
     submitted = models.DateField(
-        "Подана", blank=True, null=True, db_index=True)
+        _("Подана"), blank=True, null=True, db_index=True)
 
-    batch_number = models.IntegerField("Номер теки", default=0, db_index=True)
+    batch_number = models.IntegerField(_("Номер теки"), default=0, db_index=True)
+
+    def get_url(self):
+        url = self.url
+        if get_language() == "en" and self.nacp_declaration:
+            return settings.DECLARATION_DETAILS_EN_ENDPOINT.format(self.declaration_id)
+
+        return url
 
     def to_dict(self):
         d = model_to_dict(self, fields=[
@@ -137,7 +146,7 @@ class Declaration(models.Model):
             "year": self.year,
             "position": self.position,
             "office": self.office,
-            "url": self.url,
+            "url": self.get_url(),
             "income_of_declarant": ugettext_lazy("Не зазначено"),
             "income_of_family": ugettext_lazy("Не зазначено"),
             "expenses_of_declarant": ugettext_lazy("Не зазначено"),
@@ -181,7 +190,7 @@ class Declaration(models.Model):
     def get_assets(self):
         resp = {
             "year": self.year,
-            "url": self.url,
+            "url": self.get_url(),
             "nacp_declaration": self.nacp_declaration,
             "cash": {
                 "declarant": {
@@ -281,7 +290,7 @@ class Declaration(models.Model):
     def get_gifts(self):
         resp = {
             "year": self.year,
-            "url": self.url,
+            "url": self.get_url(),
             "gifts_of_declarant": ugettext_lazy("Не зазначено"),
             "gifts_of_family": ugettext_lazy("Не зазначено"),
         }
@@ -321,7 +330,7 @@ class Declaration(models.Model):
     def get_liabilities(self):
         resp = {
             "year": self.year,
-            "url": self.url,
+            "url": self.get_url(),
             "liabilities_of_declarant": defaultdict(float),
             "liabilities_of_family": defaultdict(float),
         }
@@ -363,7 +372,7 @@ class Declaration(models.Model):
     def get_active_assets(self):
         resp = {
             "year": self.year,
-            "url": self.url,
+            "url": self.get_url(),
             "assets_of_declarant": defaultdict(list),
             "assets_of_family": defaultdict(list),
         }
@@ -386,7 +395,7 @@ class Declaration(models.Model):
             }
 
             try:
-                total_area = total_area.replace(',', '.')
+                total_area = str(total_area).replace(',', '.')
 
                 if not total_area:
                     return 0
@@ -406,7 +415,7 @@ class Declaration(models.Model):
 
         resp = {
             "year": self.year,
-            "url": self.url,
+            "url": self.get_url(),
             "assets_of_declarant": defaultdict(list),
             "assets_of_family": defaultdict(list),
         }
@@ -535,7 +544,7 @@ class Declaration(models.Model):
 
         resp = {
             "year": self.year,
-            "url": self.url,
+            "url": self.get_url(),
             "assets_of_declarant": defaultdict(list),
             "assets_of_family": defaultdict(list),
         }
@@ -746,8 +755,8 @@ class DeclarationToWatchManager(models.Manager):
 class DeclarationToWatch(Declaration):
     class Meta:
         proxy = True
-        verbose_name = "Моніторинг декларацій"
-        verbose_name_plural = "Моніторинг декларацій"
+        verbose_name = _("Моніторинг декларацій")
+        verbose_name_plural = _("Моніторинг декларацій")
 
     objects = DeclarationToWatchManager()
 
@@ -756,14 +765,14 @@ class DeclarationExtra(models.Model):
     person = models.ForeignKey("Person", related_name="declaration_extras")
 
     date_confirmed = models.DateField(
-        "Дата", blank=True, null=True, db_index=True)
+        _("Дата"), blank=True, null=True, db_index=True)
 
     date_confirmed_details = models.IntegerField(
-        "точність",
+        _("точність"),
         choices=(
-            (0, "Точна дата"),
-            (1, "Рік та місяць"),
-            (2, "Тільки рік"),
+            (0, _("Точна дата")),
+            (1, _("Рік та місяць")),
+            (2, _("Тільки рік")),
         ),
         default=0)
 
@@ -790,10 +799,10 @@ class DeclarationExtra(models.Model):
         db_index=True
     )
 
-    note = RedactorField("Текст")
-    address = RedactorField("Адреса", blank=True)
+    note = RedactorField(_("Текст"))
+    address = RedactorField(_("Адреса"), blank=True)
     country = models.ForeignKey("Country", blank=True)
 
     class Meta:
-        verbose_name = "Додаткова інформація про статки"
-        verbose_name_plural = "Додаткова інформація про статки"
+        verbose_name = _("Додаткова інформація про статки")
+        verbose_name_plural = _("Додаткова інформація про статки")

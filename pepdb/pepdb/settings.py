@@ -43,6 +43,8 @@ INSTALLED_APPS = (
     'django.contrib.sitemaps',
     'django.contrib.sites',
     'django.contrib.postgres',
+    'django_otp',
+    'django_otp.plugins.otp_totp',
 
     'redactor',
     'pipeline',
@@ -61,6 +63,7 @@ INSTALLED_APPS = (
     'wagtail.wagtailusers',
     'wagtail.wagtailimages',
     'wagtail.wagtailembeds',
+    'wagtail.wagtailsites',
     'wagtail.wagtailsearch',
     'wagtail.wagtailredirects',
     'wagtail.wagtailforms',
@@ -77,11 +80,13 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -170,10 +175,8 @@ LANGUAGE_CODE = 'uk'
 gettext = lambda s: s
 LANGUAGES = (
     ('uk', gettext('Ukrainian')),
-    ('en', gettext('English')),
-    # ('ru', gettext('Russian')),
+    ('en', gettext('English'))
 )
-
 
 TIME_ZONE = 'Europe/Kiev'
 
@@ -219,8 +222,7 @@ STATICFILES_FINDERS = (
 )
 
 PIPELINE = {
-    'COMPILERS': ('pipeline.compilers.sass.SASSCompiler',),
-    'SASS_ARGUMENTS': '-q',
+    'COMPILERS': ('pipeline.compilers.less.LessCompiler',),
     'JS_COMPRESSOR': 'pipeline.compressors.uglifyjs.UglifyJSCompressor',
     'STYLESHEETS': {
         'css_all': {
@@ -232,7 +234,7 @@ PIPELINE = {
                 'bower_components/featherlight/src/featherlight.css',
                 'css/flag-css.css',
                 'css/vis.css',
-                'css/style.css',
+                'less/main.less',
                 'css/graph.css',
                 'css/bootstrap-combobox.css',
             ),
@@ -282,7 +284,7 @@ WAGTAIL_SITE_NAME = 'PEP'
 ELASTICSEARCH_CONNECTIONS = {
     'default': {
         'hosts': 'localhost',
-        'timeout': 20
+        'timeout': 120
     }
 }
 
@@ -301,7 +303,8 @@ NOCAPTCHA = True
 RECAPTCHA_USE_SSL = True
 
 DECLARATIONS_SEARCH_ENDPOINT = "https://declarations.com.ua/fuzzy_search"
-DECLARATION_DETAILS_ENDPOINT ="https://declarations.com.ua/declaration/{}"
+DECLARATION_DETAILS_ENDPOINT = "https://declarations.com.ua/declaration/{}"
+DECLARATION_DETAILS_EN_ENDPOINT = "https://declarations.com.ua/en/declaration/{}"
 CACHEOPS_REDIS = "redis://localhost:6379/1"
 
 CACHEOPS = {
@@ -311,8 +314,33 @@ CACHEOPS = {
 }
 
 CACHEOPS_DEGRADE_ON_FAILURE = True
-PERSONS_INDEX_NAME = "rupeps_persons"
-COMPANIES_INDEX_NAME = "rupeps_companies"
+
+PERSONS_INDEX_NAME = "pep_persons"
+COMPANIES_INDEX_NAME = "pep_companies"
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 9,
+        }
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+OTP_TOTP_ISSUER = 'PEP.org.ua'
+SITEHEART_ID = None
+GA_ID = None
+SUPERADMINS = []
+
 
 try:
     from local_settings import *
@@ -327,3 +355,5 @@ connections.connections.configure(**ELASTICSEARCH_CONNECTIONS)
 # Init fernet instance
 from cryptography.fernet import Fernet
 SYMMETRIC_ENCRYPTOR = Fernet(FERNET_SECRET_KEY)
+
+LANGUAGE_CODES = list(dict(LANGUAGES).keys())

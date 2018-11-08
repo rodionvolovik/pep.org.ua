@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand
 
 from core.models import (
     Person, Person2Company, Person2Country, Person2Person, Declaration)
-from tasks.models import PersonDeduplication
+from tasks.models import PersonDeduplication, AdHocMatch
 from django.db import connection
 
 
@@ -231,6 +231,7 @@ class Command(BaseCommand):
                 )
 
                 if options["real_run"]:
+                    AdHocMatch.objects.filter(person=donor).update(person=None)
                     # Kill the donor!
                     # Raw SQL because otherwise django will also kill the old
                     # connections of donor person, which are stuck for some reason.

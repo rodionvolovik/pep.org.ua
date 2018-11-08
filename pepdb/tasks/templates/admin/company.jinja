@@ -2,7 +2,7 @@
 
 {% if company.heads %}
 <br/>
-<strong>Пов'язані особи:</strong> <br/>
+<strong>{{ _("Пов'язані особи:") }}</strong> <br/>
 {% for head in company.heads[:10] %}
     {{ head }} <br/>
 {% endfor %}

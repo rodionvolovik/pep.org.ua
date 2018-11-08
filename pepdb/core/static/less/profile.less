@@ -150,6 +150,23 @@
     td {
         vertical-align: middle;
     }
+
+    &.not {
+        #profile-wrap {
+            opacity: 0.6;
+        }
+        #profile-wrap .non-pep-info {
+            background: black;
+            color: white;
+        }
+        #profile-wrap .dead-pep-info {
+            background: #f42d33;
+            color: white;
+        }
+        #profile-wrap .non-pep-info strong {
+            color: white;
+        }
+    }
 }
 
 #personal {
@@ -171,6 +188,7 @@
 
 .small-profile {
     padding-bottom: 30px;
+    position: relative;
 
     .box {
         padding: 20px 20px 5px 20px;
@@ -267,7 +285,6 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.23), 0 3px 10px rgba(0, 0, 0, 0.16);
         }
     }
-    /* TODO plashki */
     &.fizik {
         .avatar {
             background-image: url(../images/short-avatar.png);
@@ -293,6 +310,20 @@
             background-image: url(../images/short-avatar-linked.png);
         }
     }
+
+   &.not {
+       .descr p.non-pep-info {
+           background: black;
+           color: white;
+           padding-left: 5px;
+       }
+   }
+
+   &.not {
+       .descr p.dead-pep-info {
+            background: #f42d33;
+        }
+   }
 }
 
 .pep-name {
@@ -352,4 +383,10 @@
             min-height: 100%;
         }
     }
+}
+
+.last_modified {
+    text-align: right;
+    font-size: 0.8em;
+    color: silver;
 }

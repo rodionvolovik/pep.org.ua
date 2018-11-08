@@ -15,6 +15,7 @@
     <meta property="og:description" content="{{ _("Детальна інформація про членів сім'ї та інших пов'язаних осіб, задекларовані статки, зобов'язання та банківські рахунки, власність в юридичних особах") }}" />
     <meta property="profile:first_name" content="{{ person.first_name }} {{ person.patronymic }}" />
     <meta property="profile:last_name" content="{{ person.last_name }}" />
+    <link rel="canonical" href="{{ SITE_URL }}{{ person.get_absolute_url() }}" />
 {% endblock %}
 
 {% block page_title %}{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}{% if last_workplace %}, {{ last_workplace.company }}, {{ last_workplace.position }}{% endif %}{% endblock %}
@@ -33,6 +34,7 @@
 {% set related_persons = person.all_related_persons %}
 {% set related_companies = person.all_related_companies %}
 {% set workplaces = person.workplaces %}
+{% set manhunt_records = person.manhunt_records %}
 <div class="container" itemscope itemtype="http://schema.org/Person">
     <div class="row">
         <div id="breadcrumbs">
@@ -45,25 +47,24 @@
         <aside id="profile-nav" role="complementary" class="col-md-2">
             <ul id="side-profilemenu">
                 <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-male"></i><span>{{ _("Персональні дані") }}</span></a></li>
-                {% if LANGUAGE_CODE == "en" %}
-                    {% if person.wiki_en or person.wiki_uk %}
-                        <li><a href="#profile" class="btn btn-transp trans"><i class="fa fa-briefcase"></i><span>{{ _("Досьє") }}</span></a></li>
-                    {% endif %}
-                {% else %}
-                    {% if person.wiki_uk %}
-                        <li><a href="#profile" class="btn btn-transp trans"><i class="fa fa-briefcase"></i><span>{{ _("Досьє") }}</span></a></li>
-                    {% endif %}
+                {% if person|get_translated_field("wiki", LANGUAGE_CODE) or person|get_translated_field("wiki", DEFAULT_LANGUAGE_CODE) %}
+                    <li><a href="#profile" class="btn btn-transp trans"><i class="fa fa-briefcase"></i><span>{{ _("Досьє") }}</span></a></li>
                 {% endif %}
 
-                {% if LANGUAGE_CODE == "en" %}
-                    {% if person.reputation_sanctions_en or person.reputation_crimes_en or person.reputation_manhunt_en or person.reputation_convictions_en or person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk %}
+                {% if
+                        person|get_translated_field("reputation_sanctions", LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_crimes", LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_manhunt", LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_convictions", LANGUAGE_CODE) or
+
+                        person|get_translated_field("reputation_sanctions", DEFAULT_LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_crimes", DEFAULT_LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_manhunt", DEFAULT_LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_convictions", DEFAULT_LANGUAGE_CODE) or
+                        manhunt_records %}
                     <li><a href="#reputation" class="btn btn-transp trans"><i class="fa fa-bullhorn"></i><span>{{ _("Кримінальні провадження та санкції") }}</span></a></li>
-                    {% endif %}
-                {% else %}
-                    {% if person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk %}
-                    <li><a href="#reputation" class="btn btn-transp trans"><i class="fa fa-bullhorn"></i><span>{{ _("Кримінальні провадження та санкції") }}</span></a></li>
-                    {% endif %}
                 {% endif %}
+
                 {% if workplaces %}
                 <li><a href="#workbefore" class="btn btn-transp trans"><i class="fa fa-wrench"></i><span>{{ _("Кар'єра") }}</span></a></li>
                 {% endif %}
@@ -73,15 +74,10 @@
                 {% if all_declarations %}
                     <li><a href="#declarations" class="btn btn-transp trans"><i class="fa fa-file-text-o"></i><span>{{ _("Декларації") }}</span></a></li>
                 {% endif %}
-                {% if LANGUAGE_CODE == "en" %}
-                    {% if person.reputation_assets_en %}
-                        <li><a href="#assets" class="btn btn-transp trans"><i class="fa fa-cubes"></i><span>{{ _("Статки") }}</span></a></li>
-                    {% endif %}
-                {% else %}
-                    {% if person.reputation_assets %}
-                        <li><a href="#assets" class="btn btn-transp trans"><i class="fa fa-cubes"></i><span>{{ _("Статки") }}</span></a></li>
-                    {% endif %}
+                {% if person|get_translated_field("reputation_assets", LANGUAGE_CODE) %}
+                    <li><a href="#assets" class="btn btn-transp trans"><i class="fa fa-cubes"></i><span>{{ _("Статки") }}</span></a></li>
                 {% endif %}
+
                 {% if related_companies.rest %}
                     <li><a href="#related-companies" class="btn btn-transp trans"><i class="fa fa-building-o"></i><span>{{ _("Пов'язані юридичні особи") }}</span></a></li>
                 {% endif %}
@@ -90,9 +86,10 @@
                 {% endif %}
             </ul>
         </aside>
-        <section id="profile" class="{%- if person.parsed_names %}col-md-8{% else %}col-md-10{% endif -%}">
+        <section id="profile" class="{%- if person.parsed_names %}col-md-8{% else %}col-md-10{% endif -%} {% if person.terminated %} not{% endif %}">
             <link itemprop="url" href="{{ person.get_absolute_url() }}" />
             <div id="profile-wrap" class="box">
+                {% if person.died %}<div class="info-label">{{ _(person.get_reason_of_termination_display()) }}</div>{% endif %}
                 <ul class="profileActions">
                     <li><a href="?format=pdf" class="tooltip-anchor" data-toggle="tooltip" data-placement="top" title="{{ _("Скачати PDF") }}" target="_blank"><i class="fa fa-file-pdf-o"></i></a></li>
                     <li><a href="#" class="tooltip-anchor print-me" data-toggle="tooltip" data-placement="top" title="{{ _("Роздрукувати профайл") }}"><i class="fa fa-print"></i></a></li>
@@ -136,6 +133,17 @@
                                 <td itemprop="birthPlace">{{ person.city_of_birth }}</td>
                             </tr>
                             {% endif %}
+                            {% if person.foreign_citizenship %}
+                            <tr>
+                                <td>{{ _("Громадянство") }}</td>
+                                <td>
+                                    {% set comma = joiner(", ") %}
+                                    {% for citizenship in person.foreign_citizenship -%}
+                                    {{ comma() }}{{ citizenship.to_country.name }}
+                                    {%- endfor %}
+                                </td>
+                            </tr>
+                            {% endif %}
                             {% if last_workplace %}
                             <tr>
                                 <td>{{ _("Остання посада") }}</td>
@@ -151,10 +159,24 @@
                                 </td>
                             </tr>
                             {% endif %}
-                            {#<tr class="tooltip-anchor" data-toggle="tooltip" data-placement="bottom" title="{{ _("Відповідно до методології, національним публічним діячам присвоюється такі ступені ризику відмивання коштів: неприйнятно високий; високий; середній; низький") }}">
-                                <td>{{ _("Рівень ризику") }}</td>
-                                <td><strong>{{ _(person.get_risk_category_display()) }}</strong></td>
-                            </tr>#}
+                            {% if person.terminated %}
+                                <tr class="non-pep-info{% if person.died %} dead-pep-info{% endif %}">
+                                    {% if person.termination_date %}
+                                        <td><strong>{{ person.termination_date_human }}</strong></td>
+                                    {% else %}
+                                        <td></td>
+                                    {% endif %}
+                                    <td>{{ _(person.get_reason_of_termination_display()) }}</td>
+                                </tr>
+                            {% else %}
+                                {% set day_of_dismissal = person.day_of_dismissal %}
+                                {% if day_of_dismissal %}
+                                <tr>
+                                    <td>Дата звільнення</td>
+                                    <td>{{ day_of_dismissal }}</td>
+                                </tr>
+                                {% endif %}
+                            {% endif %}
                         </table>
                     </div>
                 </div>
@@ -179,86 +201,71 @@
                     </div>
                 </div>
                 {% endif %}
-               
+
+                {% set last_modified = person.last_modified %}
+                {% if last_modified %}
+                    <div class="last_modified">
+                        {{ _("Остання зміна профілю: ") }}<strong>{{ last_modified|date }}</strong>
+                    </div>
+                {% endif %}
             </div>
 
-
-            {% if LANGUAGE_CODE == "en" %}
-                {% if person.wiki_en or person.wiki_uk %}
+            {% if person|get_translated_field("wiki", LANGUAGE_CODE) or person|get_translated_field("wiki", DEFAULT_LANGUAGE_CODE) %}
                 <div id="profile-wiki" class="sub box" itemprop="description">
                     <h3>{{ _("Досьє:") }}</h3>
                     <div class="printWrap">
-                        {{ person.wiki_en|richtext }}
+                        {{ person|get_translated_field("wiki", LANGUAGE_CODE)|richtext }}
 
-                        {% if person.wiki_uk %}
-                            <p><a href="{{ person.url_uk }}#dossier">more information is available in Ukrainian version of the dossier</a></p>
+                        {% if LANGUAGE_CODE != DEFAULT_LANGUAGE_CODE and person|get_translated_field("wiki", DEFAULT_LANGUAGE_CODE) %}
+                            <p><a href="{{ person.localized_url(DEFAULT_LANGUAGE_CODE) }}#dossier">more information is available in {{DEFAULT_LANGUAGE_CODE }} version of the dossier</a></p>
                         {% endif %}
                     </div>
                 </div>
-                {% endif %}
-            {% else %}
-                {% if person.wiki_uk %}
-                <div id="profile-wiki" class="sub box" itemprop="description">
-                    <h3>{{ _("Досьє:") }}</h3>
-                    <div class="printWrap">
-                        {{ person.wiki_uk|richtext }}
-                    </div>
-                </div>
-                {% endif %}
             {% endif %}
 
-            {% if LANGUAGE_CODE == "en" %}
-                {% if person.reputation_sanctions_en or person.reputation_crimes_en or person.reputation_manhunt_en or person.reputation_convictions_en or person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk %}
-                <div id="reputation" class="sub box">
-                    <h3>{{ _("Кримінальні провадження та санкції:") }}</h3>
-                    <div class="printWrap">
-                        {% if person.reputation_sanctions_en %}
-                            <h4>{{ _("Санкції") }}</h4>
-                            {{ person.reputation_sanctions_en|richtext }}
-                        {% endif %}
-                        {% if person.reputation_crimes_en %}
-                            <h4>{{ _("Кримінальні провадження") }}</h4>
-                            {{ person.reputation_crimes_en|richtext }}
-                        {% endif %}
-                        {% if person.reputation_manhunt_en %}
-                            <h4>{{ _("Перебування у розшуку") }}</h4>
-                            {{ person.reputation_manhunt_en|richtext }}
-                        {% endif %}
-                        {% if person.reputation_convictions_en %}
-                            <h4>{{ _("Наявність судимості") }}</h4>
-                            {{ person.reputation_convictions_en|richtext }}
-                        {% endif %}
+            {% if
+                    person|get_translated_field("reputation_sanctions", LANGUAGE_CODE) or
+                    person|get_translated_field("reputation_crimes", LANGUAGE_CODE) or
+                    person|get_translated_field("reputation_manhunt", LANGUAGE_CODE) or
+                    person|get_translated_field("reputation_convictions", LANGUAGE_CODE) or
 
-                        {% if person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk %}
-                            <p><a href="{{ person.url_uk }}#reputation">more information is available in Ukrainian version of the dossier</a></p>
-                        {% endif %}
-                    </div>
+                    person|get_translated_field("reputation_sanctions", DEFAULT_LANGUAGE_CODE) or
+                    person|get_translated_field("reputation_crimes", DEFAULT_LANGUAGE_CODE) or
+                    person|get_translated_field("reputation_manhunt", DEFAULT_LANGUAGE_CODE) or
+                    person|get_translated_field("reputation_convictions", DEFAULT_LANGUAGE_CODE) or
+                    manhunt_records %}
+
+            <div id="reputation" class="sub box">
+                <h3>{{ _("Кримінальні провадження та санкції:") }}</h3>
+                <div class="printWrap">
+                    {% if person|get_translated_field("reputation_sanctions", LANGUAGE_CODE) %}
+                        <h4>{{ _("Санкції") }}</h4>
+                        {{ person|get_translated_field("reputation_sanctions", LANGUAGE_CODE)|richtext }}
+                    {% endif %}
+                    {% if person|get_translated_field("reputation_crimes", LANGUAGE_CODE) %}
+                        <h4>{{ _("Кримінальні провадження") }}</h4>
+                        {{ person|get_translated_field("reputation_crimes", LANGUAGE_CODE)|richtext }}
+                    {% endif %}
+                    {% if person|get_translated_field("reputation_manhunt", LANGUAGE_CODE) or manhunt_records %}
+                        <h4>{{ _("Перебування у розшуку") }}</h4>
+                        {% include "_manhunt_records_en.jinja" with context %}
+                        {{ person|get_translated_field("reputation_manhunt", LANGUAGE_CODE)|richtext }}
+                    {% endif %}
+                    {% if person|get_translated_field("reputation_convictions", LANGUAGE_CODE) %}
+                        <h4>{{ _("Наявність судимості") }}</h4>
+                        {{ person|get_translated_field("reputation_convictions", LANGUAGE_CODE) }}
+                    {% endif %}
+
+                    {% if 
+                        LANGUAGE_CODE != DEFAULT_LANGUAGE_CODE and (
+                        person|get_translated_field("reputation_sanctions", DEFAULT_LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_crimes", DEFAULT_LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_manhunt", DEFAULT_LANGUAGE_CODE) or
+                        person|get_translated_field("reputation_convictions", DEFAULT_LANGUAGE_CODE)) %}
+                        <p><a href="{{ person.localized_url(DEFAULT_LANGUAGE_CODE) }}#reputation">more information is available in {{ DEFAULT_LANGUAGE_CODE }} version of the dossier</a></p>
+                    {% endif %}
                 </div>
-                {% endif %}
-            {% else %}
-                {% if person.reputation_sanctions_uk or person.reputation_crimes_uk or person.reputation_manhunt_uk or person.reputation_convictions_uk %}
-                <div id="reputation" class="sub box">
-                    <h3>{{ _("Кримінальні провадження та санкції:") }}</h3>
-                    <div class="printWrap">
-                        {% if person.reputation_sanctions_uk %}
-                            <h4>{{ _("Санкції") }}</h4>
-                            {{ person.reputation_sanctions_uk|richtext }}
-                        {% endif %}
-                        {% if person.reputation_crimes_uk %}
-                            <h4>{{ _("Кримінальні провадження") }}</h4>
-                            {{ person.reputation_crimes_uk|richtext }}
-                        {% endif %}
-                        {% if person.reputation_manhunt_uk %}
-                            <h4>{{ _("Перебування у розшуку") }}</h4>
-                            {{ person.reputation_manhunt_uk|richtext }}
-                        {% endif %}
-                        {% if person.reputation_convictions_uk %}
-                            <h4>{{ _("Наявність судимості") }}</h4>
-                            {{ person.reputation_convictions_uk|richtext }}
-                        {% endif %}
-                    </div>
-                </div>
-                {% endif %}
+            </div>
             {% endif %}
 
             {% if workplaces %}
@@ -346,29 +353,15 @@
                 {% include "_declaration.jinja" %}
             {% endif %}
 
-            {# TODO: remove at all? #}
-            {% if LANGUAGE_CODE == "en" %}
-                {% if person.reputation_assets_en %}
-                    <div id="assets" class="sub box">
-                        <h3>{{ _("Статки:") }}</h3>
-                        <div class="printWrap">
-                            {% if person.reputation_assets %}
-                                {{ person.reputation_assets|richtext }}
-                            {% endif %}
-                        </div>
+            {% if person|get_translated_field("reputation_assets", LANGUAGE_CODE) %}
+                <div id="assets" class="sub box">
+                    <h3>{{ _("Статки:") }}</h3>
+                    <div class="printWrap">
+                        {% if person|get_translated_field("reputation_assets", LANGUAGE_CODE) %}
+                            {{ person|get_translated_field("reputation_assets", LANGUAGE_CODE)|richtext }}
+                        {% endif %}
                     </div>
-                {% endif %}
-            {% else %}
-                {% if person.reputation_assets_uk %}
-                    <div id="assets" class="sub box">
-                        <h3>{{ _("Статки:") }}</h3>
-                        <div class="printWrap">
-                            {% if person.reputation_assets_uk %}
-                                {{ person.reputation_assets_uk|richtext }}
-                            {% endif %}
-                        </div>
-                    </div>
-                {% endif %}
+                </div>
             {% endif %}
 
             {% if related_companies.rest %}

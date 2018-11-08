@@ -45,6 +45,7 @@ class Command(BaseCommand):
             "to_watch": to_watch,
         }
 
+        doc_type = decl["intro"].get("doc_type", "Щорічна")
         # That's NACP declaration
         if decl["id"].startswith("nacp_"):
             if "nacp_src" in decl:
@@ -53,7 +54,7 @@ class Command(BaseCommand):
             if task == "link":
                 allowed_types = ["Щорічна", "Після звільнення"]
                 if (person.is_pep and
-                        person.declaration_set.filter(nacp_declaration=True, confirmed="a").count() == 0):
+                        person.declarations.filter(nacp_declaration=True, confirmed="a").count() == 0):
 
                     self.stdout.write(
                         "There are no declarations for poor %s at all, thus extending the scope" % (person,)
@@ -98,6 +99,7 @@ class Command(BaseCommand):
                     self.stdout.write("Declaration %s for user %s already exists" % (decl["id"], person))
                     return
 
+        params["doc_type"] = doc_type
         d = Declaration.objects.create(
             declaration_id=decl["id"],
             person=person,

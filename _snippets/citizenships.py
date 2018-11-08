@@ -1,7 +1,7 @@
 res = []
 from core.models import Declaration
 
-for d in Declaration.objects.filter(confirmed="a", nacp_declaration=True):
+for d in Declaration.objects.filter(confirmed="a", nacp_declaration=True).nocache().iterator():
     step_1 = d.source["nacp_orig"].get("step_1", {})
     step_2 = d.source["nacp_orig"].get("step_2", {})
     for s2 in step_2.values():
