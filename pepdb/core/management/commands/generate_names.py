@@ -153,9 +153,9 @@ class Command(BaseCommand):
 
             if aka:
                 for aka_name in filter(None, aka.split("\n")):
-                    last_name, first_name, patronymic, _ = parse_fullname(aka_name)
+                    aka_last_name, aka_first_name, aka_patronymic, _ = parse_fullname(aka_name)
                     names |= self.transliterate(
-                        last_name, first_name, patronymic, settings.LANGUAGE_CODE
+                        aka_last_name, aka_first_name, aka_patronymic, settings.LANGUAGE_CODE
                     )
 
             person.names = "\n".join(names)
