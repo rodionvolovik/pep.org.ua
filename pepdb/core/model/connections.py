@@ -344,7 +344,7 @@ class Company2Company(AbstractRelationship):
         _("Тип зв'язку"),
         choices=zip(_relationships_explained,
                     map(_, _relationships_explained)),
-        max_length=40,
+        max_length=50,
         blank=True)
 
     equity_part = models.FloatField(
