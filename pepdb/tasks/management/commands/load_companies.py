@@ -257,19 +257,17 @@ class Command(BaseCommand):
                 self.stderr.write("Can not get dataset url from api.")
                 return
 
-            _, ext = os.path.splitext(data_url)
-
             self.stdout.write("Loading data of revision: {}, created at: {}".format(revision, timestamp))
 
             r = requests.get(data_url, stream=True)
 
-            if not ext:
-                ext = r.headers["Content-Type"].split("/")[-1]
-                if ext not in ["zip", "xml", "csv"]:
-                    self.stderr.write("Unsupported dataset file type: {}".format(ext))
-                    return
+            ext = r.headers["Content-Type"].split("/")[-1]
+            ext = ext.lower().lstrip(".")
+            if ext not in ["zip", "xml", "csv"]:
+                self.stderr.write("Unsupported dataset file type: {}".format(ext))
+                return
 
-            reader = EDR_Reader(StringIO(r.content), timestamp, revision, ext.lower().lstrip("."))
+            reader = EDR_Reader(StringIO(r.content), timestamp, revision)
         elif options["revision"] and options["dump_date"]:
             dump_date = timezone.make_aware(parse(options["dump_date"], dayfirst=True))
             _, ext = os.path.splitext(options["filename"])
