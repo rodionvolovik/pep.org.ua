@@ -2,14 +2,12 @@
 from __future__ import unicode_literals
 
 import re
-import codecs
 from random import randrange
 import requests
 import os.path
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import ParseError
 import logging
-from time import sleep
 from io import TextIOWrapper, open
 from unicodecsv import DictReader
 from zipfile import ZipFile
@@ -224,53 +222,53 @@ class Command(BaseCommand):
         fp = None
 
         if not options["filename"]:
+            data_url = None
+            timestamp = None
+            revision = None
+
             try:
-                if not options["revision"]:
-                    response = requests.get(
-                        "http://data.gov.ua/view-dataset/dataset.json",
-                        {"dataset-id": GUID, "nocache": randrange(100)},
-                        proxies=self.proxies
-                    ).json()
-                    timestamp = parse(response["changed"], dayfirst=True)
-                else:
-                    listing = requests.get(
-                        "http://data.gov.ua/view-dataset/dataset.json",
-                        {"dataset-id": GUID, "nocache": randrange(100)},
-                        proxies=self.proxies
-                    ).json()
+                response = requests.get(
+                    "https://data.gov.ua/api/3/action/resource_show",
+                    {"id": GUID, "nocache": randrange(100)}
+                ).json()
 
-                    for rev in listing["revisions"]:
-                        if rev["revision_id"] == options["revision"]:
-                            timestamp = parse(rev["created"], dayfirst=True)
-                            break
+                if not response.get("success"):
+                    self.stderr.write("Unsuccessful response from api.")
+                    return
 
-                    sleep(0.2)
-                    response = requests.get(
-                        "http://data.gov.ua/view-dataset/dataset.json",
-                        {"dataset-id": GUID, "revision-id": options["revision"], "nocache": randrange(100)},
-                        proxies=self.proxies
-                    ).json()
+                for rev in response["result"]["resource_revisions"]:
+                    revision = rev["url"].strip("/").rsplit('/', 1)[-1]
 
-                files_list = response["files"]
-                revision = response["revision_id"]
+                    if not options["revision"]:
+                        timestamp = parse(rev["resource_created"], dayfirst=True)
+                        data_url = rev["url"]
+                        break
+
+                    if revision == options["revision"]:
+                        timestamp = parse(rev["resource_created"], dayfirst=True)
+                        data_url = rev["url"]
+                        break
+
             except (TypeError, IndexError, KeyError):
                 self.stderr.write("Cannot obtain information about dump file")
                 raise
 
-            if len(files_list) != 1:
-                self.stderr.write("Too many files in API response, trying to find a proper one")
-                for f in files_list:
-                    if "uo" in f["url"].lower():
-                        files_list = [f]
-                        break
-                else:
-                    self.stderr.write("Nothing suitable found")
+            if not data_url:
+                self.stderr.write("Can not get dataset url from api.")
+                return
+
+            _, ext = os.path.splitext(data_url)
+
+            self.stdout.write("Loading data of revision: {}, created at: {}".format(revision, timestamp))
+
+            r = requests.get(data_url, stream=True)
+
+            if not ext:
+                ext = r.headers["Content-Type"].split("/")[-1]
+                if ext not in ["zip", "xml", "csv"]:
+                    self.stderr.write("Unsupported dataset file type: {}".format(ext))
                     return
 
-            dump = files_list[0]
-            _, ext = os.path.splitext(dump["url"])
-
-            r = requests.get(dump["url"], stream=True)
             reader = EDR_Reader(StringIO(r.content), timestamp, revision, ext.lower().lstrip("."))
         elif options["revision"] and options["dump_date"]:
             dump_date = timezone.make_aware(parse(options["dump_date"], dayfirst=True))
