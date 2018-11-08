@@ -267,7 +267,7 @@ class Command(BaseCommand):
                 self.stderr.write("Unsupported dataset file type: {}".format(ext))
                 return
 
-            reader = EDR_Reader(StringIO(r.content), timestamp, revision)
+            reader = EDR_Reader(StringIO(r.content), timestamp, revision, ext)
         elif options["revision"] and options["dump_date"]:
             dump_date = timezone.make_aware(parse(options["dump_date"], dayfirst=True))
             _, ext = os.path.splitext(options["filename"])
