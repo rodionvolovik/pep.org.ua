@@ -367,7 +367,7 @@ class Person(models.Model, AbstractNode):
         banks = []
         rest = []
         for c in companies:
-            if c.relationship_type_uk == "Клієнт банку":
+            if get_localized_field(c, "relationship_type") == "Клієнт банку":
                 banks.append(c)
             else:
                 rest.append(c)
