@@ -8,14 +8,15 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext_noop as __
 from django.contrib.postgres.fields import ArrayField
 from django.conf import settings
-
-from core.fields import RedactorField
-from core.utils import lookup_term, translate_into, localized_fields, localized_field
-from core.model.base import AbstractRelationship
-from core.model.translations import Ua2EnDictionary
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
+
+
+from core.fields import RedactorField
+from core.utils import lookup_term, translate_into, localized_fields, localized_field, get_localized_field, translate_through_dict
+from core.model.base import AbstractRelationship
+from core.model.translations import Ua2EnDictionary
 
 
 class Person2Person(AbstractRelationship):
