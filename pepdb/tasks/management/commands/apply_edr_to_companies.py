@@ -10,48 +10,52 @@ from tasks.models import CompanyMatching
 
 
 class Command(BaseCommand):
-    help = ('Takes finished tasks for companies matching and applies '
-            'to the Company model')
+    help = (
+        "Takes finished tasks for companies matching and applies "
+        "to the Company model"
+    )
 
     company_types = [
-        u"зареєстровано",
-        u"порушено справу про банкрутство",
-        u"порушено справу про банкрутство (санація)",
-        u"зареєстровано, свідоцтво про державну реєстрацію недійсне",
-        u"в стані припинення",
-        u"припинено",
+        "зареєстровано",
+        "порушено справу про банкрутство",
+        "порушено справу про банкрутство (санація)",
+        "зареєстровано, свідоцтво про державну реєстрацію недійсне",
+        "в стані припинення",
+        "припинено",
     ]
 
     def add_arguments(self, parser):
         # Named (optional) arguments
         parser.add_argument(
-            '--real_run',
-            action='store_true',
-            dest='real_run',
+            "--real_run",
+            action="store_true",
+            dest="real_run",
             default=False,
-            help='Apply registry matching results for real',
+            help="Apply registry matching results for real",
         )
 
     def handle(self, *args, **options):
-        tasks = CompanyMatching.objects.exclude(
-            edrpou_match="NONE").exclude(
-            edrpou_match="").exclude(
-            edrpou_match__isnull=True).filter(status="m")
+        tasks = (
+            CompanyMatching.objects.exclude(edrpou_match="NONE")
+            .exclude(edrpou_match="")
+            .exclude(edrpou_match__isnull=True)
+            .filter(status="m")
+        )
 
         for t in tasks:
             try:
                 company = Company.objects.get(pk=t.company_id)
             except Company.DoesNotExist:
-                self.stderr.write(
-                    "Cannot find company %s" % t.company_id
-                )
+                self.stderr.write("Cannot find company %s" % t.company_id)
                 continue
 
-            res = EDRPOU.search().query(
-                "term", edrpou=t.edrpou_match.lstrip("0")).execute()
+            res = (
+                EDRPOU.search()
+                .query("term", edrpou=t.edrpou_match.lstrip("0"))
+                .execute()
+            )
 
-            res = sorted(
-                res, key=lambda x: self.company_types.index(x.status))
+            res = sorted(res, key=lambda x: self.company_types.index(x.status))
 
             for r in res[:1]:
                 parsed = parse_address(r.location)
@@ -63,45 +67,29 @@ class Command(BaseCommand):
 
                     if company.zip_code and company.zip_code != zip_code:
                         self.stdout.write(
-                            "NOT replacing zipcode %s with %s for company %s, %s" % (
-                                company.zip_code,
-                                zip_code,
-                                company.name,
-                                company.id
-                            )
+                            "NOT replacing zipcode %s with %s for company %s, %s"
+                            % (company.zip_code, zip_code, company.name, company.id)
                         )
                         skip = True
 
                     if company.city and company.city != city:
                         self.stdout.write(
-                            "NOT replacing city %s with %s for company %s, %s" % (
-                                company.city,
-                                city,
-                                company.name,
-                                company.id
-                            )
+                            "NOT replacing city %s with %s for company %s, %s"
+                            % (company.city, city, company.name, company.id)
                         )
                         skip = True
 
                     if company.street and company.street != street:
                         self.stdout.write(
-                            "NOT replacing street %s with %s for company %s, %s" % (
-                                company.street,
-                                street,
-                                company.name,
-                                company.id
-                            )
+                            "NOT replacing street %s with %s for company %s, %s"
+                            % (company.street, street, company.name, company.id)
                         )
                         skip = True
 
                     if company.appt and company.appt != appt:
                         self.stdout.write(
-                            "NOT replacing appt %s with %s for company %s, %s" % (
-                                company.appt,
-                                appt,
-                                company.name,
-                                company.id
-                            )
+                            "NOT replacing appt %s with %s for company %s, %s"
+                            % (company.appt, appt, company.name, company.id)
                         )
                         skip = True
 
@@ -118,12 +106,8 @@ class Command(BaseCommand):
 
                 if company.edrpou and company.edrpou != r.edrpou:
                     self.stdout.write(
-                        "Replacing edrpou %s with %s for company %s, %s" % (
-                            company.edrpou,
-                            r.edrpou,
-                            company.name,
-                            company.id
-                        )
+                        "Replacing edrpou %s with %s for company %s, %s"
+                        % (company.edrpou, r.edrpou, company.name, company.id)
                     )
 
                 company.edrpou = r.edrpou

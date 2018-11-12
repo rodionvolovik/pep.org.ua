@@ -8,12 +8,13 @@ from django.db.models import Q
 
 
 def fix_ciprus_companies(apps, schema_editor):
-    Company = apps.get_model('core.Company')
+    Company = apps.get_model("core.Company")
 
     for c in Company.objects.filter(
-            Q(edrpou__istartswith="HE") |
-            Q(edrpou__istartswith="ΗΕ") |
-            Q(edrpou__istartswith="H.E.")):
+        Q(edrpou__istartswith="HE")
+        | Q(edrpou__istartswith="ΗΕ")
+        | Q(edrpou__istartswith="H.E.")
+    ):
 
         c.edrpou = re.sub("^HE\s?", "HE ", c.edrpou)
         c.edrpou = re.sub("^ΗΕ\s?", "HE ", c.edrpou)
@@ -24,10 +25,6 @@ def fix_ciprus_companies(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0118_auto_20170924_0223'),
-    ]
+    dependencies = [("core", "0118_auto_20170924_0223")]
 
-    operations = [
-        migrations.RunPython(fix_ciprus_companies)
-    ]
+    operations = [migrations.RunPython(fix_ciprus_companies)]

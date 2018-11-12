@@ -7,13 +7,11 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0020_auto_20170928_1531'),
-    ]
+    dependencies = [("tasks", "0020_auto_20170928_1531")]
 
     operations = [
         migrations.AlterIndexTogether(
-            name='companydeduplication',
-            index_together=set([('company1_id', 'company2_id')]),
-        ),
+            name="companydeduplication",
+            index_together=set([("company1_id", "company2_id")]),
+        )
     ]

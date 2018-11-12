@@ -13,7 +13,9 @@ class Command(BaseCommand):
         for t in Ua2EnDictionary.objects.exclude(translation="").nocache():
             en_translations[lookup_term(t.term)] = t.translation
 
-        for p in Declaration.objects.filter(confirmed="a").defer("source").all().nocache():
+        for p in (
+            Declaration.objects.filter(confirmed="a").defer("source").all().nocache()
+        ):
             if lookup_term(p.region_uk) in en_translations:
                 p.region_en = en_translations[lookup_term(p.region_uk)]
 
@@ -26,16 +28,23 @@ class Command(BaseCommand):
             p.save()
 
         for c in Company.objects.filter(
-                Q(name_en="") | Q(short_name_en="") | Q(name_en__isnull=True) |
-                Q(short_name_en__isnull=True)).nocache():
+            Q(name_en="")
+            | Q(short_name_en="")
+            | Q(name_en__isnull=True)
+            | Q(short_name_en__isnull=True)
+        ).nocache():
             c.save()  # This will invoke translation on the save method
 
         for p2c in Person2Company.objects.filter(
-                Q(relationship_type_en="") |
-                Q(relationship_type_en__isnull=True)).nocache():
+            Q(relationship_type_en="") | Q(relationship_type_en__isnull=True)
+        ).nocache():
             p2c.save()  # This will invoke translation on the save method
 
-        for p in Person.objects \
-                .exclude(Q(city_of_birth_uk="") | Q(city_of_birth_uk__isnull=True)) \
-                .filter(Q(city_of_birth_en="") | Q(city_of_birth_en__isnull=True)).nocache():
+        for p in (
+            Person.objects.exclude(
+                Q(city_of_birth_uk="") | Q(city_of_birth_uk__isnull=True)
+            )
+            .filter(Q(city_of_birth_en="") | Q(city_of_birth_en__isnull=True))
+            .nocache()
+        ):
             p.save()  # This will invoke translation on the save method

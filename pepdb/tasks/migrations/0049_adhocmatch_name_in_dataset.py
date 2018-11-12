@@ -7,14 +7,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0048_auto_20180630_1046'),
-    ]
+    dependencies = [("tasks", "0048_auto_20180630_1046")]
 
     operations = [
         migrations.AddField(
-            model_name='adhocmatch',
-            name='name_in_dataset',
-            field=models.CharField(blank=True, max_length=200, null=True, verbose_name='\u041f\u0406\u0411 \u0437 \u0434\u0430\u0442\u0430\u0441\u0435\u0442\u0443'),
-        ),
+            model_name="adhocmatch",
+            name="name_in_dataset",
+            field=models.CharField(
+                blank=True,
+                max_length=200,
+                null=True,
+                verbose_name="\u041f\u0406\u0411 \u0437 \u0434\u0430\u0442\u0430\u0441\u0435\u0442\u0443",
+            ),
+        )
     ]

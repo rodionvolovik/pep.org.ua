@@ -7,15 +7,15 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0039_auto_20180317_0243'),
-    ]
+    dependencies = [("tasks", "0039_auto_20180317_0243")]
 
     operations = [
         migrations.AddField(
-            model_name='adhocmatches',
-            name='matched_json_hash',
-            field=models.CharField(default='', max_length=40, verbose_name='\u0425\u0435\u0448'),
+            model_name="adhocmatches",
+            name="matched_json_hash",
+            field=models.CharField(
+                default="", max_length=40, verbose_name="\u0425\u0435\u0448"
+            ),
             preserve_default=False,
-        ),
+        )
     ]

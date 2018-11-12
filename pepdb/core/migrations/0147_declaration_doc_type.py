@@ -7,14 +7,16 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0146_auto_20180811_2340'),
-    ]
+    dependencies = [("core", "0146_auto_20180811_2340")]
 
     operations = [
         migrations.AddField(
-            model_name='declaration',
-            name='doc_type',
-            field=models.CharField(blank=True, max_length=50, verbose_name='\u0422\u0438\u043f \u0434\u0435\u043a\u043b\u0430\u0440\u0430\u0446\u0456\u0457'),
-        ),
+            model_name="declaration",
+            name="doc_type",
+            field=models.CharField(
+                blank=True,
+                max_length=50,
+                verbose_name="\u0422\u0438\u043f \u0434\u0435\u043a\u043b\u0430\u0440\u0430\u0446\u0456\u0457",
+            ),
+        )
     ]

@@ -28,43 +28,40 @@ and matches arbitrary datasets with names with the list of persons in DB"""
 
     def add_arguments(self, parser):
         parser.add_argument(
-            'dataset_file', type=argparse.FileType('r'),
-            help='Any dataset in the following formats: json, jsonlines, csv',
+            "dataset_file",
+            type=argparse.FileType("r"),
+            help="Any dataset in the following formats: json, jsonlines, csv",
         )
 
         parser.add_argument(
-            'dataset_identifier',
-            help='Dataset name (will be displayed in admin)',
+            "dataset_identifier", help="Dataset name (will be displayed in admin)"
         )
 
         parser.add_argument(
-            '--filetype',
+            "--filetype",
             choices=("json", "jsonlines", "csv"),
             required=True,
-            help='Format of the dataset',
+            help="Format of the dataset",
         )
 
         parser.add_argument(
-            '--name_field',
-            nargs="+",
-            help='fields from dataset to use for the search'
+            "--name_field", nargs="+", help="fields from dataset to use for the search"
         )
 
         parser.add_argument(
-            '--render_field',
+            "--render_field",
             nargs="*",
-            help='fields from dataset to use for the search'
+            help="fields from dataset to use for the search",
         )
 
         parser.add_argument(
-            '--dedup_field',
+            "--dedup_field",
             nargs="*",
-            help='fields from dataset to use to avoid duplicates after repeated runs'
+            help="fields from dataset to use to avoid duplicates after repeated runs",
         )
 
         parser.add_argument(
-            '--last_updated_from_dataset',
-            help='The date of the export of the dataset'
+            "--last_updated_from_dataset", help="The date of the export of the dataset"
         )
 
     def iter_dataset(self, fp, filetype):
@@ -89,16 +86,20 @@ and matches arbitrary datasets with names with the list of persons in DB"""
             "query": name,
             "operator": "and",
             "fuzziness": 0,
-            "fields": ["full_name", "names", "full_name_en", "also_known_as_uk", "also_known_as_en"]
+            "fields": [
+                "full_name",
+                "names",
+                "full_name_en",
+                "also_known_as_uk",
+                "also_known_as_en",
+            ],
         }
 
         fuzziness = 0
         while fuzziness < 3:
             base_q["fuzziness"] = fuzziness
 
-            s = ElasticPerson.search().query({
-                "multi_match": base_q
-            })
+            s = ElasticPerson.search().query({"multi_match": base_q})
 
             if s.count():
                 return s.execute(), fuzziness
@@ -115,9 +116,8 @@ and matches arbitrary datasets with names with the list of persons in DB"""
         if render_fields is None:
             render_fields = self.get_default_render_fields(doc, options["name_field"])
 
-        return (
-            tuple((k, doc.get(k)) for k in options["name_field"]) +
-            tuple((k, doc.get(k)) for k in render_fields)
+        return tuple((k, doc.get(k)) for k in options["name_field"]) + tuple(
+            (k, doc.get(k)) for k in render_fields
         )
 
     def get_doc_hash(self, doc, options):
@@ -125,24 +125,30 @@ and matches arbitrary datasets with names with the list of persons in DB"""
 
         if dedup_fields is None:
             if options.get("render_field") is None:
-                dedup_fields = self.get_default_render_fields(doc, options["name_field"])
+                dedup_fields = self.get_default_render_fields(
+                    doc, options["name_field"]
+                )
             else:
                 dedup_fields = copy(options["render_field"])
 
             dedup_fields += options["name_field"]
 
-        return sha1(json.dumps(
-            {k: doc.get(k) for k in sorted(dedup_fields)}
-        )).hexdigest()
+        return sha1(
+            json.dumps({k: doc.get(k) for k in sorted(dedup_fields)})
+        ).hexdigest()
 
     def handle(self, *args, **options):
         if "last_updated_from_dataset" in options:
-            last_updated = timezone.make_aware(dt_parse(options["last_updated_from_dataset"], dayfirst=True))
+            last_updated = timezone.make_aware(
+                dt_parse(options["last_updated_from_dataset"], dayfirst=True)
+            )
         else:
             last_updated = timezone.now()
 
         with tqdm.tqdm() as pbar:
-            for i, item in enumerate(self.iter_dataset(options["dataset_file"], options["filetype"])):
+            for i, item in enumerate(
+                self.iter_dataset(options["dataset_file"], options["filetype"])
+            ):
                 pbar.update(1)
                 doc_hash = self.get_doc_hash(item, options)
                 name = self.get_name(item, options["name_field"])
@@ -160,21 +166,28 @@ and matches arbitrary datasets with names with the list of persons in DB"""
                                     "pep_name": res.full_name,
                                     "pep_position": "{} @ {}".format(
                                         getattr(res, "last_job_title", ""),
-                                        getattr(res, "last_workplace", "")
+                                        getattr(res, "last_workplace", ""),
                                     ),
                                     "matched_json": rpr,
                                     "name_match_score": fuzziness,
                                     "last_updated_from_dataset": last_updated,
                                     "first_updated_from_dataset": last_updated,
-                                    "name_in_dataset": name
-                                }
+                                    "name_in_dataset": name,
+                                },
                             )
 
-                            if not created and last_updated > obj.last_updated_from_dataset:
+                            if (
+                                not created
+                                and last_updated > obj.last_updated_from_dataset
+                            ):
                                 obj.last_updated_from_dataset = last_updated
                                 obj.name_in_dataset = name
                                 obj.matched_json = rpr
                                 obj.save()
 
                         except IntegrityError:
-                            logger.warning("Cannot find person {} with key {} in db".format(res.full_name, res.id))
+                            logger.warning(
+                                "Cannot find person {} with key {} in db".format(
+                                    res.full_name, res.id
+                                )
+                            )

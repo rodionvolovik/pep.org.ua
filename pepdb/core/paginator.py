@@ -15,9 +15,9 @@ class ElasticPaginator(Paginator):
 
     def to_api(self):
         return {
-            'count': self.count,
-            'num_pages': self.num_pages,
-            'per_page': self.per_page
+            "count": self.count,
+            "num_pages": self.num_pages,
+            "per_page": self.per_page,
         }
 
     def validate_number(self, number):
@@ -27,9 +27,9 @@ class ElasticPaginator(Paginator):
         try:
             number = int(number)
         except (TypeError, ValueError):
-            raise PageNotAnInteger('That page number is not an integer')
+            raise PageNotAnInteger("That page number is not an integer")
         if number < 1:
-            raise EmptyPage('That page number is less than 1')
+            raise EmptyPage("That page number is less than 1")
         if number > self.num_pages:
             if number == 1 and self.allow_empty_first_page:
                 pass
@@ -68,11 +68,7 @@ class ElasticPage(Page):
 
         # We always include the first two pages, last two pages, and
         # two pages either side of the current page.
-        included = set((
-            1,
-            current - 1, current, current + 1,
-            final
-        ))
+        included = set((1, current - 1, current, current + 1, final))
 
         # If the break would only exclude a single page number then we
         # may as well include the page number instead of the break.
@@ -84,10 +80,7 @@ class ElasticPage(Page):
             included.add(final - 2)
 
         # Now sort the page numbers and drop anything outside the limits.
-        included = [
-            idx for idx in sorted(list(included))
-            if idx > 0 and idx <= final
-        ]
+        included = [idx for idx in sorted(list(included)) if idx > 0 and idx <= final]
 
         # Finally insert any `...` breaks
         if current > 4:
@@ -98,14 +91,14 @@ class ElasticPage(Page):
 
     def to_api(self):
         return {
-            'paginator': self.paginator.to_api(),
-            'number': self.number,
-            'object_list': self.object_list.execute()
+            "paginator": self.paginator.to_api(),
+            "number": self.number,
+            "object_list": self.object_list.execute(),
         }
 
 
 def paginated_search(request, search, per_page=settings.CATALOG_PER_PAGE):
     """Helper function that handles common pagination pattern."""
     paginator = ElasticPaginator(search, per_page)
-    page = request.GET.get('page', 1)
+    page = request.GET.get("page", 1)
     return paginator.page(page)

@@ -8,19 +8,16 @@ from django.db.models import F, Func, Value
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
+        parser.add_argument("file_path", help="CSV file to import translations")
         parser.add_argument(
-            'file_path',
-            help='CSV file to import translations',
-        )
-        parser.add_argument(
-            '--replace',
+            "--replace",
             default=False,
             action="store_true",
-            help='Replace existing non-empty translations',
+            help="Replace existing non-empty translations",
         )
 
     def handle(self, *args, **options):
-        file_path = options['file_path']
+        file_path = options["file_path"]
         successful = 0
         failed = 0
 
@@ -39,7 +36,9 @@ class Command(BaseCommand):
                         failed += 1
                         continue
                     except Ua2RuDictionary.MultipleObjectsReturned:
-                        self.stderr.write("More than one result for term %s in db" % term)
+                        self.stderr.write(
+                            "More than one result for term %s in db" % term
+                        )
                         failed += 1
                         continue
 
@@ -63,8 +62,9 @@ class Command(BaseCommand):
                                 else:
                                     # Otherwise give up
                                     self.stdout.write(
-                                        "Not overwritting existing alt_translation %s for term %s with %s" % (
-                                            term, obj.alt_translation, trans))
+                                        "Not overwritting existing alt_translation %s for term %s with %s"
+                                        % (term, obj.alt_translation, trans)
+                                    )
                                     failed += 1
 
                             continue
@@ -73,4 +73,6 @@ class Command(BaseCommand):
                     obj.save()
                     successful += 1
 
-            self.stdout.write("Import is done, successful: %s, failed: %s" % (successful, failed))
+            self.stdout.write(
+                "Import is done, successful: %s, failed: %s" % (successful, failed)
+            )

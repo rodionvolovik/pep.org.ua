@@ -25,7 +25,6 @@ from core.utils import is_eng
 from tasks.models import SMIDACandidate
 
 
-
 class Command(BaseCommand):
     help = (
         "Search PEP comanies in SMIDA 5+% dataset and retrieving their reports from API"
@@ -82,7 +81,7 @@ class Command(BaseCommand):
 
                 positions_mapping[pos[1].lower().strip()] = {
                     "class": classes_mapping[pos[3]],
-                    "body": bodies_mapping[pos[2]]
+                    "body": bodies_mapping[pos[2]],
                 }
 
         r = DictReader(options["smida_file"])
@@ -153,7 +152,9 @@ class Command(BaseCommand):
                         subtree = ElementTree.fromstring(subresp.content)
                     except ElementTree.ParseError as e:
                         self.stderr.write(
-                            "Skipping report {} as malformed".format(report.attrib["href"])
+                            "Skipping report {} as malformed".format(
+                                report.attrib["href"]
+                            )
                         )
                         continue
 
@@ -186,8 +187,12 @@ class Command(BaseCommand):
 
                         if position is not None:
                             if position.text.lower().strip() in positions_mapping:
-                                smida_position_body = positions_mapping[position.text.lower().strip()]["body"]
-                                smida_position_class = positions_mapping[position.text.lower().strip()]["class"]
+                                smida_position_body = positions_mapping[
+                                    position.text.lower().strip()
+                                ]["body"]
+                                smida_position_class = positions_mapping[
+                                    position.text.lower().strip()
+                                ]["class"]
                             else:
                                 for rx, bm in self.BODY_MARKERS.items():
                                     if rx.search(position.text):

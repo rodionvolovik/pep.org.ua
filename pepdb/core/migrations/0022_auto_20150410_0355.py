@@ -44,8 +44,7 @@ def load_peps(apps, schema_editor):
             if company_name:
                 if company is None:
                     try:
-                        company = Company.objects.get(
-                            name=company_name)
+                        company = Company.objects.get(name=company_name)
                     except Company.DoesNotExist:
                         pass
 
@@ -86,13 +85,13 @@ def load_peps(apps, schema_editor):
                     person = Person.objects.get(
                         first_name__iexact=first_name,
                         last_name__iexact=last_name,
-                        patronymic__iexact=patronymic
+                        patronymic__iexact=patronymic,
                     )
                 except Person.DoesNotExist:
                     person = Person(
                         first_name=first_name,
                         last_name=last_name,
-                        patronymic=patronymic
+                        patronymic=patronymic,
                     )
 
                 person.is_pep = True
@@ -108,8 +107,7 @@ def load_peps(apps, schema_editor):
                 person.save()
 
                 doc_instance = None
-                if doc and "folderview" not in doc \
-                        and "drive/#folders" not in doc:
+                if doc and "folderview" not in doc and "drive/#folders" not in doc:
                     print(doc)
                     doc = expand_gdrive_download_url(doc)
                     doc_hash = sha1(doc).hexdigest()
@@ -122,20 +120,19 @@ def load_peps(apps, schema_editor):
 
                         if doc_name:
                             doc_instance = Document(
-                                name=doc_name,
-                                uploader=peklun,
-                                hash=doc_hash
+                                name=doc_name, uploader=peklun, hash=doc_hash
                             )
 
                             doc_instance.doc.save(
-                                doc_san_name, ContentFile(doc_content))
+                                doc_san_name, ContentFile(doc_content)
+                            )
                             doc_instance.save()
 
                 link, link_created = Person2Company.objects.update_or_create(
                     from_person=person,
                     to_company=company,
                     date_established=parse_date(person_from),
-                    date_finished=parse_date(person_to)
+                    date_finished=parse_date(person_to),
                 )
 
                 if not link.relationship_type:
@@ -154,10 +151,6 @@ def load_peps(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0021_auto_20150410_0353'),
-    ]
+    dependencies = [("core", "0021_auto_20150410_0353")]
 
-    operations = [
-        migrations.RunPython(load_peps),
-    ]
+    operations = [migrations.RunPython(load_peps)]

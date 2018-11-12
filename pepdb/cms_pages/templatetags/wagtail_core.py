@@ -8,6 +8,6 @@ def richtext(value):
     if value is not None:
         html = expand_db_html(value)
     else:
-        html = ''
+        html = ""
 
-    return mark_safe('<div class="rich-text">' + html + '</div>')
+    return mark_safe('<div class="rich-text">' + html + "</div>")

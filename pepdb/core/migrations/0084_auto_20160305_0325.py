@@ -12,8 +12,7 @@ def fix_terms(apps, schema_editor):
         t.term = lookup_term(t.term)
 
         if t.translation:
-            duplicates = Ua2EnDictionary.objects.filter(term=t.term).exclude(
-                pk=t.pk)
+            duplicates = Ua2EnDictionary.objects.filter(term=t.term).exclude(pk=t.pk)
             if duplicates:
                 print(t.translation + "::")
                 print(";".join(duplicates.values_list("translation", flat=True)))
@@ -29,10 +28,6 @@ def fix_terms(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0083_company_founded_details'),
-    ]
+    dependencies = [("core", "0083_company_founded_details")]
 
-    operations = [
-        migrations.RunPython(fix_terms),
-    ]
+    operations = [migrations.RunPython(fix_terms)]

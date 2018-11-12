@@ -49,23 +49,29 @@ class Country(models.Model, AbstractNode):
 
             persons = self.person2country_set.select_related("from_person")
             for p in persons:
-                connections.append({
-                    "relation": unicode(
-                        ugettext_lazy(p.get_relationship_type_display())),
-                    "node": p.from_person.get_node_info(False),
-                    "model": p._meta.model_name,
-                    "pk": p.pk
-                })
+                connections.append(
+                    {
+                        "relation": unicode(
+                            ugettext_lazy(p.get_relationship_type_display())
+                        ),
+                        "node": p.from_person.get_node_info(False),
+                        "model": p._meta.model_name,
+                        "pk": p.pk,
+                    }
+                )
 
             companies = self.company2country_set.select_related("from_company")
             for c in companies:
-                connections.append({
-                    "relation": unicode(
-                        ugettext_lazy(c.get_relationship_type_display())),
-                    "node": c.from_company.get_node_info(False),
-                    "model": c._meta.model_name,
-                    "pk": c.pk
-                })
+                connections.append(
+                    {
+                        "relation": unicode(
+                            ugettext_lazy(c.get_relationship_type_display())
+                        ),
+                        "node": c.from_company.get_node_info(False),
+                        "model": c._meta.model_name,
+                        "pk": c.pk,
+                    }
+                )
 
             res["connections"] = connections
 

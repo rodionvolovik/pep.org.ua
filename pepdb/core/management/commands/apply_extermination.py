@@ -9,15 +9,15 @@ from tasks.models import TerminationNotice
 
 
 class Command(BaseCommand):
-    help = ('Apply results of extermination after manual checks made by editors')
+    help = "Apply results of extermination after manual checks made by editors"
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--real_run',
-            action='store_true',
-            dest='real_run',
+            "--real_run",
+            action="store_true",
+            dest="real_run",
             default=False,
-            help='Exterminate for real',
+            help="Exterminate for real",
         )
 
     def handle(self, *args, **options):
@@ -26,10 +26,16 @@ class Command(BaseCommand):
         type_changed = 0
         applied = 0
 
-        for t in TerminationNotice.objects.filter(status="a", applied=False).nocache().iterator():
-            self.stdout.write("Applying action {} to a person {} because of {}".format(
-                t.get_action_display(), t.pep_name, t.comments
-            ))
+        for t in (
+            TerminationNotice.objects.filter(status="a", applied=False)
+            .nocache()
+            .iterator()
+        ):
+            self.stdout.write(
+                "Applying action {} to a person {} because of {}".format(
+                    t.get_action_display(), t.pep_name, t.comments
+                )
+            )
 
             if t.person:
                 applied += 1
@@ -50,6 +56,8 @@ class Command(BaseCommand):
                     t.person.save()
                     t.save()
 
-        self.stdout.write("Total processed: {}, fired: {}, type of official changed {}".format(
-            applied, fired, type_changed
-        ))
+        self.stdout.write(
+            "Total processed: {}, fired: {}, type of official changed {}".format(
+                applied, fired, type_changed
+            )
+        )

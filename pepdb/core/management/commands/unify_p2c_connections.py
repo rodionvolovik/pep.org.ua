@@ -19,33 +19,37 @@ class Command(BaseCommand):
 
             for l in r:
                 if len(l) != 2:
-                    self.stderr.write("CSV file doesn't look sane, check this out: {}".format(", ".join(l)))
+                    self.stderr.write(
+                        "CSV file doesn't look sane, check this out: {}".format(
+                            ", ".join(l)
+                        )
+                    )
                     return
 
                 positions[l[0].lower().strip()] = l[1].strip()
 
-        for p2c in Person2Company.objects.annotate(
-                rt_lower=Lower("relationship_type_uk")).filter(
-                rt_lower__in=positions.keys()).nocache():
+        for p2c in (
+            Person2Company.objects.annotate(rt_lower=Lower("relationship_type_uk"))
+            .filter(rt_lower__in=positions.keys())
+            .nocache()
+        ):
 
             p2c.relationship_type_uk = positions[p2c.relationship_type_uk.lower()]
 
             term = lookup_term(p2c.relationship_type_uk)
-            t = Ua2EnDictionary.objects.filter(
-                term__iexact=term).first()
+            t = Ua2EnDictionary.objects.filter(term__iexact=term).first()
 
             if t and t.translation:
                 self.relationship_type_en = t.translation
             else:
-                self.stderr.write("Cannot translate {} into english, leaving translation {}".format(
-                    p2c.relationship_type_uk,
-                    p2c.relationship_type_en
-                ))
+                self.stderr.write(
+                    "Cannot translate {} into english, leaving translation {}".format(
+                        p2c.relationship_type_uk, p2c.relationship_type_en
+                    )
+                )
 
                 try:
-                    Ua2EnDictionary.objects.create(
-                        term=term
-                    )
+                    Ua2EnDictionary.objects.create(term=term)
                 except IntegrityError:
                     # No need to turn alarm on, if the value is already in db
                     pass

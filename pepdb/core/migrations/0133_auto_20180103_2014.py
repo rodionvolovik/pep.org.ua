@@ -6,17 +6,13 @@ from django.db import migrations
 
 
 def toggle_existing_declarations(apps, schema_editor):
-    Declaration = apps.get_model('core.Declaration')
+    Declaration = apps.get_model("core.Declaration")
 
     Declaration.objects.update(to_link=True)
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0132_auto_20180103_2011'),
-    ]
+    dependencies = [("core", "0132_auto_20180103_2011")]
 
-    operations = [
-        migrations.RunPython(toggle_existing_declarations)
-    ]
+    operations = [migrations.RunPython(toggle_existing_declarations)]

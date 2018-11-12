@@ -6,13 +6,13 @@ from unicodecsv import writer
 
 
 class Command(BaseCommand):
-    args = '<file_path>'
+    args = "<file_path>"
 
     def handle(self, *args, **options):
         try:
             file_path = args[0]
         except IndexError:
-            raise CommandError('First argument must be a result file')
+            raise CommandError("First argument must be a result file")
 
         first_names = set()
         last_names = set()
@@ -31,8 +31,7 @@ class Command(BaseCommand):
             for t in Ua2RuDictionary.objects.all():
                 comment = ""
                 if t.comments in ["Ім'я", "По-батькові", "Прізвище"]:
-                    w.writerow([t.term, t.translation, t.alt_translation,
-                                t.comments])
+                    w.writerow([t.term, t.translation, t.alt_translation, t.comments])
                 else:
                     if t.term.lower() in first_names:
                         comment = "Ім'я"
@@ -41,5 +40,4 @@ class Command(BaseCommand):
                     elif t.term.lower() in last_names:
                         comment = "Прізвище"
 
-                    w.writerow([t.term, t.translation, t.alt_translation,
-                                comment])
+                    w.writerow([t.term, t.translation, t.alt_translation, comment])

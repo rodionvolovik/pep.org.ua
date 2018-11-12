@@ -7,14 +7,16 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0042_auto_20180317_1522'),
-    ]
+    dependencies = [("tasks", "0042_auto_20180317_1522")]
 
     operations = [
         migrations.AddField(
-            model_name='terminationnotice',
-            name='applied',
-            field=models.BooleanField(db_index=True, default=False, verbose_name='\u0417\u0430\u0441\u0442\u043e\u0441\u043e\u0432\u0430\u043d\u043e'),
-        ),
+            model_name="terminationnotice",
+            name="applied",
+            field=models.BooleanField(
+                db_index=True,
+                default=False,
+                verbose_name="\u0417\u0430\u0441\u0442\u043e\u0441\u043e\u0432\u0430\u043d\u043e",
+            ),
+        )
     ]

@@ -50,10 +50,11 @@ def curformat(value):
             currency = "EUR "
 
         try:
-            return '{}{:,.2f}'.format(
-                currency,
-                float(value.replace(',', '.'))).replace(
-                    ',', ' ').replace('.', ',')
+            return (
+                "{}{:,.2f}".format(currency, float(value.replace(",", ".")))
+                .replace(",", " ")
+                .replace(".", ",")
+            )
         except ValueError:
             return value
     else:
@@ -63,8 +64,7 @@ def curformat(value):
 @library.filter
 def spaceformat(value):
     try:
-        return '{:,.2f}'.format(
-            float(value.replace(',', '.'))).rstrip("0").rstrip(".")
+        return "{:,.2f}".format(float(value.replace(",", "."))).rstrip("0").rstrip(".")
     except ValueError:
         if value.startswith("."):
             return "0" + value
@@ -77,8 +77,8 @@ def groupbyandsort(value, attribute, reverse):
     attr = lambda x: getattr(x, attribute)
 
     grouped = [
-        _GroupTuple(key, list(values)) for key, values
-        in groupby(sorted(value, key=attr), attr)
+        _GroupTuple(key, list(values))
+        for key, values in groupby(sorted(value, key=attr), attr)
     ]
 
     return sorted(grouped, key=lambda x: len(x.list), reverse=reverse)
@@ -92,7 +92,7 @@ def translated(value, field, fallback=True):
         return val
     else:
         return get_localized_field(value, field, settings.LANGUAGE_CODE)
-    
+
 
 @library.filter
 def get_translated_field(value, field, lang):

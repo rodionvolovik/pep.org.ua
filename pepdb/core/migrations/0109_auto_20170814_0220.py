@@ -6,13 +6,8 @@ from django.db import migrations
 from django.contrib.postgres.operations import TrigramExtension
 
 
-
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0108_person2company_declarations'),
-    ]
+    dependencies = [("core", "0108_person2company_declarations")]
 
-    operations = [
-    	TrigramExtension()
-    ]
+    operations = [TrigramExtension()]

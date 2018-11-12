@@ -20,6 +20,7 @@ from oauth2client.client import SignedJwtAssertionCredentials
 from translitua import translitua, UkrainianKMU, RussianInternationalPassport
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -56,7 +57,8 @@ def download(url, name=""):
             fname = name + os.path.splitext(parsed.filename_unsafe)[-1]
         else:
             fname = parsed.filename_sanitized(
-                os.path.splitext(parsed.filename_unsafe)[-1].strip("."))
+                os.path.splitext(parsed.filename_unsafe)[-1].strip(".")
+            )
 
         return parsed.filename_unsafe, fname, resp.content
     else:
@@ -65,8 +67,8 @@ def download(url, name=""):
 
 def title(s):
     chunks = s.split()
-    chunks = map(lambda x: capwords(x, u"-"), chunks)
-    return u" ".join(chunks)
+    chunks = map(lambda x: capwords(x, "-"), chunks)
+    return " ".join(chunks)
 
 
 def parse_date(s):
@@ -75,8 +77,7 @@ def parse_date(s):
         if s == "-" or not s:
             return None
 
-        return parser.parse(s, default=datetime(1970, 1, 1),
-                            dayfirst=True).date()
+        return parser.parse(s, default=datetime(1970, 1, 1), dayfirst=True).date()
     except ValueError:
         return None
 
@@ -93,34 +94,39 @@ class CSVDownloadClient(object):
         self.auth_key = auth_key
 
     def get_auth_token(self):
-        scope = ['https://spreadsheets.google.com/feeds']
+        scope = ["https://spreadsheets.google.com/feeds"]
         credentials = SignedJwtAssertionCredentials(
-            self.auth_key['client_email'], self.auth_key['private_key'], scope)
+            self.auth_key["client_email"], self.auth_key["private_key"], scope
+        )
 
         credentials.refresh(httplib2.Http())
         return credentials.token_response["access_token"]
 
-    def download(self, spreadsheet=getattr(settings, "SPREADSHEET_ID", None),
-                 gid=0, format="csv"):
-        url_format = ("https://spreadsheets.google.com/feeds/download/"
-                      "spreadsheets/Export?key=%s&exportFormat=%s&gid=%i")
-        headers = {
-            "Authorization": "Bearer " + self.get_auth_token()
-        }
-        req = urllib2.Request(url_format % (spreadsheet, format, gid),
-                              headers=headers)
+    def download(
+        self, spreadsheet=getattr(settings, "SPREADSHEET_ID", None), gid=0, format="csv"
+    ):
+        url_format = (
+            "https://spreadsheets.google.com/feeds/download/"
+            "spreadsheets/Export?key=%s&exportFormat=%s&gid=%i"
+        )
+        headers = {"Authorization": "Bearer " + self.get_auth_token()}
+        req = urllib2.Request(url_format % (spreadsheet, format, gid), headers=headers)
 
         return urllib2.urlopen(req)
 
 
-def get_spreadsheet(auth_key=getattr(settings, "GAUTH_CREDENTIALS", None),
-                    spreadsheet=getattr(settings, "SPREADSHEET_ID", None)):
+def get_spreadsheet(
+    auth_key=getattr(settings, "GAUTH_CREDENTIALS", None),
+    spreadsheet=getattr(settings, "SPREADSHEET_ID", None),
+):
     """
     Helper to authenticate on google drive and obtain spreadsheet object.
     """
     credentials = SignedJwtAssertionCredentials(
-        auth_key['client_email'], auth_key['private_key'],
-        ['https://spreadsheets.google.com/feeds'])
+        auth_key["client_email"],
+        auth_key["private_key"],
+        ["https://spreadsheets.google.com/feeds"],
+    )
 
     credentials.refresh(httplib2.Http())
 
@@ -146,8 +152,9 @@ def is_greek(name):
 
 def parse_fullname(person_name):
     # Extra care for initials (especialy those without space)
-    person_name = re.sub("\s+", " ",
-                         person_name.replace(".", ". ").replace('\xa0', " "))
+    person_name = re.sub(
+        "\s+", " ", person_name.replace(".", ". ").replace("\xa0", " ")
+    )
 
     chunks = person_name.strip().split(" ")
 
@@ -156,13 +163,9 @@ def parse_fullname(person_name):
     patronymic = ""
     dob = ""
 
-    numeric_chunks = list(
-        filter(lambda x: re.search("\d+\.?", x), chunks)
-    )
+    numeric_chunks = list(filter(lambda x: re.search("\d+\.?", x), chunks))
 
-    chunks = list(
-        filter(lambda x: re.search("\d+\.?", x) is None, chunks)
-    )
+    chunks = list(filter(lambda x: re.search("\d+\.?", x) is None, chunks))
 
     if len(chunks) == 2:
         last_name = title(chunks[0])
@@ -185,9 +188,8 @@ class TranslatedField(object):
     def __get__(self, instance, owner):
         lang = get_language()
         if lang in self.fields:
-            return (
-                getattr(instance, self.fields[lang], "") or
-                getattr(instance, self.fields[settings.LANGUAGE_CODE], "")
+            return getattr(instance, self.fields[lang], "") or getattr(
+                instance, self.fields[settings.LANGUAGE_CODE], ""
             )
 
         return ""
@@ -267,8 +269,7 @@ RELATIONS_MAPPING = {
     "племінник": "особисті зв'язки",
     "баба": "баба",
     "пасинок": "усиновлений",
-    "дитина" "син/дочка"
-    "матір": "мати",
+    "дитина" "син/дочка" "матір": "мати",
     "онука": "внучка",
     "зять": "особисті зв'язки",
     "діти": "син/дочка",
@@ -294,7 +295,7 @@ RELATIONS_MAPPING = {
     "співмешканака": "особи, які спільно проживають",
     "онучка": "внучка",
     "тато": "батько",
-    "жена": "дружина"
+    "жена": "дружина",
 }
 
 
@@ -304,8 +305,8 @@ def parse_family_member(s):
         if "-" in position:
             position, person = s.split("-", 1)
 
-        position = position.strip(u" -—,.:").lower()
-        person = person.strip(u" -—,")
+        position = position.strip(" -—,.:").lower()
+        person = person.strip(" -—,")
 
         if position not in VALID_POSITIONS:
             raise ValueError
@@ -316,10 +317,7 @@ def parse_family_member(s):
 
         person = re.sub("приховано", "", person, flags=re.I)
 
-        return {
-            "relation": position,
-            "name": person.strip(" ,")
-        }
+        return {"relation": position, "name": person.strip(" ,")}
     except ValueError:
         return None
 
@@ -333,8 +331,7 @@ def render_date(dt, date_details):
         return formats.date_format(dt, "SHORT_DATE_FORMAT")
     # Date precision = we only know year and month
     elif date_details == 1:
-        return formats.date_format(
-            dt, "MONTH_YEAR_DATE_FORMAT")
+        return formats.date_format(dt, "MONTH_YEAR_DATE_FORMAT")
     # Date precision = we only know year
     elif date_details == 2:
         return formats.date_format(dt, "YEAR_DATE_FORMAT")
@@ -370,7 +367,9 @@ def ceil_date(dt, date_details):
         return dt
     # Date precision = we only know year and month
     elif date_details == 1:
-        return date(dt.year, dt.month, 1) + relativedelta.relativedelta(months=1, days=-1)
+        return date(dt.year, dt.month, 1) + relativedelta.relativedelta(
+            months=1, days=-1
+        )
     # Date precision = we only know year
     elif date_details == 2:
         return date(dt.year, 12, 31)
@@ -397,17 +396,14 @@ def lookup_term(s):
 
 
 def blacklist(dct, fields):
-    return {
-        k: v for k, v in dct.items() if k not in fields
-    }
+    return {k: v for k, v in dct.items() if k not in fields}
 
 
 def add_encrypted_url(dct, user, url):
     dct["url"] = settings.SITE_URL + reverse(
-        url, args=[
-            settings.SYMMETRIC_ENCRYPTOR.encrypt(
-                b"%s|%s" % (user.pk, dct["id"]))
-        ])
+        url,
+        args=[settings.SYMMETRIC_ENCRYPTOR.encrypt(b"%s|%s" % (user.pk, dct["id"]))],
+    )
 
     return dct
 
@@ -429,8 +425,7 @@ def unique(source):
 
 
 def parse_address(location):
-    chunks = list(
-        map(unicode.strip, location.split(u",")))
+    chunks = list(map(unicode.strip, location.split(",")))
 
     zip_code = chunks[0].strip()
     orig = location
@@ -440,12 +435,12 @@ def parse_address(location):
 
     try:
         if len(chunks) == 3:
-            city = u", ".join([chunks[2], chunks[1]])
+            city = ", ".join([chunks[2], chunks[1]])
 
         else:
-            if u"обл" in chunks[1].lower() or u"крим" in chunks[1].lower():
-                if u"район" in chunks[2].lower():
-                    city = u", ".join([chunks[3], chunks[2], chunks[1]])
+            if "обл" in chunks[1].lower() or "крим" in chunks[1].lower():
+                if "район" in chunks[2].lower():
+                    city = ", ".join([chunks[3], chunks[2], chunks[1]])
 
                     if len(chunks) > 4:
                         street = chunks[4]
@@ -453,8 +448,8 @@ def parse_address(location):
                     if len(chunks) > 5:
                         appt = chunks[5]
                 else:
-                    city = u", ".join([chunks[2], chunks[1]])
-                    if u"район" in chunks[3]:
+                    city = ", ".join([chunks[2], chunks[1]])
+                    if "район" in chunks[3]:
                         street = chunks[4]
 
                         if len(chunks) > 5:
@@ -474,21 +469,17 @@ def parse_address(location):
             zip_code = ""
 
         # Sanity check
-        if u"буд" in appt.lower() or appt == "" or appt.isdigit():
+        if "буд" in appt.lower() or appt == "" or appt.isdigit():
             return (zip_code, city, street, appt)
         else:
             logger.error(
-                "Cannot parse %s, best results so far is %s" % (
-                    location,
-                    ", ".join([zip_code, city, street, appt])
-                )
+                "Cannot parse %s, best results so far is %s"
+                % (location, ", ".join([zip_code, city, street, appt]))
             )
 
             return None
     except IndexError:
-        logger.error(
-            "Cannot parse %s" % location
-        )
+        logger.error("Cannot parse %s" % location)
 
         return None
 
@@ -514,11 +505,8 @@ def localized_fields(field_names, langs=None):
     if langs is None:
         langs = [settings.LANGUAGE_CODE]
 
-    return [
-        localized_field(field, lang)
-        for field in field_names
-        for lang in langs
-    ]
+    return [localized_field(field, lang) for field in field_names for lang in langs]
+
 
 def localized_field_map(field_name):
     mp = {}

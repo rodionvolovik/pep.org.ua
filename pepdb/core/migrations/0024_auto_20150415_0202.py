@@ -12,7 +12,7 @@ def add_meta_countries(apps, schema_editor):
         name_en="European Union",
         iso2="EU",
         iso3="",
-        is_jurisdiction=True
+        is_jurisdiction=True,
     )
 
     Country.objects.get_or_create(
@@ -20,16 +20,12 @@ def add_meta_countries(apps, schema_editor):
         name_en="United Nations",
         iso2="UN",
         iso3="",
-        is_jurisdiction=True
+        is_jurisdiction=True,
     )
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0023_auto_20150415_0202'),
-    ]
+    dependencies = [("core", "0023_auto_20150415_0202")]
 
-    operations = [
-        migrations.RunPython(add_meta_countries),
-    ]
+    operations = [migrations.RunPython(add_meta_countries)]

@@ -21,7 +21,7 @@ def serialize_for_api(data):
     transformations explicitly. This is hard to achieve with function-based
     views, so it's pending a CBV move."""
 
-    if hasattr(data, 'to_api'):
+    if hasattr(data, "to_api"):
         return serialize_for_api(data.to_api())
     elif isinstance(data, Response):
         return serialize_for_api(data.hits._l_)
@@ -46,6 +46,7 @@ def hybrid_response(template_name):
     is passed through a recursive transformation into simple types.
 
     TODO: This would look better as a mixin for CBVs."""
+
     def hybrid_decorator(func):
         @wraps(func)
         def func_wrapper(request, *args, **kwargs):
@@ -53,11 +54,13 @@ def hybrid_response(template_name):
             if isinstance(context, HttpResponseBase):
                 return context
 
-            if request.GET.get('format', 'html') == 'json':
+            if request.GET.get("format", "html") == "json":
                 return JsonResponse(serialize_for_api(context), safe=False)
             else:
                 return render(request, template_name, context)
+
         return func_wrapper
+
     return hybrid_decorator
 
 
@@ -90,9 +93,9 @@ def is_listlike(x):
 # Copyright (c) Scrapy developers.
 class XmlItemExporter(object):
     def __init__(self, file, **kwargs):
-        self.item_element = kwargs.pop('item_element', 'item')
-        self.root_element = kwargs.pop('root_element', 'items')
-        self.encoding = 'utf-8'
+        self.item_element = kwargs.pop("item_element", "item")
+        self.root_element = kwargs.pop("root_element", "items")
+        self.encoding = "utf-8"
         self.xg = XMLGenerator(file, encoding=self.encoding)
 
     def start_exporting(self):
@@ -110,17 +113,18 @@ class XmlItemExporter(object):
         self.xg.endDocument()
 
     def _export_xml_field(self, name, serialized_value):
-        if (not serialized_value and
-                not isinstance(serialized_value, (int, float, bool))):
+        if not serialized_value and not isinstance(
+            serialized_value, (int, float, bool)
+        ):
             return
 
         self.xg.startElement(name, {})
-        if hasattr(serialized_value, 'items'):
+        if hasattr(serialized_value, "items"):
             for subname, value in serialized_value.items():
                 self._export_xml_field(subname, value)
         elif is_listlike(serialized_value):
             for value in serialized_value:
-                self._export_xml_field('value', value)
+                self._export_xml_field("value", value)
         elif isinstance(serialized_value, six.text_type):
             self._xg_characters(serialized_value)
         else:
@@ -135,10 +139,13 @@ class XmlItemExporter(object):
     # fixed in 2.7.6, but 2.7.6 will still support unicode,
     # and Python 3.x will require unicode, so ">= 2.7.4" should be fine.
     if sys.version_info[:3] >= (2, 7, 4):
+
         def _xg_characters(self, serialized_value):
             if not isinstance(serialized_value, six.text_type):
                 serialized_value = serialized_value.decode(self.encoding)
             return self.xg.characters(serialized_value)
+
     else:  # pragma: no cover
+
         def _xg_characters(self, serialized_value):
             return self.xg.characters(serialized_value)

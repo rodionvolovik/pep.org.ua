@@ -7,14 +7,16 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0029_edrmonitoring_person_id'),
-    ]
+    dependencies = [("tasks", "0029_edrmonitoring_person_id")]
 
     operations = [
         migrations.AlterField(
-            model_name='edrmonitoring',
-            name='applied',
-            field=models.BooleanField(db_index=True, default=False, verbose_name='\u0417\u0430\u0441\u0442\u043e\u0441\u043e\u0432\u0430\u043d\u043e'),
-        ),
+            model_name="edrmonitoring",
+            name="applied",
+            field=models.BooleanField(
+                db_index=True,
+                default=False,
+                verbose_name="\u0417\u0430\u0441\u0442\u043e\u0441\u043e\u0432\u0430\u043d\u043e",
+            ),
+        )
     ]

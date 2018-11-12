@@ -15,11 +15,8 @@ def add_doctypes(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0147_declaration_doc_type'),
-    ]
+    dependencies = [("core", "0147_declaration_doc_type")]
 
     operations = [
-        migrations.RunPython(
-            add_doctypes, reverse_code=migrations.RunPython.noop),
+        migrations.RunPython(add_doctypes, reverse_code=migrations.RunPython.noop)
     ]

@@ -8,14 +8,17 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0046_auto_20180614_0257'),
-    ]
+    dependencies = [("tasks", "0046_auto_20180614_0257")]
 
     operations = [
         migrations.AlterField(
-            model_name='adhocmatch',
-            name='person',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='adhoc_matches', to='core.Person'),
-        ),
+            model_name="adhocmatch",
+            name="person",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="adhoc_matches",
+                to="core.Person",
+            ),
+        )
     ]

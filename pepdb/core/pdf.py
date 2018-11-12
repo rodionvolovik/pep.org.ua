@@ -19,26 +19,27 @@ def pdf_response(template_name):
             if isinstance(context, HttpResponseBase):
                 return context
 
-            if request.GET.get('format', 'html') == 'pdf':
+            if request.GET.get("format", "html") == "pdf":
                 context["disable_css"] = True
 
                 html = render(request, template_name, context).content
 
                 base_url = request.build_absolute_uri("/")
-                pdf = weasyprint.HTML(
-                    string=html, base_url=base_url).write_pdf()
+                pdf = weasyprint.HTML(string=html, base_url=base_url).write_pdf()
 
-                response = HttpResponse(content=pdf,
-                                        content_type='application/pdf')
+                response = HttpResponse(content=pdf, content_type="application/pdf")
 
                 if "filename" in context:
-                    response['Content-Disposition'] = (
-                        'attachment; filename=%s.pdf' % context["filename"])
+                    response["Content-Disposition"] = (
+                        "attachment; filename=%s.pdf" % context["filename"]
+                    )
                 else:
-                    response['Content-Disposition'] = 'attachment'
+                    response["Content-Disposition"] = "attachment"
 
                 return response
             else:
                 return render(request, template_name, context)
+
         return func_wrapper
+
     return pdf_decorator

@@ -17,16 +17,12 @@ def load_countries(apps, schema_editor):
                 iso2=l["Alpha 2"],
                 iso3=l["Alpha 3"],
                 name_ua=l["UA"],
-                name_en=l["UK"]
+                name_en=l["UK"],
             )
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0003_auto_20150227_0256'),
-    ]
+    dependencies = [("core", "0003_auto_20150227_0256")]
 
-    operations = [
-        migrations.RunPython(load_countries),
-    ]
+    operations = [migrations.RunPython(load_countries)]

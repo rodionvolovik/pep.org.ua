@@ -7,14 +7,16 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0056_auto_20180904_2150'),
-    ]
+    dependencies = [("tasks", "0056_auto_20180904_2150")]
 
     operations = [
         migrations.AlterField(
-            model_name='smidacandidate',
-            name='smida_prev_position',
-            field=models.CharField(blank=True, max_length=1500, verbose_name='\u041f\u043e\u043f\u0435\u0440\u0435\u0434\u043d\u044f \u043f\u043e\u0441\u0430\u0434\u0430 \u0437\u0456 \u0437\u0432\u0456\u0442\u0443'),
-        ),
+            model_name="smidacandidate",
+            name="smida_prev_position",
+            field=models.CharField(
+                blank=True,
+                max_length=1500,
+                verbose_name="\u041f\u043e\u043f\u0435\u0440\u0435\u0434\u043d\u044f \u043f\u043e\u0441\u0430\u0434\u0430 \u0437\u0456 \u0437\u0432\u0456\u0442\u0443",
+            ),
+        )
     ]

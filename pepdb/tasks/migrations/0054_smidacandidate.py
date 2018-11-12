@@ -12,33 +12,200 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('tasks', '0053_adhocmatch_applied'),
+        ("tasks", "0053_adhocmatch_applied"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='SMIDACandidate',
+            name="SMIDACandidate",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('timestamp', models.DateTimeField(auto_now_add=True, verbose_name='\u0421\u0442\u0432\u043e\u0440\u0435\u043d\u043e')),
-                ('last_modified', models.DateTimeField(auto_now=True, null=True, verbose_name='\u0417\u043c\u0456\u043d\u0435\u043d\u043e')),
-                ('status', models.CharField(choices=[('p', '\u041d\u0435 \u043f\u0435\u0440\u0435\u0432\u0456\u0440\u0435\u043d\u043e'), ('a', '\u0417\u0430\u0441\u0442\u043e\u0441\u043e\u0432\u0430\u043d\u043e'), ('i', '\u0406\u0433\u043d\u043e\u0440\u0443\u0432\u0430\u0442\u0438'), ('r', '\u041f\u043e\u0442\u0440\u0435\u0431\u0443\u0454 \u0434\u043e\u0434\u0430\u0442\u043a\u043e\u0432\u043e\u0457 \u043f\u0435\u0440\u0435\u0432\u0456\u0440\u043a\u0438')], db_index=True, default='p', max_length=1, verbose_name='\u0421\u0442\u0430\u0442\u0443\u0441')),
-                ('smida_edrpou', models.CharField(blank=True, max_length=15, null=True, verbose_name='\u041a\u043e\u0434 \u043a\u043e\u043c\u043f\u0430\u043d\u0456\u0457')),
-                ('smida_name', models.CharField(blank=True, max_length=200, verbose_name='\u041f\u0406\u0411 \u0437\u0456 \u0437\u0432\u0456\u0442\u0443')),
-                ('smida_parsed_name', models.CharField(blank=True, max_length=200, verbose_name="'\u0427\u0438\u0441\u0442\u0438\u0439 '\u041f\u0406\u0411 \u0437\u0456 \u0437\u0432\u0456\u0442\u0443")),
-                ('smida_dt', models.DateTimeField(verbose_name='\u0414\u0430\u0442\u0430 \u0437\u0432\u0456\u0442\u0443')),
-                ('smida_position', models.CharField(blank=True, max_length=200, verbose_name='\u041f\u043e\u0441\u0430\u0434\u0430 \u0437\u0456 \u0437\u0432\u0456\u0442\u0443')),
-                ('smida_prev_position', models.CharField(blank=True, max_length=200, verbose_name='\u041f\u043e\u043f\u0435\u0440\u0435\u0434\u043d\u044f \u043f\u043e\u0441\u0430\u0434\u0430 \u0437\u0456 \u0437\u0432\u0456\u0442\u0443')),
-                ('smida_yob', models.IntegerField(null=True, verbose_name='\u0420\u0456\u043a \u043d\u0430\u0440\u043e\u0434\u0436\u0435\u043d\u043d\u044f')),
-                ('smida_is_real_person', models.BooleanField(default=True, verbose_name='\u0424\u0456\u0437\u043e\u0441\u043e\u0431\u0430')),
-                ('smida_position_body', models.CharField(choices=[('sc', '\u041f\u0440\u0430\u0432\u043b\u0456\u043d\u043d\u044f'), ('wc', '\u041d\u0430\u0433\u043b\u044f\u0434\u043e\u0432\u0430 \u0440\u0430\u0434\u0430'), ('ac', '\u0420\u0435\u0432\u0456\u0437\u0456\u0439\u043d\u0430 \u043a\u043e\u043c\u0456\u0441\u0456\u044f'), ('a', '\u0411\u0443\u0445\u0433\u0430\u043b\u0442\u0435\u0440\u0456\u044f'), ('s', '\u0421\u0435\u043a\u0440\u0435\u0442\u0430\u0440\u0456\u0430\u0442'), ('o', '\u0406\u043d\u0448\u0435')], max_length=2, verbose_name='\u041e\u0440\u0433\u0430\u043d')),
-                ('smida_position_class', models.CharField(choices=[('h', '\u0413\u043e\u043b\u043e\u0432\u0430'), ('d', '\u0417\u0430\u0441\u0442\u0443\u043f\u043d\u0438\u043a \u0433\u043e\u043b\u043e\u0432\u0438'), ('m', '\u0427\u043b\u0435\u043d'), ('a', '\u0413\u043e\u043b\u043e\u0432\u043d\u0438\u0439 \u0431\u0443\u0445\u0433\u0430\u043b\u0442\u0435\u0440'), ('s', '\u041a\u043e\u0440\u043f\u043e\u0440\u0430\u0442\u0438\u0432\u043d\u0438\u0439 \u0441\u0435\u043a\u0440\u0435\u0442\u0430\u0440'), ('o', '\u0406\u043d\u0448\u0435')], max_length=1, verbose_name='\u0420\u0456\u0432\u0435\u043d\u044c')),
-                ('matched_json', django.contrib.postgres.fields.jsonb.JSONField(null=True, verbose_name='\u0417\u0430\u043f\u0438\u0441 \u0437\u0456 \u0437\u0432\u0456\u0442\u0443')),
-                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='\u041a\u043e\u0440\u0438\u0441\u0442\u0443\u0432\u0430\u0447')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "timestamp",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        verbose_name="\u0421\u0442\u0432\u043e\u0440\u0435\u043d\u043e",
+                    ),
+                ),
+                (
+                    "last_modified",
+                    models.DateTimeField(
+                        auto_now=True,
+                        null=True,
+                        verbose_name="\u0417\u043c\u0456\u043d\u0435\u043d\u043e",
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            (
+                                "p",
+                                "\u041d\u0435 \u043f\u0435\u0440\u0435\u0432\u0456\u0440\u0435\u043d\u043e",
+                            ),
+                            (
+                                "a",
+                                "\u0417\u0430\u0441\u0442\u043e\u0441\u043e\u0432\u0430\u043d\u043e",
+                            ),
+                            (
+                                "i",
+                                "\u0406\u0433\u043d\u043e\u0440\u0443\u0432\u0430\u0442\u0438",
+                            ),
+                            (
+                                "r",
+                                "\u041f\u043e\u0442\u0440\u0435\u0431\u0443\u0454 \u0434\u043e\u0434\u0430\u0442\u043a\u043e\u0432\u043e\u0457 \u043f\u0435\u0440\u0435\u0432\u0456\u0440\u043a\u0438",
+                            ),
+                        ],
+                        db_index=True,
+                        default="p",
+                        max_length=1,
+                        verbose_name="\u0421\u0442\u0430\u0442\u0443\u0441",
+                    ),
+                ),
+                (
+                    "smida_edrpou",
+                    models.CharField(
+                        blank=True,
+                        max_length=15,
+                        null=True,
+                        verbose_name="\u041a\u043e\u0434 \u043a\u043e\u043c\u043f\u0430\u043d\u0456\u0457",
+                    ),
+                ),
+                (
+                    "smida_name",
+                    models.CharField(
+                        blank=True,
+                        max_length=200,
+                        verbose_name="\u041f\u0406\u0411 \u0437\u0456 \u0437\u0432\u0456\u0442\u0443",
+                    ),
+                ),
+                (
+                    "smida_parsed_name",
+                    models.CharField(
+                        blank=True,
+                        max_length=200,
+                        verbose_name="'\u0427\u0438\u0441\u0442\u0438\u0439 '\u041f\u0406\u0411 \u0437\u0456 \u0437\u0432\u0456\u0442\u0443",
+                    ),
+                ),
+                (
+                    "smida_dt",
+                    models.DateTimeField(
+                        verbose_name="\u0414\u0430\u0442\u0430 \u0437\u0432\u0456\u0442\u0443"
+                    ),
+                ),
+                (
+                    "smida_position",
+                    models.CharField(
+                        blank=True,
+                        max_length=200,
+                        verbose_name="\u041f\u043e\u0441\u0430\u0434\u0430 \u0437\u0456 \u0437\u0432\u0456\u0442\u0443",
+                    ),
+                ),
+                (
+                    "smida_prev_position",
+                    models.CharField(
+                        blank=True,
+                        max_length=200,
+                        verbose_name="\u041f\u043e\u043f\u0435\u0440\u0435\u0434\u043d\u044f \u043f\u043e\u0441\u0430\u0434\u0430 \u0437\u0456 \u0437\u0432\u0456\u0442\u0443",
+                    ),
+                ),
+                (
+                    "smida_yob",
+                    models.IntegerField(
+                        null=True,
+                        verbose_name="\u0420\u0456\u043a \u043d\u0430\u0440\u043e\u0434\u0436\u0435\u043d\u043d\u044f",
+                    ),
+                ),
+                (
+                    "smida_is_real_person",
+                    models.BooleanField(
+                        default=True,
+                        verbose_name="\u0424\u0456\u0437\u043e\u0441\u043e\u0431\u0430",
+                    ),
+                ),
+                (
+                    "smida_position_body",
+                    models.CharField(
+                        choices=[
+                            (
+                                "sc",
+                                "\u041f\u0440\u0430\u0432\u043b\u0456\u043d\u043d\u044f",
+                            ),
+                            (
+                                "wc",
+                                "\u041d\u0430\u0433\u043b\u044f\u0434\u043e\u0432\u0430 \u0440\u0430\u0434\u0430",
+                            ),
+                            (
+                                "ac",
+                                "\u0420\u0435\u0432\u0456\u0437\u0456\u0439\u043d\u0430 \u043a\u043e\u043c\u0456\u0441\u0456\u044f",
+                            ),
+                            (
+                                "a",
+                                "\u0411\u0443\u0445\u0433\u0430\u043b\u0442\u0435\u0440\u0456\u044f",
+                            ),
+                            (
+                                "s",
+                                "\u0421\u0435\u043a\u0440\u0435\u0442\u0430\u0440\u0456\u0430\u0442",
+                            ),
+                            ("o", "\u0406\u043d\u0448\u0435"),
+                        ],
+                        max_length=2,
+                        verbose_name="\u041e\u0440\u0433\u0430\u043d",
+                    ),
+                ),
+                (
+                    "smida_position_class",
+                    models.CharField(
+                        choices=[
+                            ("h", "\u0413\u043e\u043b\u043e\u0432\u0430"),
+                            (
+                                "d",
+                                "\u0417\u0430\u0441\u0442\u0443\u043f\u043d\u0438\u043a \u0433\u043e\u043b\u043e\u0432\u0438",
+                            ),
+                            ("m", "\u0427\u043b\u0435\u043d"),
+                            (
+                                "a",
+                                "\u0413\u043e\u043b\u043e\u0432\u043d\u0438\u0439 \u0431\u0443\u0445\u0433\u0430\u043b\u0442\u0435\u0440",
+                            ),
+                            (
+                                "s",
+                                "\u041a\u043e\u0440\u043f\u043e\u0440\u0430\u0442\u0438\u0432\u043d\u0438\u0439 \u0441\u0435\u043a\u0440\u0435\u0442\u0430\u0440",
+                            ),
+                            ("o", "\u0406\u043d\u0448\u0435"),
+                        ],
+                        max_length=1,
+                        verbose_name="\u0420\u0456\u0432\u0435\u043d\u044c",
+                    ),
+                ),
+                (
+                    "matched_json",
+                    django.contrib.postgres.fields.jsonb.JSONField(
+                        null=True,
+                        verbose_name="\u0417\u0430\u043f\u0438\u0441 \u0437\u0456 \u0437\u0432\u0456\u0442\u0443",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="\u041a\u043e\u0440\u0438\u0441\u0442\u0443\u0432\u0430\u0447",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': '\u041c\u0430\u0442\u0447\u0456\u043d\u0433 \u0437\u0456 \u0437\u0432\u0456\u0442\u0430\u043c\u0438 SMIDA',
-                'verbose_name_plural': '\u041c\u0430\u0442\u0447\u0456\u043d\u0433\u0438 \u0437\u0456 \u0437\u0432\u0456\u0442\u0430\u043c\u0438 SMIDA',
+                "verbose_name": "\u041c\u0430\u0442\u0447\u0456\u043d\u0433 \u0437\u0456 \u0437\u0432\u0456\u0442\u0430\u043c\u0438 SMIDA",
+                "verbose_name_plural": "\u041c\u0430\u0442\u0447\u0456\u043d\u0433\u0438 \u0437\u0456 \u0437\u0432\u0456\u0442\u0430\u043c\u0438 SMIDA",
             },
-        ),
+        )
     ]

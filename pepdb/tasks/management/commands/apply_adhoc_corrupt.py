@@ -38,23 +38,29 @@ class Command(BaseCommand):
                 if not match.person:
                     continue
 
-                addition_to_wiki = "<p>{} {} притягувався до відповідальності за корупційне правопорушення, а саме за {}{} {}, деталі можна дізнатися в судовій справі № {}.</p>".format(
-                    match.matched_json["FIO"],
-                    match.matched_json["DATE_NAK_DST"],
-                    match.matched_json["STAT"] ,
-                    match.matched_json["SPOS_VCH_DP"],
-                    match.matched_json["SKLAD_COR_PR"],
-                    match.matched_json["NUM_NAK_DST"] or match.matched_json["NUM_SUD_R"],
-                ).replace(" ,", ",").replace(",,", ",")
+                addition_to_wiki = (
+                    "<p>{} {} притягувався до відповідальності за корупційне правопорушення, а саме за {}{} {}, деталі можна дізнатися в судовій справі № {}.</p>".format(
+                        match.matched_json["FIO"],
+                        match.matched_json["DATE_NAK_DST"],
+                        match.matched_json["STAT"],
+                        match.matched_json["SPOS_VCH_DP"],
+                        match.matched_json["SKLAD_COR_PR"],
+                        match.matched_json["NUM_NAK_DST"]
+                        or match.matched_json["NUM_SUD_R"],
+                    )
+                    .replace(" ,", ",")
+                    .replace(",,", ",")
+                )
 
                 match.person.wiki_uk = (match.person.wiki_uk or "") + "\n{}".format(
                     addition_to_wiki
                 )
                 wiki_updated += 1
 
-                self.stdout.write("Updating page {}{}".format(
-                    settings.SITE_URL,
-                    match.person.get_absolute_url())
+                self.stdout.write(
+                    "Updating page {}{}".format(
+                        settings.SITE_URL, match.person.get_absolute_url()
+                    )
                 )
 
                 match.applied = True

@@ -29,11 +29,11 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--real_run',
-            action='store_true',
-            dest='real_run',
+            "--real_run",
+            action="store_true",
+            dest="real_run",
             default=False,
-            help='Connect persons to banks for real',
+            help="Connect persons to banks for real",
         )
 
     def handle(self, *args, **options):
@@ -55,11 +55,7 @@ class Command(BaseCommand):
             # latest record using registration status (they have "priorities")
             for order in self.status_order:
                 res = EDRPOU.search().query(
-                    "bool",
-                    must=[
-                        Q("term", edrpou=k),
-                        Q("term", status=order)
-                    ]
+                    "bool", must=[Q("term", edrpou=k), Q("term", status=order)]
                 )
                 ans = res.execute()
                 if ans:
@@ -67,23 +63,20 @@ class Command(BaseCommand):
 
             # Last attempt
             if not ans:
-                res = EDRPOU.search().query(
-                    "term",
-                    edrpou=k,
-                )
+                res = EDRPOU.search().query("term", edrpou=k)
                 ans = res.execute()
 
             if len(ans) > 1:
                 self.stderr.write(
-                    "Too many companies found by code %s, for the name %s, skipping" %
-                    (k, company)
+                    "Too many companies found by code %s, for the name %s, skipping"
+                    % (k, company)
                 )
 
                 failed += 1
                 continue
 
             if len(ans) == 0:
-                self.stderr.write("Cannot find the company by code %s" % (k, ))
+                self.stderr.write("Cannot find the company by code %s" % (k,))
 
                 failed += 1
                 continue
@@ -91,8 +84,7 @@ class Command(BaseCommand):
             edr_company = ans[0]
             if not edr_company.head:
                 self.stderr.write(
-                    "Cannot find head for the company %s, (%s)" %
-                    (ans[0].name, k)
+                    "Cannot find head for the company %s, (%s)" % (ans[0].name, k)
                 )
 
                 failed += 1
@@ -104,11 +96,13 @@ class Command(BaseCommand):
             exact_links = Person2Company.objects.select_related("from_person").filter(
                 to_company_id=company.pk,
                 from_person__first_name__iexact=firstname,
-                from_person__last_name__iexact=lastname
+                from_person__last_name__iexact=lastname,
             )
 
             if patronymic:
-                exact_links = exact_links.filter(from_person__patronymic__iexact=patronymic)
+                exact_links = exact_links.filter(
+                    from_person__patronymic__iexact=patronymic
+                )
 
             if exact_links.count():
                 exact_matches += 1
@@ -119,12 +113,16 @@ class Command(BaseCommand):
                     l.save()
 
                     if l.relationship_type != "Керівник":
-                        self.stdout.write("Relation %s exists but has different type: %s" % (
-                            l, l.relationship_type))
+                        self.stdout.write(
+                            "Relation %s exists but has different type: %s"
+                            % (l, l.relationship_type)
+                        )
 
                 continue
             else:
-                fuzzy_links = Person2Company.objects.select_related("from_person").filter(
+                fuzzy_links = Person2Company.objects.select_related(
+                    "from_person"
+                ).filter(
                     to_company_id=company.pk,
                     from_person__last_name__iexact=lastname,
                     from_person__first_name__istartswith=firstname[0],
@@ -132,7 +130,8 @@ class Command(BaseCommand):
 
                 if patronymic:
                     fuzzy_links = fuzzy_links.filter(
-                        from_person__patronymic__istartswith=patronymic[0])
+                        from_person__patronymic__istartswith=patronymic[0]
+                    )
 
                 if fuzzy_links:
                     fuzzy_matches += 1
@@ -142,11 +141,16 @@ class Command(BaseCommand):
                         l.date_confirmed_details = 0
                         l.save()
 
-                        self.stdout.write("Fuzzy match: %s vs %s" % (edr_company.head, l.from_person.full_name))
+                        self.stdout.write(
+                            "Fuzzy match: %s vs %s"
+                            % (edr_company.head, l.from_person.full_name)
+                        )
 
                         if l.relationship_type != "Керівник":
-                            self.stdout.write("Relation %s exists but has different type: %s" % (
-                                l, l.relationship_type))
+                            self.stdout.write(
+                                "Relation %s exists but has different type: %s"
+                                % (l, l.relationship_type)
+                            )
 
                     continue
 
@@ -157,7 +161,7 @@ class Command(BaseCommand):
                         last_name=lastname,
                         patronymic=patronymic,
                         is_pep=True,
-                        type_of_official=1
+                        type_of_official=1,
                     )
                 persons_created += 1
 
@@ -175,16 +179,17 @@ class Command(BaseCommand):
 
                 connections_created += 1
             except DataError:
-                self.stdout.write("Cannot create %s person or connection" % edr_company.head)
+                self.stdout.write(
+                    "Cannot create %s person or connection" % edr_company.head
+                )
 
         self.stdout.write(
             "Creation failed: %s, creation successful: %s" % (failed, successful)
         )
         self.stdout.write(
-            "Exact matches: %s, fuzzy matches: %s" %
-            (exact_matches, fuzzy_matches)
+            "Exact matches: %s, fuzzy matches: %s" % (exact_matches, fuzzy_matches)
         )
         self.stdout.write(
-            "Persons created: %s, connections created: %s" %
-            (persons_created, connections_created)
+            "Persons created: %s, connections created: %s"
+            % (persons_created, connections_created)
         )

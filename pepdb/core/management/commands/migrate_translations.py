@@ -14,14 +14,10 @@ from core.utils import localized_field
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
-            "from",
-            help="Language to take values from",
-            choices=settings.LANGUAGE_CODES,
+            "from", help="Language to take values from", choices=settings.LANGUAGE_CODES
         )
         parser.add_argument(
-            "to",
-            help="Language to store values to",
-            choices=settings.LANGUAGE_CODES,
+            "to", help="Language to store values to", choices=settings.LANGUAGE_CODES
         )
 
     def handle(self, *args, **options):

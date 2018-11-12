@@ -32,8 +32,8 @@ class CompanyImporter(object):
 
         if not obj_dict["edrpou"]:
             self.logger.error(
-                "Не можу імпортувати юр. особу без ЄДРПОУ <%s>" %
-                json.dumps(obj_dict, ensure_ascii=False, default=str)
+                "Не можу імпортувати юр. особу без ЄДРПОУ <%s>"
+                % json.dumps(obj_dict, ensure_ascii=False, default=str)
             )
             return None, created
 
@@ -50,10 +50,7 @@ class CompanyImporter(object):
             # Here we'll try to update the most record of the company
             # in business first by narrowing down the search by using
             # status field
-            company = Company.objects.get(
-                edrpou=edrpou,
-                status=1
-            )
+            company = Company.objects.get(edrpou=edrpou, status=1)
         except Company.DoesNotExist:
             try:
                 company = Company.objects.get(edrpou=edrpou)
@@ -61,20 +58,20 @@ class CompanyImporter(object):
                 company = Company(
                     edrpou=edrpou,
                     name_uk=obj_dict["name"].strip(),
-                    short_name_uk=obj_dict.get("short_name", "").strip()
+                    short_name_uk=obj_dict.get("short_name", "").strip(),
                 )
                 created = True
             except Company.MultipleObjectsReturned:
                 self.logger.error(
-                    "Не можу імпортувати юр. особу <%s>: в базі таких більше одної" %
-                    json.dumps(obj_dict, ensure_ascii=False, default=str)
+                    "Не можу імпортувати юр. особу <%s>: в базі таких більше одної"
+                    % json.dumps(obj_dict, ensure_ascii=False, default=str)
                 )
                 return None, created
 
         except Company.MultipleObjectsReturned:
             self.logger.error(
-                "Не можу імпортувати юр. особу <%s>: в базі більше одної в статусі 'зареєстровано'" %
-                json.dumps(obj_dict, ensure_ascii=False, default=str)
+                "Не можу імпортувати юр. особу <%s>: в базі більше одної в статусі 'зареєстровано'"
+                % json.dumps(obj_dict, ensure_ascii=False, default=str)
             )
             return None, created
 
@@ -84,34 +81,27 @@ class CompanyImporter(object):
                 "zip_code": zip_code,
                 "city_uk": city_uk,
                 "street_uk": street_uk,
-                "appt_uk": appt_uk
+                "appt_uk": appt_uk,
             }
         else:
-            update_dict = {
-                "raw_address": obj_dict["location"]
-            }
+            update_dict = {"raw_address": obj_dict["location"]}
 
         for k, v in company._status_choices.items():
             if obj_dict["status"].lower() == v:
                 update_dict["status"] = k
                 break
 
-        merger = st.Merger((
-            ("^status$", st.replace_strategy),
-            (".*", st.replace_if_empty_strategy),
-        ))
+        merger = st.Merger(
+            (("^status$", st.replace_strategy), (".*", st.replace_if_empty_strategy))
+        )
 
         res = merger.merge(company, update_dict)
 
         for k, v in res.items():
             if v == st.MergeResult.OLD_VALUE:
                 self.logger.warning(
-                    "Не замінюю поле %s на %s для компанії %s, %s" % (
-                        k,
-                        update_dict[k],
-                        company.name,
-                        company.id
-                    )
+                    "Не замінюю поле %s на %s для компанії %s, %s"
+                    % (k, update_dict[k], company.name, company.id)
                 )
 
         if save:
@@ -161,16 +151,18 @@ class CompanyImporter(object):
             )
 
         if obj_dict["notes"].strip():
-            update_dict["wiki_uk"] = '<p>%s</p>' % obj_dict["notes"].strip()
+            update_dict["wiki_uk"] = "<p>%s</p>" % obj_dict["notes"].strip()
 
         if obj_dict["link"].strip():
             update_dict["wiki_uk"] = (
-                update_dict.get("wiki_uk", "") +
-                '<p><a href="%s" target="_blank">Запис в реєстрі</p>' % obj_dict["link"].strip()
+                update_dict.get("wiki_uk", "")
+                + '<p><a href="%s" target="_blank">Запис в реєстрі</p>'
+                % obj_dict["link"].strip()
             )
             update_dict["wiki_en"] = (
-                update_dict.get("wiki_en", "") +
-                '<p><a href="%s" target="_blank">Registry record</p>' % obj_dict["link"].strip()
+                update_dict.get("wiki_en", "")
+                + '<p><a href="%s" target="_blank">Registry record</p>'
+                % obj_dict["link"].strip()
             )
 
         if company_name_orig:
@@ -189,17 +181,19 @@ class CompanyImporter(object):
                     break
             else:
                 self.logger.warning(
-                    "Ігноруємо незрозумілий статус для компанії <%s>" %
-                    json.dumps(obj_dict, ensure_ascii=False)
+                    "Ігноруємо незрозумілий статус для компанії <%s>"
+                    % json.dumps(obj_dict, ensure_ascii=False)
                 )
 
-        if (not company_code and
-                not company_name_declaration and
-                not company_name_en and
-                not company_name_orig):
+        if (
+            not company_code
+            and not company_name_declaration
+            and not company_name_en
+            and not company_name_orig
+        ):
             self.logger.error(
-                "Не можу імпортувати іноземну юр. особу без коду або назви <%s>" %
-                json.dumps(obj_dict, ensure_ascii=False)
+                "Не можу імпортувати іноземну юр. особу без коду або назви <%s>"
+                % json.dumps(obj_dict, ensure_ascii=False)
             )
             return None, created
 
@@ -211,22 +205,29 @@ class CompanyImporter(object):
         except (Company.DoesNotExist, Company.MultipleObjectsReturned):
             try:
                 # Then refine the search if needed
-                company = Company.objects.deep_get([
-                    ("name_uk__iexact", company_name_declaration),
-                    ("name_uk__iexact", company_name_en),
-                    ("name_uk__iexact", company_name_orig),
-                    ("name_en__iexact", company_name_declaration),
-                    ("name_en__iexact", company_name_en),
-                    ("name_en__iexact", company_name_orig)
-                ])
+                company = Company.objects.deep_get(
+                    [
+                        ("name_uk__iexact", company_name_declaration),
+                        ("name_uk__iexact", company_name_en),
+                        ("name_uk__iexact", company_name_orig),
+                        ("name_en__iexact", company_name_declaration),
+                        ("name_en__iexact", company_name_en),
+                        ("name_en__iexact", company_name_orig),
+                    ]
+                )
 
-                if (company.edrpou and company_code and
-                        company.edrpou.lower() != company_code.lower()):
+                if (
+                    company.edrpou
+                    and company_code
+                    and company.edrpou.lower() != company_code.lower()
+                ):
                     # We found a company by name, but it's probably a wrong one
                     self.logger.warning(
-                        ("Юр. особа що була знайдена для запису %s за іменем має відмінний " +
-                         "код реєстрації: %s, створюємо нову компанію") %
-                        (json.dumps(obj_dict, ensure_ascii=False), company.edrpou)
+                        (
+                            "Юр. особа що була знайдена для запису %s за іменем має відмінний "
+                            + "код реєстрації: %s, створюємо нову компанію"
+                        )
+                        % (json.dumps(obj_dict, ensure_ascii=False), company.edrpou)
                     )
                     raise Company.DoesNotExist()
 
@@ -235,28 +236,26 @@ class CompanyImporter(object):
                 created = True
             except Company.MultipleObjectsReturned:
                 self.logger.error(
-                    "Не можу імпортувати юр. особу <%s>: в базі таких більше одної" %
-                    json.dumps(obj_dict, ensure_ascii=False)
+                    "Не можу імпортувати юр. особу <%s>: в базі таких більше одної"
+                    % json.dumps(obj_dict, ensure_ascii=False)
                 )
                 return None, created
 
-        merger = st.Merger((
-            ("name_uk", st.replace_strategy),
-            ("name_en", st.replace_strategy),
-            (".*", st.replace_if_empty_strategy),
-        ))
+        merger = st.Merger(
+            (
+                ("name_uk", st.replace_strategy),
+                ("name_en", st.replace_strategy),
+                (".*", st.replace_if_empty_strategy),
+            )
+        )
 
         res = merger.merge(company, update_dict)
 
         for k, v in res.items():
             if v == st.MergeResult.OLD_VALUE:
                 self.logger.warning(
-                    "Не замінюю поле %s на %s для компанії %s, %s" % (
-                        k,
-                        update_dict[k],
-                        company.name,
-                        company.id
-                    )
+                    "Не замінюю поле %s на %s для компанії %s, %s"
+                    % (k, update_dict[k], company.name, company.id)
                 )
 
         if save:

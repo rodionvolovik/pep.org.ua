@@ -8,29 +8,39 @@ import wagtail.wagtailcore.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('cms_pages', '0012_auto_20180618_0143'),
-    ]
+    dependencies = [("cms_pages", "0012_auto_20180618_0143")]
 
     operations = [
         migrations.AddField(
-            model_name='homepage',
-            name='eu_desc',
-            field=wagtail.wagtailcore.fields.RichTextField(default='', verbose_name='[UA] \u0422\u0435\u043a\u0441\u0442 \u043f\u0440\u043e EU'),
+            model_name="homepage",
+            name="eu_desc",
+            field=wagtail.wagtailcore.fields.RichTextField(
+                default="",
+                verbose_name="[UA] \u0422\u0435\u043a\u0441\u0442 \u043f\u0440\u043e EU",
+            ),
         ),
         migrations.AddField(
-            model_name='homepage',
-            name='eu_desc_en',
-            field=wagtail.wagtailcore.fields.RichTextField(default='', verbose_name='[EN] \u0422\u0435\u043a\u0441\u0442 \u043f\u0440\u043e EU'),
+            model_name="homepage",
+            name="eu_desc_en",
+            field=wagtail.wagtailcore.fields.RichTextField(
+                default="",
+                verbose_name="[EN] \u0422\u0435\u043a\u0441\u0442 \u043f\u0440\u043e EU",
+            ),
         ),
         migrations.AddField(
-            model_name='homepage',
-            name='tr_desc',
-            field=wagtail.wagtailcore.fields.RichTextField(default='', verbose_name='[UA] \u0422\u0435\u043a\u0441\u0442 \u043f\u0440\u043e Thomson Reuters'),
+            model_name="homepage",
+            name="tr_desc",
+            field=wagtail.wagtailcore.fields.RichTextField(
+                default="",
+                verbose_name="[UA] \u0422\u0435\u043a\u0441\u0442 \u043f\u0440\u043e Thomson Reuters",
+            ),
         ),
         migrations.AddField(
-            model_name='homepage',
-            name='tr_desc_en',
-            field=wagtail.wagtailcore.fields.RichTextField(default='', verbose_name='[EN] \u0422\u0435\u043a\u0441\u0442 \u043f\u0440\u043e Thomson Reuters'),
+            model_name="homepage",
+            name="tr_desc_en",
+            field=wagtail.wagtailcore.fields.RichTextField(
+                default="",
+                verbose_name="[EN] \u0422\u0435\u043a\u0441\u0442 \u043f\u0440\u043e Thomson Reuters",
+            ),
         ),
     ]

@@ -13,7 +13,7 @@ from core.utils import is_initial
 
 
 class Command(BaseCommand):
-    help = ('Loads declarations for PEPs in db')
+    help = "Loads declarations for PEPs in db"
     TASKS_PER_BATCH = 500
 
     def add_declaration(self, person, decl, fuzziness, batch, task):
@@ -53,14 +53,24 @@ class Command(BaseCommand):
 
             if task == "link":
                 allowed_types = ["Щорічна", "Після звільнення"]
-                if (person.is_pep and
-                        person.declarations.filter(nacp_declaration=True, confirmed="a").count() == 0):
+                if (
+                    person.is_pep
+                    and person.declarations.filter(
+                        nacp_declaration=True, confirmed="a"
+                    ).count()
+                    == 0
+                ):
 
                     self.stdout.write(
-                        "There are no declarations for poor %s at all, thus extending the scope" % (person,)
+                        "There are no declarations for poor %s at all, thus extending the scope"
+                        % (person,)
                     )
 
-                    allowed_types += ["Перед звільненням", "Після звільнення", "Кандидата на посаду"]
+                    allowed_types += [
+                        "Перед звільненням",
+                        "Після звільнення",
+                        "Кандидата на посаду",
+                    ]
             else:
                 allowed_types = ["Перед звільненням", "Після звільнення"]
 
@@ -68,10 +78,13 @@ class Command(BaseCommand):
                 return
 
             try:
-                d = Declaration.objects.get(declaration_id=decl["id"], person_id=person.pk)
+                d = Declaration.objects.get(
+                    declaration_id=decl["id"], person_id=person.pk
+                )
                 if task == "link":
                     self.stdout.write(
-                        "Declaration %s for user %s already exists" % (decl["id"], person)
+                        "Declaration %s for user %s already exists"
+                        % (decl["id"], person)
                     )
                 elif task == "monitor":
                     d.to_watch = True
@@ -79,7 +92,8 @@ class Command(BaseCommand):
                 return
             except Declaration.MultipleObjectsReturned:
                 self.stdout.write(
-                    "Declaration %s for user %s already exists too many times" % (decl["id"], person)
+                    "Declaration %s for user %s already exists too many times"
+                    % (decl["id"], person)
                 )
                 return
             except Declaration.DoesNotExist:
@@ -95,15 +109,18 @@ class Command(BaseCommand):
                 # annually or before applying for the position, not on resign
                 return
             elif task == "link":
-                if Declaration.objects.filter(declaration_id=decl["id"], person_id=person.pk).exists():
-                    self.stdout.write("Declaration %s for user %s already exists" % (decl["id"], person))
+                if Declaration.objects.filter(
+                    declaration_id=decl["id"], person_id=person.pk
+                ).exists():
+                    self.stdout.write(
+                        "Declaration %s for user %s already exists"
+                        % (decl["id"], person)
+                    )
                     return
 
         params["doc_type"] = doc_type
         d = Declaration.objects.create(
-            declaration_id=decl["id"],
-            person=person,
-            **params
+            declaration_id=decl["id"], person=person, **params
         )
 
         if not d.family:
@@ -124,14 +141,13 @@ class Command(BaseCommand):
             persons = Person.objects.filter(is_pep=True).nocache()
 
         for person in persons:
-            full_name = ("%s %s %s" % (person.first_name, person.patronymic,
-                                       person.last_name)).replace("  ", " ")
+            full_name = (
+                "%s %s %s" % (person.first_name, person.patronymic, person.last_name)
+            ).replace("  ", " ")
             full_name = full_name.strip()
 
             if is_initial(person.first_name) or is_initial(person.patronymic):
-                self.stdout.write(
-                    "Not pulling %s because of initials" % full_name
-                )
+                self.stdout.write("Not pulling %s because of initials" % full_name)
 
                 continue
 
@@ -143,17 +159,18 @@ class Command(BaseCommand):
                         None,
                         map(
                             unicode.strip,
-                            person.also_known_as_uk.replace(",", "\n").split("\n")
-                        )
+                            person.also_known_as_uk.replace(",", "\n").split("\n"),
+                        ),
                     )
                 )
 
             for full_name_to_ret in names_to_retrieve:
                 subr = requests.get(
-                    settings.DECLARATIONS_SEARCH_ENDPOINT, params={
-                        "q": full_name_to_ret,
-                        "format": "json"
-                    }, verify=False, timeout=60).json()
+                    settings.DECLARATIONS_SEARCH_ENDPOINT,
+                    params={"q": full_name_to_ret, "format": "json"},
+                    verify=False,
+                    timeout=60,
+                ).json()
 
                 self.stdout.write(full_name_to_ret)
 
@@ -164,11 +181,7 @@ class Command(BaseCommand):
                         batch = -100
 
                     res = self.add_declaration(
-                        person,
-                        decl,
-                        subr["fuzziness"],
-                        batch,
-                        options["type"]
+                        person, decl, subr["fuzziness"], batch, options["type"]
                     )
 
                     if res:
@@ -176,8 +189,8 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--type',
+            "--type",
             choices=["link", "monitor"],
             required=True,
-            help='Pull declarations for linking or monitoring of resign',
+            help="Pull declarations for linking or monitoring of resign",
         )

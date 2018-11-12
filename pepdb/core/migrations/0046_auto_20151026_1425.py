@@ -20,11 +20,8 @@ def move_dossier(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0045_auto_20151026_1425'),
-    ]
+    dependencies = [("core", "0045_auto_20151026_1425")]
 
     operations = [
-        migrations.RunPython(
-            move_dossier, reverse_code=migrations.RunPython.noop),
+        migrations.RunPython(move_dossier, reverse_code=migrations.RunPython.noop)
     ]

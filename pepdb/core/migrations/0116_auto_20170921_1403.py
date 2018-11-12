@@ -7,14 +7,15 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0115_person2company_created_from_edr'),
-    ]
+    dependencies = [("core", "0115_person2company_created_from_edr")]
 
     operations = [
         migrations.AlterField(
-            model_name='person2company',
-            name='created_from_edr',
-            field=models.NullBooleanField(default=False, verbose_name='\u0417\u0430\u043f\u0438\u0441 \u0441\u0442\u0432\u043e\u0440\u0435\u043d\u043e \u0437 \u0456\u043d\u0444\u043e\u0440\u043c\u0430\u0446\u0456\u0457 \u0404\u0414\u0420'),
-        ),
+            model_name="person2company",
+            name="created_from_edr",
+            field=models.NullBooleanField(
+                default=False,
+                verbose_name="\u0417\u0430\u043f\u0438\u0441 \u0441\u0442\u0432\u043e\u0440\u0435\u043d\u043e \u0437 \u0456\u043d\u0444\u043e\u0440\u043c\u0430\u0446\u0456\u0457 \u0404\u0414\u0420",
+            ),
+        )
     ]

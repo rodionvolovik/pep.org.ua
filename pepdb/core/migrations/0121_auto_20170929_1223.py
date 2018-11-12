@@ -16,10 +16,6 @@ def normalize_edrpous(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0120_auto_20170924_0242'),
-    ]
+    dependencies = [("core", "0120_auto_20170924_0242")]
 
-    operations = [
-        migrations.RunPython(normalize_edrpous)
-    ]
+    operations = [migrations.RunPython(normalize_edrpous)]

@@ -7,18 +7,31 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0021_auto_20170928_1733'),
-    ]
+    dependencies = [("tasks", "0021_auto_20170928_1733")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='beneficiariesmatching',
-            options={'verbose_name': '\u0411\u0435\u043d\u0435\u0444\u0456\u0446\u0456\u0430\u0440 \u0430\u0431\u043e \u0432\u043b\u0430\u0441\u043d\u0438\u043a \u043a\u043e\u043c\u043f\u0430\u043d\u0456\u0457', 'verbose_name_plural': '\u0411\u0435\u043d\u0435\u0444\u0456\u0446\u0456\u0430\u0440\u0438 \u0430\u0431\u043e \u0432\u043b\u0430\u0441\u043d\u0438\u043a\u0438 \u043a\u043e\u043c\u043f\u0430\u043d\u0456\u0439'},
+            name="beneficiariesmatching",
+            options={
+                "verbose_name": "\u0411\u0435\u043d\u0435\u0444\u0456\u0446\u0456\u0430\u0440 \u0430\u0431\u043e \u0432\u043b\u0430\u0441\u043d\u0438\u043a \u043a\u043e\u043c\u043f\u0430\u043d\u0456\u0457",
+                "verbose_name_plural": "\u0411\u0435\u043d\u0435\u0444\u0456\u0446\u0456\u0430\u0440\u0438 \u0430\u0431\u043e \u0432\u043b\u0430\u0441\u043d\u0438\u043a\u0438 \u043a\u043e\u043c\u043f\u0430\u043d\u0456\u0439",
+            },
         ),
         migrations.AddField(
-            model_name='beneficiariesmatching',
-            name='type_of_connection',
-            field=models.CharField(choices=[('b', '\u0411\u0435\u043d\u0435\u0444\u0456\u0446\u0456\u0430\u0440\u043d\u0438\u0439 \u0432\u043b\u0430\u0441\u043d\u0438\u043a'), ('f', '\u0417\u0430\u0441\u043d\u043e\u0432\u043d\u0438\u043a')], db_index=True, default='b', max_length=1, verbose_name="\u0422\u0438\u043f \u0437\u0432'\u044f\u0437\u043a\u0443"),
+            model_name="beneficiariesmatching",
+            name="type_of_connection",
+            field=models.CharField(
+                choices=[
+                    (
+                        "b",
+                        "\u0411\u0435\u043d\u0435\u0444\u0456\u0446\u0456\u0430\u0440\u043d\u0438\u0439 \u0432\u043b\u0430\u0441\u043d\u0438\u043a",
+                    ),
+                    ("f", "\u0417\u0430\u0441\u043d\u043e\u0432\u043d\u0438\u043a"),
+                ],
+                db_index=True,
+                default="b",
+                max_length=1,
+                verbose_name="\u0422\u0438\u043f \u0437\u0432'\u044f\u0437\u043a\u0443",
+            ),
         ),
     ]

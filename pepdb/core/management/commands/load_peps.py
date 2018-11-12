@@ -10,30 +10,43 @@ from django.db.models import Q
 from translitua import translitua
 
 from core.utils import (
-    expand_gdrive_download_url, download, parse_date,
-    get_spreadsheet, parse_fullname, mangle_date, lookup_term)
+    expand_gdrive_download_url,
+    download,
+    parse_date,
+    get_spreadsheet,
+    parse_fullname,
+    mangle_date,
+    lookup_term,
+)
 
 from core.models import (
-    Ua2RuDictionary, Company, Person, Person2Company, Document,
-    Ua2EnDictionary)
+    Ua2RuDictionary,
+    Company,
+    Person,
+    Person2Company,
+    Document,
+    Ua2EnDictionary,
+)
 
 
 class Command(BaseCommand):
-    help = ('Loads the GoogleDocs table of PEPs to db')
+    help = "Loads the GoogleDocs table of PEPs to db"
 
     def process_company(self, company_id, company_ipn, company_name):
         if not company_ipn and not company_name:
             return None
 
         if len(company_name) > 250:
-            self.stderr.write(
-                'Company name {} is too long'.format(company_name))
+            self.stderr.write("Company name {} is too long".format(company_name))
             return None
 
         company = None
 
-        for k, v in [("pk", company_id), ("edrpou", company_ipn),
-                     ("name_uk", company_name)]:
+        for k, v in [
+            ("pk", company_id),
+            ("edrpou", company_ipn),
+            ("name_uk", company_name),
+        ]:
             try:
                 if v:
                     company = Company.objects.get(**{k: v})
@@ -66,8 +79,7 @@ class Command(BaseCommand):
             if i % 2000 == 0 and i:
                 wks = get_spreadsheet().sheet1
 
-            self.stdout.write(
-                'Processing line #{}'.format(i))
+            self.stdout.write("Processing line #{}".format(i))
 
             company_ipn = l.get("ІПН", "")
             company_name = l.get("Назва", "")
@@ -77,8 +89,7 @@ class Command(BaseCommand):
 
             person = None
             # First let's search for appropriate company
-            company = self.process_company(
-                company_id, company_ipn, company_name)
+            company = self.process_company(company_id, company_ipn, company_name)
 
             # No company — no go
             if company is None:
@@ -119,19 +130,17 @@ class Command(BaseCommand):
                         person = Person.objects.get(
                             first_name_uk__iexact=first_name,
                             last_name_uk__iexact=last_name,
-                            patronymic_uk__iexact=patronymic
+                            patronymic_uk__iexact=patronymic,
                         )
                     except Person.MultipleObjectsReturned:
-                        self.stderr.write(
-                            "Double person {}!".format(person_name))
+                        self.stderr.write("Double person {}!".format(person_name))
                     except Person.DoesNotExist:
                         pass
 
                 # If nothing is found, let's create a record for that person
                 if not person:
                     person = Person()
-                    self.stderr.write(
-                        "Created new person {}".format(person_name))
+                    self.stderr.write("Created new person {}".format(person_name))
 
                 person.first_name_uk = first_name
                 person.last_name_uk = last_name
@@ -162,16 +171,15 @@ class Command(BaseCommand):
                 # Let's download the photo (if any)
                 if not person.photo and photo_url:
                     photo_name, photo_san_name, photo_content = download(
-                        photo_url, translitua(person_name))
+                        photo_url, translitua(person_name)
+                    )
 
                     if photo_name:
-                        person.photo.save(
-                            photo_san_name,
-                            ContentFile(photo_content))
+                        person.photo.save(photo_san_name, ContentFile(photo_content))
                     else:
-                        self.stdout.write("Cannot download image %s for %s" % (
-                            photo_url, person_name
-                        ))
+                        self.stdout.write(
+                            "Cannot download image %s for %s" % (photo_url, person_name)
+                        )
 
                 person.save()
 
@@ -191,8 +199,7 @@ class Command(BaseCommand):
                     # we cannot download folders from google docs, so let's
                     # skip them
 
-                    if doc and "folderview" not in doc \
-                            and "drive/#folders" not in doc:
+                    if doc and "folderview" not in doc and "drive/#folders" not in doc:
                         doc = expand_gdrive_download_url(doc)
                         doc_hash = sha1(doc).hexdigest()
 
@@ -200,24 +207,21 @@ class Command(BaseCommand):
                         try:
                             doc_instance = Document.objects.get(hash=doc_hash)
                         except Document.DoesNotExist:
-                            self.stdout.write(
-                                'Downloading file {}'.format(doc))
+                            self.stdout.write("Downloading file {}".format(doc))
                             doc_name, doc_san_name, doc_content = download(doc)
                             doc_san_name = translitua(doc_san_name)
 
                             if doc_name:
                                 doc_instance = Document(
-                                    name_uk=doc_name,
-                                    uploader=peklun,
-                                    hash=doc_hash
+                                    name_uk=doc_name, uploader=peklun, hash=doc_hash
                                 )
 
                                 doc_instance.doc.save(
-                                    doc_san_name, ContentFile(doc_content))
+                                    doc_san_name, ContentFile(doc_content)
+                                )
                                 doc_instance.save()
                             else:
-                                self.stdout.write(
-                                    'Cannot download file {}'.format(doc))
+                                self.stdout.write("Cannot download file {}".format(doc))
 
                         if doc_instance:
                             first_doc_name = doc_instance.name_uk
@@ -225,14 +229,18 @@ class Command(BaseCommand):
 
                 # Now let's setup links between person and companies
                 links = Person2Company.objects.filter(
-                    (Q(date_established=person_from) |
-                     Q(date_established=mangle_date(person_from)) |
-                     Q(date_established__isnull=True)),
-                    (Q(date_finished=person_to) |
-                     Q(date_finished=mangle_date(person_to)) |
-                     Q(date_finished__isnull=True)),
+                    (
+                        Q(date_established=person_from)
+                        | Q(date_established=mangle_date(person_from))
+                        | Q(date_established__isnull=True)
+                    ),
+                    (
+                        Q(date_finished=person_to)
+                        | Q(date_finished=mangle_date(person_to))
+                        | Q(date_finished__isnull=True)
+                    ),
                     from_person=person,
-                    to_company=company
+                    to_company=company,
                 )
 
                 # Delete if there are doubling links
@@ -247,15 +255,14 @@ class Command(BaseCommand):
                     date_established=person_from,
                     date_established_details=0,
                     date_finished=person_to,
-                    date_finished_details=0
+                    date_finished_details=0,
                 )
 
                 if not link.relationship_type:
                     link.relationship_type = position
 
                 # And translate them
-                Ua2EnDictionary.objects.get_or_create(
-                    term=lookup_term(position))
+                Ua2EnDictionary.objects.get_or_create(term=lookup_term(position))
 
                 # oh, and add links to supporting docs
                 all_docs = docs_downloaded + website.split(", ")

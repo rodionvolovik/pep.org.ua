@@ -9,8 +9,7 @@ from unicodecsv import DictReader
 def load_banks(apps, schema_editor):
     country_model = apps.get_model("core", "Country")
     company_model = apps.get_model("core", "Company")
-    company2country_model = apps.get_model(
-        "core", "Company2Country")
+    company2country_model = apps.get_model("core", "Company2Country")
 
     with open("core/dicts/foreign_banks.csv", "r") as fp:
         r = DictReader(fp)
@@ -18,7 +17,8 @@ def load_banks(apps, schema_editor):
         for l in r:
             try:
                 country = country_model.objects.get(
-                    name_en__iexact=l["country"].strip())
+                    name_en__iexact=l["country"].strip()
+                )
             except country_model.DoesNotExist:
                 print("Cannot find country %s" % l["country"])
                 continue
@@ -35,13 +35,13 @@ def load_banks(apps, schema_editor):
                         "city_uk": l["city"].strip(),
                         "street_uk": l["street"].strip(),
                         "appt_uk": l["appt"].strip(),
-                    }
+                    },
                 )
 
                 company2country_model.objects.get_or_create(
                     from_company=bank,
                     to_country=country,
-                    relationship_type="registered_in"
+                    relationship_type="registered_in",
                 )
             except company_model.MultipleObjectsReturned:
                 print("Cannot find country %s" % l["country"])
@@ -50,10 +50,6 @@ def load_banks(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0122_person2company_share'),
-    ]
+    dependencies = [("core", "0122_person2company_share")]
 
-    operations = [
-        migrations.RunPython(load_banks)
-    ]
+    operations = [migrations.RunPython(load_banks)]

@@ -14,47 +14,42 @@ class Command(BaseCommand):
     def find_bank(self, edrpou, name, declaration):
         if edrpou:
             if edrpou in self.edrpous_mapping:
-                return [self.banks_dict[
-                    self.edrpous_mapping[self.edrpous_mapping[edrpou]]
-                ]]
+                return [
+                    self.banks_dict[self.edrpous_mapping[self.edrpous_mapping[edrpou]]]
+                ]
 
         if name in self.names_mapping:
-            return [
-                self.banks_dict[code]
-                for code in self.names_mapping[name]
-            ]
+            return [self.banks_dict[code] for code in self.names_mapping[name]]
 
-        stripped_name = name.strip('"\'')
+        stripped_name = name.strip("\"'")
         if stripped_name in self.names_mapping:
-            return [
-                self.banks_dict[code]
-                for code in self.names_mapping[stripped_name]
-            ]
+            return [self.banks_dict[code] for code in self.names_mapping[stripped_name]]
 
         if name in self.names_only_mapping:
             try:
                 company = Company.objects.get(
-                    name_en__iexact=self.names_only_mapping[name])
+                    name_en__iexact=self.names_only_mapping[name]
+                )
                 return [company]
             except Company.DoesNotExist:
                 self.stderr.write(
-                    "Cannot find company %s (%s) in db by name" % (
-                        name, edrpou)
+                    "Cannot find company %s (%s) in db by name" % (name, edrpou)
                 )
 
         self.stderr.write(
-            "Cannot find bank %s (%s) in mapping at the declaration %s" % (name, edrpou, declaration.url)
+            "Cannot find bank %s (%s) in mapping at the declaration %s"
+            % (name, edrpou, declaration.url)
         )
 
         return None
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--real_run',
-            action='store_true',
-            dest='real_run',
+            "--real_run",
+            action="store_true",
+            dest="real_run",
             default=False,
-            help='Connect persons to banks for real',
+            help="Connect persons to banks for real",
         )
 
     def handle(self, *args, **options):
@@ -62,8 +57,7 @@ class Command(BaseCommand):
         self.edrpous_mapping = {}
         self.names_only_mapping = {}
         self.names_mapping = defaultdict(set)
-        importer = Person2CompanyImporter(
-            logger=PythonLogger("cli_commands"))
+        importer = Person2CompanyImporter(logger=PythonLogger("cli_commands"))
 
         # Reading mapping between edrpous of bank branches and
         # edrpou of main branch of the bank
@@ -80,7 +74,9 @@ class Command(BaseCommand):
 
             for bank in r:
                 self.names_only_mapping[bank["name"]] = bank["real_name"].strip()
-                self.names_only_mapping[bank["name"].strip('"\'')] = bank["real_name"].strip()
+                self.names_only_mapping[bank["name"].strip("\"'")] = bank[
+                    "real_name"
+                ].strip()
 
         # Reading mapping between names of bank and it's edrpous
         with open("core/dicts/bank_names_mapping.csv", "r") as fp:
@@ -88,7 +84,7 @@ class Command(BaseCommand):
 
             for bank in r:
                 self.names_mapping[bank["name"]].add(bank["edrpou"])
-                self.names_mapping[bank["name"].strip('"\'')].add(bank["edrpou"])
+                self.names_mapping[bank["name"].strip("\"'")].add(bank["edrpou"])
 
         with open("core/dicts/true_banks.csv", "r") as fp:
             r = DictReader(fp)
@@ -98,10 +94,10 @@ class Command(BaseCommand):
                     edrpou = bank["edrpou"]
                     try:
                         self.banks_dict[edrpou] = Company.objects.get(
-                            edrpou=edrpou.rjust(8, "0"))
+                            edrpou=edrpou.rjust(8, "0")
+                        )
                     except Company.DoesNotExist:
-                        self.stderr.write(
-                            "Cannot find bank with edrpou %s" % edrpou)
+                        self.stderr.write("Cannot find bank with edrpou %s" % edrpou)
                 else:
                     self.stderr.write("Bank %s has no edrpou" % bank["name"])
 
@@ -109,8 +105,11 @@ class Command(BaseCommand):
         failed = 0
         created_records = 0
         updated_records = 0
-        for d in Declaration.objects.filter(
-                nacp_declaration=True, confirmed="a").nocache().iterator():
+        for d in (
+            Declaration.objects.filter(nacp_declaration=True, confirmed="a")
+            .nocache()
+            .iterator()
+        ):
             data = d.source["nacp_orig"]
 
             if isinstance(data.get("step_12"), dict):
@@ -126,19 +125,17 @@ class Command(BaseCommand):
 
                     if cash_rec.get("person", "1") != "1":
                         try:
-                            person, _ = d.resolve_person(
-                                cash_rec.get("person"))
+                            person, _ = d.resolve_person(cash_rec.get("person"))
                         except CannotResolveRelativeException as e:
                             self.stderr.write(unicode(e))
                             continue
 
                     bank_name = cash_rec.get(
-                        "organization_ua_company_name") or \
-                        cash_rec.get("organization_ukr_company_name", "")
+                        "organization_ua_company_name"
+                    ) or cash_rec.get("organization_ukr_company_name", "")
                     bank_name = bank_name.lower().strip()
 
-                    bank_edrpou = cash_rec.get(
-                        "organization_ua_company_code", "")
+                    bank_edrpou = cash_rec.get("organization_ua_company_code", "")
                     bank_edrpou = bank_edrpou.lstrip("0").strip()
 
                     if bank_name or bank_edrpou:
@@ -149,7 +146,8 @@ class Command(BaseCommand):
 
                         for bank in bank_matches:
                             conn, created = importer.get_or_create_from_declaration(
-                                person, bank, "Клієнт банку", d, options["real_run"])
+                                person, bank, "Клієнт банку", d, options["real_run"]
+                            )
 
                             if created:
                                 created_records += 1
@@ -162,6 +160,6 @@ class Command(BaseCommand):
             "Mapping failed: %s, mapping successful: %s" % (failed, successful)
         )
         self.stdout.write(
-            "Connections created: %s, connections updated: %s" %
-            (created_records, updated_records)
+            "Connections created: %s, connections updated: %s"
+            % (created_records, updated_records)
         )

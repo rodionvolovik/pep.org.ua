@@ -16,13 +16,15 @@ class EDRPOU(DocType):
     )
 
     edrpou = Keyword(index=True)
-    location = Text(index=True, analyzer='ukrainian')
-    company_profile = Text(index=True, analyzer='ukrainian', fields={'raw': Keyword(index=True)})
-    head = Text(index=True, analyzer='ukrainian')
-    name = Text(index=True, analyzer='ukrainian')
-    short_name = Text(index=True, analyzer='ukrainian')
+    location = Text(index=True, analyzer="ukrainian")
+    company_profile = Text(
+        index=True, analyzer="ukrainian", fields={"raw": Keyword(index=True)}
+    )
+    head = Text(index=True, analyzer="ukrainian")
+    name = Text(index=True, analyzer="ukrainian")
+    short_name = Text(index=True, analyzer="ukrainian")
     status = Keyword(index=True)
-    founders = Text(index=True, analyzer='ukrainian')
+    founders = Text(index=True, analyzer="ukrainian")
     last_update = Date()
 
     @classmethod
@@ -34,10 +36,7 @@ class EDRPOU(DocType):
         for order in cls.status_order:
             res = cls.search().query(
                 "bool",
-                must=[
-                    Q("term", edrpou=edrpou.lstrip("0")),
-                    Q("term", status=order)
-                ]
+                must=[Q("term", edrpou=edrpou.lstrip("0")), Q("term", status=order)],
             )
             ans = res.execute()
             if ans:
@@ -45,14 +44,10 @@ class EDRPOU(DocType):
 
         # Last attempt
         if not ans:
-            res = cls.search().query(
-                "term",
-                edrpou=edrpou.lstrip("0"),
-            )
+            res = cls.search().query("term", edrpou=edrpou.lstrip("0"))
             ans = res.execute()
 
         return ans
 
-
     class Meta:
-        index = 'edrpou'
+        index = "edrpou"

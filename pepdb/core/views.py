@@ -26,7 +26,15 @@ from cryptography.fernet import InvalidToken
 
 from core.models import Person, Declaration, Country, Company, ActionLog
 from core.pdf import pdf_response
-from core.utils import is_cyr, add_encrypted_url, unique, blacklist, localized_field, localized_fields, get_localized_field
+from core.utils import (
+    is_cyr,
+    add_encrypted_url,
+    unique,
+    blacklist,
+    localized_field,
+    localized_fields,
+    get_localized_field,
+)
 from core.paginator import paginated_search
 from core.forms import FeedbackForm
 from core.auth import logged_in_or_basicauth
@@ -123,9 +131,10 @@ def search(request, sources=("persons", "companies")):
             "multi_match",
             query=query,
             operator="and",
-            fields=[
-                "names",
-            ] + localized_fields(["full_name", "also_known_as"], langs=settings.LANGUAGE_CODES),
+            fields=["names"]
+            + localized_fields(
+                ["full_name", "also_known_as"], langs=settings.LANGUAGE_CODES
+            ),
         )
 
         # Special case when we were looking for one exact person and found it.
@@ -138,7 +147,9 @@ def search(request, sources=("persons", "companies")):
             "multi_match",
             query=query,
             operator="and",
-            fields=localized_fields(["short_name", "name"], langs=settings.LANGUAGE_CODES),
+            fields=localized_fields(
+                ["short_name", "name"], langs=settings.LANGUAGE_CODES
+            ),
         )
 
         # Special case when we were looking for one exact company and found it.
@@ -200,21 +211,26 @@ def _search_person(request):
 def _suggest_person(request):
     query = request.GET.get("q", "")
     if query:
-        _fields = [
-            "names^2",
-        ]
+        _fields = ["names^2"]
 
         for lang in settings.LANGUAGE_CODES:
             _fields.append(localized_field("full_name", lang) + "^3")
             _fields.append(localized_field("also_known_as", lang) + "^2")
             _fields.append(localized_field("related_persons.person", lang))
 
-
         persons = ElasticPerson.search().query(
             Q(
                 "bool",
                 should=[Q("match", is_pep=True)],
-                must=[Q("multi_match", query=query, operator="and", fields=_fields, fuzziness="auto")],
+                must=[
+                    Q(
+                        "multi_match",
+                        query=query,
+                        operator="and",
+                        fields=_fields,
+                        fuzziness="auto",
+                    )
+                ],
             )
         )[:1]
 
@@ -282,11 +298,7 @@ def person_details(request, person_id):
         "all_declarations": person.get_declarations(),
     }
 
-    full_name = "%s %s %s" % (
-        person.last_name,
-        person.first_name,
-        person.patronymic,
-    )
+    full_name = "%s %s %s" % (person.last_name, person.first_name, person.patronymic)
 
     if is_cyr(full_name):
         context["filename"] = translit(
@@ -405,7 +417,8 @@ def export_persons(request, fmt):
 
     data = map(
         lambda p: blacklist(
-            add_encrypted_url(p, request.user, "encrypted_person_redirect"), fields_to_blacklist
+            add_encrypted_url(p, request.user, "encrypted_person_redirect"),
+            fields_to_blacklist,
         ),
         ElasticPerson.get_all_persons(),
     )

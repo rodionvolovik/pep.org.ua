@@ -7,19 +7,25 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0131_auto_20171227_1747'),
-    ]
+    dependencies = [("core", "0131_auto_20171227_1747")]
 
     operations = [
         migrations.AddField(
-            model_name='declaration',
-            name='to_link',
-            field=models.BooleanField(db_index=True, default=False, verbose_name='\u0414\u0435\u043a\u043b\u0430\u0440\u0430\u0446\u0456\u044f \u0434\u043b\u044f \u043f\u0440\u043e\u0444\u0456\u043b\u0435\u0439'),
+            model_name="declaration",
+            name="to_link",
+            field=models.BooleanField(
+                db_index=True,
+                default=False,
+                verbose_name="\u0414\u0435\u043a\u043b\u0430\u0440\u0430\u0446\u0456\u044f \u0434\u043b\u044f \u043f\u0440\u043e\u0444\u0456\u043b\u0435\u0439",
+            ),
         ),
         migrations.AddField(
-            model_name='declaration',
-            name='to_watch',
-            field=models.BooleanField(db_index=True, default=False, verbose_name='\u0414\u0435\u043a\u043b\u0430\u0440\u0430\u0446\u0456\u044f \u0434\u043b\u044f \u043c\u043e\u043d\u0456\u0442\u043e\u0440\u0456\u043d\u0433\u0443 \u0437\u0432\u0456\u043b\u044c\u043d\u0435\u043d\u044c'),
+            model_name="declaration",
+            name="to_watch",
+            field=models.BooleanField(
+                db_index=True,
+                default=False,
+                verbose_name="\u0414\u0435\u043a\u043b\u0430\u0440\u0430\u0446\u0456\u044f \u0434\u043b\u044f \u043c\u043e\u043d\u0456\u0442\u043e\u0440\u0456\u043d\u0433\u0443 \u0437\u0432\u0456\u043b\u044c\u043d\u0435\u043d\u044c",
+            ),
         ),
     ]

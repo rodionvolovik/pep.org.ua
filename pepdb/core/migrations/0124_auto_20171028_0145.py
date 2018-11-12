@@ -9,7 +9,8 @@ def migrate_bank_customers(apps, schema_editor):
     Person2Company = apps.get_model("core", "Person2Company")
 
     for p2c in Person2Company.objects.filter(
-            relationship_type_uk="Клієнт", declarations__isnull=False):
+        relationship_type_uk="Клієнт", declarations__isnull=False
+    ):
         p2c.relationship_type_uk = "Клієнт банку"
         p2c.relationship_type_en = "Bank customer"
         p2c.save()
@@ -17,10 +18,6 @@ def migrate_bank_customers(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0123_auto_20171002_1403'),
-    ]
+    dependencies = [("core", "0123_auto_20171002_1403")]
 
-    operations = [
-        migrations.RunPython(migrate_bank_customers)
-    ]
+    operations = [migrations.RunPython(migrate_bank_customers)]

@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import re
 from enum import IntEnum
 
+
 class MergeResult(IntEnum):
     OLD_VALUE = 1
     NEW_VALUE = 2

@@ -17,7 +17,7 @@ from tasks.models import EDRMonitoring
 
 
 class Command(BaseCommand):
-    help = ('Check if the head of the company in DB matches those in the EDR')
+    help = "Check if the head of the company in DB matches those in the EDR"
     positions_to_monitor = (
         "керівник",
         "начальник",
@@ -84,11 +84,7 @@ class Command(BaseCommand):
     def search_for_company(self, edrpou):
         for order in self.status_order:
             res = EDRPOU.search().query(
-                "bool",
-                must=[
-                    Q("term", edrpou=edrpou),
-                    Q("term", status=order)
-                ]
+                "bool", must=[Q("term", edrpou=edrpou), Q("term", status=order)]
             )
             ans = res.execute()
             if ans:
@@ -96,10 +92,7 @@ class Command(BaseCommand):
 
         # Last attempt
         if not ans:
-            res = EDRPOU.search().query(
-                "term",
-                edrpou=edrpou,
-            )
+            res = EDRPOU.search().query("term", edrpou=edrpou)
             ans = res.execute()
 
         return ans
@@ -107,25 +100,35 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         activate(settings.LANGUAGE_CODE)
 
-        q = Person2Company.objects.select_related("to_company", "from_person") \
-            .filter(to_company__state_company=True) \
-            .exclude(to_company__edrpou="") \
-            .annotate(rt_lower=Lower("relationship_type_uk")) \
+        q = (
+            Person2Company.objects.select_related("to_company", "from_person")
+            .filter(to_company__state_company=True)
+            .exclude(to_company__edrpou="")
+            .annotate(rt_lower=Lower("relationship_type_uk"))
             .filter(rt_lower__in=self.positions_to_monitor)
+        )
 
         for i, conn in enumerate(q):
-            pep_name = "{} {} {}".format(
-                conn.from_person.last_name,
-                conn.from_person.first_name,
-                conn.from_person.patronymic).replace("  ", " ").lower()
+            pep_name = (
+                "{} {} {}".format(
+                    conn.from_person.last_name,
+                    conn.from_person.first_name,
+                    conn.from_person.patronymic,
+                )
+                .replace("  ", " ")
+                .lower()
+            )
 
             pep_position = conn.relationship_type_uk.lower()
             company_edrpou = conn.to_company.edrpou.lstrip("0")
-            if conn.to_company.closed_on and conn.to_company.status in [2]:  # 2 is for prypyneno
-                closed_on = ceil_date(conn.to_company.closed_on, conn.to_company.closed_on_details)
+            if conn.to_company.closed_on and conn.to_company.status in [
+                2
+            ]:  # 2 is for prypyneno
+                closed_on = ceil_date(
+                    conn.to_company.closed_on, conn.to_company.closed_on_details
+                )
             else:
                 closed_on = None
-
 
             ans = self.search_for_company(company_edrpou)
             for company in ans:
@@ -141,30 +144,41 @@ class Command(BaseCommand):
                 if closed_on is not None and closed_on < company.last_update.date():
                     self.stderr.write(
                         "Company in {} were closed on {} before the date {} from registry, skipping it".format(
-                            conn,
-                            closed_on,
-                            company.last_update.date()
-                        ))
+                            conn, closed_on, company.last_update.date()
+                        )
+                    )
                     continue
 
                 if conn.date_established:
-                    if floor_date(conn.date_established, conn.date_established_details) >= company.last_update.date():
+                    if (
+                        floor_date(conn.date_established, conn.date_established_details)
+                        >= company.last_update.date()
+                    ):
                         self.stderr.write(
                             "Connection {} started on {} after the date {} from registry, skipping it".format(
                                 conn,
-                                floor_date(conn.date_established, conn.date_established_details),
-                                company.last_update.date()
-                            ))
+                                floor_date(
+                                    conn.date_established, conn.date_established_details
+                                ),
+                                company.last_update.date(),
+                            )
+                        )
                         continue
 
                 if conn.date_finished:
-                    if ceil_date(conn.date_finished, conn.date_finished_details) <= company.last_update.date():
+                    if (
+                        ceil_date(conn.date_finished, conn.date_finished_details)
+                        <= company.last_update.date()
+                    ):
                         self.stderr.write(
                             "Connection {} finished on {} before the date {} from registry, skipping it".format(
                                 conn,
-                                ceil_date(conn.date_finished, conn.date_finished_details),
-                                company.last_update.date()
-                            ))
+                                ceil_date(
+                                    conn.date_finished, conn.date_finished_details
+                                ),
+                                company.last_update.date(),
+                            )
+                        )
                         continue
 
                 try:
@@ -172,15 +186,21 @@ class Command(BaseCommand):
                         pep_name=pep_name,
                         pep_position=pep_position,
                         edr_name=edr_name,
-                        company_edrpou=company_edrpou
+                        company_edrpou=company_edrpou,
                     )
 
                     if latest_rec:
-                        if (latest_rec[0].pk != rec.pk and latest_rec[0].edr_date > rec.edr_date and
-                                rec.status != "p"):
+                        if (
+                            latest_rec[0].pk != rec.pk
+                            and latest_rec[0].edr_date > rec.edr_date
+                            and rec.status != "p"
+                        ):
                             self.stderr.write(
                                 "Watch out! Some zombies are there: {} @ {}, {} ({})".format(
-                                    pep_name, pep_position, conn.to_company.name, company_edrpou
+                                    pep_name,
+                                    pep_position,
+                                    conn.to_company.name,
+                                    company_edrpou,
                                 )
                             )
                             rec.status = "r"
@@ -207,7 +227,6 @@ class Command(BaseCommand):
                         pep_position=pep_position,
                         edr_name=edr_name,
                         company_edrpou=company_edrpou,
-
                         pep_company_json=conn.to_company.to_dict(),
                         edr_company_json=company.to_dict(),
                         name_match_score=diff,

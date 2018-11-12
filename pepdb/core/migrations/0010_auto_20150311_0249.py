@@ -11,8 +11,8 @@ from django.db import migrations
 
 def title(s):
     chunks = s.split()
-    chunks = map(lambda x: capwords(x, u"-"), chunks)
-    return u" ".join(chunks)
+    chunks = map(lambda x: capwords(x, "-"), chunks)
+    return " ".join(chunks)
 
 
 def parse_date(s):
@@ -54,8 +54,7 @@ def load_peps(apps, schema_editor):
             if company_name:
                 if company is None:
                     try:
-                        company = Company.objects.get(
-                            name=company_name)
+                        company = Company.objects.get(name=company_name)
                     except Company.DoesNotExist:
                         pass
 
@@ -91,13 +90,13 @@ def load_peps(apps, schema_editor):
                     person = Person.objects.get(
                         first_name__iexact=first_name,
                         last_name__iexact=last_name,
-                        patronymic__iexact=patronymic
+                        patronymic__iexact=patronymic,
                     )
                 except Person.DoesNotExist:
                     person = Person(
                         first_name=first_name,
                         last_name=last_name,
-                        patronymic=patronymic
+                        patronymic=patronymic,
                     )
 
                 person.is_pep = True
@@ -111,16 +110,12 @@ def load_peps(apps, schema_editor):
                     from_person=person,
                     to_company=company,
                     date_established=parse_date(person_from),
-                    date_finished=parse_date(person_to)
+                    date_finished=parse_date(person_to),
                 )
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0009_auto_20150311_0306'),
-    ]
+    dependencies = [("core", "0009_auto_20150311_0306")]
 
-    operations = [
-        migrations.RunPython(load_peps),
-    ]
+    operations = [migrations.RunPython(load_peps)]

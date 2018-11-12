@@ -16,10 +16,12 @@ from itertools import combinations, product
 
 
 class Command(BaseCommand):
-    help = ('Finds potential duplicates of companies in DB and '
-            'stores them as tasks for manual resolution')
+    help = (
+        "Finds potential duplicates of companies in DB and "
+        "stores them as tasks for manual resolution"
+    )
 
-    ignore_chars = re.escape(':-.)(",\'№«»')
+    ignore_chars = re.escape(":-.)(\",'№«»")
 
     def cleanup(self, s):
         return re.sub("[\s%s]" % self.ignore_chars, "", s or "")
@@ -34,14 +36,21 @@ class Command(BaseCommand):
         keys = ["pk", "code", "name", "name_en", "short_name", "short_name_en"]
 
         for p in Company.objects.all():
-            all_companies.append(dict(zip(keys, [
-                p.pk,
-                p.edrpou,
-                p.name_uk,
-                p.name_en,
-                p.short_name_uk,
-                p.short_name_en,
-            ])))
+            all_companies.append(
+                dict(
+                    zip(
+                        keys,
+                        [
+                            p.pk,
+                            p.edrpou,
+                            p.name_uk,
+                            p.name_en,
+                            p.short_name_uk,
+                            p.short_name_en,
+                        ],
+                    )
+                )
+            )
 
         grouped_by_code = defaultdict(list)
         grouped_by_name = defaultdict(list)
@@ -82,10 +91,7 @@ class Command(BaseCommand):
             except IntegrityError:
                 pass
 
-        candidates_for_fuzzy = [
-            l for l in all_companies
-            if l["pk"] not in spoiled_ids
-        ]
+        candidates_for_fuzzy = [l for l in all_companies if l["pk"] not in spoiled_ids]
 
         for a, b in combinations(candidates_for_fuzzy, 2):
             for field_a, field_b in product(["name", "short_name"], repeat=2):

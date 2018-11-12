@@ -71,15 +71,19 @@ class EDR_Reader(object):
                         dec_fname = fname.decode("cp866")
 
                     if "uo" in dec_fname.lower() or "юо" in dec_fname.lower():
-                        logger.info("Reading {} file from archive {}".format(dec_fname, self.file))
+                        logger.info(
+                            "Reading {} file from archive {}".format(
+                                dec_fname, self.file
+                            )
+                        )
 
                         if dec_fname.lower().endswith(".xml"):
-                            with zip_arch.open(fname, 'r') as fp_raw:
+                            with zip_arch.open(fname, "r") as fp_raw:
                                 for l in self._iter_xml(fp_raw):
                                     yield EDRPOU(**l).to_dict(True)
 
                         if dec_fname.lower().endswith(".csv"):
-                            with zip_arch.open(fname, 'r') as fp_raw:
+                            with zip_arch.open(fname, "r") as fp_raw:
                                 for l in self._iter_csv(fp_raw):
                                     yield EDRPOU(**l).to_dict(True)
         elif self.file_type == "xml":
@@ -99,57 +103,60 @@ class EDR_Reader(object):
 
         with TextIOWrapper(fp_raw, encoding="cp1251") as fp:
             mapping = {
-                'NAME': 'name',
-                'SHORT_NAME': 'short_name',
-                'EDRPOU': 'edrpou',
-                'ADDRESS': 'location',
-                'BOSS': 'head',
-                'KVED': 'company_profile',
-                'STAN': 'status',
-                'FOUNDERS': 'founders',
-
-                "Найменування": 'name',
-                "Скорочена_назва": 'short_name',
-                "Код_ЄДРПОУ": 'edrpou',
-                "Місцезнаходження": 'location',
-                "ПІБ_керівника": 'head',
-                "Основний_вид_діяльності": 'company_profile',
-                "Стан": 'status',
-                "C0": ""
+                "NAME": "name",
+                "SHORT_NAME": "short_name",
+                "EDRPOU": "edrpou",
+                "ADDRESS": "location",
+                "BOSS": "head",
+                "KVED": "company_profile",
+                "STAN": "status",
+                "FOUNDERS": "founders",
+                "Найменування": "name",
+                "Скорочена_назва": "short_name",
+                "Код_ЄДРПОУ": "edrpou",
+                "Місцезнаходження": "location",
+                "ПІБ_керівника": "head",
+                "Основний_вид_діяльності": "company_profile",
+                "Стан": "status",
+                "C0": "",
             }
 
             content = fp.read()
             if "RECORD" in content[:1000]:
-                regex = '<RECORD>.*?</RECORD>'
+                regex = "<RECORD>.*?</RECORD>"
             else:
-                regex = '<ROW>.*?</ROW>'
+                regex = "<ROW>.*?</ROW>"
 
             for i, chunk in enumerate(re.finditer(regex, content, flags=re.S | re.U)):
                 company = {}
                 founders_list = []
                 try:
                     # Fucking ET!
-                    etree = ET.fromstring(chunk.group(0).replace("Місцезнаходження", "ADDRESS").encode("utf-8"))
+                    etree = ET.fromstring(
+                        chunk.group(0)
+                        .replace("Місцезнаходження", "ADDRESS")
+                        .encode("utf-8")
+                    )
                 except ParseError:
-                    logger.error('Cannot parse record #{}, {}'.format(i, chunk))
+                    logger.error("Cannot parse record #{}, {}".format(i, chunk))
                     continue
 
                 for el in etree.getchildren():
-                    if el.tag == 'EDRPOU' and el.text and el.text.lstrip('0'):
+                    if el.tag == "EDRPOU" and el.text and el.text.lstrip("0"):
                         company[mapping[el.tag]] = int(el.text)
-                    elif el.tag == 'FOUNDERS':
+                    elif el.tag == "FOUNDERS":
                         for founder in el.getchildren():
                             founders_list.append(founder.text)
                     else:
                         if mapping[el.tag]:
                             company[mapping[el.tag]] = el.text
 
-                company[mapping['FOUNDERS']] = founders_list
+                company[mapping["FOUNDERS"]] = founders_list
                 company["last_update"] = self.timestamp
                 company["file_revision"] = self.revision
 
                 if i and i % 50000 == 0:
-                    logger.warning('Read {} companies from XML feed'.format(i))
+                    logger.warning("Read {} companies from XML feed".format(i))
 
                 yield company
 
@@ -157,13 +164,13 @@ class EDR_Reader(object):
         r = DictReader(fp_raw, delimiter=str(";"), encoding="cp1251")
 
         mapping = {
-            "Найменування": 'name',
-            "Скорочена назва": 'short_name',
-            "Код ЄДРПОУ": 'edrpou',
-            "Місцезнаходження": 'location',
-            "ПІБ керівника": 'head',
-            "Основний вид діяльності": 'company_profile',
-            "Стан": 'status',
+            "Найменування": "name",
+            "Скорочена назва": "short_name",
+            "Код ЄДРПОУ": "edrpou",
+            "Місцезнаходження": "location",
+            "ПІБ керівника": "head",
+            "Основний вид діяльності": "company_profile",
+            "Стан": "status",
         }
 
         for i, chunk in enumerate(r):
@@ -176,30 +183,32 @@ class EDR_Reader(object):
                     else:
                         company[mapping[k]] = v
 
-            company['founders'] = []
+            company["founders"] = []
             company["last_update"] = self.timestamp
             company["file_revision"] = self.revision
 
             if i and i % 50000 == 0:
-                logger.warning('Read {} companies from CSV feed'.format(i))
+                logger.warning("Read {} companies from CSV feed".format(i))
 
             yield company
 
 
 class Command(BaseCommand):
-    help = ('Loads XML with data from registry of companies of Ukraine into '
-            'elastic index for further matching with companies in DB')
+    help = (
+        "Loads XML with data from registry of companies of Ukraine into "
+        "elastic index for further matching with companies in DB"
+    )
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--revision',
-            help='EDR dump revision to retrieve (leave empty to retrieve latest)',
+            "--revision",
+            help="EDR dump revision to retrieve (leave empty to retrieve latest)",
         )
 
         parser.add_argument(
-            '--guid',
+            "--guid",
             default="73cfe78e-89ef-4f06-b3ab-eb5f16aea237",
-            help='Dataset to retrieve',
+            help="Dataset to retrieve",
         )
 
     def handle(self, *args, **options):
@@ -215,14 +224,14 @@ class Command(BaseCommand):
                 response = requests.get(
                     "http://data.gov.ua/view-dataset/dataset.json",
                     {"dataset-id": GUID, "nocache": randrange(100)},
-                    proxies=self.proxies
+                    proxies=self.proxies,
                 ).json()
                 timestamp = parse(response["changed"], dayfirst=True)
             else:
                 listing = requests.get(
                     "http://data.gov.ua/view-dataset/dataset.json",
                     {"dataset-id": GUID, "nocache": randrange(100)},
-                    proxies=self.proxies
+                    proxies=self.proxies,
                 ).json()
 
                 for rev in listing["revisions"]:
@@ -233,8 +242,12 @@ class Command(BaseCommand):
                 sleep(0.2)
                 response = requests.get(
                     "http://data.gov.ua/view-dataset/dataset.json",
-                    {"dataset-id": GUID, "revision-id": options["revision"], "nocache": randrange(100)},
-                    proxies=self.proxies
+                    {
+                        "dataset-id": GUID,
+                        "revision-id": options["revision"],
+                        "nocache": randrange(100),
+                    },
+                    proxies=self.proxies,
                 ).json()
 
             files_list = response["files"]
@@ -244,7 +257,9 @@ class Command(BaseCommand):
             raise
 
         if len(files_list) != 1:
-            self.stderr.write("Too many files in API response, trying to find a proper one")
+            self.stderr.write(
+                "Too many files in API response, trying to find a proper one"
+            )
             for f in files_list:
                 if "uo" in f["url"].lower():
                     files_list = [f]
@@ -257,7 +272,9 @@ class Command(BaseCommand):
         _, ext = os.path.splitext(dump["url"])
 
         r = requests.get(dump["url"], stream=True)
-        reader = EDR_Reader(StringIO(r.content), timestamp, revision, ext.lower().lstrip("."))
+        reader = EDR_Reader(
+            StringIO(r.content), timestamp, revision, ext.lower().lstrip(".")
+        )
 
         Index(EDRPOU._doc_type.index).delete(ignore=404)
         EDRPOU.init()

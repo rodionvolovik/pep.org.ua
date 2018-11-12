@@ -7,14 +7,16 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0033_terminationnotice_comments'),
-    ]
+    dependencies = [("tasks", "0033_terminationnotice_comments")]
 
     operations = [
         migrations.AlterField(
-            model_name='terminationnotice',
-            name='pep_position',
-            field=models.TextField(blank=True, null=True, verbose_name='\u041f\u043e\u0441\u0430\u0434\u0430'),
-        ),
+            model_name="terminationnotice",
+            name="pep_position",
+            field=models.TextField(
+                blank=True,
+                null=True,
+                verbose_name="\u041f\u043e\u0441\u0430\u0434\u0430",
+            ),
+        )
     ]

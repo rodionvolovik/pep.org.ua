@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 from django.db import migrations, models
 
 
-
 def fix_markdown_fields(apps, schema_editor):
     Person = apps.get_model("core", "Person")
 
@@ -24,13 +23,8 @@ def fix_markdown_fields(apps, schema_editor):
         p.save()
 
 
-
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0077_auto_20160224_0339'),
-    ]
+    dependencies = [("core", "0077_auto_20160224_0339")]
 
-    operations = [
-        migrations.RunPython(fix_markdown_fields),
-    ]
+    operations = [migrations.RunPython(fix_markdown_fields)]

@@ -11,8 +11,9 @@ class Document(models.Model):
     name = models.CharField(_("Людська назва"), max_length=255)
     uploaded = models.DateTimeField(_("Був завантажений"), auto_now=True)
     source = models.CharField(_("Першоджерело"), blank=True, max_length=255)
-    uploader = models.ForeignKey(User, verbose_name=_("Хто завантажив"),
-                                 related_name="pep_document")
+    uploader = models.ForeignKey(
+        User, verbose_name=_("Хто завантажив"), related_name="pep_document"
+    )
     hash = models.CharField(_("Хеш"), max_length=40, blank=True)
     comments = models.TextField(_("Коментарі"), blank=True)
 
@@ -29,16 +30,11 @@ class Document(models.Model):
 
 
 class FeedbackMessage(models.Model):
-    person = models.CharField(
-        _("Про кого"), max_length=150, blank=True)
-    text = models.TextField(
-        _("Інформація"), blank=False)
-    link = models.URLField(
-        _("Підтвердження"), max_length=512, blank=True)
-    email = models.EmailField(
-        _("e-mail"), max_length=512, blank=True)
-    contacts = models.TextField(
-        _("Контакти"), max_length=512, blank=True)
+    person = models.CharField(_("Про кого"), max_length=150, blank=True)
+    text = models.TextField(_("Інформація"), blank=False)
+    link = models.URLField(_("Підтвердження"), max_length=512, blank=True)
+    email = models.EmailField(_("e-mail"), max_length=512, blank=True)
+    contacts = models.TextField(_("Контакти"), max_length=512, blank=True)
     read = models.BooleanField(_("Прочитано"), default=False)
     added = models.DateTimeField(_("Був надісланий"), auto_now=True)
 
@@ -60,14 +56,11 @@ class FeedbackMessage(models.Model):
 class ActionLog(models.Model):
     user = models.ForeignKey(User, verbose_name=_("Користувач"))
     action = models.CharField(verbose_name=_("Дія"), max_length=30)
-    timestamp = models.DateTimeField(
-        verbose_name=_("Дата та час"), auto_now_add=True)
+    timestamp = models.DateTimeField(verbose_name=_("Дата та час"), auto_now_add=True)
     details = models.TextField(verbose_name=_("Деталі"), blank=True)
 
     class Meta:
         verbose_name = _("Дія користувача")
         verbose_name_plural = _("Дії користувачів")
 
-        index_together = [
-            ["user", "action", "timestamp"],
-        ]
+        index_together = [["user", "action", "timestamp"]]

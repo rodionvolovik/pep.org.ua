@@ -8,24 +8,33 @@ import redactor.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0125_auto_20171029_0226'),
-    ]
+    dependencies = [("core", "0125_auto_20171029_0226")]
 
     operations = [
         migrations.AddField(
-            model_name='person2person',
-            name='relationship_details',
-            field=redactor.fields.RedactorField(blank=True, verbose_name="\u0414\u0435\u0442\u0430\u043b\u044c\u043d\u0438\u0439 \u043e\u043f\u0438\u0441 \u0437\u0432'\u044f\u0437\u043a\u0443"),
+            model_name="person2person",
+            name="relationship_details",
+            field=redactor.fields.RedactorField(
+                blank=True,
+                verbose_name="\u0414\u0435\u0442\u0430\u043b\u044c\u043d\u0438\u0439 \u043e\u043f\u0438\u0441 \u0437\u0432'\u044f\u0437\u043a\u0443",
+            ),
         ),
         migrations.AddField(
-            model_name='person2person',
-            name='relationship_details_en',
-            field=redactor.fields.RedactorField(blank=True, null=True, verbose_name="\u0414\u0435\u0442\u0430\u043b\u044c\u043d\u0438\u0439 \u043e\u043f\u0438\u0441 \u0437\u0432'\u044f\u0437\u043a\u0443"),
+            model_name="person2person",
+            name="relationship_details_en",
+            field=redactor.fields.RedactorField(
+                blank=True,
+                null=True,
+                verbose_name="\u0414\u0435\u0442\u0430\u043b\u044c\u043d\u0438\u0439 \u043e\u043f\u0438\u0441 \u0437\u0432'\u044f\u0437\u043a\u0443",
+            ),
         ),
         migrations.AddField(
-            model_name='person2person',
-            name='relationship_details_uk',
-            field=redactor.fields.RedactorField(blank=True, null=True, verbose_name="\u0414\u0435\u0442\u0430\u043b\u044c\u043d\u0438\u0439 \u043e\u043f\u0438\u0441 \u0437\u0432'\u044f\u0437\u043a\u0443"),
+            model_name="person2person",
+            name="relationship_details_uk",
+            field=redactor.fields.RedactorField(
+                blank=True,
+                null=True,
+                verbose_name="\u0414\u0435\u0442\u0430\u043b\u044c\u043d\u0438\u0439 \u043e\u043f\u0438\u0441 \u0437\u0432'\u044f\u0437\u043a\u0443",
+            ),
         ),
     ]

@@ -15,10 +15,6 @@ def save_json_fields_again(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0025_auto_20171022_0208'),
-    ]
+    dependencies = [("tasks", "0025_auto_20171022_0208")]
 
-    operations = [
-        migrations.RunPython(save_json_fields_again)
-    ]
+    operations = [migrations.RunPython(save_json_fields_again)]

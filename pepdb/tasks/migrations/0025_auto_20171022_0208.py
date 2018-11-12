@@ -6,7 +6,12 @@ from django.db import migrations
 
 
 def count_connections(p):
-    return p.person2company_set.count() + p.from_persons.count() + p.person2country_set.count() + p.to_persons.count()
+    return (
+        p.person2company_set.count()
+        + p.from_persons.count()
+        + p.person2country_set.count()
+        + p.to_persons.count()
+    )
 
 
 def delete_stuck_orphans(apps, schema_editor):
@@ -32,10 +37,6 @@ def delete_stuck_orphans(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ('tasks', '0024_auto_20171020_0121'),
-    ]
+    dependencies = [("tasks", "0024_auto_20171020_0121")]
 
-    operations = [
-        migrations.RunPython(delete_stuck_orphans)
-    ]
+    operations = [migrations.RunPython(delete_stuck_orphans)]

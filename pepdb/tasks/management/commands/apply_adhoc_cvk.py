@@ -57,7 +57,7 @@ class Command(BaseCommand):
                                 match.person.get_absolute_url(),
                                 dob,
                                 render_date(new_dob_dt, 0),
-                                match.matched_json["url"]
+                                match.matched_json["url"],
                             )
                         )
                         dob_mismatch += 1
@@ -81,11 +81,14 @@ class Command(BaseCommand):
                 if match.matched_json.get("party"):
                     addition_to_wiki += "<p>На місцевих виборах у 2015 році {} від партії “{}“ до органу “{}”</p>\n".format(
                         "балотувався" if is_male else "балотувалася",
-                        match.matched_json["party"], match.matched_json["body"]
+                        match.matched_json["party"],
+                        match.matched_json["body"],
                     )
 
                 if addition_to_wiki:
-                    match.person.wiki_uk = (match.person.wiki_uk or "") +  "\n{}".format(addition_to_wiki)
+                    match.person.wiki_uk = (match.person.wiki_uk or "") + "\n{}".format(
+                        addition_to_wiki
+                    )
                     wiki_updated += 1
 
                 match.applied = True

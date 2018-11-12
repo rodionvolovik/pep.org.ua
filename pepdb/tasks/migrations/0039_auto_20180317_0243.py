@@ -7,14 +7,10 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0038_adhocmatches'),
-    ]
+    dependencies = [("tasks", "0038_adhocmatches")]
 
     operations = [
         migrations.RenameField(
-            model_name='adhocmatches',
-            old_name='match_json',
-            new_name='matched_json',
-        ),
+            model_name="adhocmatches", old_name="match_json", new_name="matched_json"
+        )
     ]

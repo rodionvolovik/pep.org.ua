@@ -8,8 +8,11 @@ from django.db import migrations
 def fix_genders(apps, schema_editor):
     AdHocMatch = apps.get_model("tasks", "AdHocMatch")
 
-    
-    for m in AdHocMatch.objects.filter(dataset_id="cvk_2015", applied=True, status="a").nocache().iterator():
+    for m in (
+        AdHocMatch.objects.filter(dataset_id="cvk_2015", applied=True, status="a")
+        .nocache()
+        .iterator()
+    ):
         if m.person and "громадянка" in m.person.wiki_uk.lower():
             m.person.wiki_uk = m.person.wiki_uk.replace("балотувався", "балотувалася")
             m.person.save()
@@ -17,12 +20,8 @@ def fix_genders(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0060_auto_20180907_1322'),
-    ]
+    dependencies = [("tasks", "0060_auto_20180907_1322")]
 
     operations = [
-        migrations.RunPython(
-            fix_genders, reverse_code=migrations.RunPython.noop),
+        migrations.RunPython(fix_genders, reverse_code=migrations.RunPython.noop)
     ]
-    

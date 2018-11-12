@@ -7,19 +7,23 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0144_feedbackmessage_email'),
-    ]
+    dependencies = [("core", "0144_feedbackmessage_email")]
 
     operations = [
         migrations.AddField(
-            model_name='company',
-            name='subject_of_monitoring',
-            field=models.BooleanField(default=False, verbose_name="\u0421\u0443\u0431'\u0454\u043a\u0442 \u0444\u0456\u043d\u0430\u043d\u0441\u043e\u0432\u043e\u0433\u043e \u043c\u043e\u043d\u0456\u0442\u043e\u0440\u0438\u043d\u0433\u0443"),
+            model_name="company",
+            name="subject_of_monitoring",
+            field=models.BooleanField(
+                default=False,
+                verbose_name="\u0421\u0443\u0431'\u0454\u043a\u0442 \u0444\u0456\u043d\u0430\u043d\u0441\u043e\u0432\u043e\u0433\u043e \u043c\u043e\u043d\u0456\u0442\u043e\u0440\u0438\u043d\u0433\u0443",
+            ),
         ),
         migrations.AddField(
-            model_name='company',
-            name='works_for_peps',
-            field=models.BooleanField(default=False, verbose_name='\u041e\u0431\u0441\u043b\u0443\u0433\u043e\u0432\u0443\u0454 PEP\u0456\u0432'),
+            model_name="company",
+            name="works_for_peps",
+            field=models.BooleanField(
+                default=False,
+                verbose_name="\u041e\u0431\u0441\u043b\u0443\u0433\u043e\u0432\u0443\u0454 PEP\u0456\u0432",
+            ),
         ),
     ]

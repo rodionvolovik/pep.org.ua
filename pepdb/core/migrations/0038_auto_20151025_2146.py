@@ -22,10 +22,6 @@ def move_names(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0037_auto_20151025_2137'),
-    ]
+    dependencies = [("core", "0037_auto_20151025_2137")]
 
-    operations = [
-        migrations.RunPython(move_names),
-    ]
+    operations = [migrations.RunPython(move_names)]

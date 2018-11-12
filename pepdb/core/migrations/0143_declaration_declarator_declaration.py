@@ -7,14 +7,16 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0142_auto_20180301_2143'),
-    ]
+    dependencies = [("core", "0142_auto_20180301_2143")]
 
     operations = [
         migrations.AddField(
-            model_name='declaration',
-            name='declarator_declaration',
-            field=models.BooleanField(db_index=True, default=False, verbose_name='\u0414\u0435\u043a\u043b\u0430\u0440\u0430\u0446\u0456\u044f \u0437 \u0434\u0435\u043a\u043b\u0430\u0440\u0430\u0442\u043e\u0440\u0430'),
-        ),
+            model_name="declaration",
+            name="declarator_declaration",
+            field=models.BooleanField(
+                db_index=True,
+                default=False,
+                verbose_name="\u0414\u0435\u043a\u043b\u0430\u0440\u0430\u0446\u0456\u044f \u0437 \u0434\u0435\u043a\u043b\u0430\u0440\u0430\u0442\u043e\u0440\u0430",
+            ),
+        )
     ]

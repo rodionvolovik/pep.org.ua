@@ -1,7 +1,16 @@
 from modeltranslation.translator import translator, TranslationOptions
 from core.models import (
-    Country, Document, Person, Company, Person2Company, Declaration,
-    Person2Person, RelationshipProof, DeclarationToLink, DeclarationToWatch)
+    Country,
+    Document,
+    Person,
+    Company,
+    Person2Company,
+    Declaration,
+    Person2Person,
+    RelationshipProof,
+    DeclarationToLink,
+    DeclarationToWatch,
+)
 
 
 class CountryTranslationOptions(TranslationOptions):
@@ -13,16 +22,38 @@ class DocumentTranslationOptions(TranslationOptions):
 
 
 class PersonTranslationOptions(TranslationOptions):
-    fields = ("last_name", "first_name", "patronymic", "wiki", "city_of_birth",
-              "reputation_assets", "reputation_sanctions", "reputation_crimes",
-              "reputation_manhunt", "reputation_convictions",
-              "title", "description", "also_known_as")
+    fields = (
+        "last_name",
+        "first_name",
+        "patronymic",
+        "wiki",
+        "city_of_birth",
+        "reputation_assets",
+        "reputation_sanctions",
+        "reputation_crimes",
+        "reputation_manhunt",
+        "reputation_convictions",
+        "title",
+        "description",
+        "also_known_as",
+    )
 
 
 class CompanyTranslationOptions(TranslationOptions):
-    fields = ("name", "short_name", "city", "street", "appt", "wiki",
-              "other_founders", "other_recipient", "other_owners",
-              "other_managers", "bank_name", "sanctions")
+    fields = (
+        "name",
+        "short_name",
+        "city",
+        "street",
+        "appt",
+        "wiki",
+        "other_founders",
+        "other_recipient",
+        "other_owners",
+        "other_managers",
+        "bank_name",
+        "sanctions",
+    )
 
 
 class Person2PersonTranslationOptions(TranslationOptions):
@@ -34,11 +65,11 @@ class Person2CompanyTranslationOptions(TranslationOptions):
 
 
 class RelationshipProofTranslationOptions(TranslationOptions):
-    fields = ('proof_title', )
+    fields = ("proof_title",)
 
 
 class DeclarationTranslationOptions(TranslationOptions):
-    fields = ("position", "office", "region",)
+    fields = ("position", "office", "region")
 
 
 translator.register(Country, CountryTranslationOptions)

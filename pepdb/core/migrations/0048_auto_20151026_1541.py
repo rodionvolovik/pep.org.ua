@@ -15,11 +15,8 @@ def move_wiki(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0047_auto_20151026_1540'),
-    ]
+    dependencies = [("core", "0047_auto_20151026_1540")]
 
     operations = [
-        migrations.RunPython(
-            move_wiki, reverse_code=migrations.RunPython.noop),
+        migrations.RunPython(move_wiki, reverse_code=migrations.RunPython.noop)
     ]

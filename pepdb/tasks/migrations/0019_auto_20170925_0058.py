@@ -7,14 +7,36 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0018_auto_20170813_1425'),
-    ]
+    dependencies = [("tasks", "0018_auto_20170813_1425")]
 
     operations = [
         migrations.AlterField(
-            model_name='beneficiariesmatching',
-            name='status',
-            field=models.CharField(choices=[('p', '\u041d\u0435 \u043f\u0435\u0440\u0435\u0432\u0456\u0440\u0435\u043d\u043e'), ('r', '\u041f\u043e\u0442\u0440\u0435\u0431\u0443\u0454 \u043f\u0435\u0440\u0435\u0432\u0456\u0440\u043a\u0438'), ('m', '\u0412\u0438\u043a\u043e\u043d\u0430\u043d\u043e'), ('n', '\u0417\u0430\u043a\u043e\u0440\u0434\u043e\u043d\u043d\u0430 \u043a\u043e\u043c\u043f\u0430\u043d\u0456\u044f, \u043d\u0435 \u0437\u043d\u0430\u0439\u0434\u0435\u043d\u043e'), ('y', '\u0417\u0430\u043a\u043e\u0440\u0434\u043e\u043d\u043d\u0430 \u043a\u043e\u043c\u043f\u0430\u043d\u0456\u044f, \u0437\u043d\u0430\u0439\u0434\u0435\u043d\u043e')], db_index=True, default='p', max_length=1, verbose_name='\u0421\u0442\u0430\u0442\u0443\u0441'),
-        ),
+            model_name="beneficiariesmatching",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    (
+                        "p",
+                        "\u041d\u0435 \u043f\u0435\u0440\u0435\u0432\u0456\u0440\u0435\u043d\u043e",
+                    ),
+                    (
+                        "r",
+                        "\u041f\u043e\u0442\u0440\u0435\u0431\u0443\u0454 \u043f\u0435\u0440\u0435\u0432\u0456\u0440\u043a\u0438",
+                    ),
+                    ("m", "\u0412\u0438\u043a\u043e\u043d\u0430\u043d\u043e"),
+                    (
+                        "n",
+                        "\u0417\u0430\u043a\u043e\u0440\u0434\u043e\u043d\u043d\u0430 \u043a\u043e\u043c\u043f\u0430\u043d\u0456\u044f, \u043d\u0435 \u0437\u043d\u0430\u0439\u0434\u0435\u043d\u043e",
+                    ),
+                    (
+                        "y",
+                        "\u0417\u0430\u043a\u043e\u0440\u0434\u043e\u043d\u043d\u0430 \u043a\u043e\u043c\u043f\u0430\u043d\u0456\u044f, \u0437\u043d\u0430\u0439\u0434\u0435\u043d\u043e",
+                    ),
+                ],
+                db_index=True,
+                default="p",
+                max_length=1,
+                verbose_name="\u0421\u0442\u0430\u0442\u0443\u0441",
+            ),
+        )
     ]

@@ -16,28 +16,20 @@ def move_json_fields(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0043_terminationnotice_applied'),
-    ]
+    dependencies = [("tasks", "0043_terminationnotice_applied")]
 
     operations = [
         migrations.AddField(
-            model_name='adhocmatch',
-            name='matched_dj_json',
-            field=django.contrib.postgres.fields.jsonb.JSONField(null=True, verbose_name='\u0417\u043d\u0430\u0439\u0434\u0435\u043d\u043e \u0432 \u0434\u0430\u0442\u0430\u0441\u0435\u0442\u0456'),
+            model_name="adhocmatch",
+            name="matched_dj_json",
+            field=django.contrib.postgres.fields.jsonb.JSONField(
+                null=True,
+                verbose_name="\u0417\u043d\u0430\u0439\u0434\u0435\u043d\u043e \u0432 \u0434\u0430\u0442\u0430\u0441\u0435\u0442\u0456",
+            ),
         ),
-
-        migrations.RunPython(
-            move_json_fields, reverse_code=migrations.RunPython.noop),
-
-        migrations.RemoveField(
-            model_name='adhocmatch',
-            name='matched_json',
-        ),
-
+        migrations.RunPython(move_json_fields, reverse_code=migrations.RunPython.noop),
+        migrations.RemoveField(model_name="adhocmatch", name="matched_json"),
         migrations.RenameField(
-            model_name='adhocmatch',
-            old_name='matched_dj_json',
-            new_name='matched_json',
+            model_name="adhocmatch", old_name="matched_dj_json", new_name="matched_json"
         ),
     ]

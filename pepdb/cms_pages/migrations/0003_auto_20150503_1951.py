@@ -6,21 +6,21 @@ from django import VERSION as DJANGO_VERSION
 
 
 def reset_homepage(apps, schema_editor):
-    Site = apps.get_model('wagtailcore.Site')
-    Page = apps.get_model('wagtailcore.Page')
-    HomePage = apps.get_model('cms_pages.HomePage')
-    ContentType = apps.get_model('contenttypes.ContentType')
+    Site = apps.get_model("wagtailcore.Site")
+    Page = apps.get_model("wagtailcore.Page")
+    HomePage = apps.get_model("cms_pages.HomePage")
+    ContentType = apps.get_model("contenttypes.ContentType")
 
     page_content_type, _ = ContentType.objects.get_or_create(
-        model='page',
-        app_label='wagtailcore',
-        defaults={'name': 'page'} if DJANGO_VERSION < (1, 8) else {}
+        model="page",
+        app_label="wagtailcore",
+        defaults={"name": "page"} if DJANGO_VERSION < (1, 8) else {},
     )
 
     home_page_content_type, _ = ContentType.objects.get_or_create(
-        model='homepage',
-        app_label='cms_pages',
-        defaults={'name': 'homepage'} if DJANGO_VERSION < (1, 8) else {}
+        model="homepage",
+        app_label="cms_pages",
+        defaults={"name": "homepage"} if DJANGO_VERSION < (1, 8) else {},
     )
 
     Page.objects.all().delete()
@@ -28,39 +28,33 @@ def reset_homepage(apps, schema_editor):
 
     root = Page.objects.create(
         title="Root",
-        slug='root',
+        slug="root",
         content_type=page_content_type,
-        path='0001',
+        path="0001",
         depth=1,
         numchild=1,
-        url_path='/',
+        url_path="/",
     )
 
     # Create homepage
     homepage = HomePage.objects.create(
         title="PEP: головна сторінка",
-        slug='home',
+        slug="home",
         content_type=home_page_content_type,
-        path='00010001',
+        path="00010001",
         depth=2,
         numchild=0,
-        url_path='/home/',
+        url_path="/home/",
     )
 
     # Create default site
     Site.objects.create(
-        hostname='localhost',
-        root_page_id=homepage.id,
-        is_default_site=True
+        hostname="localhost", root_page_id=homepage.id, is_default_site=True
     )
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('cms_pages', '0002_auto_20150503_1925'),
-    ]
+    dependencies = [("cms_pages", "0002_auto_20150503_1925")]
 
-    operations = [
-        migrations.RunPython(reset_homepage),
-    ]
+    operations = [migrations.RunPython(reset_homepage)]

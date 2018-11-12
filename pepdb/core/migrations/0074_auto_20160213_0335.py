@@ -17,10 +17,6 @@ def move_decl_fields(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0073_auto_20160213_0335'),
-    ]
+    dependencies = [("core", "0073_auto_20160213_0335")]
 
-    operations = [
-        migrations.RunPython(move_decl_fields),
-    ]
+    operations = [migrations.RunPython(move_decl_fields)]

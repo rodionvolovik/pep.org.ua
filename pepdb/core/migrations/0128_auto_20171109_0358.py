@@ -8,19 +8,23 @@ from urllib import unquote
 
 
 def migrate_proofs(apps, schema_editor):
-    content_type_model = apps.get_model('contenttypes.ContentType')
+    content_type_model = apps.get_model("contenttypes.ContentType")
 
-    proof_model = apps.get_model('core.RelationshipProof')
-    declaration_model = apps.get_model('core.Declaration')
-    document_model = apps.get_model('core.Document')
+    proof_model = apps.get_model("core.RelationshipProof")
+    declaration_model = apps.get_model("core.Declaration")
+    document_model = apps.get_model("core.Document")
 
-    for model_name in ["Person2Person", "Person2Company", "Person2Country",
-                       "Company2Company", "Company2Country"]:
-        model = apps.get_model('core.%s' % model_name)
+    for model_name in [
+        "Person2Person",
+        "Person2Company",
+        "Person2Country",
+        "Company2Company",
+        "Company2Country",
+    ]:
+        model = apps.get_model("core.%s" % model_name)
 
         content_type, _ = content_type_model.objects.get_or_create(
-            model=model_name.lower(),
-            app_label='core'
+            model=model_name.lower(), app_label="core"
         )
 
         for obj in model.objects.all():
@@ -31,10 +35,7 @@ def migrate_proofs(apps, schema_editor):
                     continue
                 orig_p = p
 
-                proof = proof_model(
-                    object_id=obj.pk,
-                    content_type=content_type,
-                )
+                proof = proof_model(object_id=obj.pk, content_type=content_type)
 
                 if i == 0:
                     proof.proof_title_uk = obj.proof_title
@@ -43,9 +44,13 @@ def migrate_proofs(apps, schema_editor):
                     parsed = urlparse(p)
                     decl_uid = parsed.path.replace("/declaration/", "", 1)
                     try:
-                        decl = declaration_model.objects.filter(declaration_id=decl_uid)[0]
+                        decl = declaration_model.objects.filter(
+                            declaration_id=decl_uid
+                        )[0]
                         proof.proof_title_uk = "Декларація за %s рік" % decl.year
-                        proof.proof_title_en = "Income and assets declaration, %s" % decl.year
+                        proof.proof_title_en = (
+                            "Income and assets declaration, %s" % decl.year
+                        )
                         declarations.append(decl.pk)
                     except IndexError:
                         proof.proof_title_uk = "Декларація"
@@ -54,22 +59,22 @@ def migrate_proofs(apps, schema_editor):
 
                 if "," in p or p.count("http") > 1:
                     if obj._meta.model_name in ["person2company", "person2person"]:
-                        print("%s, %s %s %s, %s" % (
-                            obj,
-                            obj.from_person.first_name,
-                            obj.from_person.patronymic,
-                            obj.from_person.last_name,
-                            orig_p
-                        ))
+                        print(
+                            "%s, %s %s %s, %s"
+                            % (
+                                obj,
+                                obj.from_person.first_name,
+                                obj.from_person.patronymic,
+                                obj.from_person.last_name,
+                                orig_p,
+                            )
+                        )
                     elif obj._meta.model_name == "company2company":
-                        print("%s %s %s" % (
-                            obj, obj.from_company.name, orig_p))
+                        print("%s %s %s" % (obj, obj.from_company.name, orig_p))
                     elif obj._meta.model_name == "company2country":
-                        print("%s %s %s" % (
-                            obj, obj.from_company.name, orig_p))
+                        print("%s %s %s" % (obj, obj.from_company.name, orig_p))
                     else:
                         print("%s %s %s" % (obj, obj.pk, orig_p))
-
 
                 if p.startswith("http") and not p.startswith("https://pep.org.ua"):
                     proof.proof = p
@@ -96,19 +101,20 @@ def migrate_proofs(apps, schema_editor):
 
                     except document_model.DoesNotExist:
                         if obj._meta.model_name == "person2company":
-                            print("%s, %s %s %s, %s" % (
-                                obj,
-                                obj.from_person.first_name,
-                                obj.from_person.patronymic,
-                                obj.from_person.last_name,
-                                orig_p
-                            ))
+                            print(
+                                "%s, %s %s %s, %s"
+                                % (
+                                    obj,
+                                    obj.from_person.first_name,
+                                    obj.from_person.patronymic,
+                                    obj.from_person.last_name,
+                                    orig_p,
+                                )
+                            )
                         elif obj._meta.model_name == "company2company":
-                            print("%s %s %s" % (
-                                obj, obj.from_company.name, orig_p))
+                            print("%s %s %s" % (obj, obj.from_company.name, orig_p))
                         elif obj._meta.model_name == "company2country":
-                            print("%s %s %s" % (
-                                obj, obj.from_company.name, orig_p))
+                            print("%s %s %s" % (obj, obj.from_company.name, orig_p))
                         else:
                             print("%s %s %s" % (obj, obj.pk, orig_p))
 
@@ -120,7 +126,7 @@ def migrate_proofs(apps, schema_editor):
 
 
 def truncate_proofs(apps, schema_editor):
-    proof_model = apps.get_model('core.RelationshipProof')
+    proof_model = apps.get_model("core.RelationshipProof")
 
     proof_model.objects.all().delete()
 
@@ -128,9 +134,7 @@ def truncate_proofs(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0127_auto_20171106_0049_squashed_0131_auto_20171108_1521'),
+        ("core", "0127_auto_20171106_0049_squashed_0131_auto_20171108_1521")
     ]
 
-    operations = [
-        migrations.RunPython(migrate_proofs, reverse_code=truncate_proofs),
-    ]
+    operations = [migrations.RunPython(migrate_proofs, reverse_code=truncate_proofs)]

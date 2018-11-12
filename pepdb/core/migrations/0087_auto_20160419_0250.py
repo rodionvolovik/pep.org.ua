@@ -24,11 +24,8 @@ def move_dossier(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0086_auto_20160419_0250'),
-    ]
+    dependencies = [("core", "0086_auto_20160419_0250")]
 
     operations = [
-        migrations.RunPython(
-            move_dossier, reverse_code=migrations.RunPython.noop),
+        migrations.RunPython(move_dossier, reverse_code=migrations.RunPython.noop)
     ]

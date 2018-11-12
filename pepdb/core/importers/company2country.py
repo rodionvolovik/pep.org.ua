@@ -31,20 +31,14 @@ class Company2CountryImporter(object):
         try:
             country = Country.objects.get(name_uk__iexact=country_name)
         except Country.DoesNotExist:
-            self.logger.warning(
-                "Не можу знайти країну %s" % country_name
-            )
+            self.logger.warning("Не можу знайти країну %s" % country_name)
             return None, False
         except Country.MultipleObjectsReturned:
-            self.logger.warning(
-                "Забагато країн з назвою %s!" % country_name
-            )
+            self.logger.warning("Забагато країн з назвою %s!" % country_name)
             return None, False
 
         conns = Company2Country.objects.filter(
-            from_company=company,
-            to_country=country,
-            relationship_type=relation
+            from_company=company, to_country=country, relationship_type=relation
         )
 
         if conns.count():
@@ -52,9 +46,7 @@ class Company2CountryImporter(object):
         else:
             created = True
             conn = Company2Country(
-                from_company=company,
-                to_country=country,
-                relationship_type=relation
+                from_company=company, to_country=country, relationship_type=relation
             )
 
         if save:

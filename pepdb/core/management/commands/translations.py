@@ -7,35 +7,32 @@ from unicodecsv import writer
 
 
 class Command(BaseCommand):
-    args = '<file_path>'
+    args = "<file_path>"
 
     def handle(self, *args, **options):
         try:
             file_path = args[0]
         except IndexError:
-            raise CommandError('First argument must be a result file')
+            raise CommandError("First argument must be a result file")
 
         ru_translations = {}
 
         for t in Ua2RuDictionary.objects.all():
-            ru_translations[t.term.lower()] = filter(None, [
-                t.translation, t.alt_translation
-            ])
+            ru_translations[t.term.lower()] = filter(
+                None, [t.translation, t.alt_translation]
+            )
 
         not_translated_first_names = []
         not_translated_last_names = []
         not_translated_patronymics = []
         for p in Person.objects.all():
-            if (p.first_name.lower() not in ru_translations and
-                    is_cyr(p.first_name)):
+            if p.first_name.lower() not in ru_translations and is_cyr(p.first_name):
                 not_translated_first_names.append(title(p.first_name))
 
-            if (p.last_name.lower() not in ru_translations and
-                    is_cyr(p.last_name)):
+            if p.last_name.lower() not in ru_translations and is_cyr(p.last_name):
                 not_translated_last_names.append(title(p.last_name))
 
-            if (p.patronymic.lower() not in ru_translations and
-                    is_cyr(p.patronymic)):
+            if p.patronymic.lower() not in ru_translations and is_cyr(p.patronymic):
                 not_translated_patronymics.append(title(p.patronymic))
 
         with open(file_path, "w") as fp:

@@ -11,23 +11,37 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('core', '0148_auto_20180826_2045'),
+        ("core", "0148_auto_20180826_2045"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='feedbackmessage',
-            name='answer_added',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='\u0411\u0443\u043b\u0430 \u043d\u0430\u0434\u0456\u0441\u043b\u0430\u043d\u0430'),
+            model_name="feedbackmessage",
+            name="answer_added",
+            field=models.DateTimeField(
+                blank=True,
+                null=True,
+                verbose_name="\u0411\u0443\u043b\u0430 \u043d\u0430\u0434\u0456\u0441\u043b\u0430\u043d\u0430",
+            ),
         ),
         migrations.AddField(
-            model_name='feedbackmessage',
-            name='answered_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL, verbose_name='\u0412\u0456\u0434\u043f\u043e\u0432\u0456\u0432'),
+            model_name="feedbackmessage",
+            name="answered_by",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="\u0412\u0456\u0434\u043f\u043e\u0432\u0456\u0432",
+            ),
         ),
         migrations.AddField(
-            model_name='feedbackmessage',
-            name='short_answer',
-            field=models.TextField(blank=True, null=True, verbose_name='\u0421\u0443\u0442\u044c \u0432\u0456\u0434\u043f\u043e\u0432\u0456\u0434\u0456'),
+            model_name="feedbackmessage",
+            name="short_answer",
+            field=models.TextField(
+                blank=True,
+                null=True,
+                verbose_name="\u0421\u0443\u0442\u044c \u0432\u0456\u0434\u043f\u043e\u0432\u0456\u0434\u0456",
+            ),
         ),
     ]

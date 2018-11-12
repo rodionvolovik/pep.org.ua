@@ -18,7 +18,15 @@ from core.fields import RedactorField
 
 from core.model.base import AbstractNode
 from core.model.translations import Ua2EnDictionary
-from core.utils import render_date, lookup_term, translate_into, localized_fields, localized_field, get_localized_field, translate_through_dict
+from core.utils import (
+    render_date,
+    lookup_term,
+    translate_into,
+    localized_fields,
+    localized_field,
+    get_localized_field,
+    translate_through_dict,
+)
 from core.model.connections import Company2Company, Company2Country, Person2Company
 
 
@@ -75,8 +83,7 @@ class Company(models.Model, AbstractNode):
     }
 
     name = models.CharField(_("Повна назва"), max_length=512)
-    short_name = models.CharField(_("Скорочена назва"), max_length=200,
-                                  blank=True)
+    short_name = models.CharField(_("Скорочена назва"), max_length=200, blank=True)
 
     also_known_as = models.TextField(_("Назви іншими мовами або варіації"), blank=True)
 
@@ -84,41 +91,29 @@ class Company(models.Model, AbstractNode):
     founded = models.DateField(_("Дата створення"), blank=True, null=True)
     founded_details = models.IntegerField(
         _("Дата створення: точність"),
-        choices=(
-            (0, _("Точна дата")),
-            (1, _("Рік та місяць")),
-            (2, _("Тільки рік")),
-        ),
-        default=0)
+        choices=((0, _("Точна дата")), (1, _("Рік та місяць")), (2, _("Тільки рік"))),
+        default=0,
+    )
 
     status = models.IntegerField(
-        _("Поточний стан"),
-        choices=_status_choices.items(),
-        default=0
+        _("Поточний стан"), choices=_status_choices.items(), default=0
     )
     closed_on = models.DateField(_("Дата припинення"), blank=True, null=True)
     closed_on_details = models.IntegerField(
         _("Дата припинення: точність"),
-        choices=(
-            (0, _("Точна дата")),
-            (1, _("Рік та місяць")),
-            (2, _("Тільки рік")),
-        ),
-        default=0)
+        choices=((0, _("Точна дата")), (1, _("Рік та місяць")), (2, _("Тільки рік"))),
+        default=0,
+    )
 
     @property
     def founded_human(self):
-        return render_date(self.founded,
-                           self.founded_details)
+        return render_date(self.founded, self.founded_details)
 
-    state_company = models.BooleanField(
-        _("Керівник — ПЕП"), default=False)
+    state_company = models.BooleanField(_("Керівник — ПЕП"), default=False)
 
-    legal_entity = models.BooleanField(
-        _("Юрособа"), default=True)
+    legal_entity = models.BooleanField(_("Юрособа"), default=True)
 
-    edrpou = models.CharField(
-        _("ЄДРПОУ"), max_length=50, blank=True)
+    edrpou = models.CharField(_("ЄДРПОУ"), max_length=50, blank=True)
 
     zip_code = models.CharField(_("Індекс"), max_length=20, blank=True)
     city = models.CharField(_("Місто"), max_length=255, blank=True)
@@ -129,27 +124,28 @@ class Company(models.Model, AbstractNode):
     wiki = RedactorField(_("Вікі-стаття"), blank=True)
 
     other_founders = RedactorField(
-        _("Інші засновники"),
-        help_text=_("Через кому, не PEP"), blank=True)
+        _("Інші засновники"), help_text=_("Через кому, не PEP"), blank=True
+    )
 
     other_recipient = models.CharField(
-        _("Бенефіціарій"), help_text=_("Якщо не є PEPом"), blank=True,
-        max_length=200)
+        _("Бенефіціарій"), help_text=_("Якщо не є PEPом"), blank=True, max_length=200
+    )
 
     other_owners = RedactorField(
-        _("Інші власники"),
-        help_text=_("Через кому, не PEP"), blank=True)
+        _("Інші власники"), help_text=_("Через кому, не PEP"), blank=True
+    )
 
     other_managers = RedactorField(
-        _("Інші керуючі"),
-        help_text=_("Через кому, не PEP"), blank=True)
+        _("Інші керуючі"), help_text=_("Через кому, не PEP"), blank=True
+    )
 
     bank_name = RedactorField(_("Фінансова інформація"), blank=True)
 
     sanctions = RedactorField(_("Санкції"), blank=True)
 
     related_companies = models.ManyToManyField(
-        "self", through="Company2Company", symmetrical=False)
+        "self", through="Company2Company", symmetrical=False
+    )
 
     last_change = models.DateTimeField(
         _("Дата останньої зміни сторінки профіля"), blank=True, null=True
@@ -164,7 +160,9 @@ class Company(models.Model, AbstractNode):
     )
 
     works_for_peps = models.BooleanField("Обслуговує PEPів", default=False)
-    subject_of_monitoring = models.BooleanField("Суб'єкт фінансового моніторингу", default=False)
+    subject_of_monitoring = models.BooleanField(
+        "Суб'єкт фінансового моніторингу", default=False
+    )
     _last_modified = models.DateTimeField("Остання зміна", null=True, blank=True)
 
     @staticmethod
@@ -196,22 +194,25 @@ class Company(models.Model, AbstractNode):
 
         d["related_persons"] = [
             i.to_person_dict()
-            for i in self.from_persons.prefetch_related("from_person")]
+            for i in self.from_persons.prefetch_related("from_person")
+        ]
 
         d["related_countries"] = [
-            i.to_dict()
-            for i in self.from_countries.prefetch_related("to_country")]
+            i.to_dict() for i in self.from_countries.prefetch_related("to_country")
+        ]
 
         d["related_companies"] = [
-            i.to_dict()
-            for i in self.to_companies.prefetch_related("to_company")] + [
+            i.to_dict() for i in self.to_companies.prefetch_related("to_company")
+        ] + [
             i.to_dict_reverse()
             for i in self.from_companies.prefetch_related("from_company")
         ]
 
         d["status"] = self.get_status_display()
         for lang in settings.LANGUAGE_CODES:
-            d[localized_field("status", lang)] = translate_into(self.get_status_display(), lang)
+            d[localized_field("status", lang)] = translate_into(
+                self.get_status_display(), lang
+            )
 
         d["founded"] = self.founded_human
         d["closed"] = self.closed_on_human
@@ -223,19 +224,23 @@ class Company(models.Model, AbstractNode):
             if not field:
                 continue
 
-            chunks = list(
-                map(lambda x: x.strip("'\",.-“”«»"), field.split(" ")))
+            chunks = list(map(lambda x: x.strip("'\",.-“”«»"), field.split(" ")))
 
             for i in xrange(len(chunks)):
                 variant = copy(chunks)
-                variant = [variant[i]] + variant[:i] + variant[i + 1:]
+                variant = [variant[i]] + variant[:i] + variant[i + 1 :]
                 suggestions.append(" ".join(variant))
 
         if self.edrpou:
-            edrpou_chunks = list(filter(
-                None,
-                map(unicode.strip, re.split('([a-z]+)', self.edrpou, flags=re.IGNORECASE))
-            ))
+            edrpou_chunks = list(
+                filter(
+                    None,
+                    map(
+                        unicode.strip,
+                        re.split("([a-z]+)", self.edrpou, flags=re.IGNORECASE),
+                    ),
+                )
+            )
 
             suggestions += edrpou_chunks
             suggestions.append(self.edrpou.lstrip("0"))
@@ -245,12 +250,12 @@ class Company(models.Model, AbstractNode):
 
             d["code_chunks"] = edrpou_chunks
 
-        d["name_suggest"] = [
-            {"input": x} for x in set(suggestions)
-        ]
+        d["name_suggest"] = [{"input": x} for x in set(suggestions)]
 
         for lang in settings.LANGUAGE_CODES:
-            d[localized_field("name_suggest_output")] = d[localized_field("short_name")] or d[localized_field("name")]
+            d[localized_field("name_suggest_output")] = (
+                d[localized_field("short_name")] or d[localized_field("name")]
+            )
 
         d["_id"] = d["id"]
 
@@ -262,13 +267,21 @@ class Company(models.Model, AbstractNode):
                 continue
 
             for field in ["name", "short_name"]:
-                if not get_localized_field(self, field, lang) or get_localized_field(self, field, lang) == get_localized_field(self, field):
-                    val = translate_through_dict(get_localized_field(self, field), settings.LANGUAGE_CODE, lang)
+                if not get_localized_field(self, field, lang) or get_localized_field(
+                    self, field, lang
+                ) == get_localized_field(self, field):
+                    val = translate_through_dict(
+                        get_localized_field(self, field), settings.LANGUAGE_CODE, lang
+                    )
 
                     if val is not None:
                         setattr(self, localized_field(field, lang), val)
                     else:
-                        setattr(self, localized_field(field, lang), get_localized_field(self, field))
+                        setattr(
+                            self,
+                            localized_field(field, lang),
+                            get_localized_field(self, field),
+                        )
 
         edrpou = self.edrpou or ""
         if " " in edrpou and edrpou.strip() and ":" not in edrpou:
@@ -295,15 +308,19 @@ class Company(models.Model, AbstractNode):
     def all_related_persons(self):
         related_persons = [
             (get_localized_field(i, "relationship_type"), deepcopy(i.from_person), i)
-            for i in self.from_persons.prefetch_related("from_person").defer(
+            for i in self.from_persons.prefetch_related("from_person")
+            .defer(
                 "from_person__reputation_assets",
                 "from_person__reputation_crimes",
                 "from_person__reputation_manhunt",
                 "from_person__reputation_convictions",
                 "from_person__wiki",
                 "from_person__names",
-                "from_person__hash"
-            ).order_by(*localized_fields(["from_person__last_name", "from_person__first_name"]))
+                "from_person__hash",
+            )
+            .order_by(
+                *localized_fields(["from_person__last_name", "from_person__first_name"])
+            )
         ]
 
         res = {
@@ -311,7 +328,7 @@ class Company(models.Model, AbstractNode):
             "founders": [],
             "sanctions": [],
             "bank_customers": [],
-            "rest": []
+            "rest": [],
         }
 
         for rtp, p, rel in related_persons:
@@ -320,18 +337,30 @@ class Company(models.Model, AbstractNode):
             p.connection = rel
 
             if rtp.lower() in [
-                    "керівник", "перший заступник керівника",
-                    "заступник керівника", "голова", "заступник голови",
-                    "перший заступник голови", "член правління", "член ради",
-                    "член", "директор", "підписант", "номінальний директор",
-                    "керуючий"]:
+                "керівник",
+                "перший заступник керівника",
+                "заступник керівника",
+                "голова",
+                "заступник голови",
+                "перший заступник голови",
+                "член правління",
+                "член ради",
+                "член",
+                "директор",
+                "підписант",
+                "номінальний директор",
+                "керуючий",
+            ]:
                 res["managers"].append(p)
 
                 add_to_rest = False
             elif rtp.lower() in [
-                    "засновники", "засновник/учасник",
-                    "колишній засновник/учасник", "бенефіціарний власник",
-                    "номінальний власник"]:
+                "засновники",
+                "засновник/учасник",
+                "колишній засновник/учасник",
+                "бенефіціарний власник",
+                "номінальний власник",
+            ]:
                 res["founders"].append(p)
                 add_to_rest = False
 
@@ -372,7 +401,8 @@ class Company(models.Model, AbstractNode):
     @property
     def foreign_registration(self):
         return self.from_countries.prefetch_related("to_country").filter(
-            relationship_type="registered_in")
+            relationship_type="registered_in"
+        )
 
     @property
     def all_related_companies(self):
@@ -400,20 +430,20 @@ class Company(models.Model, AbstractNode):
             )
         ]
 
-        res = {
-            "founders": [],
-            "rest": [],
-            "banks": [],
-            "all": []
-        }
+        res = {"founders": [], "rest": [], "banks": [], "all": []}
 
-        for rtp, p, rel in sorted(related_companies, key=lambda x: get_localized_field(x[1], "name")):
+        for rtp, p, rel in sorted(
+            related_companies, key=lambda x: get_localized_field(x[1], "name")
+        ):
             p.rtype = rtp
             p.connection = rel
 
-            if rtp in ["Засновник", "Співзасновник",
-                       "Колишній власник/засновник",
-                       "Колишній співвласник/співзасновник"]:
+            if rtp in [
+                "Засновник",
+                "Співзасновник",
+                "Колишній власник/засновник",
+                "Колишній співвласник/співзасновник",
+            ]:
                 res["founders"].append(p)
             elif rtp == "Клієнт банку":
                 res["banks"].append(p)
@@ -430,8 +460,8 @@ class Company(models.Model, AbstractNode):
         res["description"] = self.edrpou
         res["kind"] = unicode(
             ugettext_lazy("Державна компанія чи установа")
-            if self.state_company else
-            ugettext_lazy("Приватна компанія")
+            if self.state_company
+            else ugettext_lazy("Приватна компанія")
         )
 
         if with_connections:
@@ -440,32 +470,39 @@ class Company(models.Model, AbstractNode):
             persons = self.all_related_persons
             for k in persons.values():
                 for p in k:
-                    connections.append({
-                        "relation": p.connection.relationship_type,
-                        "node": p.get_node_info(False),
-                        "model": p.connection._meta.model_name,
-                        "pk": p.connection.pk
-                    })
+                    connections.append(
+                        {
+                            "relation": p.connection.relationship_type,
+                            "node": p.get_node_info(False),
+                            "model": p.connection._meta.model_name,
+                            "pk": p.connection.pk,
+                        }
+                    )
 
             # Because of a complicated logic here we are piggybacking on
             # existing method that handles both directions of relations
             for c in self.all_related_companies["all"]:
-                connections.append({
-                    "relation": unicode(ugettext_lazy(c.rtype or "")),
-                    "node": c.get_node_info(False),
-                    "model": c.connection._meta.model_name,
-                    "pk": c.connection.pk
-                })
+                connections.append(
+                    {
+                        "relation": unicode(ugettext_lazy(c.rtype or "")),
+                        "node": c.get_node_info(False),
+                        "model": c.connection._meta.model_name,
+                        "pk": c.connection.pk,
+                    }
+                )
 
             countries = self.from_countries.prefetch_related("to_country")
             for c in countries:
-                connections.append({
-                    "relation": unicode(
-                        ugettext_lazy(c.get_relationship_type_display())),
-                    "node": c.to_country.get_node_info(False),
-                    "model": c._meta.model_name,
-                    "pk": c.pk
-                })
+                connections.append(
+                    {
+                        "relation": unicode(
+                            ugettext_lazy(c.get_relationship_type_display())
+                        ),
+                        "node": c.to_country.get_node_info(False),
+                        "model": c._meta.model_name,
+                        "pk": c.pk,
+                    }
+                )
 
             res["connections"] = connections
 
@@ -473,9 +510,7 @@ class Company(models.Model, AbstractNode):
 
     @property
     def closed_on_human(self):
-        return render_date(self.closed_on,
-                           self.closed_on_details)
-
+        return render_date(self.closed_on, self.closed_on_details)
 
     @property
     def last_modified(self):
@@ -491,10 +526,20 @@ class Company(models.Model, AbstractNode):
             mm=Max("_last_modified")
         )["mm"]
 
-        seq = list(filter(None, [c2c_conn, c2p_conn, c2cont_conn, self.last_change, self._last_modified]))
+        seq = list(
+            filter(
+                None,
+                [
+                    c2c_conn,
+                    c2p_conn,
+                    c2cont_conn,
+                    self.last_change,
+                    self._last_modified,
+                ],
+            )
+        )
         if seq:
             return max(seq)
-
 
     objects = CompanyManager()
 
@@ -502,7 +547,4 @@ class Company(models.Model, AbstractNode):
         verbose_name = _("Юридична особа")
         verbose_name_plural = _("Юридичні особи")
 
-        permissions = (
-            ("export_companies", "Can export the dataset of companies"),
-        )
-
+        permissions = (("export_companies", "Can export the dataset of companies"),)

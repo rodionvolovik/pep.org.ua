@@ -143,8 +143,8 @@ class BeneficiariesMatchingAdmin(admin.ModelAdmin):
             "admin/pep_company.jinja", {"companies": obj.pep_company_information}
         )
 
-    pep_company_information_readable.short_description = (
-        _("Інформація про компанію з декларацій")
+    pep_company_information_readable.short_description = _(
+        "Інформація про компанію з декларацій"
     )
     pep_company_information_readable.allow_tags = True
 
@@ -339,8 +339,8 @@ class TerminationNoticeAdmin(admin.ModelAdmin):
         else:
             return dt
 
-    termination_date_ceiled_readable.short_description = (
-        _("Дата припинення (округлена вгору)")
+    termination_date_ceiled_readable.short_description = _(
+        "Дата припинення (округлена вгору)"
     )
     termination_date_ceiled_readable.allow_tags = True
     termination_date_ceiled_readable.admin_order_field = "termination_date_ceiled"
@@ -364,9 +364,9 @@ class TerminationNoticeAdmin(admin.ModelAdmin):
 
         pd = obj.person._last_workplace_from_declaration()
         if pd:
-            res += _('<br/><br/> Декларація за {}: <a href="{}" target="blank">{} @ {}</a>').format(
-                pd[0].year, pd[0].url, pd[0].office_uk, pd[0].position_uk
-            )
+            res += _(
+                '<br/><br/> Декларація за {}: <a href="{}" target="blank">{} @ {}</a>'
+            ).format(pd[0].year, pd[0].url, pd[0].office_uk, pd[0].position_uk)
         return res
 
     pep_position_readable.short_description = _("Посада/остання декларація")
@@ -614,18 +614,20 @@ class SMIDACandidateAdmin(admin.ModelAdmin):
     )
     list_filter = ("status",)
 
-    search_fields = ("smida_name", "smida_position", "smida_edrpou", "smida_company_name", "smida_parsed_name")
+    search_fields = (
+        "smida_name",
+        "smida_position",
+        "smida_edrpou",
+        "smida_company_name",
+        "smida_parsed_name",
+    )
 
     def company_readable(self, obj):
         edrpou = unicode(obj.smida_edrpou).rjust(8, "0")
 
         return (
             '<a href="https://ring.org.ua/edr/uk/company/{}" target="_blank">{} ({})</a>'
-        ).format(
-            edrpou,
-            obj.smida_company_name,
-            edrpou,
-        )
+        ).format(edrpou, obj.smida_company_name, edrpou)
 
     company_readable.short_description = _("Компанія")
     company_readable.allow_tags = True

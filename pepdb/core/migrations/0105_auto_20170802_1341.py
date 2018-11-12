@@ -12,10 +12,6 @@ def new_default_status(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0104_auto_20170725_2059'),
-    ]
+    dependencies = [("core", "0104_auto_20170725_2059")]
 
-    operations = [
-        migrations.RunPython(new_default_status),
-    ]
+    operations = [migrations.RunPython(new_default_status)]

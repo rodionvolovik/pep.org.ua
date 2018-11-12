@@ -16,11 +16,8 @@ def repack_json(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0045_auto_20180614_0200'),
-    ]
+    dependencies = [("tasks", "0045_auto_20180614_0200")]
 
     operations = [
-        migrations.RunPython(
-            repack_json, reverse_code=migrations.RunPython.noop),
+        migrations.RunPython(repack_json, reverse_code=migrations.RunPython.noop)
     ]

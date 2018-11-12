@@ -11,11 +11,7 @@ from core.models import Person, Company, Country
 
 class MainXML(RelAlternateHreflangSitemap):
     def items(self):
-        pages = [
-            ('wagtail_serve', ['']),
-            ('feedback', []),
-            ('countries', []),
-        ]
+        pages = [("wagtail_serve", [""]), ("feedback", []), ("countries", [])]
         return pages
 
     def location(self, item):
@@ -26,20 +22,22 @@ class MainXML(RelAlternateHreflangSitemap):
 
         for lang, _ in settings.LANGUAGES:
             activate(lang)
-            res.append(
-                (lang, "%s%s" % (settings.SITE_URL, self.location(obj)))
-            )
+            res.append((lang, "%s%s" % (settings.SITE_URL, self.location(obj))))
 
         return res
 
 
 class CountriesXML(RelAlternateHreflangSitemap):
     def items(self):
-        return Country.objects.annotate(
-            persons_count=Count("person2country"),
-            companies_count=Count("company2country")).annotate(
-            usages=F("persons_count") + F("companies_count")).exclude(
-            usages=0, iso2="").order_by("-usages")
+        return (
+            Country.objects.annotate(
+                persons_count=Count("person2country"),
+                companies_count=Count("company2country"),
+            )
+            .annotate(usages=F("persons_count") + F("companies_count"))
+            .exclude(usages=0, iso2="")
+            .order_by("-usages")
+        )
 
     def location(self, item):
         return reverse("countries", args=[item.iso2])
@@ -49,9 +47,7 @@ class CountriesXML(RelAlternateHreflangSitemap):
 
         for lang, _ in settings.LANGUAGES:
             activate(lang)
-            res.append(
-                (lang, "%s%s" % (settings.SITE_URL, self.location(obj)))
-            )
+            res.append((lang, "%s%s" % (settings.SITE_URL, self.location(obj))))
 
         return res
 
@@ -66,7 +62,8 @@ class PersonXML(RelAlternateHreflangSitemap):
     def alternate_hreflangs(self, obj):
         return [
             (lang, "%s%s" % (settings.SITE_URL, obj.localized_url(lang)))
-            for lang, _ in settings.LANGUAGES]
+            for lang, _ in settings.LANGUAGES
+        ]
 
 
 class CompanyXML(RelAlternateHreflangSitemap):
@@ -79,7 +76,8 @@ class CompanyXML(RelAlternateHreflangSitemap):
     def alternate_hreflangs(self, obj):
         return [
             (lang, "%s%s" % (settings.SITE_URL, obj.localized_url(lang)))
-            for lang, _ in settings.LANGUAGES]
+            for lang, _ in settings.LANGUAGES
+        ]
 
 
 class StaticXML(RelAlternateHreflangSitemap):
@@ -92,4 +90,5 @@ class StaticXML(RelAlternateHreflangSitemap):
     def alternate_hreflangs(self, obj):
         return [
             (lang, "%s%s" % (settings.SITE_URL, obj.localized_url(lang)))
-            for lang, _ in settings.LANGUAGES]
+            for lang, _ in settings.LANGUAGES
+        ]

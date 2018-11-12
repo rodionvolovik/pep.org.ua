@@ -25,10 +25,6 @@ def fix_markdown_fields(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0079_auto_20160225_1332'),
-    ]
+    dependencies = [("core", "0079_auto_20160225_1332")]
 
-    operations = [
-        migrations.RunPython(fix_markdown_fields),
-    ]
+    operations = [migrations.RunPython(fix_markdown_fields)]

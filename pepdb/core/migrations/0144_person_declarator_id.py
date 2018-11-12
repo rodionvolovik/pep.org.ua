@@ -7,14 +7,15 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0143_declaration_declarator_declaration'),
-    ]
+    dependencies = [("core", "0143_declaration_declarator_declaration")]
 
     operations = [
         migrations.AddField(
-            model_name='person',
-            name='declarator_id',
-            field=models.IntegerField(null=True, verbose_name='ID \u0432 \u0441\u0438\u0441\u0442\u0435\u043c\u0456 declarator (RU)'),
-        ),
+            model_name="person",
+            name="declarator_id",
+            field=models.IntegerField(
+                null=True,
+                verbose_name="ID \u0432 \u0441\u0438\u0441\u0442\u0435\u043c\u0456 declarator (RU)",
+            ),
+        )
     ]

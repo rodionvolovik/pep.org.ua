@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0028_auto_20180112_1740'),
-    ]
+    dependencies = [("tasks", "0028_auto_20180112_1740")]
 
     operations = [
         migrations.AddField(
-            model_name='edrmonitoring',
-            name='person_id',
+            model_name="edrmonitoring",
+            name="person_id",
             field=models.IntegerField(null=True),
-        ),
+        )
     ]

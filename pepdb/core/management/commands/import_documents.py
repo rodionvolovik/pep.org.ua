@@ -18,10 +18,7 @@ class Command(BaseCommand):
     """
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            'input_dir',
-            help='Directory with input files',
-        )
+        parser.add_argument("input_dir", help="Directory with input files")
 
     def handle(self, *args, **options):
         peklun = User.objects.get(username="peklun")
@@ -43,19 +40,14 @@ class Command(BaseCommand):
 
                 try:
                     doc_instance = Document.objects.get(hash=doc_hash)
-                    self.stderr.write(
-                        'Skipping file {}'.format(doc_san_name))
+                    self.stderr.write("Skipping file {}".format(doc_san_name))
                 except Document.DoesNotExist:
-                    self.stdout.write(
-                        'Adding file {}'.format(doc_san_name))
+                    self.stdout.write("Adding file {}".format(doc_san_name))
 
                     if doc_san_name:
                         doc_instance = Document(
-                            name_uk=human_name,
-                            uploader=peklun,
-                            hash=doc_hash
+                            name_uk=human_name, uploader=peklun, hash=doc_hash
                         )
 
-                        doc_instance.doc.save(
-                            doc_san_name, ContentFile(doc_content))
+                        doc_instance.doc.save(doc_san_name, ContentFile(doc_content))
                         doc_instance.save()

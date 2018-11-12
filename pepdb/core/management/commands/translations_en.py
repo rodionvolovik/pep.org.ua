@@ -8,16 +8,14 @@ from django.db.models import Q
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
-        parser.add_argument(
-            'file_path',
-            help='CSV file to export translations',
-        )
+        parser.add_argument("file_path", help="CSV file to export translations")
 
     def handle(self, *args, **options):
-        file_path = options['file_path']
+        file_path = options["file_path"]
 
         with open(file_path, "w") as fp:
             w = writer(fp)
             for t in Ua2EnDictionary.objects.filter(
-                    Q(translation__isnull=True) | Q(translation="")):
+                Q(translation__isnull=True) | Q(translation="")
+            ):
                 w.writerow([t.term, t.translation])

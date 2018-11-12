@@ -7,38 +7,15 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('cms_pages', '0011_auto_20160223_0202'),
-    ]
+    dependencies = [("cms_pages", "0011_auto_20160223_0202")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='homepagebanneritem',
-            name='image',
-        ),
-        migrations.RemoveField(
-            model_name='homepagebanneritem',
-            name='link_page',
-        ),
-        migrations.RemoveField(
-            model_name='homepagebanneritem',
-            name='page',
-        ),
-        migrations.RemoveField(
-            model_name='homepagecolumn',
-            name='columnfields_ptr',
-        ),
-        migrations.RemoveField(
-            model_name='homepagecolumn',
-            name='page',
-        ),
-        migrations.DeleteModel(
-            name='ColumnFields',
-        ),
-        migrations.DeleteModel(
-            name='HomePageBannerItem',
-        ),
-        migrations.DeleteModel(
-            name='HomePageColumn',
-        ),
+        migrations.RemoveField(model_name="homepagebanneritem", name="image"),
+        migrations.RemoveField(model_name="homepagebanneritem", name="link_page"),
+        migrations.RemoveField(model_name="homepagebanneritem", name="page"),
+        migrations.RemoveField(model_name="homepagecolumn", name="columnfields_ptr"),
+        migrations.RemoveField(model_name="homepagecolumn", name="page"),
+        migrations.DeleteModel(name="ColumnFields"),
+        migrations.DeleteModel(name="HomePageBannerItem"),
+        migrations.DeleteModel(name="HomePageColumn"),
     ]

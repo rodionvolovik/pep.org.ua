@@ -12,46 +12,173 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('tasks', '0026_auto_20171031_0153'),
+        ("tasks", "0026_auto_20171031_0153"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='EDRMonitoring',
+            name="EDRMonitoring",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('timestamp', models.DateTimeField(auto_now_add=True, verbose_name='\u0421\u0442\u0432\u043e\u0440\u0435\u043d\u043e')),
-                ('last_modified', models.DateTimeField(auto_now=True, null=True, verbose_name='\u0417\u043c\u0456\u043d\u0435\u043d\u043e')),
-                ('status', models.CharField(choices=[('p', '\u041d\u0435 \u043f\u0435\u0440\u0435\u0432\u0456\u0440\u0435\u043d\u043e'), ('a', '\u0417\u0430\u0441\u0442\u043e\u0441\u0443\u0432\u0430\u0442\u0438 \u0437\u043c\u0456\u043d\u0443'), ('i', '\u0406\u0433\u043d\u043e\u0440\u0443\u0432\u0430\u0442\u0438 \u0437\u043c\u0456\u043d\u0443'), ('r', '\u041f\u043e\u0442\u0440\u0435\u0431\u0443\u0454 \u0434\u043e\u0434\u0430\u0442\u043a\u043e\u0432\u043e\u0457 \u043f\u0435\u0440\u0435\u0432\u0456\u0440\u043a\u0438')], db_index=True, default='p', max_length=1, verbose_name='\u0421\u0442\u0430\u0442\u0443\u0441')),
-                ('pep_name', models.CharField(blank=True, max_length=200, null=True, verbose_name='\u041f\u0440\u0456\u0437\u0432\u0438\u0449\u0435 \u043a\u0435\u0440\u0456\u0432\u043d\u0438\u043a\u0430 \u0437 \u0411\u0414 \u041f\u0415\u041f')),
-                ('pep_position', models.CharField(blank=True, max_length=200, null=True, verbose_name='\u041f\u043e\u0441\u0430\u0434\u0430 \u043a\u0435\u0440\u0456\u0432\u043d\u0438\u043a\u0430 \u0437 \u0411\u0414 \u041f\u0415\u041f')),
-                ('pep_company_json', jsonfield.fields.JSONField(null=True, verbose_name='\u041a\u043e\u043c\u043f\u0430\u043d\u0456\u044f \u0434\u0435 \u041f\u0415\u041f \u0454 \u043a\u0435\u0440\u0456\u0432\u043d\u0438\u043a\u043e\u043c')),
-                ('company_edrpou', models.CharField(blank=True, max_length=15, null=True, verbose_name='\u0404\u0414\u0420\u041f\u041e\u0423 \u043a\u043e\u043c\u043f\u0430\u043d\u0456\u0457 \u0437 \u0411\u0414 \u041f\u0415\u041f')),
-                ('edr_name', models.CharField(blank=True, max_length=200, null=True, verbose_name='\u041f\u0440\u0456\u0437\u0432\u0438\u0449\u0435 \u043a\u0435\u0440\u0456\u0432\u043d\u0438\u043a\u0430 \u0437 \u0404\u0414\u0420')),
-                ('edr_company_json', jsonfield.fields.JSONField(null=True, verbose_name='\u041a\u043e\u043c\u043f\u0430\u043d\u0456\u044f \u0437 \u0404\u0414\u0420')),
-                ('name_match_score', models.IntegerField(verbose_name='\u0421\u0442\u0443\u043f\u0456\u043d\u044c \u0441\u043f\u0456\u0432\u043f\u0430\u0434\u0456\u043d\u043d\u044f')),
-                ('company_id', models.IntegerField(null=True)),
-                ('relation_id', models.IntegerField(null=True)),
-                ('applied', models.BooleanField(db_index=True, default=False)),
-                ('edr_date', models.DateTimeField(verbose_name='\u0414\u0430\u0442\u0430 \u0435\u043a\u0441\u043f\u043e\u0440\u0442\u0443 \u0437 \u0404\u0414\u0420')),
-                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='\u041a\u043e\u0440\u0438\u0441\u0442\u0443\u0432\u0430\u0447')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "timestamp",
+                    models.DateTimeField(
+                        auto_now_add=True,
+                        verbose_name="\u0421\u0442\u0432\u043e\u0440\u0435\u043d\u043e",
+                    ),
+                ),
+                (
+                    "last_modified",
+                    models.DateTimeField(
+                        auto_now=True,
+                        null=True,
+                        verbose_name="\u0417\u043c\u0456\u043d\u0435\u043d\u043e",
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            (
+                                "p",
+                                "\u041d\u0435 \u043f\u0435\u0440\u0435\u0432\u0456\u0440\u0435\u043d\u043e",
+                            ),
+                            (
+                                "a",
+                                "\u0417\u0430\u0441\u0442\u043e\u0441\u0443\u0432\u0430\u0442\u0438 \u0437\u043c\u0456\u043d\u0443",
+                            ),
+                            (
+                                "i",
+                                "\u0406\u0433\u043d\u043e\u0440\u0443\u0432\u0430\u0442\u0438 \u0437\u043c\u0456\u043d\u0443",
+                            ),
+                            (
+                                "r",
+                                "\u041f\u043e\u0442\u0440\u0435\u0431\u0443\u0454 \u0434\u043e\u0434\u0430\u0442\u043a\u043e\u0432\u043e\u0457 \u043f\u0435\u0440\u0435\u0432\u0456\u0440\u043a\u0438",
+                            ),
+                        ],
+                        db_index=True,
+                        default="p",
+                        max_length=1,
+                        verbose_name="\u0421\u0442\u0430\u0442\u0443\u0441",
+                    ),
+                ),
+                (
+                    "pep_name",
+                    models.CharField(
+                        blank=True,
+                        max_length=200,
+                        null=True,
+                        verbose_name="\u041f\u0440\u0456\u0437\u0432\u0438\u0449\u0435 \u043a\u0435\u0440\u0456\u0432\u043d\u0438\u043a\u0430 \u0437 \u0411\u0414 \u041f\u0415\u041f",
+                    ),
+                ),
+                (
+                    "pep_position",
+                    models.CharField(
+                        blank=True,
+                        max_length=200,
+                        null=True,
+                        verbose_name="\u041f\u043e\u0441\u0430\u0434\u0430 \u043a\u0435\u0440\u0456\u0432\u043d\u0438\u043a\u0430 \u0437 \u0411\u0414 \u041f\u0415\u041f",
+                    ),
+                ),
+                (
+                    "pep_company_json",
+                    jsonfield.fields.JSONField(
+                        null=True,
+                        verbose_name="\u041a\u043e\u043c\u043f\u0430\u043d\u0456\u044f \u0434\u0435 \u041f\u0415\u041f \u0454 \u043a\u0435\u0440\u0456\u0432\u043d\u0438\u043a\u043e\u043c",
+                    ),
+                ),
+                (
+                    "company_edrpou",
+                    models.CharField(
+                        blank=True,
+                        max_length=15,
+                        null=True,
+                        verbose_name="\u0404\u0414\u0420\u041f\u041e\u0423 \u043a\u043e\u043c\u043f\u0430\u043d\u0456\u0457 \u0437 \u0411\u0414 \u041f\u0415\u041f",
+                    ),
+                ),
+                (
+                    "edr_name",
+                    models.CharField(
+                        blank=True,
+                        max_length=200,
+                        null=True,
+                        verbose_name="\u041f\u0440\u0456\u0437\u0432\u0438\u0449\u0435 \u043a\u0435\u0440\u0456\u0432\u043d\u0438\u043a\u0430 \u0437 \u0404\u0414\u0420",
+                    ),
+                ),
+                (
+                    "edr_company_json",
+                    jsonfield.fields.JSONField(
+                        null=True,
+                        verbose_name="\u041a\u043e\u043c\u043f\u0430\u043d\u0456\u044f \u0437 \u0404\u0414\u0420",
+                    ),
+                ),
+                (
+                    "name_match_score",
+                    models.IntegerField(
+                        verbose_name="\u0421\u0442\u0443\u043f\u0456\u043d\u044c \u0441\u043f\u0456\u0432\u043f\u0430\u0434\u0456\u043d\u043d\u044f"
+                    ),
+                ),
+                ("company_id", models.IntegerField(null=True)),
+                ("relation_id", models.IntegerField(null=True)),
+                ("applied", models.BooleanField(db_index=True, default=False)),
+                (
+                    "edr_date",
+                    models.DateTimeField(
+                        verbose_name="\u0414\u0430\u0442\u0430 \u0435\u043a\u0441\u043f\u043e\u0440\u0442\u0443 \u0437 \u0404\u0414\u0420"
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="\u041a\u043e\u0440\u0438\u0441\u0442\u0443\u0432\u0430\u0447",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': '\u0420\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442 \u043c\u043e\u043d\u0456\u0442\u043e\u0440\u0438\u043d\u0433\u0443 \u0404\u0414\u0420',
-                'verbose_name_plural': '\u0420\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u0438 \u043c\u043e\u043d\u0456\u0442\u043e\u0440\u0438\u043d\u0433\u0443 \u0404\u0414\u0420',
+                "verbose_name": "\u0420\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442 \u043c\u043e\u043d\u0456\u0442\u043e\u0440\u0438\u043d\u0433\u0443 \u0404\u0414\u0420",
+                "verbose_name_plural": "\u0420\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u0438 \u043c\u043e\u043d\u0456\u0442\u043e\u0440\u0438\u043d\u0433\u0443 \u0404\u0414\u0420",
             },
         ),
         migrations.AlterField(
-            model_name='beneficiariesmatching',
-            name='type_of_connection',
-            field=models.CharField(choices=[('b', '\u0411\u0435\u043d\u0435\u0444\u0456\u0446\u0456\u0430\u0440\u043d\u0438\u0439 \u0432\u043b\u0430\u0441\u043d\u0438\u043a'), ('f', '\u0417\u0430\u0441\u043d\u043e\u0432\u043d\u0438\u043a'), ('s', '\u0410\u043a\u0446\u0456\u043e\u043d\u0435\u0440')], db_index=True, default='b', max_length=1, verbose_name="\u0422\u0438\u043f \u0437\u0432'\u044f\u0437\u043a\u0443"),
+            model_name="beneficiariesmatching",
+            name="type_of_connection",
+            field=models.CharField(
+                choices=[
+                    (
+                        "b",
+                        "\u0411\u0435\u043d\u0435\u0444\u0456\u0446\u0456\u0430\u0440\u043d\u0438\u0439 \u0432\u043b\u0430\u0441\u043d\u0438\u043a",
+                    ),
+                    ("f", "\u0417\u0430\u0441\u043d\u043e\u0432\u043d\u0438\u043a"),
+                    ("s", "\u0410\u043a\u0446\u0456\u043e\u043d\u0435\u0440"),
+                ],
+                db_index=True,
+                default="b",
+                max_length=1,
+                verbose_name="\u0422\u0438\u043f \u0437\u0432'\u044f\u0437\u043a\u0443",
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='edrmonitoring',
-            unique_together=set([('pep_name', 'pep_position', 'edr_name', 'company_edrpou')]),
+            name="edrmonitoring",
+            unique_together=set(
+                [("pep_name", "pep_position", "edr_name", "company_edrpou")]
+            ),
         ),
         migrations.AlterIndexTogether(
-            name='edrmonitoring',
-            index_together=set([('pep_name', 'pep_position', 'edr_name', 'company_edrpou')]),
+            name="edrmonitoring",
+            index_together=set(
+                [("pep_name", "pep_position", "edr_name", "company_edrpou")]
+            ),
         ),
     ]

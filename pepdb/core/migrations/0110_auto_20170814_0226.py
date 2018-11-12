@@ -8,10 +8,6 @@ from django.contrib.postgres.operations import TrigramExtension
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0109_auto_20170814_0220'),
-    ]
+    dependencies = [("core", "0109_auto_20170814_0220")]
 
-    operations = [
-    	TrigramExtension()
-    ]
+    operations = [TrigramExtension()]

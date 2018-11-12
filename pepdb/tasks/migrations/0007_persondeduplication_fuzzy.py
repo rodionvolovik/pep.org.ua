@@ -6,14 +6,12 @@ from django.db import models, migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0006_auto_20170228_0051'),
-    ]
+    dependencies = [("tasks", "0006_auto_20170228_0051")]
 
     operations = [
         migrations.AddField(
-            model_name='persondeduplication',
-            name='fuzzy',
+            model_name="persondeduplication",
+            name="fuzzy",
             field=models.BooleanField(default=False, db_index=True),
-        ),
+        )
     ]

@@ -15,46 +15,79 @@ from itertools import combinations
 
 
 class Command(BaseCommand):
-    help = ('Finds potential duplicates in DB and stores them as tasks for '
-            'manual resolution')
+    help = (
+        "Finds potential duplicates in DB and stores them as tasks for "
+        "manual resolution"
+    )
 
     def handle(self, *args, **options):
         activate(settings.LANGUAGE_CODE)
         all_persons = []
 
-        keys = ["pk", "key", "fullname", "has_initials", "last_name",
-                "first_name", "patronymic"]
+        keys = [
+            "pk",
+            "key",
+            "fullname",
+            "has_initials",
+            "last_name",
+            "first_name",
+            "patronymic",
+        ]
 
         for p in Person.objects.all():
-            all_persons.append(dict(zip(keys, [
-                p.pk,
-                ("%s %s %s" % (
-                    p.last_name, p.first_name[:1], p.patronymic[:1])).lower(),
-                ("%s %s %s" % (
-                    p.last_name, p.first_name, p.patronymic)).lower(),
-                is_initial(p.first_name) or is_initial(p.patronymic),
-                p.last_name,
-                p.first_name,
-                p.patronymic])))
+            all_persons.append(
+                dict(
+                    zip(
+                        keys,
+                        [
+                            p.pk,
+                            (
+                                "%s %s %s"
+                                % (p.last_name, p.first_name[:1], p.patronymic[:1])
+                            ).lower(),
+                            (
+                                "%s %s %s" % (p.last_name, p.first_name, p.patronymic)
+                            ).lower(),
+                            is_initial(p.first_name) or is_initial(p.patronymic),
+                            p.last_name,
+                            p.first_name,
+                            p.patronymic,
+                        ],
+                    )
+                )
+            )
 
-            for aka in map(unicode.strip, (p.also_known_as_uk or "").replace(",", "\n").split("\n")):
+            for aka in map(
+                unicode.strip, (p.also_known_as_uk or "").replace(",", "\n").split("\n")
+            ):
                 if not aka:
                     continue
 
                 last_name, first_name, patronymic, _ = parse_fullname(aka)
-                if not(all([last_name, first_name, patronymic])):
+                if not (all([last_name, first_name, patronymic])):
                     continue
 
-                all_persons.append(dict(zip(keys, [
-                    p.pk,
-                    ("%s %s %s" % (
-                        last_name, first_name[:1], patronymic[:1])).lower(),
-                    ("%s %s %s" % (
-                        last_name, first_name, patronymic)).lower(),
-                    is_initial(first_name) or is_initial(patronymic),
-                    last_name,
-                    first_name,
-                    patronymic])))
+                all_persons.append(
+                    dict(
+                        zip(
+                            keys,
+                            [
+                                p.pk,
+                                (
+                                    "%s %s %s"
+                                    % (last_name, first_name[:1], patronymic[:1])
+                                ).lower(),
+                                (
+                                    "%s %s %s" % (last_name, first_name, patronymic)
+                                ).lower(),
+                                is_initial(first_name) or is_initial(patronymic),
+                                last_name,
+                                first_name,
+                                patronymic,
+                            ],
+                        )
+                    )
+                )
 
         grouped_by_fullname = defaultdict(list)
         grouped_by_shortenedname = defaultdict(list)
@@ -87,7 +120,11 @@ class Command(BaseCommand):
                 mixed_grouping[l["key"]].append(l["pk"])
 
         for l in all_persons:
-            if l["pk"] not in spoiled_ids and not l["has_initials"] and l["key"] in mixed_grouping:
+            if (
+                l["pk"] not in spoiled_ids
+                and not l["has_initials"]
+                and l["key"] in mixed_grouping
+            ):
                 mixed_grouping[l["key"]].append(l["pk"])
 
         for k, v in mixed_grouping.items():
@@ -107,7 +144,8 @@ class Command(BaseCommand):
                 pass
 
         candidates_for_fuzzy = [
-            l for l in all_persons
+            l
+            for l in all_persons
             if l["pk"] not in spoiled_ids and not l["has_initials"]
         ]
 

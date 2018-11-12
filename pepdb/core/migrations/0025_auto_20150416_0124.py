@@ -15,10 +15,6 @@ def rename(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0024_auto_20150415_0202'),
-    ]
+    dependencies = [("core", "0024_auto_20150415_0202")]
 
-    operations = [
-        migrations.RunPython(rename),
-    ]
+    operations = [migrations.RunPython(rename)]

@@ -7,13 +7,21 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0145_auto_20180511_0206'),
-    ]
+    dependencies = [("core", "0145_auto_20180511_0206")]
 
     operations = [
         migrations.AlterModelOptions(
-            name='person',
-            options={'permissions': (('export_persons', 'Can export the dataset'), ('export_id_and_last_modified', 'Can export the dataset with person id and date of last modification')), 'verbose_name': '\u0424\u0456\u0437\u0438\u0447\u043d\u0430 \u043e\u0441\u043e\u0431\u0430', 'verbose_name_plural': '\u0424\u0456\u0437\u0438\u0447\u043d\u0456 \u043e\u0441\u043e\u0431\u0438'},
-        ),
+            name="person",
+            options={
+                "permissions": (
+                    ("export_persons", "Can export the dataset"),
+                    (
+                        "export_id_and_last_modified",
+                        "Can export the dataset with person id and date of last modification",
+                    ),
+                ),
+                "verbose_name": "\u0424\u0456\u0437\u0438\u0447\u043d\u0430 \u043e\u0441\u043e\u0431\u0430",
+                "verbose_name_plural": "\u0424\u0456\u0437\u0438\u0447\u043d\u0456 \u043e\u0441\u043e\u0431\u0438",
+            },
+        )
     ]

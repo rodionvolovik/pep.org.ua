@@ -7,15 +7,14 @@ from tasks.models import BeneficiariesMatching
 
 
 class Command(BaseCommand):
-    help = ('Exports the list of foreign companies from declarations of PEPs '
-            'which aren\'t yet in DB to an excel file for further processing '
-            'and reconciliation with the registry')
+    help = (
+        "Exports the list of foreign companies from declarations of PEPs "
+        "which aren't yet in DB to an excel file for further processing "
+        "and reconciliation with the registry"
+    )
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            'target_file',
-            help='Excel file to export to',
-        )
+        parser.add_argument("target_file", help="Excel file to export to")
 
     def handle(self, *args, **options):
         keys = [
@@ -38,7 +37,7 @@ class Command(BaseCommand):
             "founder_4",
             "founder_5",
             "founder_6",
-            "founder_7"
+            "founder_7",
         ]
 
         workbook = xlsxwriter.Workbook(options["target_file"])
@@ -50,11 +49,10 @@ class Command(BaseCommand):
 
             row = 1
             for t in BeneficiariesMatching.objects.filter(
-                    status="n", type_of_connection=kind):
+                status="n", type_of_connection=kind
+            ):
 
-                base_res = {
-                    "owner_name": t.person_json["full_name"]
-                }
+                base_res = {"owner_name": t.person_json["full_name"]}
 
                 for company in t.pep_company_information:
                     res = base_res.copy()

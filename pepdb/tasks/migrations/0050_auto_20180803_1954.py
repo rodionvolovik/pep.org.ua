@@ -18,10 +18,8 @@ def populate_names(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0049_adhocmatch_name_in_dataset'),
-    ]
+    dependencies = [("tasks", "0049_adhocmatch_name_in_dataset")]
 
     operations = [
-        migrations.RunPython(populate_names, reverse_code=migrations.RunPython.noop),
+        migrations.RunPython(populate_names, reverse_code=migrations.RunPython.noop)
     ]

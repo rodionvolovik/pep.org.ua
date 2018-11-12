@@ -7,13 +7,8 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0040_adhocmatches_matched_json_hash'),
-    ]
+    dependencies = [("tasks", "0040_adhocmatches_matched_json_hash")]
 
     operations = [
-        migrations.RenameModel(
-            old_name='AdHocMatches',
-            new_name='AdHocMatch',
-        ),
+        migrations.RenameModel(old_name="AdHocMatches", new_name="AdHocMatch")
     ]

@@ -15,12 +15,9 @@ def migrate_declarations(apps, schema_editor):
 
             p2p.save()
 
+
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0096_person2person_declarations'),
-    ]
+    dependencies = [("core", "0096_person2person_declarations")]
 
-    operations = [
-        migrations.RunPython(migrate_declarations),
-    ]
+    operations = [migrations.RunPython(migrate_declarations)]

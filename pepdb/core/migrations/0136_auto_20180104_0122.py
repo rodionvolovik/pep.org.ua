@@ -7,7 +7,7 @@ from dateutil.parser import parse as dt_parse
 
 
 def pull_date_of_submission(apps, schema_editor):
-    Declaration = apps.get_model('core.Declaration')
+    Declaration = apps.get_model("core.Declaration")
 
     for d in Declaration.objects.filter(nacp_declaration=True):
         if d.source["intro"].get("date"):
@@ -17,10 +17,6 @@ def pull_date_of_submission(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0135_declaration_submitted'),
-    ]
+    dependencies = [("core", "0135_declaration_submitted")]
 
-    operations = [
-        migrations.RunPython(pull_date_of_submission)
-    ]
+    operations = [migrations.RunPython(pull_date_of_submission)]

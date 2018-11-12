@@ -7,14 +7,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0058_auto_20180904_2153'),
-    ]
+    dependencies = [("tasks", "0058_auto_20180904_2153")]
 
     operations = [
         migrations.AddField(
-            model_name='smidacandidate',
-            name='smida_company_name',
-            field=models.CharField(blank=True, max_length=200, null=True, verbose_name='\u041d\u0430\u0437\u0432\u0430 \u043a\u043e\u043c\u043f\u0430\u043d\u0456\u0457'),
-        ),
+            model_name="smidacandidate",
+            name="smida_company_name",
+            field=models.CharField(
+                blank=True,
+                max_length=200,
+                null=True,
+                verbose_name="\u041d\u0430\u0437\u0432\u0430 \u043a\u043e\u043c\u043f\u0430\u043d\u0456\u0457",
+            ),
+        )
     ]

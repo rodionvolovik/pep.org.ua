@@ -43,7 +43,7 @@ class Command(BaseCommand):
                         "language": l,
                         "format": "json",
                     },
-                    timeout=60
+                    timeout=60,
                 )
 
                 for r in resp.json().get("search", []):
@@ -51,7 +51,9 @@ class Command(BaseCommand):
 
             return ids
         except RequestException as e:
-            self.stderr.write("Cannot get a response for name {}, error message is {}".format(name, e))
+            self.stderr.write(
+                "Cannot get a response for name {}, error message is {}".format(name, e)
+            )
             return set()
 
     def fetch_details(self, ids):
@@ -59,7 +61,7 @@ class Command(BaseCommand):
         for id_ in ids:
             resp = requests.get(
                 "https://www.wikidata.org/wiki/Special:EntityData/{}.json".format(id_),
-                timeout=60
+                timeout=60,
             ).json()
             if resp.get("entities", {}).get(id_):
                 responses.append(resp.get("entities", {}).get(id_))
@@ -68,10 +70,10 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--deep_search',
+            "--deep_search",
             default=False,
             action="store_true",
-            help='Use also all generated transliterated names to search',
+            help="Use also all generated transliterated names to search",
         )
 
     def handle(self, *args, **options):
@@ -119,7 +121,7 @@ class Command(BaseCommand):
                             getattr(p, "last_job_title", ""),
                             getattr(p, "last_workplace", ""),
                         ),
-                        "matched_json": details
+                        "matched_json": details,
                     },
                 )
 
@@ -135,6 +137,6 @@ class Command(BaseCommand):
                 created_matches,
                 updated_matches,
                 not_found_shallow_matches,
-                not_found_matches
+                not_found_matches,
             )
         )

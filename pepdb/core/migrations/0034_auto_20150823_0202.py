@@ -8,8 +8,8 @@ from string import capwords
 
 def title(s):
     chunks = s.split()
-    chunks = map(lambda x: capwords(x, u"-"), chunks)
-    return u" ".join(chunks)
+    chunks = map(lambda x: capwords(x, "-"), chunks)
+    return " ".join(chunks)
 
 
 def import_csv(model, fname, comment):
@@ -18,9 +18,7 @@ def import_csv(model, fname, comment):
 
         for l in r:
             model.objects.update_or_create(
-                term=title(l[0]),
-                translation=title(l[1]),
-                comments=comment
+                term=title(l[0]), translation=title(l[1]), comments=comment
             )
 
 
@@ -31,10 +29,6 @@ def load_dicts(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0033_auto_20150807_0251'),
-    ]
+    dependencies = [("core", "0033_auto_20150807_0251")]
 
-    operations = [
-        migrations.RunPython(load_dicts),
-    ]
+    operations = [migrations.RunPython(load_dicts)]

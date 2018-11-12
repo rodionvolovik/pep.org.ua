@@ -11,10 +11,7 @@ from django.forms.models import model_to_dict
 from django.db import transaction
 
 
-FIELDS_TO_CONCATENATE = [
-    "proof_title",
-    "proof",
-]
+FIELDS_TO_CONCATENATE = ["proof_title", "proof"]
 
 FIELDS_TO_UPDATE = [
     "declarations",
@@ -27,16 +24,16 @@ FIELDS_TO_UPDATE = [
 
 
 class Command(BaseCommand):
-    help = ('Makes attempts to deduplicate person2person connections')
+    help = "Makes attempts to deduplicate person2person connections"
 
     def add_arguments(self, parser):
         # Named (optional) arguments
         parser.add_argument(
-            '--real_run',
-            action='store_true',
-            dest='real_run',
+            "--real_run",
+            action="store_true",
+            dest="real_run",
             default=False,
-            help='Deduplicate for real',
+            help="Deduplicate for real",
         )
 
     def handle(self, *args, **options):
@@ -52,20 +49,29 @@ class Command(BaseCommand):
             master = r[0]
             donor = r[1]
 
-            self.stdout.write("Pair {} vs {}:".format(
-                master, donor))
+            self.stdout.write("Pair {} vs {}:".format(master, donor))
 
-            if ((master.from_relationship_type != donor.from_relationship_type) and
-                    donor.from_relationship_type and master.from_relationship_type):
-                self.stdout.write("\tIgnoring because of discrepancy: {} vs {}".format(
-                    master.from_relationship_type, donor.from_relationship_type)
+            if (
+                (master.from_relationship_type != donor.from_relationship_type)
+                and donor.from_relationship_type
+                and master.from_relationship_type
+            ):
+                self.stdout.write(
+                    "\tIgnoring because of discrepancy: {} vs {}".format(
+                        master.from_relationship_type, donor.from_relationship_type
+                    )
                 )
                 continue
 
-            if ((master.to_relationship_type != donor.to_relationship_type) and
-                    master.to_relationship_type and donor.to_relationship_type):
-                self.stdout.write("\tIgnoring because of discrepancy: {} vs {}".format(
-                    master.to_relationship_type, donor.to_relationship_type)
+            if (
+                (master.to_relationship_type != donor.to_relationship_type)
+                and master.to_relationship_type
+                and donor.to_relationship_type
+            ):
+                self.stdout.write(
+                    "\tIgnoring because of discrepancy: {} vs {}".format(
+                        master.to_relationship_type, donor.to_relationship_type
+                    )
                 )
                 continue
 
@@ -77,13 +83,13 @@ class Command(BaseCommand):
                     master_val = master_val + ", " + donor_val
                     setattr(master, field, master_val)
 
-                    self.stdout.write("\tconcatenating content of {}: {}".format(
-                        field, master_val))
+                    self.stdout.write(
+                        "\tconcatenating content of {}: {}".format(field, master_val)
+                    )
 
             # Corner case
             master.declarations = list(
-                set(master.declarations or []) |
-                set(donor.declarations or [])
+                set(master.declarations or []) | set(donor.declarations or [])
             )
 
             for field in FIELDS_TO_UPDATE:
@@ -94,17 +100,19 @@ class Command(BaseCommand):
                     if not master_val:
                         setattr(master, field, donor_val)
 
-                        self.stdout.write("\treplacing content of {}".format(
-                            field))
+                        self.stdout.write("\treplacing content of {}".format(field))
                     else:
                         self.stdout.write(
                             "\tnot replacing content of {} ({} vs {})".format(
-                                field, master_val, donor_val))
+                                field, master_val, donor_val
+                            )
+                        )
 
                 if field == "declarations":
                     setattr(
-                        master, field,
-                        list(set(master_val or []) | set(donor_val or []))
+                        master,
+                        field,
+                        list(set(master_val or []) | set(donor_val or [])),
                     )
 
                 # Corner cases:
@@ -113,15 +121,20 @@ class Command(BaseCommand):
                     donor_val_details = getattr(donor, subfield)
                     master_val_details = getattr(master, subfield)
 
-                    if donor_val and master_val and (
-                            donor_val_details < master_val_details):
+                    if (
+                        donor_val
+                        and master_val
+                        and (donor_val_details < master_val_details)
+                    ):
 
                         setattr(master, field, donor_val)
                         setattr(master, subfield, donor_val_details)
 
                         self.stdout.write(
                             "\timproving content of {} (replacing {} with {})".format(
-                                field, master_val, donor_val))
+                                field, master_val, donor_val
+                            )
+                        )
 
             if options["real_run"]:
                 master.save()

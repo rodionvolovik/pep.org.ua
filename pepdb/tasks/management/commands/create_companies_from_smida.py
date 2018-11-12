@@ -23,15 +23,17 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--real_run',
-            action='store_true',
-            dest='real_run',
+            "--real_run",
+            action="store_true",
+            dest="real_run",
             default=False,
-            help='Connect smida stakeholders to companies for real',
+            help="Connect smida stakeholders to companies for real",
         )
 
     def handle(self, *args, **options):
-        company_code_path = jmespath.compile("nacp_orig.step_7.*.emitent_ua_company_code")
+        company_code_path = jmespath.compile(
+            "nacp_orig.step_7.*.emitent_ua_company_code"
+        )
         save_it = options["real_run"]
         activate(settings.LANGUAGE_CODE)
 
@@ -46,12 +48,17 @@ class Command(BaseCommand):
         connections_created = 0
         connections_updated = 0
 
-        for rec in AdHocMatch.objects.filter(
-                status="a", dataset_id="smida_10").prefetch_related("person").nocache():
+        for rec in (
+            AdHocMatch.objects.filter(status="a", dataset_id="smida_10")
+            .prefetch_related("person")
+            .nocache()
+        ):
 
             total += 1
             if "EDRPOU" not in rec.matched_json:
-                self.stderr.write("Approved company {} has no edrpou!, skipping".format(rec.pk))
+                self.stderr.write(
+                    "Approved company {} has no edrpou!, skipping".format(rec.pk)
+                )
 
                 failed += 1
                 continue
@@ -67,7 +74,9 @@ class Command(BaseCommand):
 
             if len(ans) > 1:
                 self.stderr.write(
-                    "Too many companies found by code {}, skipping".format(rec.matched_json["EDRPOU"])
+                    "Too many companies found by code {}, skipping".format(
+                        rec.matched_json["EDRPOU"]
+                    )
                 )
 
                 failed += 1
@@ -75,19 +84,22 @@ class Command(BaseCommand):
 
             if not ans:
                 self.stderr.write(
-                    "No company found by code {}, skipping".format(rec.matched_json["EDRPOU"])
+                    "No company found by code {}, skipping".format(
+                        rec.matched_json["EDRPOU"]
+                    )
                 )
 
                 failed += 1
                 continue
 
-            company, created = self.importer.get_or_create_from_edr_record(ans[0].to_dict(), save_it)
+            company, created = self.importer.get_or_create_from_edr_record(
+                ans[0].to_dict(), save_it
+            )
 
             if not company:
                 self.stderr.write(
                     "Cannot create a company by code {}, for the rec {}, skipping".format(
-                        rec.matched_json["EDRPOU"],
-                        rec.pk
+                        rec.matched_json["EDRPOU"], rec.pk
                     )
                 )
 
@@ -107,18 +119,23 @@ class Command(BaseCommand):
 
             if existing_connections:
                 for ex_conn in existing_connections:
-                    self.stderr.write("Connection between {} and {} already exists but has type {}".format(
-                        ex_conn.from_person, ex_conn.to_company, ex_conn.relationship_type
-                    ))
+                    self.stderr.write(
+                        "Connection between {} and {} already exists but has type {}".format(
+                            ex_conn.from_person,
+                            ex_conn.to_company,
+                            ex_conn.relationship_type,
+                        )
+                    )
 
             conn, conn_created = self.conn_importer.get_or_create(
-                rec.person, company,
+                rec.person,
+                company,
                 "Акціонер",
                 rec.last_updated_from_dataset.date(),
                 "https://smida.gov.ua/db/emitent/{}".format(rec.matched_json["EDRPOU"]),
                 "За інформацією Агентства з розвитку інфраструктури фондового ринку України (АРІФРУ)",
                 "According to the information Stock market infrastructure development agency of Ukraine (SMIDA)",
-                save_it
+                save_it,
             )
             if conn_created:
                 connections_created += 1
@@ -135,23 +152,36 @@ class Command(BaseCommand):
                 decl = decls[0]
                 if decl.nacp_declaration:
                     declared_companies = company_code_path.search(decl.source) or []
-                    declared_companies = list(filter(None, set(map(lambda x: x.lstrip("0"), declared_companies))))
+                    declared_companies = list(
+                        filter(
+                            None, set(map(lambda x: x.lstrip("0"), declared_companies))
+                        )
+                    )
                     if rec.matched_json["EDRPOU"].lstrip("0") not in declared_companies:
-                        self.stderr.write("Cannot find company {} ({}) in declaration {} of {}".format(
-                            company, company.edrpou, decl.url, rec.person
-                        ))
+                        self.stderr.write(
+                            "Cannot find company {} ({}) in declaration {} of {}".format(
+                                company, company.edrpou, decl.url, rec.person
+                            )
+                        )
                 else:
-                    self.stderr.write("No declaration found for person {}".format(rec.person))                    
-
+                    self.stderr.write(
+                        "No declaration found for person {}".format(rec.person)
+                    )
 
         self.stdout.write(
-            "{} records processed, failed: {}, successed: {}".format(total, failed, successful)
+            "{} records processed, failed: {}, successed: {}".format(
+                total, failed, successful
+            )
         )
 
         self.stdout.write(
-            "Companies created: {}, companies updated: {}".format(companies_created, companies_updated)
+            "Companies created: {}, companies updated: {}".format(
+                companies_created, companies_updated
+            )
         )
 
         self.stdout.write(
-            "Connections created: {}, connections updated: {}".format(connections_created, connections_updated)
+            "Connections created: {}, connections updated: {}".format(
+                connections_created, connections_updated
+            )
         )

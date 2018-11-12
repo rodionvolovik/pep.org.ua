@@ -11,38 +11,40 @@ def set_import_dates(apps, schema_editor):
 
     match.objects.filter(dataset_id="wanted_ia").update(
         first_updated_from_dataset=datetime.datetime(2018, 5, 11, 0, 0),
-        last_updated_from_dataset=datetime.datetime(2018, 5, 11, 0, 0)
+        last_updated_from_dataset=datetime.datetime(2018, 5, 11, 0, 0),
     )
 
     match.objects.filter(dataset_id="corrupt").update(
         first_updated_from_dataset=datetime.datetime(2018, 5, 13, 0, 0),
-        last_updated_from_dataset=datetime.datetime(2018, 5, 13, 0, 0)
+        last_updated_from_dataset=datetime.datetime(2018, 5, 13, 0, 0),
     )
 
     match.objects.filter(dataset_id="smida_10").update(
         first_updated_from_dataset=datetime.datetime(2017, 9, 30, 0, 0),
-        last_updated_from_dataset=datetime.datetime(2017, 9, 30, 0, 0)
+        last_updated_from_dataset=datetime.datetime(2017, 9, 30, 0, 0),
     )
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('tasks', '0044_adhocmatch_matched_dj_json'),
-    ]
+    dependencies = [("tasks", "0044_adhocmatch_matched_dj_json")]
 
     operations = [
         migrations.AddField(
-            model_name='adhocmatch',
-            name='first_updated_from_dataset',
-            field=models.DateTimeField(null=True, verbose_name='\u041f\u0435\u0440\u0448\u0438\u0439 \u0440\u0430\u0437 \u0437\u0430\u0432\u0430\u043d\u0442\u0430\u0436\u0435\u043d\u043e'),
+            model_name="adhocmatch",
+            name="first_updated_from_dataset",
+            field=models.DateTimeField(
+                null=True,
+                verbose_name="\u041f\u0435\u0440\u0448\u0438\u0439 \u0440\u0430\u0437 \u0437\u0430\u0432\u0430\u043d\u0442\u0430\u0436\u0435\u043d\u043e",
+            ),
         ),
         migrations.AddField(
-            model_name='adhocmatch',
-            name='last_updated_from_dataset',
-            field=models.DateTimeField(null=True, verbose_name='\u041e\u0441\u0442\u0430\u043d\u043d\u0456\u0439 \u0440\u0430\u0437 \u0437\u0430\u0432\u0430\u043d\u0442\u0430\u0436\u0435\u043d\u043e'),
+            model_name="adhocmatch",
+            name="last_updated_from_dataset",
+            field=models.DateTimeField(
+                null=True,
+                verbose_name="\u041e\u0441\u0442\u0430\u043d\u043d\u0456\u0439 \u0440\u0430\u0437 \u0437\u0430\u0432\u0430\u043d\u0442\u0430\u0436\u0435\u043d\u043e",
+            ),
         ),
-
-        migrations.RunPython(
-            set_import_dates, reverse_code=migrations.RunPython.noop),
+        migrations.RunPython(set_import_dates, reverse_code=migrations.RunPython.noop),
     ]

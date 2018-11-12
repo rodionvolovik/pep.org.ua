@@ -11,9 +11,7 @@ def import_csv(model, fname, comment):
 
         for l in r:
             model.objects.update_or_create(
-                term=l[0],
-                translation=l[1],
-                comments=comment
+                term=l[0], translation=l[1], comments=comment
             )
 
 
@@ -25,10 +23,6 @@ def load_dicts(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0040_auto_20151026_0217'),
-    ]
+    dependencies = [("core", "0040_auto_20151026_0217")]
 
-    operations = [
-        migrations.RunPython(load_dicts),
-    ]
+    operations = [migrations.RunPython(load_dicts)]
