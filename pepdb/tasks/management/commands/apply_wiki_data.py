@@ -43,7 +43,7 @@ class Command(BaseCommand):
 
         activate(settings.LANGUAGE_CODE)
 
-        wiki_matches = WikiMatch.objects.filter(status="a")
+        wiki_matches = WikiMatch.objects.filter(status="a").exclude(wikidata_id="NONE")
 
         for match in tqdm(wiki_matches.select_related("person").nocache().iterator(), total=wiki_matches.count()):
             wikidata = match.matched_json
