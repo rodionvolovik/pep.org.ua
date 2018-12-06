@@ -74,6 +74,8 @@ class Person(models.Model, AbstractNode):
     publish = models.BooleanField(_("Опублікувати"), default=False)
     is_pep = models.BooleanField(_("Є PEPом"), default=True)
     imported = models.BooleanField(_("Був імпортований з гугл-таблиці"), default=False)
+    
+    inn = models.CharField(_("ІНН"), max_length=40, null=True, blank=True)
 
     photo = models.ImageField(_("Світлина"), blank=True, upload_to="images")
     dob = models.DateField(_("Дата народження"), blank=True, null=True)

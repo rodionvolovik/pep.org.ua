@@ -127,6 +127,14 @@
                                 </td>
                             </tr>
                             {% endif %}
+                            {% if person.inn %}
+                            <tr>
+                                <td>{{ _("ІНН") }}</td>
+                                <td itemprop="taxID">
+                                    {{ person.inn }}
+                                </td>
+                            </tr>
+                            {% endif %}
                             {% if person.city_of_birth %}
                             <tr>
                                 <td>{{ _("Місце народження") }}</td>

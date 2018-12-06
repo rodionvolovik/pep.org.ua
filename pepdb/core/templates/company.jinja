@@ -83,6 +83,12 @@
                                 <td><strong>{{ company.edrpou }}</strong></td>
                             </tr>
                             {% endif %}
+                            {% if company.ogrn_code %}
+                            <tr>
+                                <td>{{ _("ОГРН") }} </td>
+                                <td><strong>{{ company.ogrn_code }}</strong></td>
+                            </tr>
+                            {% endif %}
                             {% if company.also_known_as %}
                             <tr>
                                 <td>{{ _("Також відома як") }}</td>
@@ -93,6 +99,12 @@
                             <tr>
                                 <td>{{ _("Дата створення") }} </td>
                                 <td><strong>{{ company.founded_human }}</strong></td>
+                            </tr>
+                            {% endif %}
+                            {% if company.website %}
+                            <tr>
+                                <td><a href="{{ company.website }}" target="_blank"><strong>{{ _("Вебсайт") }}</strong></a></td>
+                                <td></td>
                             </tr>
                             {% endif %}
                             {% if company.status %}

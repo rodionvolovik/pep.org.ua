@@ -97,7 +97,7 @@ class ProofsInline(
         template = "nesting/admin/inlines/stacked.html"
 
     formset = nested_admin.NestedBaseGenericInlineFormSet
-    inline_classes = ("grp-collapse grp-closed",)
+    inline_classes = ("grp-collapse",)
 
     model = RelationshipProof
     extra = 1
@@ -124,7 +124,7 @@ class Person2PersonInline(TranslationNestedStackedInline):
         ("date_confirmed", "date_confirmed_details"),
     ]
 
-    inline_classes = ("grp-collapse grp-closed",)
+    inline_classes = ("grp-collapse",)
     classes = ("p2p-block",)
 
     raw_id_fields = ("to_person",)
@@ -146,7 +146,7 @@ class Person2PersonBackInline(TranslationNestedStackedInline):
     max_num = 0
 
     inlines = [ProofsInline]
-    inline_classes = ("grp-collapse grp-closed",)
+    inline_classes = ("grp-collapse",)
     classes = ("p2p-block",)
 
     raw_id_fields = ("from_person",)
@@ -176,7 +176,7 @@ class Person2CountryInline(nested_admin.NestedStackedInline):
         ("date_confirmed", "date_confirmed_details"),
     ]
 
-    inline_classes = ("grp-collapse grp-closed",)
+    inline_classes = ("grp-collapse",)
     classes = ("p2country-block",)
     inlines = [ProofsInline]
 
@@ -217,7 +217,7 @@ class Person2CompanyInline(TranslationNestedStackedInline):
 
     autocomplete_lookup_fields = {"fk": ["to_company"]}
 
-    inline_classes = ("grp-collapse grp-closed",)
+    inline_classes = ("grp-collapse",)
     classes = ("p2c-block",)
 
     inlines = [ProofsInline]
@@ -241,7 +241,7 @@ class Company2PersonInline(TranslationNestedStackedInline):
         ("date_confirmed", "date_confirmed_details"),
     ]
 
-    inline_classes = ("grp-collapse grp-closed",)
+    inline_classes = ("grp-collapse",)
     classes = ("p2c-block",)
     inlines = [ProofsInline]
 
@@ -336,6 +336,7 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
         "dob",
         "dob_details",
         "type_of_official",
+        "inn",
         "terminated",
         "publish",
     ]
@@ -362,6 +363,7 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
                     "photo",
                     "dob",
                     "dob_details",
+                    "inn",
                     "city_of_birth",
                     "publish",
                 ]
@@ -442,7 +444,7 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     list_display = (
         ["pk"]
         + localized_fields(["name", "short_name"])
-        + ["edrpou", "state_company", "legal_entity", "status", "management"]
+        + ["edrpou", "website", "state_company", "legal_entity", "status", "management"]
     )
 
     list_editable = localized_fields(["name", "short_name"]) + [

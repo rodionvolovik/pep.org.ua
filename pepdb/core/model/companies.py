@@ -114,6 +114,8 @@ class Company(models.Model, AbstractNode):
     legal_entity = models.BooleanField(_("Юрособа"), default=True)
 
     edrpou = models.CharField(_("ЄДРПОУ"), max_length=50, blank=True)
+    ogrn_code = models.CharField(_("ОГРН"), max_length=50, blank=True, null=True)
+    website = models.URLField(_("Вебсайт"), max_length=255, blank=True, null=True)
 
     zip_code = models.CharField(_("Індекс"), max_length=20, blank=True)
     city = models.CharField(_("Місто"), max_length=255, blank=True)
