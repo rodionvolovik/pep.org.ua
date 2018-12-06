@@ -229,7 +229,7 @@ class Person2Company(AbstractRelationship):
         null=True,
         blank=True,
         decimal_places=6,
-        max_digits=9,
+        max_digits=16,
         verbose_name=_("Розмір частки (відсотки)"),
     )
 

@@ -50,6 +50,10 @@
 
             {% if for_company %}
                 {{ person.connection.relationship_type }}
+
+                {% if person.connection.share %}
+                , {{ _("Частка") }} {{ "{:2.3f}".format(person.connection.share) }}%
+                {% endif %}
             {% else %}
                 {% if person.rtype %}{{ _(person.rtype) }},{% endif %}
             {% endif %}
