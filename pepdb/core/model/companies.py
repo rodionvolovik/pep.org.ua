@@ -161,11 +161,11 @@ class Company(models.Model, AbstractNode):
         null=True,
     )
 
-    works_for_peps = models.BooleanField("Обслуговує PEPів", default=False)
+    works_for_peps = models.BooleanField(_("Обслуговує PEPів"), default=False)
     subject_of_monitoring = models.BooleanField(
-        "Суб'єкт фінансового моніторингу", default=False
+        _("Суб'єкт фінансового моніторингу"), default=False
     )
-    _last_modified = models.DateTimeField("Остання зміна", null=True, blank=True)
+    _last_modified = models.DateTimeField(_("Остання зміна"), null=True, blank=True)
 
     @staticmethod
     def autocomplete_search_fields():
