@@ -346,6 +346,7 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
         "names"
     ]
     list_editable = ("dob", "dob_details")
+    list_filter = ("last_editor",)
 
     actions = [make_published, make_unpublished]
 
@@ -455,6 +456,7 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     ]
     search_fields = localized_fields(["name", "short_name"]) + ["edrpou"]
     readonly_fields = ("last_change", "last_editor", "_last_modified")
+    list_filter = ("last_editor",)
     actions = [make_published, make_unpublished]
 
     class Media:
