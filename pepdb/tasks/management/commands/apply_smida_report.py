@@ -103,13 +103,11 @@ class Command(BaseCommand):
         smida_candidates = SMIDACandidate.objects.filter(status="a",
                                                          smida_is_real_person=True)
 
-        bodies_mapping = {k: v for k, v in SMIDACandidate.POSITION_BODIES}
-        classes_mapping = {k: v for k, v in SMIDACandidate.POSITION_CLASSES}
-
         peps = self.all_peps_names()
         persons_dict = {}
-        persons_created_total = 0
+        persons_stats = {"created_total": 0, "matched_resolved": 0, "matched_not_resolved": 0}
         p2c_links_total = 0
+        smida_p2c = self.person_2_companies_relations()
 
         for candidate in tqdm(smida_candidates.nocache().iterator(),
                               total=smida_candidates.count()):
@@ -119,9 +117,7 @@ class Command(BaseCommand):
             person = persons_dict.get(person_name)
             if not person:
                 person = self.create_person(person_name, is_pep, candidate.smida_yob,
-                                            persons_dict, options["real_run"])
-                if person:
-                    persons_created_total += 1
+                                            persons_dict, smida_p2c, persons_stats, options["real_run"])
 
             if person:
                 company = companies_dict.get(candidate.smida_edrpou)
@@ -129,8 +125,11 @@ class Command(BaseCommand):
                 if not company:
                     continue
 
-                relationship_type = "{} / {}".format(classes_mapping[candidate.smida_position_class],
-                                              bodies_mapping[candidate.smida_position_body])
+                relationship_type = SMIDA_POSITIONS_MAPPING.get("{} {}".format(
+                        candidate.smida_position_class,
+                        candidate.smida_position_body),
+                    candidate.smida_position
+                )
 
                 try:
                     Person2Company.objects.get(from_person=person,
@@ -211,17 +210,43 @@ class Command(BaseCommand):
             "Created new companies: {}.\n"
             "Failed create companies: {}.\n"
             "Created new persons: {}.\n"
+            "Matched existing resolved: {}.\n"
+            "Matched existing not resolved: {}.\n"
             "Created P2C links: {}.\n"
             "Created P2P links: {}."
             .format(updated_companies_total,
                     created_companies_total,
                     failed_companies_total,
-                    persons_created_total,
+                    persons_stats["created_total"],
+                    persons_stats["matched_resolved"],
+                    persons_stats["matched_not_resolved"],
                     p2c_links_total,
                     p2p_links_total)
         )
 
-    def create_person(self, person_name, is_pep, yob, created_persons, real_run=False):
+    def create_person(self, person_name, is_pep, yob, created_persons, smida_p2c, persons_stats, real_run=False):
+
+        def create_new_person():
+            person = Person(
+                last_name=last_name,
+                first_name=first_name,
+                patronymic=patronymic,
+                is_pep=is_pep,
+                type_of_official=1 if is_pep else 4
+            )
+
+            if yob and yob > 1850:
+                dob = dt_parse("{}-01-01".format(yob))
+                person.dob = dob
+                person.dob_details = 2
+
+            if real_run:
+                person.save()
+
+            created_persons[person_name] = person
+            persons_stats["created_total"] += 1
+            return person
+
         qs = Person.objects.all()
 
         last_name, first_name, patronymic, _ = parse_fullname(person_name)
@@ -240,32 +265,24 @@ class Command(BaseCommand):
         if name_matches == 0:
             tqdm.write("No matches for: {}. Person will be created"
                        .format(person_name))
-        else:
-            tqdm.write("Found {} {} for name: {}."
-                       "Person with same name will be created."
-                       .format(name_matches,
-                               "matches" if name_matches > 1 else "match",
-                               person_name))
+            return create_new_person()
 
-        # Create new person
-        person = Person(
-            last_name=last_name,
-            first_name=first_name,
-            patronymic=patronymic,
-            is_pep=is_pep,
-            type_of_official=1 if is_pep else 4
-        )
+        for person in qs.nocache().iterator():
+            edrpou_list = [edrpou.rjust(8, "0") for edrpou in smida_p2c[person_name]]
+            p2c = Person2Company.objects.filter(from_person=person, to_company__edrpou__in=edrpou_list)
+            if p2c.nocache().count():
+                tqdm.write("Matched {} for name: {}. Found common P2C relation, marked as known person."
+                           .format(person.full_name, person_name))
+                created_persons[person_name] = person
+                persons_stats["matched_resolved"] += 1
+                return person
 
-        if yob and yob > 1850:
-            dob = dt_parse("{}-01-01".format(yob))
-            person.dob = dob
-            person.dob_details = 2
+        tqdm.write("Found matches for name: {}. Person with same name will be created."
+                   .format(person_name))
 
-        if real_run:
-            person.save()
+        persons_stats["matched_not_resolved"] += 1
+        return create_new_person()
 
-        created_persons[person_name] = person
-        return person
 
     def company_heads_mapping(self):
         companies_heads_dict = defaultdict(list)
@@ -282,6 +299,19 @@ class Command(BaseCommand):
             companies_heads_dict[edrpou].append(person_name)
 
         return companies_heads_dict
+
+    def person_2_companies_relations(self):
+        person_to_companies = defaultdict(set)
+
+        p2c = SMIDACandidate.objects.filter(status="a",
+                                            smida_is_real_person=True) \
+            .values_list("smida_edrpou", "smida_parsed_name") \
+            .distinct("smida_edrpou", "smida_parsed_name")
+
+        for edrpou, person_name in p2c:
+            person_to_companies[person_name].add(edrpou)
+
+        return person_to_companies
 
     def all_peps_names(self):
         return [name.strip().lower() for name in SMIDACandidate.objects.filter(status="a",
@@ -323,4 +353,22 @@ DT_LENGTH_MAP = {
     u'п\'ять рокiв': 5,
     u'п’ять рокiв': 5,
     u'п"ять рокiв': 5
+}
+
+
+SMIDA_POSITIONS_MAPPING = {
+    u'h sc': u'Голова правління',
+    u'd sc': u'Заступник голови правління',
+    u'm sc': u'Член правління',
+    u'a sc': u'Член правління',
+    u'h wc': u'Голова наглядової ради',
+    u'd wc': u'Заступник голови наглядової ради',
+    u'm wc': u'Член наглядової ради',
+    u's wc': u'Член наглядової ради',
+    u'h ac': u'Голова ревізійної комісії',
+    u'd ac': u'Член ревізійної комісії',
+    u'm ac': u'Член ревізійної комісії',
+    u'a a': u'Член правління',
+    u'h h': u'Голова правління',
+    u'd h': u'Заступник голови правління'
 }
