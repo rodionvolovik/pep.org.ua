@@ -134,7 +134,7 @@ class Command(BaseCommand):
                 try:
                     Person2Company.objects.get(from_person=person,
                                    to_company=company,
-                                   relationship_type=relationship_type,
+                                   relationship_type__icontains=relationship_type,
                                    is_employee=True)
                 except Person2Company.DoesNotExist:
                     p2c = Person2Company(from_person=person,
