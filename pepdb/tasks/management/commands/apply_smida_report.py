@@ -104,20 +104,27 @@ class Command(BaseCommand):
                                                          smida_is_real_person=True)
 
         peps = self.all_peps_names()
-        persons_dict = {}
-        persons_stats = {"created_total": 0, "matched_resolved": 0, "matched_not_resolved": 0}
+        self.persons_dict = {}
+        self.persons_stats = {"created_total": 0, "matched_resolved": 0, "matched_not_resolved": 0}
         p2c_links_total = 0
-        smida_p2c = self.person_2_companies_relations()
+        self.smida_p2c = self.person_2_companies_relations()
 
         for candidate in tqdm(smida_candidates.nocache().iterator(),
                               total=smida_candidates.count()):
             person_name = candidate.smida_parsed_name
+
+            # If can't tie person with company skip it to avoid duplicates
+            if not any(edrpou in companies_dict for edrpou in self.smida_p2c[person_name]):
+                tqdm.write("Skipped person: {} from processing as he not tied to any valid EDRPOU."
+                           .format(person_name))
+                continue
+
             is_pep = person_name.strip().lower() in peps
 
-            person = persons_dict.get(person_name)
+            person = self.persons_dict.get(person_name)
             if not person:
                 person = self.create_person(person_name, is_pep, candidate.smida_yob,
-                                            persons_dict, smida_p2c, persons_stats, options["real_run"])
+                                            options["real_run"])
 
             if person:
                 company = companies_dict.get(candidate.smida_edrpou)
@@ -173,10 +180,10 @@ class Command(BaseCommand):
                               total=smida_candidates.count()):
             person_name = candidate.smida_parsed_name
             heads_of_company = heads.get(candidate.smida_edrpou) or []
-            from_person = persons_dict.get(person_name)
+            from_person = self.persons_dict.get(person_name)
 
             for head in heads_of_company:
-                to_person = persons_dict.get(head)
+                to_person = self.persons_dict.get(head)
 
                 if from_person == to_person:
                     continue
@@ -217,14 +224,14 @@ class Command(BaseCommand):
             .format(updated_companies_total,
                     created_companies_total,
                     failed_companies_total,
-                    persons_stats["created_total"],
-                    persons_stats["matched_resolved"],
-                    persons_stats["matched_not_resolved"],
+                    self.persons_stats["created_total"],
+                    self.persons_stats["matched_resolved"],
+                    self.persons_stats["matched_not_resolved"],
                     p2c_links_total,
                     p2p_links_total)
         )
 
-    def create_person(self, person_name, is_pep, yob, created_persons, smida_p2c, persons_stats, real_run=False):
+    def create_person(self, person_name, is_pep, yob, real_run=False):
 
         def create_new_person():
             person = Person(
@@ -243,8 +250,8 @@ class Command(BaseCommand):
             if real_run:
                 person.save()
 
-            created_persons[person_name] = person
-            persons_stats["created_total"] += 1
+            self.persons_dict[person_name] = person
+            self.persons_stats["created_total"] += 1
             return person
 
         qs = Person.objects.all()
@@ -260,27 +267,27 @@ class Command(BaseCommand):
         if patronymic:
             qs = qs.filter(patronymic_uk__icontains=patronymic)
 
-        name_matches = qs.nocache().count()
+        name_matches = qs.count()
 
         if name_matches == 0:
             tqdm.write("No matches for: {}. Person will be created"
                        .format(person_name))
             return create_new_person()
 
-        for person in qs.nocache().iterator():
-            edrpou_list = [edrpou.rjust(8, "0") for edrpou in smida_p2c[person_name]]
+        for person in qs.iterator():
+            edrpou_list = [edrpou.rjust(8, "0") for edrpou in self.smida_p2c[person_name]]
             p2c = Person2Company.objects.filter(from_person=person, to_company__edrpou__in=edrpou_list)
-            if p2c.nocache().count():
+            if p2c.count():
                 tqdm.write("Matched {} for name: {}. Found common P2C relation, marked as known person."
                            .format(person.full_name, person_name))
-                created_persons[person_name] = person
-                persons_stats["matched_resolved"] += 1
+                self.persons_dict[person_name] = person
+                self.persons_stats["matched_resolved"] += 1
                 return person
 
         tqdm.write("Found matches for name: {}. Person with same name will be created."
                    .format(person_name))
 
-        persons_stats["matched_not_resolved"] += 1
+        self.persons_stats["matched_not_resolved"] += 1
         return create_new_person()
 
 
