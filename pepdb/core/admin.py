@@ -283,6 +283,23 @@ class DeclarationExtraInline(admin.TabularInline):
               "address", "country"]
 
 
+class HasSanctionsListFilter(admin.SimpleListFilter):
+    title = _('Під санкціями або слідство')
+
+    parameter_name = 'dirtyboy'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('sanctions', _('Під санкціями')),
+            ('criminal', _('Під слідством')),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'sanctions':
+            return queryset.filter(Q(reputation_sanctions_uk__regex=".+") | Q(reputation_sanctions_en__regex=".+"))
+        if self.value() == 'criminal':
+            return queryset.filter(Q(reputation_crimes_uk__regex=".+") | Q(reputation_crimes_en__regex=".+"))
+
 class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     class Media:
         css = {
@@ -302,6 +319,8 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     readonly_fields = ('names', 'last_change', 'last_editor', '_last_modified')
     search_fields = ['last_name_uk', "first_name_uk", "patronymic_uk", "names"]
     list_editable = ("dob", "dob_details")
+    list_filter = (HasSanctionsListFilter,)
+
 
     actions = [make_published, make_unpublished]
 
