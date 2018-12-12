@@ -198,7 +198,7 @@ class Command(BaseCommand):
 
         parser.add_argument(
             '--guid',
-            default="73cfe78e-89ef-4f06-b3ab-eb5f16aea237",
+            default="b0476139-62f2-4ede-9d3b-884ad99afd08",
             help='Dataset to retrieve',
         )
 
