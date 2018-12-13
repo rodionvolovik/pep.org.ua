@@ -103,25 +103,29 @@ class Command(BaseCommand):
         smida_candidates = SMIDACandidate.objects.filter(status="a",
                                                          smida_is_real_person=True)
 
-        bodies_mapping = {k: v for k, v in SMIDACandidate.POSITION_BODIES}
-        classes_mapping = {k: v for k, v in SMIDACandidate.POSITION_CLASSES}
-
         peps = self.all_peps_names()
-        persons_dict = {}
-        persons_created_total = 0
-        p2c_links_total = 0
+        self.persons_dict = {}
+        self.persons_stats = {"created_total": 0, "matched_resolved": 0, "matched_not_resolved": 0}
+        p2c_links_created = 0
+        p2c_links_updated = 0
+        self.smida_p2c = self.person_2_companies_relations()
 
         for candidate in tqdm(smida_candidates.nocache().iterator(),
                               total=smida_candidates.count()):
             person_name = candidate.smida_parsed_name
+
+            # If can't tie person with company skip it to avoid duplicates
+            if not any(edrpou in companies_dict for edrpou in self.smida_p2c[person_name]):
+                tqdm.write("Skipped person: {} from processing as he not tied to any valid EDRPOU."
+                           .format(person_name))
+                continue
+
             is_pep = person_name.strip().lower() in peps
 
-            person = persons_dict.get(person_name)
+            person = self.persons_dict.get(person_name)
             if not person:
                 person = self.create_person(person_name, is_pep, candidate.smida_yob,
-                                            persons_dict, options["real_run"])
-                if person:
-                    persons_created_total += 1
+                                            options["real_run"])
 
             if person:
                 company = companies_dict.get(candidate.smida_edrpou)
@@ -129,29 +133,60 @@ class Command(BaseCommand):
                 if not company:
                     continue
 
-                relationship_type = "{} / {}".format(classes_mapping[candidate.smida_position_class],
-                                              bodies_mapping[candidate.smida_position_body])
+                relationship_type = SMIDA_POSITIONS_MAPPING.get("{} {}".format(
+                        candidate.smida_position_class,
+                        candidate.smida_position_body),
+                    candidate.smida_position
+                )
+
+                date_established = self.p2c_get_date_established(candidate)
+                date_finished = self.p2c_get_date_finished(candidate)
 
                 try:
-                    Person2Company.objects.get(from_person=person,
+                    p2c = Person2Company.objects.get(from_person=person,
                                    to_company=company,
-                                   relationship_type=relationship_type,
+                                   relationship_type__icontains=relationship_type,
                                    is_employee=True)
+
+                    updated = False
+                    if (not p2c.date_established and date_established) or\
+                            ((p2c.date_established and date_established) and
+                            (p2c.date_established_details > 0 or date_established.date() < p2c.date_established)):
+                        tqdm.write("Updated date_established for P2C relation with id: {} Old: {}, New: {}"
+                                   .format(p2c.id,
+                                           p2c.date_established,
+                                           date_established))
+
+                        p2c.date_established = date_established
+                        p2c.date_established_details = 0
+                        updated = True
+
+                    if (not p2c.date_finished and date_finished) or\
+                            ((p2c.date_finished and date_finished) and
+                            (p2c.date_finished_details > 0 or date_finished.date() > p2c.date_finished)):
+                        tqdm.write("Updated date_finished for P2C relation with id: {} Old: {}, New: {}"
+                                   .format(p2c.id,
+                                           p2c.date_finished,
+                                           date_finished))
+
+                        p2c.date_finished = date_finished
+                        p2c.date_finished_details = 0
+                        updated = True
+
+                    p2c_links_updated += int(updated)
+
+                    if options["real_run"]:
+                        p2c.save()
+
                 except Person2Company.DoesNotExist:
                     p2c = Person2Company(from_person=person,
                                          to_company=company,
                                          relationship_type=relationship_type,
-                                         is_employee=True)
+                                         is_employee=True,
+                                         date_established=date_established,
+                                         date_finished=date_finished)
 
-                    dat_obr = candidate.matched_json.get("DAT_OBR") or ""
-                    if dat_obr:
-                        p2c.date_established = dt_parse(dat_obr)
-
-                    termin_obr = candidate.matched_json.get("TERM_OBR") or ""
-                    if termin_obr:
-                        self.try_set_p2p_date_finished(p2c, termin_obr)
-
-                    p2c_links_total += 1
+                    p2c_links_created += 1
                     tqdm.write("Created P2C relation: id: {} ({}) <=> id: {} ({}) EST. {}, FIN. {}"
                                .format(person.id or "N/A",
                                        person_name,
@@ -174,10 +209,10 @@ class Command(BaseCommand):
                               total=smida_candidates.count()):
             person_name = candidate.smida_parsed_name
             heads_of_company = heads.get(candidate.smida_edrpou) or []
-            from_person = persons_dict.get(person_name)
+            from_person = self.persons_dict.get(person_name)
 
             for head in heads_of_company:
-                to_person = persons_dict.get(head)
+                to_person = self.persons_dict.get(head)
 
                 if from_person == to_person:
                     continue
@@ -211,17 +246,45 @@ class Command(BaseCommand):
             "Created new companies: {}.\n"
             "Failed create companies: {}.\n"
             "Created new persons: {}.\n"
+            "Matched existing resolved: {}.\n"
+            "Matched existing not resolved: {}.\n"
             "Created P2C links: {}.\n"
+            "Updated P2C links: {}.\n"
             "Created P2P links: {}."
             .format(updated_companies_total,
                     created_companies_total,
                     failed_companies_total,
-                    persons_created_total,
-                    p2c_links_total,
+                    self.persons_stats["created_total"],
+                    self.persons_stats["matched_resolved"],
+                    self.persons_stats["matched_not_resolved"],
+                    p2c_links_created,
+                    p2c_links_updated,
                     p2p_links_total)
         )
 
-    def create_person(self, person_name, is_pep, yob, created_persons, real_run=False):
+    def create_person(self, person_name, is_pep, yob, real_run=False):
+
+        def create_new_person():
+            person = Person(
+                last_name=last_name,
+                first_name=first_name,
+                patronymic=patronymic,
+                is_pep=is_pep,
+                type_of_official=1 if is_pep else 4
+            )
+
+            if yob and yob > 1850:
+                dob = dt_parse("{}-01-01".format(yob))
+                person.dob = dob
+                person.dob_details = 2
+
+            if real_run:
+                person.save()
+
+            self.persons_dict[person_name] = person
+            self.persons_stats["created_total"] += 1
+            return person
+
         qs = Person.objects.all()
 
         last_name, first_name, patronymic, _ = parse_fullname(person_name)
@@ -235,37 +298,29 @@ class Command(BaseCommand):
         if patronymic:
             qs = qs.filter(patronymic_uk__icontains=patronymic)
 
-        name_matches = qs.nocache().count()
+        name_matches = qs.count()
 
         if name_matches == 0:
             tqdm.write("No matches for: {}. Person will be created"
                        .format(person_name))
-        else:
-            tqdm.write("Found {} {} for name: {}."
-                       "Person with same name will be created."
-                       .format(name_matches,
-                               "matches" if name_matches > 1 else "match",
-                               person_name))
+            return create_new_person()
 
-        # Create new person
-        person = Person(
-            last_name=last_name,
-            first_name=first_name,
-            patronymic=patronymic,
-            is_pep=is_pep,
-            type_of_official=1 if is_pep else 4
-        )
+        for person in qs.iterator():
+            edrpou_list = [edrpou.rjust(8, "0") for edrpou in self.smida_p2c[person_name]]
+            p2c = Person2Company.objects.filter(from_person=person, to_company__edrpou__in=edrpou_list)
+            if p2c.count():
+                tqdm.write("Matched {} for name: {}. Found common P2C relation, marked as known person."
+                           .format(person.full_name, person_name))
+                self.persons_dict[person_name] = person
+                self.persons_stats["matched_resolved"] += 1
+                return person
 
-        if yob and yob > 1850:
-            dob = dt_parse("{}-01-01".format(yob))
-            person.dob = dob
-            person.dob_details = 2
+        tqdm.write("Found matches for name: {}. Person with same name will be created."
+                   .format(person_name))
 
-        if real_run:
-            person.save()
+        self.persons_stats["matched_not_resolved"] += 1
+        return create_new_person()
 
-        created_persons[person_name] = person
-        return person
 
     def company_heads_mapping(self):
         companies_heads_dict = defaultdict(list)
@@ -283,6 +338,19 @@ class Command(BaseCommand):
 
         return companies_heads_dict
 
+    def person_2_companies_relations(self):
+        person_to_companies = defaultdict(set)
+
+        p2c = SMIDACandidate.objects.filter(status="a",
+                                            smida_is_real_person=True) \
+            .values_list("smida_edrpou", "smida_parsed_name") \
+            .distinct("smida_edrpou", "smida_parsed_name")
+
+        for edrpou, person_name in p2c:
+            person_to_companies[person_name].add(edrpou)
+
+        return person_to_companies
+
     def all_peps_names(self):
         return [name.strip().lower() for name in SMIDACandidate.objects.filter(status="a",
                                                   smida_is_real_person=True,
@@ -290,28 +358,49 @@ class Command(BaseCommand):
                     .values_list("smida_parsed_name", flat=True)
                     .distinct("smida_parsed_name")]
 
-    def try_set_p2p_date_finished(self, p2c, termin_obr):
-        match = re.search(r'(\d{2}\.\d{2}\.\d{4})', termin_obr)
-        if match and match.group(1):
-            p2c.date_finished = dt_parse(match.group(1))
+    def p2c_get_date_established(self, candidate):
+        dat_obr = candidate.matched_json.get("DAT_OBR") or ""
 
-        elif p2c.date_established:
-            # try to match by regex
-            years = None
-            match = re.search(r'(^\d$|^\d\D|\D\d р)', termin_obr)
+        if dat_obr:
+            try:
+                return dt_parse(dat_obr)
+            except (ValueError, OverflowError):
+                tqdm.write("Can't parse p2c DAT_OBR for person: {} (ID: {})."
+                           .format(candidate.smida_parsed_name, candidate.id))
+                return None
+
+    def p2c_get_date_finished(self, candidate):
+        termin_obr = candidate.matched_json.get("TERM_OBR") or ""
+
+        if termin_obr:
+
+            match = re.search(r'(\d{2}\.\d{2}\.\d{4})', termin_obr)
             if match and match.group(1):
-                years = filter(lambda x: x.isdigit() and x != "0", match.group(1))
+                try:
+                    return dt_parse(match.group(1))
+                except (ValueError, OverflowError):
+                    tqdm.write("Can't parse p2c TERM_OBR for person: {} (ID: {})."
+                               .format(candidate.smida_parsed_name, candidate.id))
+                    return None
 
-            if not years:
-                # try find in dictionary
-                for k, v in DT_LENGTH_MAP.items():
-                    if k in termin_obr:
-                        years = v
-                        break
+            date_established = self.p2c_get_date_established(candidate)
 
-            if years:
-                dt = p2c.date_established
-                p2c.date_finished = dt.replace(year=dt.year + int(years))
+            if date_established:
+                # try to match by regex
+                years = None
+                match = re.search(r'(^\d$|^\d\D|\D\d р)', termin_obr)
+                if match and match.group(1):
+                    years = filter(lambda x: x.isdigit() and x != "0", match.group(1))
+
+                if not years:
+                    # try find in dictionary
+                    for k, v in DT_LENGTH_MAP.items():
+                        if k in termin_obr:
+                            years = v
+                            break
+
+                if years:
+                    return date_established.replace(year=date_established.year + int(years))
 
 DT_LENGTH_MAP = {
     u'дин рiк': 1,
@@ -323,4 +412,22 @@ DT_LENGTH_MAP = {
     u'п\'ять рокiв': 5,
     u'п’ять рокiв': 5,
     u'п"ять рокiв': 5
+}
+
+
+SMIDA_POSITIONS_MAPPING = {
+    u'h sc': u'Голова правління',
+    u'd sc': u'Заступник голови правління',
+    u'm sc': u'Член правління',
+    u'a sc': u'Член правління',
+    u'h wc': u'Голова наглядової ради',
+    u'd wc': u'Заступник голови наглядової ради',
+    u'm wc': u'Член наглядової ради',
+    u's wc': u'Член наглядової ради',
+    u'h ac': u'Голова ревізійної комісії',
+    u'd ac': u'Член ревізійної комісії',
+    u'm ac': u'Член ревізійної комісії',
+    u'a a': u'Член правління',
+    u'h h': u'Голова правління',
+    u'd h': u'Заступник голови правління'
 }
