@@ -383,9 +383,9 @@ class Command(BaseCommand):
                                .format(candidate.smida_parsed_name, candidate.id))
                     return None
 
-            data_obr = self.p2c_get_date_established(candidate)
+            date_established = self.p2c_get_date_established(candidate)
 
-            if data_obr:
+            if date_established:
                 # try to match by regex
                 years = None
                 match = re.search(r'(^\d$|^\d\D|\D\d р)', termin_obr)
@@ -400,7 +400,7 @@ class Command(BaseCommand):
                             break
 
                 if years:
-                    return data_obr.replace(year=data_obr.year + int(years))
+                    return date_established.replace(year=date_established.year + int(years))
 
 DT_LENGTH_MAP = {
     u'дин рiк': 1,
