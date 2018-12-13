@@ -106,7 +106,8 @@ class Command(BaseCommand):
         peps = self.all_peps_names()
         self.persons_dict = {}
         self.persons_stats = {"created_total": 0, "matched_resolved": 0, "matched_not_resolved": 0}
-        p2c_links_total = 0
+        p2c_links_created = 0
+        p2c_links_updated = 0
         self.smida_p2c = self.person_2_companies_relations()
 
         for candidate in tqdm(smida_candidates.nocache().iterator(),
@@ -138,26 +139,54 @@ class Command(BaseCommand):
                     candidate.smida_position
                 )
 
+                date_established = self.p2c_get_date_established(candidate)
+                date_finished = self.p2c_get_date_finished(candidate)
+
                 try:
-                    Person2Company.objects.get(from_person=person,
+                    p2c = Person2Company.objects.get(from_person=person,
                                    to_company=company,
                                    relationship_type__icontains=relationship_type,
                                    is_employee=True)
+
+                    updated = False
+                    if (not p2c.date_established and date_established) or\
+                            ((p2c.date_established and date_established) and
+                            (p2c.date_established_details > 0 or date_established.date() < p2c.date_established)):
+                        tqdm.write("Updated date_established for P2C relation with id: {} Old: {}, New: {}"
+                                   .format(p2c.id,
+                                           p2c.date_established,
+                                           date_established))
+
+                        p2c.date_established = date_established
+                        p2c.date_established_details = 0
+                        updated = True
+
+                    if (not p2c.date_finished and date_finished) or\
+                            ((p2c.date_finished and date_finished) and
+                            (p2c.date_finished_details > 0 or date_finished.date() > p2c.date_finished)):
+                        tqdm.write("Updated date_finished for P2C relation with id: {} Old: {}, New: {}"
+                                   .format(p2c.id,
+                                           p2c.date_finished,
+                                           date_finished))
+
+                        p2c.date_finished = date_finished
+                        p2c.date_finished_details = 0
+                        updated = True
+
+                    p2c_links_updated += int(updated)
+
+                    if options["real_run"]:
+                        p2c.save()
+
                 except Person2Company.DoesNotExist:
                     p2c = Person2Company(from_person=person,
                                          to_company=company,
                                          relationship_type=relationship_type,
-                                         is_employee=True)
+                                         is_employee=True,
+                                         date_established=date_established,
+                                         date_finished=date_finished)
 
-                    dat_obr = candidate.matched_json.get("DAT_OBR") or ""
-                    if dat_obr:
-                        p2c.date_established = dt_parse(dat_obr)
-
-                    termin_obr = candidate.matched_json.get("TERM_OBR") or ""
-                    if termin_obr:
-                        self.try_set_p2p_date_finished(p2c, termin_obr)
-
-                    p2c_links_total += 1
+                    p2c_links_created += 1
                     tqdm.write("Created P2C relation: id: {} ({}) <=> id: {} ({}) EST. {}, FIN. {}"
                                .format(person.id or "N/A",
                                        person_name,
@@ -220,6 +249,7 @@ class Command(BaseCommand):
             "Matched existing resolved: {}.\n"
             "Matched existing not resolved: {}.\n"
             "Created P2C links: {}.\n"
+            "Updated P2C links: {}.\n"
             "Created P2P links: {}."
             .format(updated_companies_total,
                     created_companies_total,
@@ -227,7 +257,8 @@ class Command(BaseCommand):
                     self.persons_stats["created_total"],
                     self.persons_stats["matched_resolved"],
                     self.persons_stats["matched_not_resolved"],
-                    p2c_links_total,
+                    p2c_links_created,
+                    p2c_links_updated,
                     p2p_links_total)
         )
 
@@ -327,28 +358,49 @@ class Command(BaseCommand):
                     .values_list("smida_parsed_name", flat=True)
                     .distinct("smida_parsed_name")]
 
-    def try_set_p2p_date_finished(self, p2c, termin_obr):
-        match = re.search(r'(\d{2}\.\d{2}\.\d{4})', termin_obr)
-        if match and match.group(1):
-            p2c.date_finished = dt_parse(match.group(1))
+    def p2c_get_date_established(self, candidate):
+        dat_obr = candidate.matched_json.get("DAT_OBR") or ""
 
-        elif p2c.date_established:
-            # try to match by regex
-            years = None
-            match = re.search(r'(^\d$|^\d\D|\D\d р)', termin_obr)
+        if dat_obr:
+            try:
+                return dt_parse(dat_obr)
+            except (ValueError, OverflowError):
+                tqdm.write("Can't parse p2c DAT_OBR for person: {} (ID: {})."
+                           .format(candidate.smida_parsed_name, candidate.id))
+                return None
+
+    def p2c_get_date_finished(self, candidate):
+        termin_obr = candidate.matched_json.get("TERM_OBR") or ""
+
+        if termin_obr:
+
+            match = re.search(r'(\d{2}\.\d{2}\.\d{4})', termin_obr)
             if match and match.group(1):
-                years = filter(lambda x: x.isdigit() and x != "0", match.group(1))
+                try:
+                    return dt_parse(match.group(1))
+                except (ValueError, OverflowError):
+                    tqdm.write("Can't parse p2c TERM_OBR for person: {} (ID: {})."
+                               .format(candidate.smida_parsed_name, candidate.id))
+                    return None
 
-            if not years:
-                # try find in dictionary
-                for k, v in DT_LENGTH_MAP.items():
-                    if k in termin_obr:
-                        years = v
-                        break
+            data_obr = self.p2c_get_date_established(candidate)
 
-            if years:
-                dt = p2c.date_established
-                p2c.date_finished = dt.replace(year=dt.year + int(years))
+            if data_obr:
+                # try to match by regex
+                years = None
+                match = re.search(r'(^\d$|^\d\D|\D\d р)', termin_obr)
+                if match and match.group(1):
+                    years = filter(lambda x: x.isdigit() and x != "0", match.group(1))
+
+                if not years:
+                    # try find in dictionary
+                    for k, v in DT_LENGTH_MAP.items():
+                        if k in termin_obr:
+                            years = v
+                            break
+
+                if years:
+                    return data_obr.replace(year=data_obr.year + int(years))
 
 DT_LENGTH_MAP = {
     u'дин рiк': 1,
