@@ -408,9 +408,7 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         extra_context = extra_context or {}
-        extra_context["person2person_rels"] = json.dumps(
-            Person2Person._relationships_explained
-        )
+        extra_context["person2person_rels"] = json.dumps(Person2Person._relationships_explained)
 
         extra_context["person2company_rels"] = json.dumps(
             Person2Company._relationships_explained
