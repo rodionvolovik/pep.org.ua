@@ -15,6 +15,7 @@ class Country(models.Model, AbstractNode):
     iso2 = models.CharField(_("iso2 код"), max_length=2, blank=True)
     iso3 = models.CharField(_("iso3 код"), max_length=3, blank=True)
     is_jurisdiction = models.BooleanField(_("Не є країною"), default=False)
+    order = models.IntegerField(_("Порядок сортування"), default=9999, db_index=True)
 
     def __unicode__(self):
         return self.name
@@ -39,6 +40,7 @@ class Country(models.Model, AbstractNode):
     class Meta:
         verbose_name = _("Країна/юрісдикція")
         verbose_name_plural = _("Країни/юрісдикції")
+        ordering = ['order']
 
     def get_node_info(self, with_connections=False):
         res = super(Country, self).get_node_info(with_connections)

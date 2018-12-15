@@ -342,6 +342,7 @@ class Company2Company(AbstractRelationship):
         _("Головне підприємство"),
         _("Секретар"),
         _("Директор"),
+        _("Акціонер"),
     ]
 
     _relationships_mapping = {
@@ -373,6 +374,9 @@ class Company2Company(AbstractRelationship):
         _("Головне підприємство"): _("Самостійний структурний підрозділ"),
         _("Секретар"): _("Клієнт"),
         _("Директор"): _("Клієнт"),
+        _("Акціонер"): _("Підконтрольна"),
+        _("Головна компанія"): _("Філія"),
+        _("Філія"): _("Головна компанія"),
     }
 
     from_company = models.ForeignKey("Company", related_name="to_companies")

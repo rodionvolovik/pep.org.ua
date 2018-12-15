@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-14 17:43+0200\n"
+"POT-Creation-Date: 2018-12-16 00:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,7 +45,7 @@ msgstr "Profiles of close associates and family members"
 msgid "Головна"
 msgstr "Main page"
 
-#: core/admin.py:71 core/admin.py:924 core/model/companies.py:92
+#: core/admin.py:71 core/admin.py:921 core/model/companies.py:92
 #: core/model/persons.py:74
 msgid "Опублікувати"
 msgstr ""
@@ -121,106 +121,106 @@ msgstr "Reputation"
 msgid "Остання зміна"
 msgstr "Last position"
 
-#: core/admin.py:680
+#: core/admin.py:676
 msgid "Наявність перекладу"
 msgstr "Translation availability"
 
-#: core/admin.py:686
+#: core/admin.py:682
 msgid "Немає"
 msgstr "No"
 
-#: core/admin.py:686
+#: core/admin.py:682
 msgid "Є"
 msgstr "Yes"
 
-#: core/admin.py:721
+#: core/admin.py:717
 msgid "Експортувати в Excel"
 msgstr ""
 
-#: core/admin.py:763
+#: core/admin.py:760
 msgid "Завантажити"
 msgstr ""
 
-#: core/admin.py:783
+#: core/admin.py:780
 msgid "Джерело"
 msgstr ""
 
-#: core/admin.py:793 core/model/supplementaries.py:34
+#: core/admin.py:790 core/model/supplementaries.py:34
 msgid "Інформація"
 msgstr "Information"
 
-#: core/admin.py:841
+#: core/admin.py:838
 #, fuzzy
 #| msgid "Декларації"
 msgid "ПІБ з декларації"
 msgstr "Income declaration"
 
-#: core/admin.py:862
+#: core/admin.py:859
 #, fuzzy
 #| msgid "Посада"
 msgid "ПІБ з БД PEP"
 msgstr "Position"
 
-#: core/admin.py:869
+#: core/admin.py:866
 #, fuzzy
 #| msgid "Паперова декларація"
 msgid "Посада з декларації"
 msgstr "Paper declaration"
 
-#: core/admin.py:882 tasks/admin.py:470 tasks/admin.py:563
+#: core/admin.py:879 tasks/admin.py:470 tasks/admin.py:563
 #, fuzzy
 #| msgid "Посада"
 msgid "Посада з БД PEP"
 msgstr "Position"
 
-#: core/admin.py:901
+#: core/admin.py:898
 #, fuzzy
 #| msgid "Доходи родини"
 msgid "Створити родичів"
 msgstr "Family income"
 
-#: core/admin.py:929
+#: core/admin.py:926
 msgid "Відхилити"
 msgstr ""
 
-#: core/admin.py:934
+#: core/admin.py:931
 #, fuzzy
 #| msgid "Перевірити"
 msgid "На повторну перевірку"
 msgstr "Check"
 
-#: core/admin.py:1050
+#: core/admin.py:1047
 #, python-format
 msgid "%s осіб та %s зв'язків було створено."
 msgstr ""
 
-#: core/admin.py:1056
+#: core/admin.py:1053
 #, python-format
 msgid "%s осіб та %s зв'язків було оновлено."
 msgstr ""
 
-#: core/admin.py:1070
+#: core/admin.py:1067
 msgid "Родину вже було внесено до БД"
 msgstr ""
 
-#: core/admin.py:1087
+#: core/admin.py:1084
 #, fuzzy
 #| msgid "Родина"
 msgid "Родини нема"
 msgstr "Family"
 
-#: core/admin.py:1092 core/templates/_declaration.jinja:64
+#: core/admin.py:1089 core/templates/_declaration.jinja:64
 #: core/templates/_declaration.jinja:356 core/templates/_declaration.jinja:379
 #: core/templates/_declaration.jinja:402 core/templates/_declaration.jinja:425
 #: core/templates/_declaration.jinja:493
 msgid "Родина"
 msgstr "Family"
 
-#: core/admin.py:1191
+#: core/admin.py:1188
 msgid "Помітити як оброблене"
 msgstr ""
 
-#: core/admin.py:1196
+#: core/admin.py:1193
 msgid "Помітити як необроблене"
 msgstr ""
 
@@ -288,7 +288,7 @@ msgstr "Connection ended:"
 msgid "Підтверджено"
 msgstr "Confirmed:"
 
-#: core/model/base.py:70 core/model/connections.py:526
+#: core/model/base.py:70 core/model/connections.py:530
 #, fuzzy
 #| msgid "Доказ зв'язку: "
 msgid "Назва доказу зв'язку"
@@ -519,8 +519,6 @@ msgstr "husband/wife"
 
 #: core/model/connections.py:27 core/model/connections.py:30
 #: core/model/connections.py:31 core/model/connections.py:32
-#, fuzzy
-#| msgid "батько"
 msgid "батько"
 msgstr "father"
 
@@ -648,8 +646,6 @@ msgid "усиновлювач"
 msgstr "adoptive parent"
 
 #: core/model/connections.py:53 core/model/connections.py:54
-#, fuzzy
-#| msgid "усиновлювач"
 msgid "усиновлений"
 msgstr "adoptive parent"
 
@@ -734,25 +730,21 @@ msgstr "Asset declarations to confirm connection"
 
 #: core/model/connections.py:175
 msgid "Президент"
-msgstr ""
+msgstr "President"
 
 #: core/model/connections.py:176
 msgid "Прем’єр-міністр"
-msgstr ""
+msgstr "Prime minister"
 
 #: core/model/connections.py:177
 msgid "Міністр"
-msgstr ""
+msgstr "Minister"
 
 #: core/model/connections.py:178
-#, fuzzy
-#| msgid "Правонаступник"
 msgid "Перший заступник міністра"
 msgstr "Legal successor"
 
 #: core/model/connections.py:179
-#, fuzzy
-#| msgid "Заступник голови"
 msgid "Заступник міністра"
 msgstr "Deputy head"
 
@@ -761,54 +753,40 @@ msgid "Керівник"
 msgstr "Manager"
 
 #: core/model/connections.py:181
-#, fuzzy
-#| msgid "Прізвище керівника з БД ПЕП"
 msgid "Перший заступник керівника"
 msgstr "Last name of the officer from PEP DB"
 
 #: core/model/connections.py:182
-#, fuzzy
-#| msgid "Заступник голови"
 msgid "Заступник керівника"
 msgstr "Deputy head"
 
 #: core/model/connections.py:183
-#, fuzzy
-#| msgid "рідний брат"
 msgid "Народний депутат"
-msgstr "sibling"
+msgstr "Member of parliament"
 
 #: core/model/connections.py:184 tasks/models.py:386
 msgid "Голова"
 msgstr "Head"
 
 #: core/model/connections.py:185
-#, fuzzy
-#| msgid "Заступник голови"
 msgid "Заступник Голови"
 msgstr "Deputy head"
 
 #: core/model/connections.py:186
-#, fuzzy
-#| msgid "Заступник голови"
 msgid "Перший заступник Голови"
-msgstr "Deputy head"
+msgstr "First deputy head"
 
 #: core/model/connections.py:187
-#, fuzzy
-#| msgid "Правління"
 msgid "Член Правління"
 msgstr "Board"
 
 #: core/model/connections.py:188
-#, fuzzy
-#| msgid "Доходи родини"
 msgid "Член Ради"
-msgstr "Family income"
+msgstr ""
 
 #: core/model/connections.py:189
 msgid "Суддя"
-msgstr ""
+msgstr "Judge"
 
 #: core/model/connections.py:190 tasks/models.py:388
 msgid "Член"
@@ -888,7 +866,7 @@ msgid "Фінансові зв'язки"
 msgstr "business relationships"
 
 #: core/model/connections.py:204 core/model/connections.py:343
-#: core/model/connections.py:374
+#: core/model/connections.py:375
 msgid "Секретар"
 msgstr "Secretaty"
 
@@ -903,13 +881,13 @@ msgid "Контролер"
 msgstr "Counterparty"
 
 #: core/model/connections.py:207 core/model/connections.py:324
-#: core/model/connections.py:357 core/model/connections.py:374
-#: core/model/connections.py:375
+#: core/model/connections.py:358 core/model/connections.py:375
+#: core/model/connections.py:376
 msgid "Клієнт"
 msgstr "Client"
 
 #: core/model/connections.py:208 core/model/connections.py:325
-#: core/model/connections.py:358
+#: core/model/connections.py:359
 msgid "Клієнт банку"
 msgstr "Bank customer"
 
@@ -917,8 +895,8 @@ msgstr "Bank customer"
 msgid "Компанія або установа"
 msgstr "Company or organization"
 
-#: core/model/connections.py:216 core/model/connections.py:382
-#: core/model/connections.py:442 core/model/connections.py:487
+#: core/model/connections.py:216 core/model/connections.py:386
+#: core/model/connections.py:446 core/model/connections.py:491
 #: tasks/models.py:106
 msgid "Тип зв'язку"
 msgstr "Type of connection"
@@ -943,87 +921,87 @@ msgstr "Connection to a company/organization"
 msgid "Зв'язки з компаніями/установами"
 msgstr "Connections to companies/organizations"
 
-#: core/model/connections.py:317 core/model/connections.py:348
+#: core/model/connections.py:317 core/model/connections.py:349
 msgid "Власник"
 msgstr "Owner"
 
-#: core/model/connections.py:318 core/model/connections.py:349
+#: core/model/connections.py:318 core/model/connections.py:350
 msgid "Співвласник"
 msgstr "Co-owner"
 
-#: core/model/connections.py:319 core/model/connections.py:352
+#: core/model/connections.py:319 core/model/connections.py:353
 msgid "Споріднена"
 msgstr "Related"
 
-#: core/model/connections.py:320 core/model/connections.py:353
+#: core/model/connections.py:320 core/model/connections.py:354
 #: tasks/models.py:97
 msgid "Засновник"
 msgstr "Founder"
 
-#: core/model/connections.py:321 core/model/connections.py:354
+#: core/model/connections.py:321 core/model/connections.py:355
 msgid "Співзасновник"
 msgstr "Co-founder"
 
-#: core/model/connections.py:322 core/model/connections.py:355
+#: core/model/connections.py:322 core/model/connections.py:356
 msgid "Кредитор (фінансовий партнер)"
 msgstr "Lender (financial partner)"
 
-#: core/model/connections.py:323 core/model/connections.py:356
+#: core/model/connections.py:323 core/model/connections.py:357
 msgid "Надавач професійних послуг"
 msgstr "Professional Services Provider"
 
-#: core/model/connections.py:326 core/model/connections.py:359
-#: core/model/connections.py:360
+#: core/model/connections.py:326 core/model/connections.py:360
+#: core/model/connections.py:361
 msgid "Виконавець"
 msgstr "Contractor"
 
-#: core/model/connections.py:327 core/model/connections.py:359
-#: core/model/connections.py:360 core/model/connections.py:361
+#: core/model/connections.py:327 core/model/connections.py:360
+#: core/model/connections.py:361 core/model/connections.py:362
 msgid "Замовник"
 msgstr "Ordering customer"
 
-#: core/model/connections.py:328 core/model/connections.py:361
-#: core/model/connections.py:362
+#: core/model/connections.py:328 core/model/connections.py:362
+#: core/model/connections.py:363
 msgid "Підрядник"
 msgstr "Сontract holder"
 
-#: core/model/connections.py:329 core/model/connections.py:362
+#: core/model/connections.py:329 core/model/connections.py:363
 msgid "Субпідрядник"
 msgstr "Subcontractor"
 
-#: core/model/connections.py:330 core/model/connections.py:363
+#: core/model/connections.py:330 core/model/connections.py:364
 msgid "Постачальник"
 msgstr "Vendor"
 
-#: core/model/connections.py:331 core/model/connections.py:364
-#: core/model/connections.py:365
+#: core/model/connections.py:331 core/model/connections.py:365
+#: core/model/connections.py:366
 msgid "Орендар"
 msgstr "Lessee"
 
-#: core/model/connections.py:332 core/model/connections.py:364
-#: core/model/connections.py:365
+#: core/model/connections.py:332 core/model/connections.py:365
+#: core/model/connections.py:366
 msgid "Орендодавець"
 msgstr "Lessor"
 
-#: core/model/connections.py:333 core/model/connections.py:366
+#: core/model/connections.py:333 core/model/connections.py:367
 msgid "Контрагент"
 msgstr "Counterparty"
 
-#: core/model/connections.py:334 core/model/connections.py:367
+#: core/model/connections.py:334 core/model/connections.py:368
 msgid "Правонаступник"
 msgstr "Legal successor"
 
-#: core/model/connections.py:335 core/model/connections.py:368
+#: core/model/connections.py:335 core/model/connections.py:369
 msgid "Правовласник"
 msgstr "Stakeholder"
 
-#: core/model/connections.py:336 core/model/connections.py:369
-#: core/model/connections.py:370
+#: core/model/connections.py:336 core/model/connections.py:370
+#: core/model/connections.py:371
 msgid "Материнська компанія"
 msgstr "Parent company"
 
-#: core/model/connections.py:337 core/model/connections.py:369
-#: core/model/connections.py:370
+#: core/model/connections.py:337 core/model/connections.py:370
+#: core/model/connections.py:371
 msgid "Дочірня компанія"
 msgstr "Subsidiary"
 
@@ -1031,167 +1009,180 @@ msgstr "Subsidiary"
 msgid "Член наглядового органу"
 msgstr "Member of the supervisory authority"
 
-#: core/model/connections.py:339 core/model/connections.py:350
+#: core/model/connections.py:339 core/model/connections.py:351
 msgid "Колишній власник/засновник"
 msgstr "Former owner/founder"
 
-#: core/model/connections.py:340 core/model/connections.py:351
+#: core/model/connections.py:340 core/model/connections.py:352
 msgid "Колишній співвласник/співзасновник"
 msgstr "Former co-owner/co-founder"
 
-#: core/model/connections.py:341 core/model/connections.py:372
-#: core/model/connections.py:373
+#: core/model/connections.py:341 core/model/connections.py:373
+#: core/model/connections.py:374
 msgid "Самостійний структурний підрозділ"
 msgstr "Stand-alone unit"
 
-#: core/model/connections.py:342 core/model/connections.py:372
-#: core/model/connections.py:373
+#: core/model/connections.py:342 core/model/connections.py:373
+#: core/model/connections.py:374
 msgid "Головне підприємство"
 msgstr "Main company"
 
-#: core/model/connections.py:344 core/model/connections.py:375
+#: core/model/connections.py:344 core/model/connections.py:376
 msgid "Директор"
 msgstr "Director"
 
-#: core/model/connections.py:348 core/model/connections.py:349
-#: core/model/connections.py:350 core/model/connections.py:351
-#: core/model/connections.py:353 core/model/connections.py:354
-#: core/model/connections.py:371
+#: core/model/connections.py:345 core/model/connections.py:377
+#: tasks/models.py:98
+msgid "Акціонер"
+msgstr "Stockholder"
+
+#: core/model/connections.py:349 core/model/connections.py:350
+#: core/model/connections.py:351 core/model/connections.py:352
+#: core/model/connections.py:354 core/model/connections.py:355
+#: core/model/connections.py:372 core/model/connections.py:377
 msgid "Підконтрольна"
 msgstr "Controlled by"
 
-#: core/model/connections.py:355
+#: core/model/connections.py:356
 msgid "Боржник, фінансовий партнер"
 msgstr "Lender (financial partner)"
 
-#: core/model/connections.py:356
+#: core/model/connections.py:357
 msgid "Отримувач професійних послуг"
 msgstr "Professional Services Provider"
 
-#: core/model/connections.py:357
+#: core/model/connections.py:358
 msgid "Надавач товарів/послуг"
 msgstr "Provider of goods / services"
 
-#: core/model/connections.py:358
+#: core/model/connections.py:359
 msgid "Банк"
 msgstr "Bank"
 
-#: core/model/connections.py:363
+#: core/model/connections.py:364
 msgid "Отримувач/покупець"
 msgstr "Recipient / Buyer"
 
-#: core/model/connections.py:367
+#: core/model/connections.py:368
 msgid "Попередник"
 msgstr "Predecessor"
 
-#: core/model/connections.py:368
+#: core/model/connections.py:369
 msgid "Об'єкт правовласності"
 msgstr "Object of property rights"
 
-#: core/model/connections.py:371
+#: core/model/connections.py:372
 msgid "Член наглядового органу)"
 msgstr "Member of the supervisory authority"
 
-#: core/model/connections.py:433
+#: core/model/connections.py:378 core/model/connections.py:379
 #, fuzzy
-#| msgid "Пов'язані компанії"
-msgid "Зв'язок з компанією"
-msgstr "Related companies"
+#| msgid "Приватна компанія"
+msgid "Головна компанія"
+msgstr "Private sector"
 
-#: core/model/connections.py:434
+#: core/model/connections.py:378 core/model/connections.py:379
+msgid "Філія"
+msgstr "Branch"
+
+#: core/model/connections.py:437
+msgid "Зв'язок з компанією"
+msgstr "Connection to a company"
+
+#: core/model/connections.py:438
 #, fuzzy
 #| msgid "Пов'язані компанії"
 msgid "Зв'язки з компаніями"
 msgstr "Related companies"
 
-#: core/model/connections.py:438 tasks/admin.py:123
+#: core/model/connections.py:442 tasks/admin.py:123
 #, fuzzy
 #| msgid "Персональні дані"
 msgid "Персона"
 msgstr "Personal data"
 
-#: core/model/connections.py:439 core/model/connections.py:484
+#: core/model/connections.py:443 core/model/connections.py:488
 #: core/templates/company.jinja:127
 msgid "Країна"
 msgstr "Country"
 
-#: core/model/connections.py:444
+#: core/model/connections.py:448
 msgid "Народився(-лась)"
 msgstr "Born"
 
-#: core/model/connections.py:445
+#: core/model/connections.py:449
 msgid "Зареєстрований(-а)"
 msgstr "Registered"
 
-#: core/model/connections.py:446
+#: core/model/connections.py:450
 msgid "Проживав(-ла)"
 msgstr "Resident"
 
-#: core/model/connections.py:447
+#: core/model/connections.py:451
 msgid "Громадянин(-ка)"
 msgstr "Citizen"
 
-#: core/model/connections.py:448
+#: core/model/connections.py:452
 msgid "Має зареєстрований бізнес"
 msgstr "has a registered business"
 
-#: core/model/connections.py:449
+#: core/model/connections.py:453
 msgid "Має нерухомість"
 msgstr "Has the real estate"
 
-#: core/model/connections.py:450 core/model/connections.py:490
+#: core/model/connections.py:454 core/model/connections.py:494
 msgid "Під санкціями"
 msgstr "Under sanctions"
 
-#: core/model/connections.py:476 core/model/connections.py:516
+#: core/model/connections.py:480 core/model/connections.py:520
 #, fuzzy
 #| msgid "Пов'язані країни"
 msgid "Зв'язок з країною"
 msgstr "Related countries"
 
-#: core/model/connections.py:477 core/model/connections.py:517
+#: core/model/connections.py:481 core/model/connections.py:521
 #, fuzzy
 #| msgid "Пов'язані країни"
 msgid "Зв'язки з країнами"
 msgstr "Related countries"
 
-#: core/model/connections.py:482 tasks/admin.py:632 tasks/models.py:75
+#: core/model/connections.py:486 tasks/admin.py:632 tasks/models.py:75
 #, fuzzy
 #| msgid "Дочірня компанія"
 msgid "Компанія"
 msgstr "Subsidiary"
 
-#: core/model/connections.py:489
+#: core/model/connections.py:493
 msgid "Зареєстрована"
 msgstr "Registered"
 
-#: core/model/connections.py:528
+#: core/model/connections.py:532
 msgid "Наприклад: склад ВР 7-го скликання"
 msgstr ""
 
-#: core/model/connections.py:533
+#: core/model/connections.py:537
 #, fuzzy
 #| msgid "Доказ зв'язку: "
 msgid "Документ-доказ зв'язку"
 msgstr "Evidence of connection:"
 
-#: core/model/connections.py:538
+#: core/model/connections.py:542
 msgid "або посилання на доказ зв'язку"
 msgstr ""
 
-#: core/model/connections.py:545 core/model/connections.py:547
+#: core/model/connections.py:549 core/model/connections.py:551
 msgid "Поле документа або посилання має бути заповнено"
 msgstr ""
 
-#: core/model/connections.py:555 core/model/connections.py:558
+#: core/model/connections.py:559 core/model/connections.py:562
 msgid "Тільки поле документа або посилання має бути заповнено"
 msgstr ""
 
-#: core/model/connections.py:567 core/templates/macros/_connections.jinja:8
+#: core/model/connections.py:571 core/templates/macros/_connections.jinja:8
 msgid "Підтвердження зв'язку"
 msgstr "Сonnection confirmation"
 
-#: core/model/connections.py:568
+#: core/model/connections.py:572
 #, fuzzy
 #| msgid "Підтвердження зв'язку"
 msgid "Підтвердження зв'язків"
@@ -1215,11 +1206,17 @@ msgstr ""
 msgid "Не є країною"
 msgstr "All countries"
 
-#: core/model/countries.py:40
+#: core/model/countries.py:18
+#, fuzzy
+#| msgid "Користувач"
+msgid "Порядок сортування"
+msgstr "User"
+
+#: core/model/countries.py:41
 msgid "Країна/юрісдикція"
 msgstr ""
 
-#: core/model/countries.py:41
+#: core/model/countries.py:42
 msgid "Країни/юрісдикції"
 msgstr ""
 
@@ -2491,10 +2488,6 @@ msgstr "Public sector"
 #| msgid "Державна компанія чи установа"
 msgid "Закордонна компанія, знайдено"
 msgstr "Public sector"
-
-#: tasks/models.py:98
-msgid "Акціонер"
-msgstr ""
 
 #: tasks/models.py:109
 #, fuzzy

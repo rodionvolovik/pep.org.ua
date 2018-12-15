@@ -742,11 +742,12 @@ class CountryAdmin(TranslationAdmin):
         "iso2",
         "iso3",
         "is_jurisdiction",
+        "order",
     ]
 
     list_display_links = ("iso2",)
-    list_editable = localized_fields(["name"])
-    search_fields = localized_fields(["name"])
+    list_editable = localized_fields(["name"]) + ["order"]
+    search_fields = localized_fields(["name"]) + ["iso2", "iso3"]
 
 
 class DocumentAdmin(TranslationAdmin):
