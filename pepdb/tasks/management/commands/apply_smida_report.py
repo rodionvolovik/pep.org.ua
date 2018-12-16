@@ -10,7 +10,7 @@ from core.importers.company import CompanyImporter
 from core.model.persons import Person
 from core.model.connections import Person2Company, Person2Person
 from core.universal_loggers import PythonLogger
-from core.utils import parse_fullname
+from core.utils import parse_fullname, title
 from tasks.elastic_models import EDRPOU
 from tasks.models import SMIDACandidate
 from dateutil.parser import parse as dt_parse
@@ -112,7 +112,7 @@ class Command(BaseCommand):
 
         for candidate in tqdm(smida_candidates.nocache().iterator(),
                               total=smida_candidates.count()):
-            person_name = candidate.smida_parsed_name
+            person_name = candidate.smida_parsed_name.strip().lower()
 
             # If can't tie person with company skip it to avoid duplicates
             if not any(edrpou in companies_dict for edrpou in self.smida_p2c[person_name]):
@@ -120,12 +120,15 @@ class Command(BaseCommand):
                            .format(person_name))
                 continue
 
-            is_pep = person_name.strip().lower() in peps
+            is_pep = person_name in peps
 
             person = self.persons_dict.get(person_name)
             if not person:
                 person = self.create_person(person_name, is_pep, candidate.smida_yob,
                                             options["real_run"])
+            # The same person might have been created from a record without smida_yob
+            else:
+                self.update_person_dob(person, candidate.smida_yob, real_run=options["real_run"])
 
             if person:
                 company = companies_dict.get(candidate.smida_edrpou)
@@ -207,7 +210,7 @@ class Command(BaseCommand):
 
         for candidate in tqdm(smida_candidates.nocache().iterator(),
                               total=smida_candidates.count()):
-            person_name = candidate.smida_parsed_name
+            person_name = candidate.smida_parsed_name.strip().lower()
             heads_of_company = heads.get(candidate.smida_edrpou) or []
             from_person = self.persons_dict.get(person_name)
 
@@ -266,9 +269,9 @@ class Command(BaseCommand):
 
         def create_new_person():
             person = Person(
-                last_name=last_name,
-                first_name=first_name,
-                patronymic=patronymic,
+                last_name=title(last_name),
+                first_name=title(first_name),
+                patronymic=title(patronymic),
                 is_pep=is_pep,
                 type_of_official=1 if is_pep else 4
             )
@@ -313,6 +316,10 @@ class Command(BaseCommand):
                            .format(person.full_name, person_name))
                 self.persons_dict[person_name] = person
                 self.persons_stats["matched_resolved"] += 1
+
+                # Update DoB
+                self.update_person_dob(person, yob, real_run)
+
                 return person
 
         tqdm.write("Found matches for name: {}. Person with same name will be created."
@@ -321,9 +328,20 @@ class Command(BaseCommand):
         self.persons_stats["matched_not_resolved"] += 1
         return create_new_person()
 
+    def update_person_dob(self, person, yob, real_run=False):
+        if not person.dob and yob and yob > 1850:
+            dob = dt_parse("{}-01-01".format(yob))
+            person.dob = dob
+            person.dob_details = 2
+
+            tqdm.write("Updated person (id: {}) {} with DOB {}."
+                       .format(person.id, person.full_name, person.dob))
+
+        if real_run:
+            person.save()
 
     def company_heads_mapping(self):
-        companies_heads_dict = defaultdict(list)
+        companies_heads_dict = defaultdict(set)
 
         # select distinct by ("smida_edrpou", "smida_parsed_name") as same person
         # may have more several records of Head position for same company
@@ -334,7 +352,7 @@ class Command(BaseCommand):
             .distinct("smida_edrpou", "smida_parsed_name")
 
         for edrpou, person_name in company_heads:
-            companies_heads_dict[edrpou].append(person_name)
+            companies_heads_dict[edrpou].add(person_name.strip().lower())
 
         return companies_heads_dict
 
@@ -347,7 +365,7 @@ class Command(BaseCommand):
             .distinct("smida_edrpou", "smida_parsed_name")
 
         for edrpou, person_name in p2c:
-            person_to_companies[person_name].add(edrpou)
+            person_to_companies[person_name.strip().lower()].add(edrpou)
 
         return person_to_companies
 
