@@ -10,7 +10,7 @@ from core.importers.company import CompanyImporter
 from core.model.persons import Person
 from core.model.connections import Person2Company, Person2Person
 from core.universal_loggers import PythonLogger
-from core.utils import parse_fullname
+from core.utils import parse_fullname, title
 from tasks.elastic_models import EDRPOU
 from tasks.models import SMIDACandidate
 from dateutil.parser import parse as dt_parse
@@ -269,9 +269,9 @@ class Command(BaseCommand):
 
         def create_new_person():
             person = Person(
-                last_name=last_name.capitalize(),
-                first_name=first_name.capitalize(),
-                patronymic=patronymic.capitalize(),
+                last_name=title(last_name),
+                first_name=title(first_name),
+                patronymic=title(patronymic),
                 is_pep=is_pep,
                 type_of_official=1 if is_pep else 4
             )
