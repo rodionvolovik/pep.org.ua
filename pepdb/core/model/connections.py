@@ -527,19 +527,19 @@ class RelationshipProof(models.Model):
     content_object = GenericForeignKey("content_type", "object_id")
 
     proof_title = models.TextField(
-        _("Назва доказу зв'язку"),
+        _("Назва документа або посилання"),
         blank=True,
         help_text=_("Наприклад: склад ВР 7-го скликання"),
     )
 
     proof_document = models.ForeignKey(
         "core.Document",
-        verbose_name=_("Документ-доказ зв'язку"),
+        verbose_name=_("Файл документа"),
         default=None,
         blank=True,
         null=True,
     )
-    proof = models.TextField(_("або посилання на доказ зв'язку"), blank=True)
+    proof = models.TextField(_("або посилання"), blank=True)
 
     def clean(self):
         if self.proof_document is None and not self.proof:
@@ -567,6 +567,5 @@ class RelationshipProof(models.Model):
     def __unicode__(self):
         return "%s: %s" % (self.proof_title, self.proof_document or self.proof)
 
-    class Meta:
-        verbose_name = _("Підтвердження зв'язку")
-        verbose_name_plural = _("Підтвердження зв'язків")
+        verbose_name = _("Посилання або документ")
+        verbose_name_plural = _("Посилання або документи")

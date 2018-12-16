@@ -14,6 +14,7 @@ from django.conf import settings
 from django.db.models.functions import Coalesce
 from django.db.models import Q, Value, Max
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.fields import GenericRelation
 from django.template.loader import render_to_string
 
 from translitua import translitua
@@ -174,6 +175,7 @@ class Person(models.Model, AbstractNode):
     )
 
     _last_modified = models.DateTimeField(_("Остання зміна"), null=True, blank=True)
+    proofs = GenericRelation("RelationshipProof", verbose_name="Ссылки, социальные сети и документы")
 
     @staticmethod
     def autocomplete_search_fields():

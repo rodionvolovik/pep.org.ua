@@ -12,6 +12,7 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext_lazy, activate, get_language
 from django.forms.models import model_to_dict
+from django.contrib.contenttypes.fields import GenericRelation
 from django.core.exceptions import ObjectDoesNotExist
 
 from core.fields import RedactorField
@@ -168,6 +169,7 @@ class Company(models.Model, AbstractNode):
         _("Суб'єкт фінансового моніторингу"), default=False
     )
     _last_modified = models.DateTimeField(_("Остання зміна"), null=True, blank=True)
+    proofs = GenericRelation("RelationshipProof")
 
     @staticmethod
     def autocomplete_search_fields():

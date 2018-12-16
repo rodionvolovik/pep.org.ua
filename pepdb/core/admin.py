@@ -325,6 +325,7 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
         css = {"all": ("css/admin/person_admin.css",)}
 
     inlines = (
+        ProofsInline,
         Person2PersonInline,
         Person2PersonBackInline,
         Person2CompanyInline,
@@ -434,6 +435,7 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
 
 class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     inlines = (
+        ProofsInline,
         Company2PersonInline,
         Company2CompanyInline,
         Company2CompanyBackInline,
