@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import re
 from collections import defaultdict
 
+from django.db.models import Count
 from tqdm import tqdm
 from django.core.management.base import BaseCommand
 
@@ -36,6 +37,7 @@ class Command(BaseCommand):
 
         # region Companies
         self.stdout.write("Starting import Companies.")
+        pep_heads = self.company_heads_mapping()
 
         companies_dict = {}
         created_companies_total = 0
@@ -75,6 +77,11 @@ class Command(BaseCommand):
                 ans[0].to_dict(),
                 options["real_run"])
 
+            if created and edrpou in pep_heads:
+                company.state_company = True
+                if options["real_run"]:
+                    company.save()
+
             if not company:
                 self.stderr.write(
                     "Cannot create a company by code {}, for the rec {}, skipping".format(
@@ -88,7 +95,7 @@ class Command(BaseCommand):
 
             if created:
                 created_companies_total += 1
-                tqdm.write("Created company {}".format(company))
+                tqdm.write("Created {} {}".format("state company" if company.state_company else "company", company))
             else:
                 updated_companies_total += 1
                 tqdm.write("Updated company {}".format(company))
@@ -105,6 +112,7 @@ class Command(BaseCommand):
 
         peps = self.all_peps_names()
         self.persons_dict = {}
+        self.new_persons_pk = []
         self.persons_stats = {"created_total": 0, "matched_resolved": 0, "matched_not_resolved": 0}
         p2c_links_created = 0
         p2c_links_updated = 0
@@ -136,11 +144,13 @@ class Command(BaseCommand):
                 if not company:
                     continue
 
-                relationship_type = SMIDA_POSITIONS_MAPPING.get("{} {}".format(
-                        candidate.smida_position_class,
-                        candidate.smida_position_body),
-                    candidate.smida_position
-                )
+                pb_key = "{} {}".format(candidate.smida_position_class, candidate.smida_position_body)
+                relationship_type = SMIDA_POSITIONS_MAPPING.get(pb_key)
+
+                if not relationship_type:
+                    relationship_type = candidate.smida_position
+                    tqdm.write("Relation missing from a mapping for SMIDACandidate ID: {}"
+                               .format(candidate.id))
 
                 date_established = self.p2c_get_date_established(candidate)
                 date_finished = self.p2c_get_date_finished(candidate)
@@ -203,15 +213,16 @@ class Command(BaseCommand):
 
         self.stdout.write("Finished import Persons and Person2Company relations.")
         # endregion
+        self.stdout.write("New persons having multiple companies related")
+        self.new_persons_having_multiple_company_relations()
 
         # region Create P2P connections
         p2p_links_total = 0
-        heads = self.company_heads_mapping()
 
         for candidate in tqdm(smida_candidates.nocache().iterator(),
                               total=smida_candidates.count()):
             person_name = candidate.smida_parsed_name.strip().lower()
-            heads_of_company = heads.get(candidate.smida_edrpou) or []
+            heads_of_company = pep_heads.get(candidate.smida_edrpou) or []
             from_person = self.persons_dict.get(person_name)
 
             for head in heads_of_company:
@@ -283,6 +294,7 @@ class Command(BaseCommand):
 
             if real_run:
                 person.save()
+                self.new_persons_pk.append(person.pk)
 
             self.persons_dict[person_name] = person
             self.persons_stats["created_total"] += 1
@@ -310,10 +322,11 @@ class Command(BaseCommand):
 
         for person in qs.iterator():
             edrpou_list = [edrpou.rjust(8, "0") for edrpou in self.smida_p2c[person_name]]
-            p2c = Person2Company.objects.filter(from_person=person, to_company__edrpou__in=edrpou_list)
-            if p2c.count():
-                tqdm.write("Matched {} for name: {}. Found common P2C relation, marked as known person."
-                           .format(person.full_name, person_name))
+            p2c_qs = Person2Company.objects.filter(from_person=person, to_company__edrpou__in=edrpou_list)
+            if p2c_qs.count():
+                tqdm.write("Matched {}. Found common P2C relation: {}, [{}]"
+                           .format(person.full_name, person.url_uk,
+                                   " ".join([p2c.to_company.url_uk for p2c in p2c_qs.iterator()])))
                 self.persons_dict[person_name] = person
                 self.persons_stats["matched_resolved"] += 1
 
@@ -401,36 +414,12 @@ class Command(BaseCommand):
                                .format(candidate.smida_parsed_name, candidate.id))
                     return None
 
-            date_established = self.p2c_get_date_established(candidate)
-
-            if date_established:
-                # try to match by regex
-                years = None
-                match = re.search(r'(^\d$|^\d\D|\D\d р)', termin_obr)
-                if match and match.group(1):
-                    years = filter(lambda x: x.isdigit() and x != "0", match.group(1))
-
-                if not years:
-                    # try find in dictionary
-                    for k, v in DT_LENGTH_MAP.items():
-                        if k in termin_obr:
-                            years = v
-                            break
-
-                if years:
-                    return date_established.replace(year=date_established.year + int(years))
-
-DT_LENGTH_MAP = {
-    u'дин рiк': 1,
-    u'один рiк': 1,
-    u'два роки': 2,
-    u'три роки': 3,
-    u'3(три) роки': 3,
-    u'чотири роки': 4,
-    u'п\'ять рокiв': 5,
-    u'п’ять рокiв': 5,
-    u'п"ять рокiв': 5
-}
+    def new_persons_having_multiple_company_relations(self):
+        qs = Person.objects.filter(pk__in=self.new_persons_pk)\
+            .annotate(companies_cnt=Count("related_companies", distinct=True))
+        for person in qs.iterator():
+            if person.companies_cnt > 1:
+                tqdm.write("{} {}".format(person.url_uk, person.companies_cnt))
 
 
 SMIDA_POSITIONS_MAPPING = {
