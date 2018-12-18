@@ -343,6 +343,8 @@ class Company2Company(AbstractRelationship):
         _("Секретар"),
         _("Директор"),
         _("Акціонер"),
+        _("Головна компанія"),
+        _("Філія"),
     ]
 
     _relationships_mapping = {
@@ -390,7 +392,7 @@ class Company2Company(AbstractRelationship):
     )
 
     equity_part = models.FloatField(
-        "Частка власності (відсотки)", blank=True, null=True
+        _("Частка власності (відсотки)"), blank=True, null=True
     )
 
     @property
@@ -567,5 +569,6 @@ class RelationshipProof(models.Model):
     def __unicode__(self):
         return "%s: %s" % (self.proof_title, self.proof_document or self.proof)
 
+    class Meta:
         verbose_name = _("Посилання або документ")
         verbose_name_plural = _("Посилання або документи")
