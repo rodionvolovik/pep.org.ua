@@ -565,9 +565,9 @@ class Person(models.Model, AbstractNode):
                 return []
 
             return [
-                {"input": " ".join([last_name, first_name, patronymic]), "weight": 5},
-                {"input": " ".join([first_name, patronymic, last_name]), "weight": 2},
-                {"input": " ".join([first_name, last_name]), "weight": 2},
+                {"input": " ".join(filter(None, [last_name, first_name, patronymic])), "weight": 5},
+                {"input": " ".join(filter(None, [first_name, patronymic, last_name])), "weight": 2},
+                {"input": " ".join(filter(None, [first_name, last_name])), "weight": 2},
             ]
 
         input_variants = [
