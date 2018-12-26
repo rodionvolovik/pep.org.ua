@@ -599,6 +599,8 @@ class SMIDACandidateAdmin(admin.ModelAdmin):
         "smida_yob",
         "smida_dt",
         "status",
+        "dt_of_first_entry",
+        "dt_of_last_entry",
     )
 
     list_editable = (

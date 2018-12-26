@@ -142,6 +142,13 @@ class Command(BaseCommand):
             for report in tree.findall(
                 ".//{http://stockmarket.gov.ua/api/v1/report-index.xsd}item/[@href]"
             ):
+                start_date = make_aware(dt_parse(
+                    report.find(".//{http://stockmarket.gov.ua/api/v1/report-index.xsd}param[@name='STD']").text
+                ))
+                finish_date = make_aware(dt_parse(
+                    report.find(".//{http://stockmarket.gov.ua/api/v1/report-index.xsd}param[@name='FID']").text
+                ))
+
                 try:
                     subresp = requests.get(
                         "https://stockmarket.gov.ua/api/v1/{}".format(
@@ -158,8 +165,6 @@ class Command(BaseCommand):
                         continue
 
                     report_dt = make_aware(dt_parse(subtree.attrib["timestamp"]))
-                    if report_dt + relativedelta(years=3) < now():
-                        continue
 
                     for report_item in subtree.findall(
                         ".//{http://stockmarket.gov.ua/api/v1/report.xsd}table[@id='DTSPERSON_P']/{http://stockmarket.gov.ua/api/v1/report.xsd}row"
@@ -214,6 +219,9 @@ class Command(BaseCommand):
 
                         parsed_chunks = []
 
+                        if full_name.text is None:
+                            continue
+
                         # TODO: better word splitting
                         for chunk in full_name.text.split():
                             # TODO: better detection of latin
@@ -255,64 +263,75 @@ class Command(BaseCommand):
                             }
                         )
 
-                        person, created = SMIDACandidate.objects.get_or_create(
-                            matched_json_hash=matched_json_hash,
-                            defaults={
-                                "smida_edrpou": c,
-                                "smida_level": matched_companies[c]["level"],
-                                "smida_shares": matched_companies[c]["shares"],
-                                "smida_name": full_name.text,
-                                "smida_company_name": matched_companies[c]["name"],
-                                "smida_parsed_name": " ".join(parsed_chunks)
-                                if smida_is_real_person
-                                else "",
-                                "smida_dt": report_dt,
-                                "smida_position": position.text
-                                if position is not None
-                                else "",
-                                "smida_prev_position": prev_position.text or ""
-                                if prev_position is not None
-                                else "",
-                                "smida_yob": yob.text if yob is not None else "",
-                                "smida_is_real_person": smida_is_real_person,
-                                "smida_position_body": smida_position_body,
-                                "smida_position_class": smida_position_class,
-                                "matched_json": matched_json,
-                                "matched_json_hash": matched_json_hash,
-                            },
-                        )
+                        try:
+                            person = SMIDACandidate.objects.get(matched_json_hash=matched_json_hash)
 
-                        if created:
-                            created_candidates += 1
-                        elif report_dt > person.smida_dt:
-                            updated_candidates += 1
-                            person.smida_edrpou = c
-                            person.smida_level = matched_companies[c]["level"]
-                            person.smida_shares = matched_companies[c]["shares"]
-                            smida_company_name = matched_companies[c]["name"]
-                            person.smida_name = full_name.text
-                            person.smida_parsed_name = (
-                                " ".join(parsed_chunks) if smida_is_real_person else ""
-                            )
-                            person.smida_dt = report_dt
-                            person.smida_position = (
-                                position.text if position is not None else ""
-                            )
-                            person.smida_prev_position = (
-                                prev_position.text or ""
-                                if prev_position is not None
-                                else "",
-                            )
-                            person.smida_yob = yob.text if yob is not None else ""
-                            person.smida_is_real_person = smida_is_real_person
-                            person.smida_position_body = smida_position_body
-                            person.smida_position_class = smida_position_class
-                            person.matched_json = matched_json
-                            person.matched_json_hash = matched_json_hash
+                            if not person.dt_of_first_entry or start_date < person.dt_of_first_entry:
+                                person.dt_of_first_entry = start_date
+
+                            if not person.dt_of_last_entry or finish_date > person.dt_of_last_entry:
+                                person.dt_of_last_entry = finish_date
+
                             person.save()
-                        else:
-                            ignored_candidates += 1
 
+                            if report_dt > person.smida_dt:
+                                updated_candidates += 1
+                                person.smida_edrpou = c
+                                person.smida_level = matched_companies[c]["level"]
+                                person.smida_shares = matched_companies[c]["shares"]
+                                smida_company_name = matched_companies[c]["name"]
+                                person.smida_name = full_name.text
+                                person.smida_parsed_name = (
+                                    " ".join(parsed_chunks) if smida_is_real_person else ""
+                                )
+                                person.smida_dt = report_dt
+                                person.smida_position = (
+                                    position.text if position is not None else ""
+                                )
+                                person.smida_prev_position = (
+                                    prev_position.text or ""
+                                    if prev_position is not None
+                                    else "",
+                                )
+                                person.smida_yob = yob.text if yob is not None else ""
+                                person.smida_is_real_person = smida_is_real_person
+                                person.smida_position_body = smida_position_body
+                                person.smida_position_class = smida_position_class
+                                person.matched_json = matched_json
+                                person.matched_json_hash = matched_json_hash
+                                person.save()
+                            else:
+                                ignored_candidates += 1
+                        except SMIDACandidate.DoesNotExist:
+                            if report_dt + relativedelta(years=3) >= now():
+                                person = SMIDACandidate.objects.create(
+                                    **{
+                                        "smida_edrpou": c,
+                                        "smida_level": matched_companies[c]["level"],
+                                        "smida_shares": matched_companies[c]["shares"],
+                                        "smida_name": full_name.text,
+                                        "smida_company_name": matched_companies[c]["name"],
+                                        "smida_parsed_name": " ".join(parsed_chunks)
+                                        if smida_is_real_person
+                                        else "",
+                                        "smida_dt": report_dt,
+                                        "smida_position": position.text
+                                        if position is not None
+                                        else "",
+                                        "smida_prev_position": prev_position.text or ""
+                                        if prev_position is not None
+                                        else "",
+                                        "smida_yob": yob.text if yob is not None else "",
+                                        "smida_is_real_person": smida_is_real_person,
+                                        "smida_position_body": smida_position_body,
+                                        "smida_position_class": smida_position_class,
+                                        "matched_json": matched_json,
+                                        "matched_json_hash": matched_json_hash,
+                                        "dt_of_first_entry": start_date,
+                                        "dt_of_last_entry": finish_date,
+                                    }
+                                )
+                                created_candidates += 1
                 except KeyError:
                     self.stderr.write("Cannot find a key in {}".format(report))
 

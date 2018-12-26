@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from collections import defaultdict
+from itertools import combinations
+
 from django.core.management.base import BaseCommand
 from django.utils.translation import activate
 from django.db.utils import IntegrityError
 from django.conf import settings
 
-from collections import defaultdict
+from Levenshtein import jaro
+from tqdm import tqdm
+
 from core.models import Person
 from core.utils import is_initial, parse_fullname
 from tasks.models import PersonDeduplication
-from Levenshtein import jaro
-from itertools import combinations
 
 
 class Command(BaseCommand):
@@ -25,7 +28,7 @@ class Command(BaseCommand):
         keys = ["pk", "key", "fullname", "has_initials", "last_name",
                 "first_name", "patronymic"]
 
-        for p in Person.objects.all():
+        for p in Person.objects.all().nocache().iterator():
             all_persons.append(dict(zip(keys, [
                 p.pk,
                 ("%s %s %s" % (
@@ -60,7 +63,7 @@ class Command(BaseCommand):
         grouped_by_shortenedname = defaultdict(list)
 
         # First pass: exact matches by full name (even if those are given with initials)
-        for l in all_persons:
+        for l in tqdm(all_persons):
             if l["has_initials"]:
                 grouped_by_shortenedname[l["key"]].append(l["pk"])
             else:
@@ -82,15 +85,15 @@ class Command(BaseCommand):
         mixed_grouping = defaultdict(list)
 
         # Second pass: initials vs full names
-        for l in all_persons:
+        for l in tqdm(all_persons):
             if l["pk"] not in spoiled_ids and l["has_initials"]:
                 mixed_grouping[l["key"]].append(l["pk"])
 
-        for l in all_persons:
+        for l in tqdm(all_persons):
             if l["pk"] not in spoiled_ids and not l["has_initials"] and l["key"] in mixed_grouping:
                 mixed_grouping[l["key"]].append(l["pk"])
 
-        for k, v in mixed_grouping.items():
+        for k, v in tqdm(mixed_grouping.items()):
             if len(v) > 1:
                 spoiled_ids |= set(v)
                 chunks_to_review.append(v)
@@ -111,7 +114,7 @@ class Command(BaseCommand):
             if l["pk"] not in spoiled_ids and not l["has_initials"]
         ]
 
-        for a, b in combinations(candidates_for_fuzzy, 2):
+        for a, b in tqdm(combinations(candidates_for_fuzzy, 2)):
             score = jaro(a["fullname"], b["fullname"])
             if score > 0.93:
                 try:

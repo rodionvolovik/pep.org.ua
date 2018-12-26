@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#: core/model/companies.py:440 core/model/persons.py:665 core/utils.py:497
+#: core/model/companies.py:440 core/model/persons.py:668 core/utils.py:497
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-11 12:57+0300\n"
+"POT-Creation-Date: 2018-12-16 14:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,15 +45,32 @@ msgstr "Profiles of close associates and family members"
 msgid "Головна"
 msgstr "Main page"
 
-#: core/admin.py:548
+#: core/admin.py:287
+#, fuzzy
+#| msgid "Під санкціями"
+msgid "Під санкціями або слідство"
+msgstr "Under sanctions"
+
+#: core/admin.py:293 core/model/connections.py:394
+#: core/model/connections.py:429
+msgid "Під санкціями"
+msgstr "Under sanctions"
+
+#: core/admin.py:294
+#, fuzzy
+#| msgid "Під санкціями"
+msgid "Під слідством"
+msgstr "Under sanctions"
+
+#: core/admin.py:566
 msgid "Наявність перекладу"
 msgstr "Translation availability"
 
-#: core/admin.py:555
+#: core/admin.py:573
 msgid "Немає"
 msgstr "No"
 
-#: core/admin.py:556
+#: core/admin.py:574
 msgid "Є"
 msgstr "Yes"
 
@@ -474,10 +491,6 @@ msgstr "has a registered business"
 msgid "Має нерухомість"
 msgstr "Has the real estate"
 
-#: core/model/connections.py:394 core/model/connections.py:429
-msgid "Під санкціями"
-msgstr "Under sanctions"
-
 #: core/model/connections.py:428
 msgid "Зареєстрована"
 msgstr "Registered"
@@ -580,19 +593,19 @@ msgstr "Close associate"
 msgid "Член сім'ї"
 msgstr "Family member"
 
-#: core/model/persons.py:123
+#: core/model/persons.py:126
 msgid "Неприйнятно високий"
 msgstr "Unacceptably high"
 
-#: core/model/persons.py:124
+#: core/model/persons.py:127
 msgid "Високий"
 msgstr "High"
 
-#: core/model/persons.py:125
+#: core/model/persons.py:128
 msgid "Середній"
 msgstr "Medium"
 
-#: core/model/persons.py:126
+#: core/model/persons.py:129
 msgid "Низький"
 msgstr "Low"
 
@@ -1118,31 +1131,6 @@ msgstr "Legal entities"
 #: core/templates/feedback.jinja:10 core/templates/feedback.jinja:15
 msgid "Напишіть нам листа"
 msgstr "Contact us"
-
-#: core/templates/grappelli_admin_login.html:26
-#: core/templates/grappelli_admin_login.html:77
-msgid "Log in"
-msgstr ""
-
-#: core/templates/grappelli_admin_login.html:31
-msgid "Please correct the error below."
-msgstr ""
-
-#: core/templates/grappelli_admin_login.html:31
-msgid "Please correct the errors below."
-msgstr ""
-
-#: core/templates/grappelli_admin_login.html:59
-msgid "OTP Device:"
-msgstr ""
-
-#: core/templates/grappelli_admin_login.html:64
-msgid "OTP Token:"
-msgstr ""
-
-#: core/templates/grappelli_admin_login.html:70
-msgid "Forgotten your password or username?"
-msgstr ""
 
 #: core/templates/macros/_connections.jinja:8
 msgid "Підтвердження зв'язку"

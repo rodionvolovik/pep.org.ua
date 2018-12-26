@@ -444,6 +444,9 @@ class SMIDACandidate(AbstractTask):
     smida_prev_position = models.TextField("Попередня посада", blank=True)
     smida_yob = models.IntegerField("Рік народження", null=True)
 
+    dt_of_first_entry = models.DateTimeField("Дата першої появи в звітах", null=True)
+    dt_of_last_entry = models.DateTimeField("Дата останньої появи в звітах", null=True)
+
     smida_is_real_person = models.BooleanField("Фізособа", default=True)
     smida_position_body = models.CharField("Орган", max_length=2, choices=POSITION_BODIES)
     smida_position_class = models.CharField("Рівень", max_length=1, choices=POSITION_CLASSES)

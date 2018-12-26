@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#: core/model/companies.py:440 core/model/persons.py:665 core/utils.py:497
+#: core/model/companies.py:440 core/model/persons.py:668 core/utils.py:497
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-11 12:57+0300\n"
+"POT-Creation-Date: 2018-12-16 14:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,15 +47,28 @@ msgstr ""
 msgid "Головна"
 msgstr ""
 
-#: core/admin.py:548
+#: core/admin.py:287
+msgid "Під санкціями або слідство"
+msgstr ""
+
+#: core/admin.py:293 core/model/connections.py:394
+#: core/model/connections.py:429
+msgid "Під санкціями"
+msgstr ""
+
+#: core/admin.py:294
+msgid "Під слідством"
+msgstr ""
+
+#: core/admin.py:566
 msgid "Наявність перекладу"
 msgstr ""
 
-#: core/admin.py:555
+#: core/admin.py:573
 msgid "Немає"
 msgstr ""
 
-#: core/admin.py:556
+#: core/admin.py:574
 msgid "Є"
 msgstr ""
 
@@ -476,10 +489,6 @@ msgstr ""
 msgid "Має нерухомість"
 msgstr ""
 
-#: core/model/connections.py:394 core/model/connections.py:429
-msgid "Під санкціями"
-msgstr ""
-
 #: core/model/connections.py:428
 msgid "Зареєстрована"
 msgstr ""
@@ -580,19 +589,19 @@ msgstr ""
 msgid "Член сім'ї"
 msgstr ""
 
-#: core/model/persons.py:123
+#: core/model/persons.py:126
 msgid "Неприйнятно високий"
 msgstr ""
 
-#: core/model/persons.py:124
+#: core/model/persons.py:127
 msgid "Високий"
 msgstr ""
 
-#: core/model/persons.py:125
+#: core/model/persons.py:128
 msgid "Середній"
 msgstr ""
 
-#: core/model/persons.py:126
+#: core/model/persons.py:129
 msgid "Низький"
 msgstr ""
 
@@ -1064,31 +1073,6 @@ msgstr ""
 
 #: core/templates/feedback.jinja:10 core/templates/feedback.jinja:15
 msgid "Напишіть нам листа"
-msgstr ""
-
-#: core/templates/grappelli_admin_login.html:26
-#: core/templates/grappelli_admin_login.html:77
-msgid "Log in"
-msgstr ""
-
-#: core/templates/grappelli_admin_login.html:31
-msgid "Please correct the error below."
-msgstr ""
-
-#: core/templates/grappelli_admin_login.html:31
-msgid "Please correct the errors below."
-msgstr ""
-
-#: core/templates/grappelli_admin_login.html:59
-msgid "OTP Device:"
-msgstr ""
-
-#: core/templates/grappelli_admin_login.html:64
-msgid "OTP Token:"
-msgstr ""
-
-#: core/templates/grappelli_admin_login.html:70
-msgid "Forgotten your password or username?"
 msgstr ""
 
 #: core/templates/macros/_connections.jinja:8
