@@ -15,5 +15,5 @@ if __name__ == "__main__":
         ):
             decls_list = p.declarations.filter(nacp_declaration=True).distinct("year").values_list("year", flat=True)
 
-            if decls_list and len(decls_list) < 3:
+            if decls_list and len(decls_list) < 3 and list(decls_list) != ["2016", "2017"]:
                 w.writerow([p.full_name, settings.SITE_URL + p.get_absolute_url(), ",".join(decls_list)])
