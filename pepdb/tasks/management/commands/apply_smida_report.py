@@ -108,7 +108,8 @@ class Command(BaseCommand):
         # region Persons and P2C
         self.stdout.write("Starting import Persons and Person2Company relations.")
         smida_candidates = SMIDACandidate.objects.filter(status="a",
-                                                         smida_is_real_person=True)
+                                                         smida_is_real_person=True)\
+                                                 .order_by("dt_of_first_entry")
 
         peps = self.all_peps_names()
         self.persons_dict = {}
@@ -153,7 +154,29 @@ class Command(BaseCommand):
                                .format(candidate.id))
 
                 date_established = self.p2c_get_date_established(candidate)
-                date_finished = self.p2c_get_date_finished(candidate)
+
+                if date_established:
+                    # update previous position on this work
+                    prev_position = Person2Company.objects \
+                        .filter(from_person=person, to_company=company,
+                                is_employee=True, date_established__lt=date_established) \
+                        .exclude(relationship_type__icontains=relationship_type)\
+                        .order_by("-date_established").first()
+
+                    if prev_position:
+                        prev_position.date_finished = date_established
+                        prev_position.date_finished_details = 0
+
+                        if options["real_run"]:
+                            prev_position.save()
+
+                        tqdm.write("Updated previous position for SMIDACandidate ID: {}"
+                                   .format(candidate.id))
+
+                else:
+                    date_established = candidate.dt_of_first_entry
+
+                date_finished = self.p2c_get_date_finished(candidate) or candidate.dt_of_last_entry
 
                 try:
                     p2c = Person2Company.objects.get(from_person=person,
