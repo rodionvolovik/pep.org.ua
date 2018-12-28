@@ -17,7 +17,7 @@
                         {% set income = declaration.get_income() %}
                         <tr>
                             <td class="decl-year"><a href="{{ income.url }}" target="_blank"  data-toggle="tooltip" data-placement="bottom" title="{% if declaration.nacp_declaration %}{{ _("Електронна декларація") }}{% else %}{{ _("Паперова декларація") }}{% endif %}">{{ income.year }}</td>
-                            <td class="decl-position"><span itemscope="" itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ income.office }}</span></span>, {{ income.position }}</td>
+                            <td class="decl-position"><span itemscope="" itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ income.office }}</span></span>, {{ income.position }}{% if declaration.doc_type == "Кандидата на посаду" %} ({{ _("кандидат") }}){% endif %}</td>
                             <td class="decl-income">{{ income.income_of_declarant|curformat() }}</td>
                             <td class="decl-familyincome">{{ income.income_of_family|curformat() }}</td>
                             <td class="decl-familyincome">{{ income.expenses_of_declarant|curformat() }}</td>

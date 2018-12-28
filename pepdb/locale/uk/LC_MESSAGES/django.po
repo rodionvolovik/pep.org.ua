@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-16 14:03+0200\n"
+"POT-Creation-Date: 2018-12-28 13:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -673,6 +673,10 @@ msgstr ""
 #: core/templates/_declaration.jinja:228 core/templates/_declaration.jinja:278
 #: core/templates/_declaration.jinja:342 core/templates/_declaration.jinja:481
 msgid "Паперова декларація"
+msgstr ""
+
+#: core/templates/_declaration.jinja:20
+msgid "кандидат"
 msgstr ""
 
 #: core/templates/_declaration.jinja:31
