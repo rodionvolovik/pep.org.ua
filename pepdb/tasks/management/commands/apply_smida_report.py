@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import re
+from datetime import date, datetime, timedelta
+from calendar import monthrange
 from collections import defaultdict
 
 from django.db.models import Count
@@ -15,6 +17,7 @@ from core.utils import parse_fullname, title
 from tasks.elastic_models import EDRPOU
 from tasks.models import SMIDACandidate
 from dateutil.parser import parse as dt_parse
+from dateutil.relativedelta import relativedelta
 from django.utils.translation import activate
 from django.conf import settings
 
@@ -108,7 +111,8 @@ class Command(BaseCommand):
         # region Persons and P2C
         self.stdout.write("Starting import Persons and Person2Company relations.")
         smida_candidates = SMIDACandidate.objects.filter(status="a",
-                                                         smida_is_real_person=True)
+                                                         smida_is_real_person=True)\
+                                                 .order_by("dt_of_first_entry")
 
         peps = self.all_peps_names()
         self.persons_dict = {}
@@ -153,7 +157,33 @@ class Command(BaseCommand):
                                .format(candidate.id))
 
                 date_established = self.p2c_get_date_established(candidate)
+
+                if date_established:
+                    # update previous position on this work
+                    prev_position = Person2Company.objects \
+                        .filter(from_person=person, to_company=company,
+                                is_employee=True, date_established__lt=date_established) \
+                        .exclude(relationship_type__icontains=relationship_type)\
+                        .order_by("-date_established").first()
+
+                    if prev_position:
+                        prev_position.date_finished = date_established
+                        prev_position.date_finished_details = 0
+
+                        if options["real_run"]:
+                            prev_position.save()
+
+                        tqdm.write("Updated previous position for SMIDACandidate ID: {}"
+                                   .format(candidate.id))
+
+                else:
+                    date_established = candidate.dt_of_first_entry
+
+                last_entry = candidate.dt_of_last_entry
                 date_finished = self.p2c_get_date_finished(candidate)
+
+                if not date_finished and last_entry and last_entry.date() < self.threshold_quarter_end():
+                    date_finished = last_entry
 
                 try:
                     p2c = Person2Company.objects.get(from_person=person,
@@ -421,6 +451,15 @@ class Command(BaseCommand):
             if person.companies_cnt > 1:
                 tqdm.write("{} {}".format(person.url_uk, person.companies_cnt))
 
+    def threshold_quarter_end(self):
+        """
+        Calculate date behind which the reports would considered as the past
+        :return: date
+        """
+        th_date = datetime.now() - relativedelta(months=6)
+        th_quarter = (th_date.month - 1) // 3 + 1
+        return date(th_date.year, th_quarter * 3, monthrange(th_date.year, th_quarter * 3)[1])\
+               + timedelta(days=1)
 
 SMIDA_POSITIONS_MAPPING = {
     u'h sc': u'Голова правління',
