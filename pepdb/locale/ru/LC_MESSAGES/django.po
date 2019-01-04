@@ -497,11 +497,11 @@ msgstr "бывший основатель/участник"
 
 #: core/model/companies.py:368
 msgid "бенефіціарний власник"
-msgstr "бенефициарный владелец"
+msgstr "бенефициарный собственник"
 
 #: core/model/companies.py:369
 msgid "номінальний власник"
-msgstr "номинальный владелец"
+msgstr "номинальный собственник"
 
 #: core/model/companies.py:374
 msgid "клієнт банку"
@@ -840,11 +840,11 @@ msgstr "Бывший основатель/участник"
 #: core/model/connections.py:200 core/templates/company.jinja:155
 #: tasks/models.py:96
 msgid "Бенефіціарний власник"
-msgstr "Бенефициарный владелец"
+msgstr "Бенефициарный собственник"
 
 #: core/model/connections.py:201
 msgid "Номінальний власник"
-msgstr "Номинальный владелец"
+msgstr "Номинальный собственник"
 
 #: core/model/connections.py:202
 msgid "Номінальний директор"
@@ -910,7 +910,7 @@ msgstr "Связи с компаниями/организациями"
 
 #: core/model/connections.py:317 core/model/connections.py:353
 msgid "Власник"
-msgstr "Владелец"
+msgstr "Собственник"
 
 #: core/model/connections.py:318 core/model/connections.py:354
 msgid "Співвласник"
@@ -998,7 +998,7 @@ msgstr "Член наблюдательного органа"
 
 #: core/model/connections.py:339 core/model/connections.py:355
 msgid "Колишній власник/засновник"
-msgstr "Бывший владелец/учредитель"
+msgstr "Бывший собственник/учредитель"
 
 #: core/model/connections.py:340 core/model/connections.py:356
 msgid "Колишній співвласник/співзасновник"
@@ -2435,7 +2435,7 @@ msgstr "Ключ компании"
 
 #: tasks/models.py:111 tasks/models.py:113
 msgid "Власник в реєстрі PEP"
-msgstr "Владелец в реестре PEP"
+msgstr "Собственник в реестре PEP"
 
 #: tasks/models.py:116
 msgid "Член родини"
@@ -2451,11 +2451,11 @@ msgstr "Кандидаты на матчинг"
 
 #: tasks/models.py:136
 msgid "Бенефіціар або власник компанії"
-msgstr "Бенефициар или владелец компании"
+msgstr "Бенефициар или собственник компании"
 
 #: tasks/models.py:137
 msgid "Бенефіціари або власники компаній"
-msgstr "Бенефициары или владельцы компаний"
+msgstr "Бенефициары или собственники компаний"
 
 #: tasks/models.py:161
 msgid "Компанія 1"
