@@ -144,13 +144,13 @@
                     <span itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ last_workplace.company }}</span></span>,
                 {% endif %}
                 <span itemprop="jobTitle">{{ last_workplace.position }}</span>
-                {% if company.share %}
-                , {{ _("Частка") }} {{ "{:2.3f}".format(company.share) }}%
-                {% endif %}
                 {% endif %}
             </div>
             <div class="panel-footer">
                 {{ person.connection.relationship_type }}
+                {% if person.connection.share %}
+                , {{ _("Частка") }} {{ "{:2.3f}".format(person.connection.share) }}%
+                {% endif %}
                 {% if person.connection.has_additional_info %}
                 <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modal{{ prefix }}-{{ loop.index }}">
                     <i class="fa fa-info-circle info-gray"></i>
