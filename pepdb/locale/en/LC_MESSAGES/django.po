@@ -1123,7 +1123,7 @@ msgstr "Branch"
 #: core/model/connections.py:348 core/model/connections.py:384
 #: core/model/connections.py:385
 msgid "Керуюча компанія"
-msgstr "Management company
+msgstr "Management company"
 
 #: core/model/connections.py:349 core/model/connections.py:384
 #: core/model/connections.py:385
