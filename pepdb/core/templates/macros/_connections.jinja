@@ -144,6 +144,9 @@
                     <span itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ last_workplace.company }}</span></span>,
                 {% endif %}
                 <span itemprop="jobTitle">{{ last_workplace.position }}</span>
+                {% if company.share %}
+                , {{ _("Частка") }} {{ "{:2.3f}".format(company.share) }}%
+                {% endif %}
                 {% endif %}
             </div>
             <div class="panel-footer">
