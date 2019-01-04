@@ -338,7 +338,6 @@ class Company(models.Model, AbstractNode):
         }
 
         for rtp, p, rel in related_persons:
-            add_to_rest = True
             p.rtype = rtp
             p.connection = rel
 
@@ -359,27 +358,21 @@ class Company(models.Model, AbstractNode):
             ]:
                 res["managers"].append(p)
 
-                add_to_rest = False
             elif rtp.lower() in [
                 _("засновники"),
                 _("засновник/учасник"),
                 _("колишній засновник/учасник"),
-                _("бенефіціарний власник"),
-                _("номінальний власник"),
             ]:
                 res["founders"].append(p)
-                add_to_rest = False
 
             elif rtp.lower() in [_("клієнт банку")]:
                 res["bank_customers"].append(p)
-                add_to_rest = False
 
             if p.reputation_sanctions:
                 res["sanctions"].append(p)
-                add_to_rest = False
 
-            if add_to_rest:
-                res["rest"].append(p)
+
+            res["rest"].append(p)
 
         return res
 
