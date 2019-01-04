@@ -392,7 +392,12 @@ class Person(models.Model, AbstractNode):
     @property
     def all_related_persons(self):
         related_persons = [
-            (i.to_relationship_type, i.from_relationship_type, deepcopy(i.to_person), i)
+            (
+                i.to_relationship_type,
+                i.from_relationship_type,
+                deepcopy(i.to_person),
+                i
+            )
             for i in self.to_persons.prefetch_related(
                 "to_person", "proofs", "proofs__proof_document"
             ).defer(
@@ -433,9 +438,9 @@ class Person(models.Model, AbstractNode):
             p.reverse_rtype = rrtp
             p.connection = rel
 
-            if rtp in [_("особисті зв'язки")]:
+            if rtp in ["особисті зв'язки"]:
                 res["personal"].append(p)
-            elif rtp in [_("ділові зв'язки")]:
+            elif rtp in ["ділові зв'язки"]:
                 res["business"].append(p)
             else:
                 res["family"].append(p)
