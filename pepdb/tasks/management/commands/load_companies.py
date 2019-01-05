@@ -240,12 +240,12 @@ class Command(BaseCommand):
                     revision = rev["url"].strip("/").rsplit('/', 1)[-1]
 
                     if not options["revision"]:
-                        timestamp = parse(rev["resource_created"], dayfirst=True)
+                        timestamp = parse(rev["resource_created"])
                         data_url = rev["url"]
                         break
 
                     if revision == options["revision"]:
-                        timestamp = parse(rev["resource_created"], dayfirst=True)
+                        timestamp = parse(rev["resource_created"])
                         data_url = rev["url"]
                         break
 
