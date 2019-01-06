@@ -1974,7 +1974,7 @@ msgstr "Меню"
 
 #: core/templates/base.jinja:107
 msgid "Домівка"
-msgstr "Жилище"
+msgstr "Домашняя"
 
 #: core/templates/base.jinja:108 core/templates/countries.jinja:20
 msgid "Країни"

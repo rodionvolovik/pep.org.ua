@@ -53,7 +53,7 @@
 {% set calling_page = page.url if page else "" %}
 
 <body class="{% block body_class %}not-front{% endblock %}"> 
-    <h1 class="navbar-brand print-only" href="{{ url("wagtail_serve", "") }}">PEP<span>.org.ua</span></h1>
+    <h1 class="navbar-brand print-only" href="{{ url("wagtail_serve", "") }}">RUPEP<span>.org</span></h1>
     <div id="wrapper">
         <nav id="navbar" class="navbar navbar-inverse navbar-default" role="navigation">  
             <div class="container"> 
@@ -64,7 +64,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="{{ url("wagtail_serve", "") }}">PEP<span>.org.ua</span></a>
+                    <a class="navbar-brand" href="{{ url("wagtail_serve", "") }}">RUPEP<span>.org</span></a>
                 </div>
 
                 {% block mini_search %}
@@ -106,9 +106,9 @@
                     <ul class="nav navbar-nav">
                         <li><a href="/" class="home-item" title="{{ _("Домівка") }}"><i></i>{{ _("Домівка") }}</a></li>
                         <li><a href="/countries" class="countries-item" title="{{ _("Країни") }}"><i></i>{{ _("Країни") }}</a></li>
-                        <li><a href="/pitannya-ta-vidpovid/" class="qa-item" title="{{ _("Про реєстр") }}"><i></i>{{ _("Про реєстр") }}</a></li>
+                        <li><a href="/вопросы-и-ответы/" class="qa-item" title="{{ _("Про реєстр") }}"><i></i>{{ _("Про реєстр") }}</a></li>
                         <li><a href="/feedback/" class="feedback-item" title="{{ _("Повідомити") }}"><i></i>{{ _("Повідомити") }}</a></li>
-                        <li><a href="/data/" class="data-item" title="{{ _("Дані") }}"><i></i>{{ _("Дані") }}</a></li>
+                        {# <li><a href="/data/" class="data-item" title="{{ _("Дані") }}"><i></i>{{ _("Дані") }}</a></li> #}
                         {% block extra_menu %}
                         {% endblock %}
                     </ul>

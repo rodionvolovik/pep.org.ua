@@ -226,6 +226,7 @@ PIPELINE = {
                 "less/main.less",
                 "css/graph.css",
                 "css/bootstrap-combobox.css",
+                "less/ru.less",
             ),
             "output_filename": "css/merged.css",
             "extra_context": {"media": "screen,projection"},
