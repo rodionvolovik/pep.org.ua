@@ -910,7 +910,7 @@ msgstr "Связи с компаниями/организациями"
 
 #: core/model/connections.py:317 core/model/connections.py:353
 msgid "Власник"
-msgstr "Собственник"
+msgstr "Владелец"
 
 #: core/model/connections.py:318 core/model/connections.py:354
 msgid "Співвласник"
@@ -998,7 +998,7 @@ msgstr "Член наблюдательного органа"
 
 #: core/model/connections.py:339 core/model/connections.py:355
 msgid "Колишній власник/засновник"
-msgstr "Бывший собственник/учредитель"
+msgstr "Бывший владелец/учредитель"
 
 #: core/model/connections.py:340 core/model/connections.py:356
 msgid "Колишній співвласник/співзасновник"
