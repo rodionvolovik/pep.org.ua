@@ -10,7 +10,7 @@ from core.models import (
     Person,
     RelationshipProof,
 )
-from core.utils import lookup_term
+from core.utils import lookup_term, get_localized_field
 
 
 class Command(BaseCommand):
@@ -31,40 +31,40 @@ class Command(BaseCommand):
         not_translated_proofs = set()
 
         for p in (
-            Declaration.objects.filter(confirmed="a").defer("source").all().nocache()
+            Declaration.objects.filter(confirmed="a").defer("source").all().nocache().iterator()
         ):
-            if lookup_term(p.region_uk) not in en_translations:
-                not_translated_regions.add(lookup_term(p.region_uk))
+            if lookup_term(get_localized_field(p, "region")) not in en_translations:
+                not_translated_regions.add(lookup_term(get_localized_field(p, "region")))
 
-            if lookup_term(p.position_uk) not in en_translations:
-                not_translated_positions.add(lookup_term(p.position_uk))
+            if lookup_term(get_localized_field(p, "position")) not in en_translations:
+                not_translated_positions.add(lookup_term(get_localized_field(p, "position")))
 
-            if lookup_term(p.office_uk) not in en_translations:
-                not_translated_offices.add(lookup_term(p.office_uk))
+            if lookup_term(get_localized_field(p, "office")) not in en_translations:
+                not_translated_offices.add(lookup_term(get_localized_field(p, "office")))
 
-        for p in Person.objects.all().nocache():
+        for p in Person.objects.all().nocache().iterator():
             if (
-                not p.city_of_birth_en
-                and lookup_term(p.city_of_birth_en) not in en_translations
+                not get_localized_field(p, "city_of_birth")
+                and lookup_term(get_localized_field(p, "city_of_birth")) not in en_translations
             ):
-                not_translated_cities.add(lookup_term(p.city_of_birth_uk))
+                not_translated_cities.add(get_localized_field(p, "city_of_birth"))
 
-        for c in Company.objects.all().nocache():
-            if not c.name_en and lookup_term(c.name_uk) not in en_translations:
-                not_translated_offices.add(lookup_term(c.name_uk))
+        for c in Company.objects.all().nocache().iterator():
+            if not c.name_en and lookup_term(get_localized_field(c, "name")) not in en_translations:
+                not_translated_offices.add(lookup_term(get_localized_field(c, "name")))
 
             if (
                 not c.short_name_en
-                and lookup_term(c.short_name_uk) not in en_translations
+                and lookup_term(get_localized_field(c, "short_name")) not in en_translations
             ):
-                not_translated_offices.add(lookup_term(c.short_name_uk))
+                not_translated_offices.add(lookup_term(get_localized_field(c, "short_name")))
 
         for p2c in Person2Company.objects.all().nocache():
             if (
                 not p2c.relationship_type_en
-                and lookup_term(p2c.relationship_type_uk) not in en_translations
+                and lookup_term(get_localized_field(p2c, "relationship_type")) not in en_translations
             ):
-                not_translated_positions.add(lookup_term(p2c.relationship_type_uk))
+                not_translated_positions.add(lookup_term(get_localized_field(p2c, "relationship_type")))
 
         for r in RelationshipProof.objects.all().nocache():
             if (
@@ -72,9 +72,9 @@ class Command(BaseCommand):
                 and
                 # "pdf" not in r.proof_title_uk.lower() and
                 # "jpg" not in r.proof_title_uk.lower() and
-                lookup_term(r.proof_title_uk) not in en_translations
+                lookup_term(get_localized_field(r, "proof_title")) not in en_translations
             ):
-                not_translated_proofs.add(lookup_term(r.proof_title_uk))
+                not_translated_proofs.add(lookup_term(get_localized_field(r, "proof_title")))
 
         x = (
             not_translated_regions
