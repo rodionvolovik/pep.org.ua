@@ -325,6 +325,14 @@ class NoTranslationPersonFilter(admin.SimpleListFilter):
 
     # Parameter for the filter that will be used in the URL query.
     parameter_name = "translation"
+    fields = [
+        "wiki",
+        "reputation_assets",
+        "reputation_sanctions",
+        "reputation_crimes",
+        "reputation_manhunt",
+        "reputation_convictions",
+    ]
 
     def lookups(self, request, model_admin):
         return (("no", _("Немає")),)
@@ -333,14 +341,7 @@ class NoTranslationPersonFilter(admin.SimpleListFilter):
         # to decide how to filter the queryset.
         if self.value() == "no":
             q = Q()
-            for field in [
-                "wiki",
-                "reputation_assets",
-                "reputation_sanctions",
-                "reputation_crimes",
-                "reputation_manhunt",
-                "reputation_convictions",
-            ]:
+            for field in self.fields:
                 q |= (
                     Q(**{localized_field(field, "en"): ""})
                     | Q(**{localized_field(field, "en") + "__isnull": True})
@@ -352,6 +353,18 @@ class NoTranslationPersonFilter(admin.SimpleListFilter):
             return queryset.filter(q)
         else:
             return queryset
+
+
+class NoTranslationCompanyFilter(NoTranslationPersonFilter):
+    fields = [
+        "wiki",
+        "other_founders",
+        "other_recipient",
+        "other_owners",
+        "other_managers",
+        "bank_name",
+        "sanctions"
+    ]
 
 
 class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
@@ -490,7 +503,7 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     ]
     search_fields = localized_fields(["name", "short_name"]) + ["edrpou"]
     readonly_fields = ("last_change", "last_editor", "_last_modified")
-    list_filter = ("last_editor",)
+    list_filter = ("last_editor", NoTranslationCompanyFilter)
     actions = [make_published, make_unpublished]
 
     class Media:
