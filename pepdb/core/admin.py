@@ -61,7 +61,7 @@ from core.universal_loggers import MessagesLogger
 from django_otp.plugins.otp_totp.admin import TOTPDeviceAdmin
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from tasks.elastic_models import EDRPOU
-from core.utils import localized_fields
+from core.utils import localized_fields, localized_field
 
 
 def make_published(modeladmin, request, queryset):
@@ -320,6 +320,39 @@ class DeclarationExtraInline(admin.TabularInline):
         "country",
     ]
 
+class NoTranslationPersonFilter(admin.SimpleListFilter):
+    title = _("Наявність перекладу")
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = "translation"
+
+    def lookups(self, request, model_admin):
+        return (("no", _("Немає")),)
+
+    def queryset(self, request, queryset):
+        # to decide how to filter the queryset.
+        if self.value() == "no":
+            q = Q()
+            for field in [
+                "wiki",
+                "reputation_assets",
+                "reputation_sanctions",
+                "reputation_crimes",
+                "reputation_manhunt",
+                "reputation_convictions",
+            ]:
+                q |= (
+                    Q(**{localized_field(field, "en"): ""})
+                    | Q(**{localized_field(field, "en") + "__isnull": True})
+                ) & ~(
+                    Q(**{localized_field(field): ""})
+                    | Q(**{localized_field(field) + "__isnull": True})
+                )
+
+            return queryset.filter(q)
+        else:
+            return queryset
+
 
 class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     class Media:
@@ -348,7 +381,7 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
         "names"
     ]
     list_editable = ("dob", "dob_details")
-    list_filter = ("last_editor",)
+    list_filter = ("last_editor", NoTranslationPersonFilter)
 
     actions = [make_published, make_unpublished]
 
