@@ -5,6 +5,7 @@ from django.core.management.base import BaseCommand
 
 from core.models import (
     Person, Person2Company, Person2Country, Person2Person, Declaration)
+from core.utils import ceil_date
 from tasks.models import PersonDeduplication, AdHocMatch
 from django.db import connection
 
@@ -100,8 +101,8 @@ class Command(BaseCommand):
                 _delete_person(task, task.person2_id)
 
             if task.status == "m":
-                person1 = _fetch_person(task, task.person1_id)
-                person2 = _fetch_person(task, task.person2_id)
+                person1 = _fetch_person(task, max(task.person1_id, task.person2_id))
+                person2 = _fetch_person(task, min(task.person1_id, task.person2_id))
                 if person1 is None or person2 is None:
                     continue
 
@@ -126,7 +127,7 @@ class Command(BaseCommand):
                     master_val = getattr(master, field)
 
                     if donor_val and donor_val.strip():
-                        setattr(master, field, master_val + " " + donor_val)
+                        setattr(master, field, ((master_val or "") + " " + donor_val).strip())
 
                         self.stdout.write("\tconcatenating content of {}".format(
                             field))
@@ -151,11 +152,33 @@ class Command(BaseCommand):
                             self.stdout.write("\timproving content of {} (replacing {} with {})".format(
                                 field, master.dob, donor.dob))
 
-                # Another corner case:
-                if donor.type_of_official < master.type_of_official:
-                    self.stdout.write("\tUpgrading pep level to {}".format(
-                        donor.type_of_official))
-                    master.type_of_official = donor.type_of_official
+                if donor.reason_of_termination == None and master.reason_of_termination is not None and master.reason_of_termination != 1:
+                    master.reason_of_termination = None
+                    master.termination_date = None
+                    master.termination_date_details = 0
+
+                    self.stdout.write("\tResurrecting person as a pep, because donor has no termination date")
+
+                    if donor.type_of_official != master.type_of_official:
+                        self.stdout.write("\tSwitching pep level to {}".format(
+                            donor.type_of_official))
+                        master.type_of_official = donor.type_of_official
+
+                elif donor.reason_of_termination is not None and master.reason_of_termination is not None:
+                    if ceil_date(donor.termination_date, donor.termination_date_details) > ceil_date(master.termination_date, master.termination_date_details):
+                        master.termination_date = donor.termination_date
+                        master.termination_date_details = donor.termination_date_details
+
+                        self.stdout.write("\tUpdating termination date from {} to {} for a person".format(
+                            ceil_date(donor.termination_date, donor.termination_date_details),
+                            ceil_date(master.termination_date, master.termination_date_details)
+                        ))
+                elif donor.reason_of_termination is None and master.reason_of_termination is None:
+                    # Another corner case:
+                    if donor.type_of_official < master.type_of_official:
+                        self.stdout.write("\tUpgrading pep level to {}".format(
+                            donor.type_of_official))
+                        master.type_of_official = donor.type_of_official
 
                 if options["real_run"]:
                     master.save()
