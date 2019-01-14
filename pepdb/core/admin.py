@@ -300,6 +300,54 @@ class HasSanctionsListFilter(admin.SimpleListFilter):
         if self.value() == 'criminal':
             return queryset.filter(Q(reputation_crimes_uk__regex=".+") | Q(reputation_crimes_en__regex=".+"))
 
+
+class NoTranslationPersonFilter(admin.SimpleListFilter):
+    title = _("Наявність перекладу")
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = "translation"
+    fields = [
+        "wiki",
+        "reputation_assets",
+        "reputation_sanctions",
+        "reputation_crimes",
+        "reputation_manhunt",
+        "reputation_convictions",
+    ]
+
+    def lookups(self, request, model_admin):
+        return (("no", _("Немає")),)
+
+    def queryset(self, request, queryset):
+        # to decide how to filter the queryset.
+        if self.value() == "no":
+            q = Q()
+            for field in self.fields:
+                q |= (
+                    Q(**{field + "_en": ""})
+                    | Q(**{field + "_en" + "__isnull": True})
+                ) & ~(
+                    Q(**{field + "_uk": ""})
+                    | Q(**{field + "_uk" + "__isnull": True})
+                )
+
+            return queryset.filter(q)
+        else:
+            return queryset
+
+
+class NoTranslationCompanyFilter(NoTranslationPersonFilter):
+    fields = [
+        "wiki",
+        "other_founders",
+        "other_recipient",
+        "other_owners",
+        "other_managers",
+        "bank_name",
+        "sanctions"
+    ]
+
+
 class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     class Media:
         css = {
@@ -319,7 +367,7 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     readonly_fields = ('names', 'last_change', 'last_editor', '_last_modified')
     search_fields = ['last_name_uk', "first_name_uk", "patronymic_uk", "names"]
     list_editable = ("dob", "dob_details")
-    list_filter = (HasSanctionsListFilter,)
+    list_filter = ("last_editor", HasSanctionsListFilter, NoTranslationPersonFilter)
 
 
     actions = [make_published, make_unpublished]
@@ -376,6 +424,7 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
                      "legal_entity", "status")
     search_fields = ["name_uk", "short_name_uk", "edrpou"]
     readonly_fields = ('last_change', 'last_editor', '_last_modified')
+    list_filter = ("last_editor", NoTranslationCompanyFilter)
     actions = [make_published, make_unpublished]
 
     class Media:
