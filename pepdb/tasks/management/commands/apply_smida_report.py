@@ -456,7 +456,7 @@ class Command(BaseCommand):
         Calculate date behind which the reports would considered as the past
         :return: date
         """
-        th_date = datetime.now() - relativedelta(months=6)
+        th_date = datetime.now() - relativedelta(months=9)
         th_quarter = (th_date.month - 1) // 3 + 1
         return date(th_date.year, th_quarter * 3, monthrange(th_date.year, th_quarter * 3)[1])\
                + timedelta(days=1)
