@@ -156,9 +156,17 @@ class Command(BaseCommand):
                     tqdm.write("Relation missing from a mapping for SMIDACandidate ID: {}"
                                .format(candidate.id))
 
+                # Calc date finished
+                last_entry = candidate.dt_of_last_entry
+                date_finished = self.p2c_get_date_finished(candidate)
+
+                if not date_finished and last_entry and last_entry.date() < self.threshold_quarter_end():
+                    date_finished = last_entry
+
+                # Calc date established
                 date_established = self.p2c_get_date_established(candidate)
 
-                if date_established:
+                if date_established and (not date_finished or date_established.date() < date_finished.date()):
                     # update previous position on this work
                     prev_position = Person2Company.objects \
                         .filter(from_person=person, to_company=company,
@@ -179,12 +187,7 @@ class Command(BaseCommand):
                 else:
                     date_established = candidate.dt_of_first_entry
 
-                last_entry = candidate.dt_of_last_entry
-                date_finished = self.p2c_get_date_finished(candidate)
-
-                if not date_finished and last_entry and last_entry.date() < self.threshold_quarter_end():
-                    date_finished = last_entry
-
+                # Get or create p2c
                 try:
                     p2c = Person2Company.objects.get(from_person=person,
                                    to_company=company,
@@ -192,17 +195,6 @@ class Command(BaseCommand):
                                    is_employee=True)
 
                     updated = False
-                    if (not p2c.date_established and date_established) or\
-                            ((p2c.date_established and date_established) and
-                            (p2c.date_established_details > 0 or date_established.date() < p2c.date_established)):
-                        tqdm.write("Updated date_established for P2C relation with id: {} Old: {}, New: {}"
-                                   .format(p2c.id,
-                                           p2c.date_established,
-                                           date_established))
-
-                        p2c.date_established = date_established
-                        p2c.date_established_details = 0
-                        updated = True
 
                     if (not p2c.date_finished and date_finished) or\
                             ((p2c.date_finished and date_finished) and
@@ -214,6 +206,18 @@ class Command(BaseCommand):
 
                         p2c.date_finished = date_finished
                         p2c.date_finished_details = 0
+                        updated = True
+
+                    if (not p2c.date_established and date_established and date_established.date() < p2c.date_finished) or\
+                            ((p2c.date_established and date_established) and
+                            (p2c.date_established_details > 0 or date_established.date() < p2c.date_established)):
+                        tqdm.write("Updated date_established for P2C relation with id: {} Old: {}, New: {}"
+                                   .format(p2c.id,
+                                           p2c.date_established,
+                                           date_established))
+
+                        p2c.date_established = date_established
+                        p2c.date_established_details = 0
                         updated = True
 
                     p2c_links_updated += int(updated)
