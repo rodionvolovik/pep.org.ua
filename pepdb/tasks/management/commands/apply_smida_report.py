@@ -247,6 +247,11 @@ class Command(BaseCommand):
         self.new_persons_having_multiple_company_relations()
 
         # region Create P2P connections
+
+        smida_candidates = SMIDACandidate.objects.filter(status="a",
+                                                         smida_is_real_person=True) \
+            .order_by("dt_of_last_entry")
+
         p2p_links_total = 0
 
         for candidate in tqdm(smida_candidates.nocache().iterator(),
@@ -262,15 +267,30 @@ class Command(BaseCommand):
                     continue
 
                 try:
-                    Person2Person.objects.get(from_person=from_person,
+                    p2p = Person2Person.objects.get(from_person=from_person,
                                   to_person=to_person,
                                   from_relationship_type="ділові зв'язки",
                                   to_relationship_type="ділові зв'язки")
+
+                    p2p.date_confirmed = candidate.dt_of_last_entry\
+                                         or p2p.date_confirmed\
+                                         or datetime.now()
+                    if options["real_run"]:
+                        p2p.save()
+
+                    tqdm.write("Updated P2P relation: id: {} ({}) <=> id: {} ({})// DC: {}"
+                               .format(from_person.id or "N/A",
+                                       from_person.full_name,
+                                       to_person.id or "N/A",
+                                       to_person.full_name,
+                                       p2p.date_confirmed))
+
                 except Person2Person.DoesNotExist:
                     p2p = Person2Person(from_person=from_person,
                                         to_person=to_person,
                                         from_relationship_type="ділові зв'язки",
-                                        to_relationship_type="ділові зв'язки")
+                                        to_relationship_type="ділові зв'язки",
+                                        date_confirmed=candidate.dt_of_last_entry or datetime.now())
 
                     tqdm.write("Created P2P relation: id: {} ({}) <=> id: {} ({})"
                                .format(from_person.id or "N/A",
