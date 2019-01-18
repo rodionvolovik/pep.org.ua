@@ -448,7 +448,8 @@ class Command(BaseCommand):
 
         if dat_obr:
             try:
-                return dt_parse(dat_obr)
+                dt = dt_parse(dat_obr)
+                return dt if dt.date() < date.today() else None
             except (ValueError, OverflowError):
                 tqdm.write("Can't parse p2c DAT_OBR for person: {} (ID: {})."
                            .format(candidate.smida_parsed_name, candidate.id))
@@ -462,7 +463,8 @@ class Command(BaseCommand):
             match = re.search(r'(\d{2}\.\d{2}\.\d{4})', termin_obr)
             if match and match.group(1):
                 try:
-                    return dt_parse(match.group(1))
+                    dt = dt_parse(match.group(1))
+                    return dt if dt.date() < date.today() else None
                 except (ValueError, OverflowError):
                     tqdm.write("Can't parse p2c TERM_OBR for person: {} (ID: {})."
                                .format(candidate.smida_parsed_name, candidate.id))
