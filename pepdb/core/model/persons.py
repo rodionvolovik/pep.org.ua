@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from itertools import chain
 from copy import deepcopy
+from urlparse import urlparse
 
 import datetime
 from django.db import models
@@ -772,6 +773,42 @@ class Person(models.Model, AbstractNode):
         )
         if seq:
             return max(seq)
+
+    @property    
+    def external_links(self):
+        social_networks = {
+            "facebook.com": "Facebook",
+            "twitter.com": "Twitter",
+            "vk.com": "Vkontakte",
+            "instagram.com": "Instagram",
+            "ok.ru": "Odnoklassniki",
+            "linkedin.com": "LinkedIn"
+        }
+
+        res = {
+            "social_networks": [],
+            "other": []
+        }
+
+        for proof in self.proofs.all():
+            if proof.proof:
+                domain = urlparse(proof.proof).hostname.replace("www.", "").lower()
+
+                if domain in social_networks:
+                    res["social_networks"].append({
+                        "type": social_networks[domain],
+                        "title": proof.proof_title or social_networks[domain],
+                        "url": proof
+                    })
+                else:
+                    res["other"].append({
+                        "type": domain,
+                        "title": proof.proof_title or domain,
+                        "url": proof
+                    })
+
+        return res
+
 
     class Meta:
         verbose_name = _("Фізична особа")

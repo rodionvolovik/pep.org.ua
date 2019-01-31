@@ -35,6 +35,8 @@
 {% set related_companies = person.all_related_companies %}
 {% set workplaces = person.workplaces %}
 {% set manhunt_records = person.manhunt_records %}
+{% set external_links = person.external_links %}
+
 <div class="container" itemscope itemtype="http://schema.org/Person">
     <div class="row">
         <div id="breadcrumbs">
@@ -184,6 +186,26 @@
                                     <td>{{ day_of_dismissal }}</td>
                                 </tr>
                                 {% endif %}
+                            {% endif %}
+                            {% if external_links.social_networks %}
+                                <tr>
+                                    <td>{{ _("Профілі в соціальних мережах") }}</td>
+                                    <td>
+                                        {% for network in external_links.social_networks %}
+                                        <a href="{{ network.url }}" target="_blank">{{ network.title }}</a>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            {% if external_links.other %}
+                                <tr>
+                                    <td>{{ _("Інші вебсайти") }}</td>
+                                    <td>
+                                        {% for network in external_links.other %}
+                                        <a href="{{ network.url }}" target="_blank">{{ network.title }}</a>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
                             {% endif %}
                         </table>
                     </div>
