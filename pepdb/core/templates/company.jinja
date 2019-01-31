@@ -37,7 +37,7 @@
             <ul id="side-profilemenu">
                 <li><a href="#personal" class="btn btn-transp trans"><i class="fa fa-info"></i><span>{{ _("Дані юридичної особи") }}</span></a></li>
                 {% if external_links %}
-                <li><a href="#documents" class="btn btn-transp trans"><i class="fa fa-info"></i><span>{{ _("Документи та джерела") }}</span></a></li>
+                <li><a href="#documents" class="btn btn-transp trans"><i class="fa fa-book"></i><span>{{ _("Документи та джерела") }}</span></a></li>
                 {% endif %}
                 {% if related_persons.founders or related_companies.founders or company|get_translated_field("other_founders", LANGUAGE_CODE) or 
                     company|get_translated_field("other_owners", LANGUAGE_CODE) %}
