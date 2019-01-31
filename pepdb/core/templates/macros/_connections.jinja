@@ -100,7 +100,7 @@
             {% endfor %}
             {% if first_person.dob %}<meta itemprop="birthDate" content="{{ first_person.dob }} "/>{% endif %}
 
-            {% set last_workplace = person.translated_last_workplace %}
+            {% set last_workplace = first_person.translated_last_workplace %}
             {% if last_workplace %}
                 {% if last_workplace.company_id %}
                     <a href="{{ url("company_details", company_id=last_workplace.company_id) }}" itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ last_workplace.company }}</span></a>,

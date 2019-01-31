@@ -56,7 +56,7 @@ class Command(BaseCommand):
                 pass
 
     def get_name(self, name_tuple):
-        return " ".join(name_tuple).strip().replace("  ", " ")
+        return " ".join(filter(None, name_tuple)).strip().replace("  ", " ")
 
     def replace_item(self, name_tuple, chunk, repl):
         r = [repl if x.lower() == chunk.lower() else x for x in name_tuple]
@@ -161,7 +161,7 @@ class Command(BaseCommand):
             aka = get_localized_field(person, "also_known_as")
 
             names = self.transliterate(
-                last_name, first_name, patronymic, settings.LANGUAGE_CODE
+                last_name or "", first_name or "", patronymic or "", settings.LANGUAGE_CODE
             )
 
             if aka:
@@ -181,7 +181,7 @@ class Command(BaseCommand):
             if len(first_name) == 1:
                 first_name += "."
 
-            if len(patronymic) == 1:
+            if patronymic is not None and len(patronymic) == 1:
                 patronymic += "."
 
             setattr(person, localized_field("first_name"), (first_name or "").strip())
