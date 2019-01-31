@@ -191,9 +191,10 @@
                                 <tr>
                                     <td>{{ _("Профілі в соціальних мережах") }}</td>
                                     <td>
-                                        {% for network in external_links.social_networks %}
-                                        <a href="{{ network.url }}" target="_blank">{{ network.title }}</a>
-                                        {% endfor %}
+                                        {% set comma = joiner(", ") %}
+                                        {% for network in external_links.social_networks -%}
+                                        {{ comma() }}<a href="{{ network.url }}" target="_blank">{{ network.title }}</a>
+                                        {%- endfor %}
                                     </td>
                                 </tr>
                             {% endif %}
@@ -201,9 +202,10 @@
                                 <tr>
                                     <td>{{ _("Інші вебсайти") }}</td>
                                     <td>
-                                        {% for network in external_links.other %}
-                                        <a href="{{ network.url }}" target="_blank">{{ network.title }}</a>
-                                        {% endfor %}
+                                        {% set comma = joiner(", ") %}
+                                        {% for network in external_links.other -%}
+                                        {{ comma() }}<a href="{{ network.url }}" target="_blank">{{ network.title }}</a>
+                                        {%- endfor %}
                                     </td>
                                 </tr>
                             {% endif %}
