@@ -85,6 +85,9 @@ class Declaration(models.Model):
         if get_language() == "en" and self.nacp_declaration:
             return settings.DECLARATION_DETAILS_EN_ENDPOINT.format(self.declaration_id)
 
+        if self.declarator_declaration:
+            url = url or "https://declarator.org/person/{}/".format(self.source["main"]["person"]["id"])
+
         return url
 
     def to_dict(self):
@@ -210,6 +213,51 @@ class Declaration(models.Model):
                 resp["income_of_family"] = self.source["income"]["5"].get(
                     "family", ugettext_lazy("Не зазначено")
                 )
+
+        return resp
+
+    def get_declarator_overall(self):
+        resp = {
+            "year": self.year,
+            "position": self.position,
+            "office": self.office,
+            "url": self.get_url(),
+            "income_of_declarant": ugettext_lazy("Не зазначено"),
+            "income_of_family": ugettext_lazy("Не зазначено"),
+            "estate_breakdown": defaultdict(float),
+            "list_of_vehicles": defaultdict(list),
+        }
+
+        if self.declarator_declaration:
+            resp["income_of_declarant"] = 0
+            resp["income_of_family"] = 0
+            resp["estate_total"] = 0
+            resp["vehicles_count"] = 0
+
+            for income in self.source.get("incomes", []):
+                if income.get("relative", None) is None:
+                    resp["income_of_declarant"] += income.get("size", None)
+                else:
+                    resp["income_of_family"] += income.get("size", None)
+
+            for estate in self.source.get("real_estates", []):
+                estate_type_id = estate.get("type", {}).get("id", 1)
+                estate_type_name = estate.get("type", {}).get("name", "Земельный участок")
+
+                if estate_type_id in [1, 3, 4]:
+                    resp["estate_breakdown"][estate_type_name] += (estate.get("square", None) or 0) * (estate.get("share", None) or 1)
+                else:
+                    resp["estate_breakdown"]["Иное"] += (estate.get("square", None) or 0) * (estate.get("share", None) or 1)
+
+            for vehicle in self.source.get("vehicles", []):
+                declared_by = (vehicle.get("relative", {}) or {}).get("name", "Декларант") or "Декларант"
+                resp["list_of_vehicles"][declared_by].append({
+                    "name": vehicle.get("name", "") or "",
+                    "comment": vehicle.get("comment", "") or "",
+                    "brand": (vehicle.get("brand", {}) or {}).get("name", "") or "",
+                    "manufacture_year": vehicle.get("manufacture_year", "") or "",
+                })
+
 
         return resp
 

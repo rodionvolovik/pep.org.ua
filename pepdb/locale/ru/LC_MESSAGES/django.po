@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-31 21:06+0200\n"
+"POT-Creation-Date: 2019-02-01 16:46+0200\n"
 "PO-Revision-Date: 2018-10-17 10:42+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "Введіть ім'я або назву компанії"
 msgstr "Введите имя или название компании"
 
-#: cms_pages/templates/cms_pages/home.jinja:31 core/model/declarations.py:34
+#: cms_pages/templates/cms_pages/home.jinja:31 core/model/declarations.py:35
 msgid "Перевірити"
 msgstr "Проверить"
 
@@ -78,8 +78,8 @@ msgstr "Обратная связь с другой компанией"
 msgid "Зворотні зв'язки з іншими компаніями"
 msgstr "Обратная связь с другими компаниями"
 
-#: core/admin.py:308 core/admin.py:309 core/model/declarations.py:858
-#: core/model/declarations.py:859
+#: core/admin.py:308 core/admin.py:309 core/model/declarations.py:909
+#: core/model/declarations.py:910
 msgid "Додаткова інформація про статки"
 msgstr "Дополнительная информация об активах"
 
@@ -177,10 +177,7 @@ msgstr "Семья уже была внесена в БД"
 msgid "Родини нема"
 msgstr "Семьи нет"
 
-#: core/admin.py:1138 core/templates/_declaration.jinja:64
-#: core/templates/_declaration.jinja:356 core/templates/_declaration.jinja:379
-#: core/templates/_declaration.jinja:402 core/templates/_declaration.jinja:425
-#: core/templates/_declaration.jinja:493
+#: core/admin.py:1138
 msgid "Родина"
 msgstr "Семья"
 
@@ -217,27 +214,27 @@ msgid "Зв'язок почався"
 msgstr "Начало связи"
 
 #: core/model/base.py:34 core/model/base.py:42 core/model/base.py:50
-#: core/model/declarations.py:826
+#: core/model/declarations.py:877
 msgid "точність"
 msgstr "точность"
 
 #: core/model/base.py:35 core/model/base.py:43 core/model/base.py:51
 #: core/model/companies.py:97 core/model/companies.py:107
-#: core/model/declarations.py:827 core/model/persons.py:86
+#: core/model/declarations.py:878 core/model/persons.py:86
 #: core/model/persons.py:160 tasks/models.py:265
 msgid "Точна дата"
 msgstr "Точная дата"
 
 #: core/model/base.py:35 core/model/base.py:43 core/model/base.py:51
 #: core/model/companies.py:97 core/model/companies.py:107
-#: core/model/declarations.py:827 core/model/persons.py:86
+#: core/model/declarations.py:878 core/model/persons.py:86
 #: core/model/persons.py:160 tasks/models.py:265
 msgid "Рік та місяць"
 msgstr "Год и месяц"
 
 #: core/model/base.py:35 core/model/base.py:43 core/model/base.py:51
 #: core/model/companies.py:97 core/model/companies.py:107
-#: core/model/declarations.py:827 core/model/persons.py:86
+#: core/model/declarations.py:878 core/model/persons.py:86
 #: core/model/persons.py:160 tasks/models.py:265
 msgid "Тільки рік"
 msgstr "Только год"
@@ -246,7 +243,7 @@ msgstr "Только год"
 msgid "Зв'язок скінчився"
 msgstr "Связь завершена"
 
-#: core/model/base.py:47 core/model/declarations.py:50
+#: core/model/base.py:47 core/model/declarations.py:51
 msgid "Підтверджено"
 msgstr "Подтверждено"
 
@@ -1199,171 +1196,170 @@ msgstr "Страна/юрисдикция"
 msgid "Країни/юрісдикції"
 msgstr "Страны/юрисдикции"
 
-#: core/model/declarations.py:31 tasks/models.py:36 tasks/models.py:66
+#: core/model/declarations.py:32 tasks/models.py:36 tasks/models.py:66
 #: tasks/models.py:89 tasks/models.py:143 tasks/models.py:175
 #: tasks/models.py:226 tasks/models.py:298 tasks/models.py:340
 #: tasks/models.py:369
 msgid "Не перевірено"
 msgstr "Не проверено"
 
-#: core/model/declarations.py:32
+#: core/model/declarations.py:33
 msgid "Не підходить"
 msgstr "Не подходит"
 
-#: core/model/declarations.py:33
+#: core/model/declarations.py:34
 msgid "Опубліковано"
 msgstr "Опубликовано"
 
-#: core/model/declarations.py:37
+#: core/model/declarations.py:38
 msgid "Ідентифікатор"
 msgstr "Идентификатор"
 
-#: core/model/declarations.py:39 core/model/persons.py:72 tasks/models.py:275
+#: core/model/declarations.py:40 core/model/persons.py:72 tasks/models.py:275
 #: tasks/models.py:308 tasks/models.py:350
 msgid "Прізвище"
 msgstr "Фамилия"
 
-#: core/model/declarations.py:40 core/model/persons.py:73
+#: core/model/declarations.py:41 core/model/persons.py:73
 msgid "Ім'я"
 msgstr "Имя"
 
-#: core/model/declarations.py:41
+#: core/model/declarations.py:42
 msgid "По-батькові"
 msgstr "Отчество"
 
-#: core/model/declarations.py:42 core/templates/_declaration.jinja:9
+#: core/model/declarations.py:43 core/templates/_declaration.jinja:9
 #: tasks/models.py:309 tasks/models.py:351
 msgid "Посада"
 msgstr "Должность"
 
-#: core/model/declarations.py:43
+#: core/model/declarations.py:44
 msgid "Відомство"
 msgstr "Ведомство"
 
-#: core/model/declarations.py:44
+#: core/model/declarations.py:45
 msgid "Регіон"
 msgstr "Регион"
 
-#: core/model/declarations.py:45
+#: core/model/declarations.py:46
 msgid "Тип декларації"
 msgstr "Тип декларации"
 
-#: core/model/declarations.py:46 core/templates/_declaration.jinja:8
-#: core/templates/_declaration.jinja:67 core/templates/_declaration.jinja:219
-#: core/templates/_declaration.jinja:269 core/templates/_declaration.jinja:331
-#: core/templates/_declaration.jinja:473
+#: core/model/declarations.py:47 core/templates/_declaration.jinja:8
 msgid "Рік"
 msgstr "Год"
 
-#: core/model/declarations.py:48
+#: core/model/declarations.py:49
 msgid "Посилання"
 msgstr "Ссылка"
 
-#: core/model/declarations.py:56 tasks/models.py:404
+#: core/model/declarations.py:57 tasks/models.py:404
 msgid "Відстань"
 msgstr "Расстояние"
 
-#: core/model/declarations.py:57
+#: core/model/declarations.py:58
 msgid "Person"
 msgstr "Персона"
 
-#: core/model/declarations.py:59
+#: core/model/declarations.py:60
 msgid "Декларація НАЗК"
 msgstr "Декларации"
 
-#: core/model/declarations.py:62
+#: core/model/declarations.py:63
 msgid "Декларація з декларатора"
 msgstr "Декларация из декларатора"
 
-#: core/model/declarations.py:66
+#: core/model/declarations.py:67
 msgid "Родини немає, або вже внесена до БД"
 msgstr "Семьи нет, или уже внесена в БД"
 
-#: core/model/declarations.py:70
+#: core/model/declarations.py:71
 msgid "Декларація для профілів"
 msgstr "Декларация для профилей"
 
-#: core/model/declarations.py:74
+#: core/model/declarations.py:75
 msgid "Декларація для моніторінгу звільнень"
 msgstr "Декларация для мониторинга увольнений"
 
-#: core/model/declarations.py:77
+#: core/model/declarations.py:78
 msgid "Відмоніторено"
 msgstr "Отмониторино"
 
-#: core/model/declarations.py:79
+#: core/model/declarations.py:80
 msgid "Подана"
 msgstr "Представлена"
 
-#: core/model/declarations.py:81
+#: core/model/declarations.py:82
 msgid "Номер теки"
 msgstr "Номер папки"
 
-#: core/model/declarations.py:174 core/model/declarations.py:175
-#: core/model/declarations.py:176 core/model/declarations.py:208
-#: core/model/declarations.py:211 core/model/declarations.py:299
-#: core/model/declarations.py:300 core/model/declarations.py:330
-#: core/model/declarations.py:334
+#: core/model/declarations.py:178 core/model/declarations.py:179
+#: core/model/declarations.py:180 core/model/declarations.py:212
+#: core/model/declarations.py:215 core/model/declarations.py:226
+#: core/model/declarations.py:227 core/model/declarations.py:228
+#: core/model/declarations.py:229 core/model/declarations.py:350
+#: core/model/declarations.py:351 core/model/declarations.py:381
+#: core/model/declarations.py:385
 msgid "Не зазначено"
 msgstr "Не указано"
 
-#: core/model/declarations.py:204
+#: core/model/declarations.py:208
 msgid "Не зазначалось"
 msgstr "Не указывалось"
 
-#: core/model/declarations.py:814 core/model/declarations.py:815
+#: core/model/declarations.py:865 core/model/declarations.py:866
 msgid "Моніторинг декларацій"
 msgstr "Мониторинг деклараций"
 
-#: core/model/declarations.py:823
+#: core/model/declarations.py:874
 msgid "Дата"
 msgstr "Дата"
 
-#: core/model/declarations.py:838
+#: core/model/declarations.py:889
 msgid "Загальна сума сукупного доходу, гривні"
 msgstr "Общая сумма совокупного дохода, рубли"
 
-#: core/model/declarations.py:839
+#: core/model/declarations.py:890
 msgid "Дарунки, призи, виграші"
 msgstr "Подарки, призы, выигрыши"
 
-#: core/model/declarations.py:840
+#: core/model/declarations.py:891
 msgid "Земельні ділянки"
 msgstr "Земельные участки"
 
-#: core/model/declarations.py:841
+#: core/model/declarations.py:892
 msgid "Житлові будинки"
 msgstr "Жилые дома"
 
-#: core/model/declarations.py:842 core/templates/_declaration.jinja:334
+#: core/model/declarations.py:893
 msgid "Квартири"
 msgstr "Квартиры"
 
-#: core/model/declarations.py:843
+#: core/model/declarations.py:894
 msgid "Інше нерухоме майно"
 msgstr "Другая недвижимость"
 
-#: core/model/declarations.py:844 core/templates/_declaration.jinja:474
+#: core/model/declarations.py:895
 msgid "Транспортні засоби"
 msgstr "Транспортные средства"
 
-#: core/model/declarations.py:845
+#: core/model/declarations.py:896
 msgid "Вклади у банках"
 msgstr "Банковские вклады"
 
-#: core/model/declarations.py:846
+#: core/model/declarations.py:897
 msgid "Фінансові зобов’язання"
 msgstr "Финансовые обязательства"
 
-#: core/model/declarations.py:847
+#: core/model/declarations.py:898
 msgid "Інші активи"
 msgstr "Другие активы"
 
-#: core/model/declarations.py:853
+#: core/model/declarations.py:904
 msgid "Текст"
 msgstr "Текст"
 
-#: core/model/declarations.py:854 core/templates/company.jinja:137
+#: core/model/declarations.py:905 core/templates/company.jinja:137
 msgid "Адреса"
 msgstr "Адреса"
 
@@ -1668,270 +1664,68 @@ msgid "Дані з декларації про доходи:"
 msgstr "Данные из декларации о доходах:"
 
 #: core/templates/_declaration.jinja:10
-msgid "Доходи декларанта"
-msgstr "Доходы декларанта"
+msgid "Доходи"
+msgstr "Доходы"
 
 #: core/templates/_declaration.jinja:10 core/templates/_declaration.jinja:11
-#: core/templates/_declaration.jinja:12 core/templates/_declaration.jinja:69
-#: core/templates/_declaration.jinja:73 core/templates/_declaration.jinja:220
-#: core/templates/_declaration.jinja:221 core/templates/_declaration.jinja:283
-#: core/templates/_declaration.jinja:290
-msgid "UAH"
+msgid "RUB"
 msgstr "RUB"
 
 #: core/templates/_declaration.jinja:11
-msgid "Доходи родини"
-msgstr "Доходы семьи"
+msgid "Доходи чоловіка/жінки"
+msgstr "Доходы супруга"
 
 #: core/templates/_declaration.jinja:12
-msgid "Витрати та інші правочини декларанта"
-msgstr "Расходы и другие сделки декларанта"
+msgid "Нерухомість"
+msgstr "Недвижимость"
 
-#: core/templates/_declaration.jinja:19 core/templates/_declaration.jinja:83
-#: core/templates/_declaration.jinja:228 core/templates/_declaration.jinja:278
-#: core/templates/_declaration.jinja:342 core/templates/_declaration.jinja:481
-msgid "Електронна декларація"
-msgstr "Электронная декларация"
-
-#: core/templates/_declaration.jinja:19 core/templates/_declaration.jinja:83
-#: core/templates/_declaration.jinja:228 core/templates/_declaration.jinja:278
-#: core/templates/_declaration.jinja:342 core/templates/_declaration.jinja:481
-msgid "Паперова декларація"
-msgstr "Бумажная декларация"
-
-#: core/templates/_declaration.jinja:31
-msgid "Грошові активи:"
-msgstr "Денежные активы:"
-
-#: core/templates/_declaration.jinja:44
-msgid ""
-"Суб’єкт декларування повинен задекларувати: готівкові кошти, кошти, "
-"розміщені на банківських рахунках, внески до кредитних спілок та інших "
-"небанківських фінансових установ, у тому числі до інститутів спільного "
-"інвестування, кошти, позичені суб’єктом декларування або членом його сім’ї "
-"третім особам, активи у дорогоцінних (банківських) металах, інше."
-msgstr ""
-"Субъект декларирования должен задекларировать: наличные деньги, средства, "
-"размещенные на банковских счетах, вклады в кредитные союзы и другие "
-"небанковские финансовые учреждения, в том числе институты коллективного "
-"инвестирования, средства, одолженные субъектом декларирования или членом его "
-"семьи третьим лицам, активы в драгоценных металлы, другие."
-
-#: core/templates/_declaration.jinja:47
-msgid ""
-"Не підлягають декларуванню наявні грошові активи (у тому числі готівкові "
-"кошти, кошти, розміщені на банківських рахунках, внески до кредитних спілок "
-"та інших небанківських фінансових установ, кошти, позичені третім особам) та "
-"активи у дорогоцінних (банківських) металах, сукупна вартість яких не "
-"перевищує 50 прожиткових мінімумів, встановленних для працездатних осіб на 1 "
-"січня звітного року."
-msgstr ""
-"Не подлежат декларированию наличные денежные активы (в том числе наличные "
-"средства, средства, размещенные на банковских счетах, вклады в кредитные "
-"союзы и других небанковских финансовых учреждений, средства, одолженные "
-"третьим лицам) и активы в драгоценных (банковских) металлах, совокупная "
-"стоимость которых не превышает 50 прожиточных минимумов, установленного для "
-"трудоспособных лиц на 1 января отчетного года."
-
-#: core/templates/_declaration.jinja:51 core/templates/_declaration.jinja:209
-#: core/templates/_declaration.jinja:259 core/templates/_declaration.jinja:321
-#: core/templates/_declaration.jinja:463
-#: core/templates/macros/_connections.jinja:34
-msgid "Закрити"
-msgstr "Закрыть"
-
-#: core/templates/_declaration.jinja:63 core/templates/_declaration.jinja:350
-#: core/templates/_declaration.jinja:373 core/templates/_declaration.jinja:396
-#: core/templates/_declaration.jinja:419 core/templates/_declaration.jinja:484
-msgid "Декларант"
-msgstr "Декларант"
-
-#: core/templates/_declaration.jinja:68
-msgid "Вид активу"
-msgstr "Вид актива"
-
-#: core/templates/_declaration.jinja:70 core/templates/_declaration.jinja:74
-msgid "USD"
-msgstr "USD"
-
-#: core/templates/_declaration.jinja:71 core/templates/_declaration.jinja:75
-msgid "EUR"
-msgstr "EUR"
-
-#: core/templates/_declaration.jinja:72 core/templates/_declaration.jinja:76
-#: core/templates/_declaration.jinja:154 tasks/models.py:381
-#: tasks/models.py:391
-msgid "Інше"
-msgstr "Другие"
-
-#: core/templates/_declaration.jinja:87
-msgid "Вклади"
-msgstr "Вклады"
-
-#: core/templates/_declaration.jinja:121
-msgid "Готівка"
-msgstr "Наличные"
-
-#: core/templates/_declaration.jinja:192
-msgid "Дарунки, призи, виграші:"
-msgstr "Подарки, призы, выигрыши:"
-
-#: core/templates/_declaration.jinja:205
-msgid ""
-"Подарунки у формі грошових коштів ​повинні зазначатися, якщо розмір таких "
-"подарунків, отриманих від однієї особи (групи осіб) протягом року,​ перевищує "
-"5 прожиткових мінімумів, встановленних для працездатних осіб на 1 січня "
-"звітного року. Подарун​ок​ у формі, іншій ніж грошові кошти​ (рухоме майно, "
-"нерухомість тощо)​, зазначається​, якщо ​вартість так​ого​ подарунк​у перевищує 5 "
-"прожиткових мінімумів, встановленних для працездатних осіб на 1 січня "
-"звітного року. Зазначення інформації про подарунок не виключає обов'язок "
-"вказати відповідне майно в інших розділах декларації, наприклад, у розділах "
-"про цінне рухоме майно, нерухоме майно, цінні папери тощо."
-msgstr ""
-"Подарки в форме денежных средств должны указываться, если размер таких "
-"подарков, полученных от одного лица (группы лиц) в течение года, превышает 5 "
-"прожиточных минимумов, установленного для трудоспособных лиц на 1 января "
-"отчетного года. Подарок в форме, отличной от денежных средств (движимое "
-"имущество, недвижимость и т.д.), декларируется, если стоимость такого "
-"подарка превышает 5 прожиточных минимумов, установленного для трудоспособных "
-"лиц на 1 января отчетного года. Указание информации о подарке не исключает "
-"обязанность указать соответствующее имущество в других разделах декларации, "
-"например, в разделах о ценном движимом имуществе, недвижимое имущество, "
-"ценные бумаги и др."
-
-#: core/templates/_declaration.jinja:220
-msgid "Cума в декларанта"
-msgstr "Сумма декларанта"
-
-#: core/templates/_declaration.jinja:221 core/templates/_declaration.jinja:271
-msgid "Сума в сім'ї"
-msgstr "Сумма в семье"
-
-#: core/templates/_declaration.jinja:239
-msgid "Фінансові зобов’язання:"
-msgstr "Финансовые обязательства:"
-
-#: core/templates/_declaration.jinja:252
-msgid ""
-"Суб’єкт декларування повинен задекларувати: отримані кредити, отримані "
-"позики, зобов’язання за договорами лізингу, розмір сплачених коштів в "
-"рахунок основної суми позики (кредиту) та процентів за позикою (кредитом), "
-"зобов’язання за договорами страхування та недержавного пенсійного "
-"забезпечення, кошти, позичені суб’єкту декларування або члену його сім’ї "
-"іншими особами, несплачені податкові зобов’язання, інше."
-msgstr ""
-"Субъект декларирования должен задекларировать: полученные кредиты, "
-"полученные займы, обязательства по договорам лизинга, размер уплаченных "
-"средств в счет основной суммы займа (кредита) и процентов по займу "
-"(кредиту), обязательства по договорам страхования и негосударственного "
-"пенсионного обеспечения, средства, одолженные субъекту декларирования или "
-"члену его семьи другими лицами, неуплаченные налоговые обязательства, прочее."
-
-#: core/templates/_declaration.jinja:255
-msgid ""
-"Інформація зазначається, лише якщо розмір зобов’язання перевищує 50 "
-"прожиткових мінімумів, встановленних для працездатних осіб на 1 січня "
-"звітного року. Якщо розмір зобов’язання не перевищує 50 прожиткових "
-"мінімумів, встановленних для працездатних осіб на 1 січня звітного року, "
-"зазначається лише загальний розмір такого фінансового зобов’язання "
-"(наприклад, якщо розмір сплачених коштів в рахунок основної суми позики "
-"(кредиту) у звітному році не перевищує 50 прожиткових мінімумів, "
-"встановленних для працездатних осіб на 1 січня звітного року, то "
-"зазначається лише загальний розмір позики (кредиту))."
-msgstr ""
-"Информация отмечается, только если размер обязательства превышает 50 "
-"прожиточных минимумов, установленного для трудоспособных лиц на 1 января "
-"отчетного года. Если размер обязательства не превышает 50 прожиточных "
-"минимумов, установленного для трудоспособных лиц на 1 января отчетного года, "
-"указывается только общий размер такого финансового обязательства (например, "
-"если размер уплаченных средств в счет основной суммы займа (кредита) в "
-"отчетном году не превышает 50 прожиточных минимумов, установленного для "
-"трудоспособных лиц на 1 января отчетного года, то указывается только общий "
-"размер займа (кредита))."
-
-#: core/templates/_declaration.jinja:270
-msgid "Сума в декларанта"
-msgstr "Сумма декларанта"
-
-#: core/templates/_declaration.jinja:301
-msgid "Нерухомість декларанта і родини:"
-msgstr "Недвижимость декларанта и семьи:"
-
-#: core/templates/_declaration.jinja:314
-msgid ""
-"Вказуються об’єкти нерухомості, що належать суб’єкту декларування та членам "
-"його сім’ї на праві приватної власності, включаючи спільну власність, або "
-"знаходяться у них в оренді чи на іншому праві користування, незалежно від "
-"форми укладення правочину, внаслідок якого набуте таке право."
-msgstr ""
-"Указываются объекты недвижимости, принадлежащие субъекту декларирования и "
-"членам его семьи на праве частной собственности, включая совместную "
-"собственность или находятся у них в аренде или на ином праве пользования, "
-"независимо от формы заключения сделки, в результате которого приобретено "
-"такое право ."
-
-#: core/templates/_declaration.jinja:317
-msgid ""
-"В розділі вказується сукупна площа задекларованого за звітний рік майна. Для "
-"того, щоб отримати більш детальну інформацію, перейдіть на повну версію "
-"декларації."
-msgstr ""
-"В разделе указывается совокупная площадь задекларированного за отчетный год "
-"имущества. Для того, чтобы получить более подробную информацию, перейдите на "
-"полную версию декларации."
-
-#: core/templates/_declaration.jinja:332
-msgid "Земля"
-msgstr "Земля"
-
-#: core/templates/_declaration.jinja:333
-msgid "Будинки"
-msgstr "Жилые дома"
-
-#: core/templates/_declaration.jinja:335
-msgid "Інша нерухомість"
-msgstr "Другая недвижимость"
-
-#: core/templates/_declaration.jinja:346 core/templates/_declaration.jinja:352
-#: core/templates/_declaration.jinja:358 core/templates/_declaration.jinja:369
-#: core/templates/_declaration.jinja:375 core/templates/_declaration.jinja:381
-#: core/templates/_declaration.jinja:392 core/templates/_declaration.jinja:398
-#: core/templates/_declaration.jinja:404 core/templates/_declaration.jinja:415
-#: core/templates/_declaration.jinja:421 core/templates/_declaration.jinja:427
-#: core/templates/person.jinja:441
+#: core/templates/_declaration.jinja:12 core/templates/person.jinja:441
 msgid "м²"
 msgstr "м²"
 
-#: core/templates/_declaration.jinja:443
-msgid "Транспортні засоби:"
-msgstr "Транспортные средства:"
+#: core/templates/_declaration.jinja:13
+msgid "Транспорт"
+msgstr "Транспорт"
 
-#: core/templates/_declaration.jinja:456
-msgid ""
-"Вказуються дані про транспортні засоби та інші самохідні машини і механізми "
-"що належать суб’єкту декларування або членам його сім’ї на праві приватної "
-"власності, у тому числі спільної власності, або перебувають в їх володінні "
-"або користуванні незалежно від форми правочину, внаслідок якого набуте таке "
-"право. Відомості про транспортні засоби та інші самохідні машини і механізми "
-"зазначаються незалежно від їх вартості."
-msgstr ""
-"Указываются данные о транспортных средствах и другие самоходные машины и "
-"механизмы принадлежащих субъекту декларирования или членам его семьи на "
-"праве частной собственности, в том числе совместной собственности, или "
-"находящиеся в их владении или пользовании независимо от формы сделки, в "
-"результате которого приобретено такое право. Сведения о транспортных "
-"средствах и другие самоходные машины и механизмы указываются независимо от "
-"их стоимости."
+#: core/templates/_declaration.jinja:20
+msgid "Антикорупційна декларація"
+msgstr "Антикоррупционная декларация"
 
-#: core/templates/_declaration.jinja:459
-msgid ""
-"В розділі вказується марка, модель та рік випуску задекларованого "
-"транспортного засобу. Для того, щоб отримати більш детальну інформацію, "
-"перейдіть на повну версію декларації."
-msgstr ""
-"В разделе указывается марка, модель и год выпуска задекларированного "
-"транспортного средства. Для того, чтобы получить более подробную информацию, "
-"перейдите на полную версию декларации."
+#: core/templates/_declaration.jinja:52
+msgid "Жилой дом"
+msgstr "Жилой дом"
+
+#: core/templates/_declaration.jinja:53
+msgid "Квартира"
+msgstr "Квартира"
+
+#: core/templates/_declaration.jinja:54 core/templates/_declaration.jinja:61
+msgid "Иное"
+msgstr "Иное"
+
+#: core/templates/_declaration.jinja:55
+msgid "Земельный участок"
+msgstr "Земельный участок"
+
+#: core/templates/_declaration.jinja:56
+msgid "Декларант"
+msgstr "Декларант"
+
+#: core/templates/_declaration.jinja:57
+msgid "Супруг(а)"
+msgstr "Супруг(а)"
+
+#: core/templates/_declaration.jinja:58
+msgid "Сын"
+msgstr "Сын"
+
+#: core/templates/_declaration.jinja:59
+msgid "Дочь"
+msgstr "Дочь"
+
+#: core/templates/_declaration.jinja:60
+msgid "Ребенок"
+msgstr "Ребенок"
 
 #: core/templates/_feedback_form.jinja:51
 msgid "Надіслати"
@@ -2116,6 +1910,10 @@ msgstr "Связь закончилась: "
 #: core/templates/macros/_connections.jinja:20
 msgid "Підтверджено: "
 msgstr "Подтверждено: "
+
+#: core/templates/macros/_connections.jinja:34
+msgid "Закрити"
+msgstr "Закрыть"
 
 #: core/templates/macros/_connections.jinja:201
 msgid "Інформація з декларації"
@@ -2633,6 +2431,10 @@ msgstr "Бухгалтерия"
 msgid "Секретаріат"
 msgstr "Секретариат"
 
+#: tasks/models.py:381 tasks/models.py:391
+msgid "Інше"
+msgstr "Другие"
+
 #: tasks/models.py:387
 msgid "Заступник голови"
 msgstr "Заместитель главы"
@@ -2750,6 +2552,202 @@ msgstr "Имя не указано"
 #: tasks/templates/admin/wiki_entry.jinja:29
 msgid "Опис не вказано"
 msgstr "Описание не указано"
+
+#~ msgid "Доходи декларанта"
+#~ msgstr "Доходы декларанта"
+
+#~ msgid "UAH"
+#~ msgstr "RUB"
+
+#~ msgid "Витрати та інші правочини декларанта"
+#~ msgstr "Расходы и другие сделки декларанта"
+
+#~ msgid "Паперова декларація"
+#~ msgstr "Бумажная декларация"
+
+#~ msgid "Грошові активи:"
+#~ msgstr "Денежные активы:"
+
+#~ msgid ""
+#~ "Суб’єкт декларування повинен задекларувати: готівкові кошти, кошти, "
+#~ "розміщені на банківських рахунках, внески до кредитних спілок та інших "
+#~ "небанківських фінансових установ, у тому числі до інститутів спільного "
+#~ "інвестування, кошти, позичені суб’єктом декларування або членом його "
+#~ "сім’ї третім особам, активи у дорогоцінних (банківських) металах, інше."
+#~ msgstr ""
+#~ "Субъект декларирования должен задекларировать: наличные деньги, средства, "
+#~ "размещенные на банковских счетах, вклады в кредитные союзы и другие "
+#~ "небанковские финансовые учреждения, в том числе институты коллективного "
+#~ "инвестирования, средства, одолженные субъектом декларирования или членом "
+#~ "его семьи третьим лицам, активы в драгоценных металлы, другие."
+
+#~ msgid ""
+#~ "Не підлягають декларуванню наявні грошові активи (у тому числі готівкові "
+#~ "кошти, кошти, розміщені на банківських рахунках, внески до кредитних "
+#~ "спілок та інших небанківських фінансових установ, кошти, позичені третім "
+#~ "особам) та активи у дорогоцінних (банківських) металах, сукупна вартість "
+#~ "яких не перевищує 50 прожиткових мінімумів, встановленних для "
+#~ "працездатних осіб на 1 січня звітного року."
+#~ msgstr ""
+#~ "Не подлежат декларированию наличные денежные активы (в том числе наличные "
+#~ "средства, средства, размещенные на банковских счетах, вклады в кредитные "
+#~ "союзы и других небанковских финансовых учреждений, средства, одолженные "
+#~ "третьим лицам) и активы в драгоценных (банковских) металлах, совокупная "
+#~ "стоимость которых не превышает 50 прожиточных минимумов, установленного "
+#~ "для трудоспособных лиц на 1 января отчетного года."
+
+#~ msgid "Вид активу"
+#~ msgstr "Вид актива"
+
+#~ msgid "USD"
+#~ msgstr "USD"
+
+#~ msgid "EUR"
+#~ msgstr "EUR"
+
+#~ msgid "Вклади"
+#~ msgstr "Вклады"
+
+#~ msgid "Готівка"
+#~ msgstr "Наличные"
+
+#~ msgid "Дарунки, призи, виграші:"
+#~ msgstr "Подарки, призы, выигрыши:"
+
+#~ msgid ""
+#~ "Подарунки у формі грошових коштів ​повинні зазначатися, якщо розмір таких "
+#~ "подарунків, отриманих від однієї особи (групи осіб) протягом року,​ "
+#~ "перевищує 5 прожиткових мінімумів, встановленних для працездатних осіб на "
+#~ "1 січня звітного року. Подарун​ок​ у формі, іншій ніж грошові кошти​ (рухоме "
+#~ "майно, нерухомість тощо)​, зазначається​, якщо ​вартість так​ого​ подарунк​у "
+#~ "перевищує 5 прожиткових мінімумів, встановленних для працездатних осіб на "
+#~ "1 січня звітного року. Зазначення інформації про подарунок не виключає "
+#~ "обов'язок вказати відповідне майно в інших розділах декларації, "
+#~ "наприклад, у розділах про цінне рухоме майно, нерухоме майно, цінні "
+#~ "папери тощо."
+#~ msgstr ""
+#~ "Подарки в форме денежных средств должны указываться, если размер таких "
+#~ "подарков, полученных от одного лица (группы лиц) в течение года, "
+#~ "превышает 5 прожиточных минимумов, установленного для трудоспособных лиц "
+#~ "на 1 января отчетного года. Подарок в форме, отличной от денежных средств "
+#~ "(движимое имущество, недвижимость и т.д.), декларируется, если стоимость "
+#~ "такого подарка превышает 5 прожиточных минимумов, установленного для "
+#~ "трудоспособных лиц на 1 января отчетного года. Указание информации о "
+#~ "подарке не исключает обязанность указать соответствующее имущество в "
+#~ "других разделах декларации, например, в разделах о ценном движимом "
+#~ "имуществе, недвижимое имущество, ценные бумаги и др."
+
+#~ msgid "Cума в декларанта"
+#~ msgstr "Сумма декларанта"
+
+#~ msgid "Сума в сім'ї"
+#~ msgstr "Сумма в семье"
+
+#~ msgid "Фінансові зобов’язання:"
+#~ msgstr "Финансовые обязательства:"
+
+#~ msgid ""
+#~ "Суб’єкт декларування повинен задекларувати: отримані кредити, отримані "
+#~ "позики, зобов’язання за договорами лізингу, розмір сплачених коштів в "
+#~ "рахунок основної суми позики (кредиту) та процентів за позикою "
+#~ "(кредитом), зобов’язання за договорами страхування та недержавного "
+#~ "пенсійного забезпечення, кошти, позичені суб’єкту декларування або члену "
+#~ "його сім’ї іншими особами, несплачені податкові зобов’язання, інше."
+#~ msgstr ""
+#~ "Субъект декларирования должен задекларировать: полученные кредиты, "
+#~ "полученные займы, обязательства по договорам лизинга, размер уплаченных "
+#~ "средств в счет основной суммы займа (кредита) и процентов по займу "
+#~ "(кредиту), обязательства по договорам страхования и негосударственного "
+#~ "пенсионного обеспечения, средства, одолженные субъекту декларирования или "
+#~ "члену его семьи другими лицами, неуплаченные налоговые обязательства, "
+#~ "прочее."
+
+#~ msgid ""
+#~ "Інформація зазначається, лише якщо розмір зобов’язання перевищує 50 "
+#~ "прожиткових мінімумів, встановленних для працездатних осіб на 1 січня "
+#~ "звітного року. Якщо розмір зобов’язання не перевищує 50 прожиткових "
+#~ "мінімумів, встановленних для працездатних осіб на 1 січня звітного року, "
+#~ "зазначається лише загальний розмір такого фінансового зобов’язання "
+#~ "(наприклад, якщо розмір сплачених коштів в рахунок основної суми позики "
+#~ "(кредиту) у звітному році не перевищує 50 прожиткових мінімумів, "
+#~ "встановленних для працездатних осіб на 1 січня звітного року, то "
+#~ "зазначається лише загальний розмір позики (кредиту))."
+#~ msgstr ""
+#~ "Информация отмечается, только если размер обязательства превышает 50 "
+#~ "прожиточных минимумов, установленного для трудоспособных лиц на 1 января "
+#~ "отчетного года. Если размер обязательства не превышает 50 прожиточных "
+#~ "минимумов, установленного для трудоспособных лиц на 1 января отчетного "
+#~ "года, указывается только общий размер такого финансового обязательства "
+#~ "(например, если размер уплаченных средств в счет основной суммы займа "
+#~ "(кредита) в отчетном году не превышает 50 прожиточных минимумов, "
+#~ "установленного для трудоспособных лиц на 1 января отчетного года, то "
+#~ "указывается только общий размер займа (кредита))."
+
+#~ msgid "Сума в декларанта"
+#~ msgstr "Сумма декларанта"
+
+#~ msgid "Нерухомість декларанта і родини:"
+#~ msgstr "Недвижимость декларанта и семьи:"
+
+#~ msgid ""
+#~ "Вказуються об’єкти нерухомості, що належать суб’єкту декларування та "
+#~ "членам його сім’ї на праві приватної власності, включаючи спільну "
+#~ "власність, або знаходяться у них в оренді чи на іншому праві "
+#~ "користування, незалежно від форми укладення правочину, внаслідок якого "
+#~ "набуте таке право."
+#~ msgstr ""
+#~ "Указываются объекты недвижимости, принадлежащие субъекту декларирования и "
+#~ "членам его семьи на праве частной собственности, включая совместную "
+#~ "собственность или находятся у них в аренде или на ином праве пользования, "
+#~ "независимо от формы заключения сделки, в результате которого приобретено "
+#~ "такое право ."
+
+#~ msgid ""
+#~ "В розділі вказується сукупна площа задекларованого за звітний рік майна. "
+#~ "Для того, щоб отримати більш детальну інформацію, перейдіть на повну "
+#~ "версію декларації."
+#~ msgstr ""
+#~ "В разделе указывается совокупная площадь задекларированного за отчетный "
+#~ "год имущества. Для того, чтобы получить более подробную информацию, "
+#~ "перейдите на полную версию декларации."
+
+#~ msgid "Земля"
+#~ msgstr "Земля"
+
+#~ msgid "Будинки"
+#~ msgstr "Жилые дома"
+
+#~ msgid "Інша нерухомість"
+#~ msgstr "Другая недвижимость"
+
+#~ msgid "Транспортні засоби:"
+#~ msgstr "Транспортные средства:"
+
+#~ msgid ""
+#~ "Вказуються дані про транспортні засоби та інші самохідні машини і "
+#~ "механізми що належать суб’єкту декларування або членам його сім’ї на "
+#~ "праві приватної власності, у тому числі спільної власності, або "
+#~ "перебувають в їх володінні або користуванні незалежно від форми "
+#~ "правочину, внаслідок якого набуте таке право. Відомості про транспортні "
+#~ "засоби та інші самохідні машини і механізми зазначаються незалежно від їх "
+#~ "вартості."
+#~ msgstr ""
+#~ "Указываются данные о транспортных средствах и другие самоходные машины и "
+#~ "механизмы принадлежащих субъекту декларирования или членам его семьи на "
+#~ "праве частной собственности, в том числе совместной собственности, или "
+#~ "находящиеся в их владении или пользовании независимо от формы сделки, в "
+#~ "результате которого приобретено такое право. Сведения о транспортных "
+#~ "средствах и другие самоходные машины и механизмы указываются независимо "
+#~ "от их стоимости."
+
+#~ msgid ""
+#~ "В розділі вказується марка, модель та рік випуску задекларованого "
+#~ "транспортного засобу. Для того, щоб отримати більш детальну інформацію, "
+#~ "перейдіть на повну версію декларації."
+#~ msgstr ""
+#~ "В разделе указывается марка, модель и год выпуска задекларированного "
+#~ "транспортного средства. Для того, чтобы получить более подробную "
+#~ "информацию, перейдите на полную версию декларации."
 
 #~ msgid "бенефіціарний власник"
 #~ msgstr "бенефициарный собственник"
