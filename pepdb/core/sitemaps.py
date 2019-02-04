@@ -14,7 +14,7 @@ class MainXML(RelAlternateHreflangSitemap):
         pages = [
             ('wagtail_serve', ['']),
             ('feedback', []),
-            ('countries', []),
+            ('countries_home', []),
         ]
         return pages
 
