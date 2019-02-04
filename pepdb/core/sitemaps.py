@@ -11,7 +11,7 @@ from core.models import Person, Company, Country
 
 class MainXML(RelAlternateHreflangSitemap):
     def items(self):
-        pages = [("wagtail_serve", [""]), ("feedback", []), ("countries", [])]
+        pages = [("wagtail_serve", [""]), ("feedback", []), ("countries_home", [])]
         return pages
 
     def location(self, item):
