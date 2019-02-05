@@ -183,6 +183,8 @@ def _search_person(request):
         "also_known_as_en^2",
         "related_persons.person_uk",
         "related_persons.person_en",
+        "inn",
+        "passport",
     ]
 
     if query:

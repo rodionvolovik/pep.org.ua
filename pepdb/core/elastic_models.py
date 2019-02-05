@@ -62,7 +62,8 @@ class Person(DocType, RangeRelevantEntitiesMixin):
                 [
                     "full_name_suggest_en", "dob_details", "dob",
                     "full_name_suggest", "last_job_id", "risk_category",
-                    "photo_path", "terminated", "last_modified"
+                    "photo_path", "terminated", "last_modified",
+                    "inn", "inn_source", "passport", "passport_source"
                 ]
             )
             for p in cls.search().scan()

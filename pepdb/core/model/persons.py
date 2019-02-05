@@ -15,6 +15,7 @@ from django.db.models.functions import Coalesce
 from django.db.models import Q, Value, Max
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
+from django.core.exceptions import ValidationError
 
 from translitua import translitua
 import select2.fields
@@ -168,6 +169,18 @@ class Person(models.Model, AbstractNode):
     )
 
     _last_modified = models.DateTimeField("Остання зміна", null=True, blank=True)
+
+    inn = models.CharField(_("ІПН з публічних джерел"), max_length=40, null=True, blank=True)
+    inn_source = models.ForeignKey(
+        "core.Document", verbose_name="Документ з котрого було отримано ІПН",
+        default=None, blank=True, null=True, related_name="inns"
+    )
+    passport = models.CharField(_("Паспортні дані з публічних джерел"), max_length=40, null=True, blank=True)
+    passport_source = models.ForeignKey(
+        "core.Document", verbose_name="Документ з котрого було отримано ІПН",
+        default=None, blank=True, null=True, related_name="passports"
+    )
+
 
     @staticmethod
     def autocomplete_search_fields():
@@ -470,7 +483,8 @@ class Person(models.Model, AbstractNode):
             "reputation_assets_uk", "reputation_assets_en",
             "reputation_crimes_uk", "reputation_crimes_en",
             "reputation_manhunt_uk", "reputation_manhunt_en",
-            "also_known_as_uk", "also_known_as_en", "last_change"
+            "also_known_as_uk", "also_known_as_en", "last_change",
+            "inn", "inn_source", "passport", "passport_source",
         ])
 
         d["related_persons"] = [
@@ -511,6 +525,9 @@ class Person(models.Model, AbstractNode):
             ) + (d["reputation_manhunt_en"] or "")
             activate(curr_lang)
     
+        d["inn_source"] = settings.SITE_URL + self.inn_source.doc.url if self.inn_source else ""
+        d["passport_source"] = settings.SITE_URL + self.passport_source.doc.url if self.passport_source else ""
+
         d["photo"] = settings.SITE_URL + self.photo.url if self.photo else ""
         d["photo_path"] = self.photo.name if self.photo else ""
         d["date_of_birth"] = self.date_of_birth
@@ -731,6 +748,20 @@ class Person(models.Model, AbstractNode):
         seq = list(filter(None, [p2p_conn, p2comp_conn, p2cont_conn, self.last_change, self._last_modified]))
         if seq:
             return max(seq)
+
+
+    def clean(self):
+        if self.inn is not None and self.inn_source is None:
+            raise ValidationError({
+                'inn': 'Не можна вказувати ІПН не надавши документальне підтвердження',
+                'inn_source': 'Не можна вказувати ІПН не надавши документальне підтвердження',
+            })
+
+        if self.passport is not None and self.passport_source is None:
+            raise ValidationError({
+                'passport': 'Не можна вказувати ІПН не надавши документальне підтвердження',
+                'passport_source': 'Не можна вказувати ІПН не надавши документальне підтвердження',
+            })
 
 
     class Meta:

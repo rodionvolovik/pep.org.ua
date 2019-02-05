@@ -383,7 +383,8 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
             'fields': ["reason_of_termination", "termination_date", "termination_date_details"]}),
 
         (u'Додаткова інформація', {
-            'fields': ['wiki', 'wiki_draft', 'reputation_assets', 'risk_category', 'names']}),
+            'fields': ['wiki', 'wiki_draft', 'reputation_assets', 'risk_category', 'names', 'inn',
+                       'inn_source', 'passport', 'passport_source']}),
 
         (u'Ділова репутація', {
             'fields': ['reputation_sanctions', 'reputation_crimes',
