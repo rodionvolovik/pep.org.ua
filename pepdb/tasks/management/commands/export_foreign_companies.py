@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
             row = 1
             for t in BeneficiariesMatching.objects.filter(
-                    status="n", type_of_connection=kind).iterator().nocache():
+                    status="n", type_of_connection=kind).nocache().iterator():
 
                 base_res = {
                     "owner_name": t.person_json["full_name"]
