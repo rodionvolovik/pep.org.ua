@@ -798,13 +798,13 @@ class Person(models.Model, AbstractNode):
                     res["social_networks"].append({
                         "type": social_networks[domain],
                         "title": proof.proof_title or social_networks[domain],
-                        "url": proof
+                        "url": proof.proof
                     })
                 else:
                     res["other"].append({
                         "type": domain,
                         "title": proof.proof_title or domain,
-                        "url": proof
+                        "url": proof.proof
                     })
 
         return res
