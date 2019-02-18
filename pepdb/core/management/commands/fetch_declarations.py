@@ -149,11 +149,15 @@ class Command(BaseCommand):
                 )
 
             for full_name_to_ret in names_to_retrieve:
-                subr = requests.get(
-                    settings.DECLARATIONS_SEARCH_ENDPOINT, params={
-                        "q": full_name_to_ret,
-                        "format": "json"
-                    }, verify=False, timeout=60).json()
+                try:
+                    subr = requests.get(
+                        settings.DECLARATIONS_SEARCH_ENDPOINT, params={
+                            "q": full_name_to_ret,
+                            "format": "json"
+                        }, verify=False, timeout=60).json()
+                except ValueError:
+                    self.stderr.write("Cannot retrieve {}".format(full_name_to_ret))
+                    continue
 
                 self.stdout.write(full_name_to_ret)
 

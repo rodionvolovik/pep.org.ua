@@ -21,7 +21,7 @@ class Command(BaseCommand):
         if name in self.names_mapping:
             return [
                 self.banks_dict[code]
-                for code in self.names_mapping[name]
+                for code in self.names_mapping.get(name, [])
             ]
 
         stripped_name = name.strip('"\'')
