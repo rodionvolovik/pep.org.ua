@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.core.management.base import BaseCommand
 from collections import defaultdict
 from unicodecsv import DictReader
+from django.db.models import Q
 
 from core.model.exc import CannotResolveRelativeException
 from core.models import Company, Declaration
@@ -34,7 +35,7 @@ class Command(BaseCommand):
         if name in self.names_only_mapping:
             try:
                 company = Company.objects.get(
-                    name_en__iexact=self.names_only_mapping[name])
+                    Q(name_en__iexact=self.names_only_mapping[name]) | Q(name_uk__iexact=self.names_only_mapping[name]))
                 return [company]
             except Company.DoesNotExist:
                 self.stderr.write(
