@@ -2,10 +2,9 @@
 from __future__ import unicode_literals
 import re
 from datetime import date, datetime, timedelta
-from calendar import monthrange
 from collections import defaultdict
 
-from django.db.models import Count
+from django.db.models import Count, Max
 from tqdm import tqdm
 from django.core.management.base import BaseCommand
 
@@ -17,7 +16,6 @@ from core.utils import parse_fullname, title
 from tasks.elastic_models import EDRPOU
 from tasks.models import SMIDACandidate
 from dateutil.parser import parse as dt_parse
-from dateutil.relativedelta import relativedelta
 from django.utils.translation import activate
 from django.conf import settings
 
@@ -121,6 +119,7 @@ class Command(BaseCommand):
         p2c_links_created = 0
         p2c_links_updated = 0
         self.smida_p2c = self.person_2_companies_relations()
+        self.last_reports = self.get_companies_last_report()
 
         for candidate in tqdm(smida_candidates.nocache().iterator(),
                               total=smida_candidates.count()):
@@ -157,16 +156,25 @@ class Command(BaseCommand):
                                .format(candidate.id))
 
                 # Calc date finished
-                last_entry = candidate.dt_of_last_entry
                 date_finished = self.p2c_get_date_finished(candidate)
+                df_calculated = False
+                if not date_finished and candidate.dt_of_last_entry:
+                    company_last_report = self.last_reports.get(candidate.smida_edrpou)
 
-                if not date_finished and last_entry and last_entry.date() < self.threshold_quarter_end():
-                    date_finished = last_entry
+                    if company_last_report and person_name not in company_last_report['persons'] \
+                            and company_last_report['date'].date() > candidate.dt_of_last_entry.date():
+                        date_finished = candidate.dt_of_last_entry
+                        df_calculated = True
 
                 # Calc date established
+                de_calculated = False
                 date_established = self.p2c_get_date_established(candidate)
+                if not date_established:
+                    if not date_finished or candidate.dt_of_first_entry.date() < date_finished.date():
+                        date_established = candidate.dt_of_first_entry
+                        de_calculated = True
 
-                if date_established and (not date_finished or date_established.date() < date_finished.date()):
+                if date_established:
                     # update previous position on this work
                     prev_position = Person2Company.objects \
                         .filter(from_person=person, to_company=company,
@@ -175,7 +183,10 @@ class Command(BaseCommand):
                         .order_by("-date_established").first()
 
                     if prev_position:
-                        prev_position.date_finished = date_established
+                        if de_calculated:
+                            prev_position.date_finished = date_established - timedelta(days=1)
+                        else:
+                            prev_position.date_finished = date_established
                         prev_position.date_finished_details = 0
 
                         if options["real_run"]:
@@ -184,41 +195,30 @@ class Command(BaseCommand):
                         tqdm.write("Updated previous position for SMIDACandidate ID: {}"
                                    .format(candidate.id))
 
-                else:
-                    date_established = candidate.dt_of_first_entry
-
                 # Get or create p2c
                 try:
                     p2c = Person2Company.objects.get(from_person=person,
                                    to_company=company,
                                    relationship_type__icontains=relationship_type,
                                    is_employee=True)
-
                     updated = False
 
-                    if (not p2c.date_finished and date_finished) or\
-                            ((p2c.date_finished and date_finished) and
-                            (p2c.date_finished_details > 0 or date_finished.date() > p2c.date_finished)):
-                        tqdm.write("Updated date_finished for P2C relation with id: {} Old: {}, New: {}"
-                                   .format(p2c.id,
-                                           p2c.date_finished,
-                                           date_finished))
+                    if date_finished:
+                        old_val = p2c.date_finished
+                        if self.update_p2c_date_finished(p2c, date_finished, df_calculated):
+                            tqdm.write("Updated date_finished for P2C relation with id: {} Old: {}, New: {}"
+                                       .format(p2c.id, old_val, date_finished))
+                            updated = True
 
-                        p2c.date_finished = date_finished
-                        p2c.date_finished_details = 0
-                        updated = True
+                    if date_established:
+                        old_val = p2c.date_established
+                        if self.update_p2c_date_established(p2c, date_established):
+                            tqdm.write("Updated date_established for P2C relation with id: {} Old: {}, New: {}"
+                                       .format(p2c.id, old_val, date_established))
+                            updated = True
 
-                    if (not p2c.date_established and date_established and date_established.date() < p2c.date_finished) or\
-                            ((p2c.date_established and date_established) and
-                            (p2c.date_established_details > 0 or date_established.date() < p2c.date_established)):
-                        tqdm.write("Updated date_established for P2C relation with id: {} Old: {}, New: {}"
-                                   .format(p2c.id,
-                                           p2c.date_established,
-                                           date_established))
-
-                        p2c.date_established = date_established
-                        p2c.date_established_details = 0
-                        updated = True
+                    if updated:
+                        p2c.date_confirmed = candidate.dt_of_last_entry or datetime.now()
 
                     p2c_links_updated += int(updated)
 
@@ -231,7 +231,8 @@ class Command(BaseCommand):
                                          relationship_type=relationship_type,
                                          is_employee=True,
                                          date_established=date_established,
-                                         date_finished=date_finished)
+                                         date_finished=date_finished,
+                                         date_confirmed=candidate.dt_of_last_entry or datetime.now())
 
                     p2c_links_created += 1
                     tqdm.write("Created P2C relation: id: {} ({}) <=> id: {} ({}) EST. {}, FIN. {}"
@@ -477,15 +478,68 @@ class Command(BaseCommand):
             if person.companies_cnt > 1:
                 tqdm.write("{} {}".format(person.url_uk, person.companies_cnt))
 
-    def threshold_quarter_end(self):
-        """
-        Calculate date behind which the reports would considered as the past
-        :return: date
-        """
-        th_date = datetime.now() - relativedelta(months=9)
-        th_quarter = (th_date.month - 1) // 3 + 1
-        return date(th_date.year, th_quarter * 3, monthrange(th_date.year, th_quarter * 3)[1])\
-               + timedelta(days=1)
+    def get_companies_last_report(self):
+        queryset = SMIDACandidate.objects.filter(status="a", smida_is_real_person=True)\
+            .values('smida_edrpou')\
+            .annotate(last_report=Max('dt_of_last_entry'))
+
+        result = {}
+
+        for item in queryset:
+            key = item['smida_edrpou']
+
+            lr_date = item['last_report']
+            if not lr_date:
+                continue
+
+            persons = [name.strip().lower() for name in
+                       SMIDACandidate.objects.filter(
+                           status="a", smida_is_real_person=True,
+                           smida_edrpou=key,
+                           dt_of_last_entry__date=lr_date.date())
+                       .values_list("smida_parsed_name", flat=True)
+                       .distinct("smida_parsed_name")]
+
+            result[key] = {
+                'date': lr_date,
+                'persons': persons
+            }
+
+        return result
+
+    def update_p2c_date_established(self, p2c, date_established):
+        if not p2c.date_established:
+            if not p2c.date_finished:
+                p2c.date_established = date_established
+                p2c.date_established_details = 0
+                return True
+
+            if date_established.date() < p2c.date_finished:
+                p2c.date_established = date_established
+                p2c.date_established_details = 0
+                return True
+            return False
+
+        if date_established.date() < p2c.date_established or p2c.date_established_details > 0:
+            p2c.date_established = date_established
+            p2c.date_established_details = 0
+            return True
+        return False
+
+    def update_p2c_date_finished(self, p2c, date_finished, df_calculated):
+        if not p2c.date_finished:
+            p2c.date_finished = date_finished.date()
+            p2c.date_finished_details = 0
+            return True
+
+        if df_calculated:
+            return False
+
+        if p2c.date_finished_details > 0 or date_finished.date() > p2c.date_finished:
+            p2c.date_finished = date_finished.date()
+            p2c.date_finished_details = 0
+            return True
+        return False
 
 SMIDA_POSITIONS_MAPPING = {
     u'h sc': u'Голова правління',
