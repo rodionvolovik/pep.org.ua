@@ -4,6 +4,7 @@ from django.core.management.base import BaseCommand
 from core.models import Ua2EnDictionary
 from unicodecsv import reader
 from django.db.models import F, Func, Value
+from tqdm import tqdm
 
 
 class Command(BaseCommand):
@@ -24,7 +25,7 @@ class Command(BaseCommand):
         with open(file_path, "r") as fp:
             r = reader(fp)
 
-            for term, trans in r:
+            for term, trans in tqdm(r):
                 term = term.strip()
                 trans = trans.strip()
 
@@ -79,6 +80,7 @@ class Command(BaseCommand):
                     obj.translation = trans
                     obj.save()
                     successful += 1
+
 
             self.stdout.write(
                 "Import is done, successful: %s, failed: %s" % (successful, failed)

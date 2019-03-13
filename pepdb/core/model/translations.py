@@ -22,12 +22,12 @@ class Ua2RuDictionary(models.Model):
 
 
 class Ua2EnDictionary(models.Model):
-    term = models.CharField(_("Термін"), max_length=512, unique=True)
+    term = models.CharField(_("Термін"), max_length=768, unique=True)
     translation = models.CharField(
-        _("Переклад англійською"), max_length=512, blank=True
+        _("Переклад англійською"), max_length=768, blank=True
     )
     alt_translation = models.CharField(
-        _("Альтернативний переклад"), max_length=512, blank=True
+        _("Альтернативний переклад"), max_length=768, blank=True
     )
     comments = models.CharField(_("Коментарі"), blank=True, max_length=100)
 
