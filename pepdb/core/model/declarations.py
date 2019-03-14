@@ -39,13 +39,13 @@ class Declaration(models.Model):
     last_name = models.CharField(_("Прізвище"), max_length=40, blank=True)
     first_name = models.CharField(_("Ім'я"), max_length=40, blank=True)
     patronymic = models.CharField(_("По-батькові"), max_length=40, blank=True)
-    position = models.CharField(_("Посада"), max_length=512, blank=True)
-    office = models.CharField(_("Відомство"), max_length=512, blank=True)
+    position = models.CharField(_("Посада"), max_length=768, blank=True)
+    office = models.CharField(_("Відомство"), max_length=768, blank=True)
     region = models.CharField(_("Регіон"), max_length=50, blank=True)
     doc_type = models.CharField(_("Тип декларації"), max_length=50, blank=True)
     year = models.CharField(_("Рік"), max_length=4, blank=True, db_index=True)
     source = JSONField(blank=True)
-    url = models.URLField(_("Посилання"), max_length=512, blank=True)
+    url = models.URLField(_("Посилання"), max_length=768, blank=True)
     confirmed = models.CharField(
         _("Підтверджено"),
         max_length=1,

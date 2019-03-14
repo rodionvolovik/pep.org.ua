@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 from core.models import Declaration, Ua2EnDictionary, Company, Person2Company, Person
-from core.utils import lookup_term
+from core.utils import lookup_term, get_localized_field, localized_field
 
 
 class Command(BaseCommand):
@@ -16,14 +16,14 @@ class Command(BaseCommand):
         for p in (
             Declaration.objects.filter(confirmed="a").defer("source").all().nocache()
         ):
-            if lookup_term(p.region_uk) in en_translations:
-                p.region_en = en_translations[lookup_term(p.region_uk)]
+            if lookup_term(get_localized_field(p, "region")) in en_translations:
+                p.region_en = en_translations[lookup_term(get_localized_field(p, "region"))]
 
-            if lookup_term(p.position_uk) in en_translations:
-                p.position_en = en_translations[lookup_term(p.position_uk)]
+            if lookup_term(get_localized_field(p, "position")) in en_translations:
+                p.position_en = en_translations[lookup_term(get_localized_field(p, "position"))]
 
-            if lookup_term(p.office_uk) in en_translations:
-                p.office_en = en_translations[lookup_term(p.office_uk)]
+            if lookup_term(get_localized_field(p, "office")) in en_translations:
+                p.office_en = en_translations[lookup_term(get_localized_field(p, "office"))]
 
             p.save()
 
@@ -42,7 +42,7 @@ class Command(BaseCommand):
 
         for p in (
             Person.objects.exclude(
-                Q(city_of_birth_uk="") | Q(city_of_birth_uk__isnull=True)
+                Q(**{localized_field("city_of_birth"): ""}) | Q(**{localized_field("city_of_birth") + "__isnull": True})
             )
             .filter(Q(city_of_birth_en="") | Q(city_of_birth_en__isnull=True))
             .nocache()
