@@ -7,6 +7,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy, activate, deactivate
 
+from core.utils import localized_fields
 from core.model.base import AbstractNode
 
 
@@ -22,7 +23,7 @@ class Country(models.Model, AbstractNode):
 
     @staticmethod
     def autocomplete_search_fields():
-        return ("name_en__icontains", "name_uk__icontains")
+        return ["{}__icontains".format(x) for x in localized_fields(["name"], [settings.LANGUAGE_CODE, "en"])]
 
     def get_absolute_url(self):
         return reverse("countries", kwargs={"country_id": self.iso2})
