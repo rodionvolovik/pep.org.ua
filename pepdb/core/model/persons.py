@@ -633,11 +633,13 @@ class Person(models.Model, AbstractNode):
                     translit_from(val or "", settings.LANGUAGE_CODE),
                 )
 
-            if get_localized_field(
+            cob_term = get_localized_field(
                 self, "city_of_birth", settings.LANGUAGE_CODE
-            ) and not get_localized_field(self, "city_of_birth", lang):
+            )
+            cob_trans = get_localized_field(self, "city_of_birth", lang)
+            if cob_term and (cob_term == cob_trans or not cob_trans):
                 val = translate_through_dict(
-                    get_localized_field(self, "city_of_birth", lang),
+                    cob_term,
                     settings.LANGUAGE_CODE,
                     lang,
                 )
@@ -648,9 +650,7 @@ class Person(models.Model, AbstractNode):
                     setattr(
                         self,
                         localized_field("city_of_birth", lang),
-                        get_localized_field(
-                            self, "city_of_birth", settings.LANGUAGE_CODE
-                        ),
+                        ""
                     )
 
         super(Person, self).save(*args, **kwargs)

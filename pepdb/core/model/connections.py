@@ -285,11 +285,12 @@ class Person2Company(AbstractRelationship):
             if lang == settings.LANGUAGE_CODE:
                 continue
 
-            if get_localized_field(
-                self, "relationship_type", settings.LANGUAGE_CODE
-            ) and not get_localized_field(self, "relationship_type", lang):
+            term = get_localized_field(self, "relationship_type", settings.LANGUAGE_CODE)
+            trans = get_localized_field(self, "relationship_type", lang)
+
+            if term and (term == trans or not trans):
                 val = translate_through_dict(
-                    get_localized_field(self, "relationship_type", lang),
+                    term,
                     settings.LANGUAGE_CODE,
                     lang,
                 )
@@ -300,9 +301,7 @@ class Person2Company(AbstractRelationship):
                     setattr(
                         self,
                         localized_field("relationship_type", lang),
-                        get_localized_field(
-                            self, "relationship_type", settings.LANGUAGE_CODE
-                        ),
+                        "",
                     )
 
         super(Person2Company, self).save(*args, **kwargs)

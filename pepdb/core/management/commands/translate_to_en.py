@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.core.management.base import BaseCommand
-from django.db.models import Q
+from django.db.models import Q, F
 from core.models import Declaration, Ua2EnDictionary, Company, Person2Company, Person
 from core.utils import lookup_term, get_localized_field, localized_field
 
@@ -36,7 +36,8 @@ class Command(BaseCommand):
             c.save()  # This will invoke translation on the save method
 
         for p2c in Person2Company.objects.filter(
-            Q(relationship_type_en="") | Q(relationship_type_en__isnull=True)
+            Q(relationship_type_en="") | Q(relationship_type_en__isnull=True) |
+            Q(relationship_type_en=F(localized_field("relationship_type")))
         ).nocache():
             p2c.save()  # This will invoke translation on the save method
 
@@ -44,7 +45,7 @@ class Command(BaseCommand):
             Person.objects.exclude(
                 Q(**{localized_field("city_of_birth"): ""}) | Q(**{localized_field("city_of_birth") + "__isnull": True})
             )
-            .filter(Q(city_of_birth_en="") | Q(city_of_birth_en__isnull=True))
+            .filter(Q(city_of_birth_en="") | Q(city_of_birth_en__isnull=True) | Q(city_of_birth_en=F(localized_field("city_of_birth"))))
             .nocache()
         ):
             p.save()  # This will invoke translation on the save method
