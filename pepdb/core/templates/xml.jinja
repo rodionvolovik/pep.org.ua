@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+{% macro render_dict(dct) %}
+    {% for k, v in dct.items() -%}
+    {% if v|is_list %}
+        <{{ k }}>
+        {% for el in v %}
+        <value>{{ render_dict(el) }}</value>
+        {% endfor %}
+        </{{ k }}>
+    {% elif not v == "" %}
+        <{{ k }}>{{ v|xmlize }}</{{ k }}>
+    {% endif %}
+    {%- endfor %}
+{% endmacro %}
+<items>
+    {% for d in data -%}
+    <item>{{ render_dict(d) }}</item>
+    {%- endfor %}
+</items>

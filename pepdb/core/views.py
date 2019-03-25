@@ -30,7 +30,6 @@ from core.utils import is_cyr, add_encrypted_url, unique, blacklist
 from core.paginator import paginated_search
 from core.forms import FeedbackForm
 from core.auth import logged_in_or_basicauth
-from core.api import XmlItemExporter
 
 
 from core.elastic_models import Person as ElasticPerson, Company as ElasticCompany
@@ -472,22 +471,15 @@ def export_persons(request, fmt):
         response = JsonResponse(data, safe=False)
 
     if fmt == "xml":
-        fp = StringIO()
-        xim = XmlItemExporter(fp)
-        xim.start_exporting()
-
-        for item in data:
-            xim.export_item(item)
-
-        xim.finish_exporting()
-        payload = fp.getvalue()
-        fp.close()
-        response = HttpResponse(payload, content_type="application/xhtml+xml")
+        response = render(request, "xml.jinja", {
+            "data": data
+        }, content_type="application/xhtml+xml")
 
     response[
         "Content-Disposition"
     ] = "attachment; filename=peps_{:%Y%m%d_%H%M}.{}".format(datetime.now(), fmt)
 
+    
     response["Content-Length"] = len(response.content)
 
     return response
@@ -514,17 +506,9 @@ def export_companies(request, fmt):
         response = JsonResponse(data, safe=False)
 
     if fmt == "xml":
-        fp = StringIO()
-        xim = XmlItemExporter(fp)
-        xim.start_exporting()
-
-        for item in data:
-            xim.export_item(item)
-
-        xim.finish_exporting()
-        payload = fp.getvalue()
-        fp.close()
-        response = HttpResponse(payload, content_type="application/xhtml+xml")
+        response = render(request, "xml.jinja", {
+            "data": data
+        }, content_type="application/xhtml+xml")
 
     response[
         "Content-Disposition"

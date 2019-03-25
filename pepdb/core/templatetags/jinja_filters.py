@@ -78,3 +78,15 @@ def groupbyandsort(value, attribute, reverse):
     ]
 
     return sorted(grouped, key=lambda x: len(x.list), reverse=reverse)
+
+
+@library.filter
+def is_list(value):
+    return isinstance(value, list)
+
+@library.filter
+def xmlize(value):
+    if isinstance(value, bool):
+        return int(value)
+    else:
+        return value
