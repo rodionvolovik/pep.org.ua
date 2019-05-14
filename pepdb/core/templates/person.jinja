@@ -285,7 +285,7 @@
                     {% endif %}
                     {% if person|get_translated_field("reputation_convictions", LANGUAGE_CODE) %}
                         <h4>{{ _("Наявність судимості") }}</h4>
-                        {{ person|get_translated_field("reputation_convictions", LANGUAGE_CODE) }}
+                        {{ person|get_translated_field("reputation_convictions", LANGUAGE_CODE)|richtext }}
                     {% endif %}
 
                     {% if 

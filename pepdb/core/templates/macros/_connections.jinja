@@ -76,7 +76,7 @@
                     {% else %}
                         <span itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ last_workplace.company }}</span></span>,
                     {% endif %}
-                    <span itemprop="jobTitle">{{ last_workplace.position }}</span>
+                    <span itemprop="jobTitle">{{ last_workplace.position|lower }}</span>
                 {% endif %}
             {% endif %}
             {{ render_connection(person.connection, "modalPerson-{}".format(person.connection.pk)) }}
@@ -107,7 +107,7 @@
                 {% else %}
                     <span itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ last_workplace.company }}</span></span>,
                 {% endif %}
-                <span itemprop="jobTitle">{{ last_workplace.position }}</span>
+                <span itemprop="jobTitle">{{ last_workplace.position|lower }}</span>
             {% endif %}
 
             <ul>
@@ -143,7 +143,7 @@
                 {% else %}
                     <span itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ last_workplace.company }}</span></span>,
                 {% endif %}
-                <span itemprop="jobTitle">{{ last_workplace.position }}</span>
+                <span itemprop="jobTitle">{{ last_workplace.position|lower }}</span>
                 {% endif %}
             </div>
             <div class="panel-footer">

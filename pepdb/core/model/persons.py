@@ -774,7 +774,7 @@ class Person(models.Model, AbstractNode):
         if seq:
             return max(seq)
 
-    @property    
+    @property
     def external_links(self):
         social_networks = {
             "facebook.com": "Facebook",
@@ -783,6 +783,12 @@ class Person(models.Model, AbstractNode):
             "instagram.com": "Instagram",
             "ok.ru": "Odnoklassniki",
             "linkedin.com": "LinkedIn"
+        }
+        other_networks = {
+            "ru.wikipedia.org": "Wikipedia",
+            "en.wikipedia.org": "Wikipedia",
+            "de.wikipedia.org": "Wikipedia",
+            "uk.wikipedia.org": "Wikipedia",
         }
 
         res = {
@@ -797,13 +803,13 @@ class Person(models.Model, AbstractNode):
                 if domain in social_networks:
                     res["social_networks"].append({
                         "type": social_networks[domain],
-                        "title": proof.proof_title or social_networks[domain],
+                        "title": social_networks[domain],
                         "url": proof.proof
                     })
                 else:
                     res["other"].append({
                         "type": domain,
-                        "title": proof.proof_title or domain,
+                        "title": proof.proof_title or other_networks.get(domain, domain),
                         "url": proof.proof
                     })
 
