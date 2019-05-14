@@ -26,7 +26,13 @@ from dateutil.parser import parse as dt_parse
 from core.fields import RedactorField
 from core.model.base import AbstractNode
 from core.model.translations import Ua2EnDictionary
-from core.utils import render_date, lookup_term, parse_fullname, translate_into, ceil_date
+from core.utils import (
+    render_date,
+    lookup_term,
+    parse_fullname,
+    translate_into,
+    ceil_date,
+)
 from core.model.declarations import Declaration
 from core.model.connections import Person2Person, Person2Company, Person2Country
 
@@ -53,8 +59,7 @@ class Person(models.Model, AbstractNode):
     _types_of_officials = (
         (1, _("Національний публічний діяч")),
         (2, _("Іноземний публічний діяч")),
-        (3,
-         _("Діяч, що виконуює значні функції в міжнародній організації")),
+        (3, _("Діяч, що виконуює значні функції в міжнародній організації")),
         (4, _("Пов'язана особа")),
         (5, _("Член сім'ї")),
     )
@@ -65,47 +70,41 @@ class Person(models.Model, AbstractNode):
 
     publish = models.BooleanField("Опублікувати", default=False)
     is_pep = models.BooleanField("Є PEPом", default=True)
-    imported = models.BooleanField("Був імпортований з гугл-таблиці",
-                                   default=False)
+    imported = models.BooleanField("Був імпортований з гугл-таблиці", default=False)
 
     photo = models.ImageField("Світлина", blank=True, upload_to="images")
     dob = models.DateField("Дата народження", blank=True, null=True)
     dob_details = models.IntegerField(
         "Дата народження: точність",
-        choices=(
-            (0, "Точна дата"),
-            (1, "Рік та місяць"),
-            (2, "Тільки рік"),
-        ),
-        default=0)
+        choices=((0, "Точна дата"), (1, "Рік та місяць"), (2, "Тільки рік")),
+        default=0,
+    )
 
-    city_of_birth = models.CharField(
-        "Місто народження", max_length=100, blank=True)
+    city_of_birth = models.CharField("Місто народження", max_length=100, blank=True)
 
     related_countries = models.ManyToManyField(
-        "Country", verbose_name="Пов'язані країни",
-        through="Person2Country", related_name="people")
+        "Country",
+        verbose_name="Пов'язані країни",
+        through="Person2Country",
+        related_name="people",
+    )
 
-    reputation_assets = RedactorField(
-        "Статки", blank=True)
+    reputation_assets = RedactorField("Статки", blank=True)
 
-    reputation_sanctions = RedactorField(
-        "Наявність санкцій", blank=True)
-    reputation_crimes = RedactorField(
-        "Кримінальні провадження", blank=True)
-    reputation_manhunt = RedactorField(
-        "Перебування у розшуку", blank=True)
-    reputation_convictions = RedactorField(
-        "Наявність судимості", blank=True)
+    reputation_sanctions = RedactorField("Наявність санкцій", blank=True)
+    reputation_crimes = RedactorField("Кримінальні провадження", blank=True)
+    reputation_manhunt = RedactorField("Перебування у розшуку", blank=True)
+    reputation_convictions = RedactorField("Наявність судимості", blank=True)
 
     related_persons = select2.fields.ManyToManyField(
-        "self", through="Person2Person", symmetrical=False,
+        "self",
+        through="Person2Person",
+        symmetrical=False,
         ajax=True,
-        search_field=(
-            lambda q: Q(last_name__icontains=q) | Q(first_name__icontains=q)))
+        search_field=(lambda q: Q(last_name__icontains=q) | Q(first_name__icontains=q)),
+    )
 
-    related_companies = models.ManyToManyField(
-        "Company", through="Person2Company")
+    related_companies = models.ManyToManyField("Company", through="Person2Company")
 
     wiki = RedactorField("Вікі-стаття", blank=True)
     wiki_draft = RedactorField("Чернетка вікі-статті", blank=True)
@@ -117,10 +116,8 @@ class Person(models.Model, AbstractNode):
     also_known_as = models.TextField("Інші імена", blank=True)
 
     type_of_official = models.IntegerField(
-        "Тип ПЕП",
-        choices=_types_of_officials,
-        blank=True,
-        null=True)
+        "Тип ПЕП", choices=_types_of_officials, blank=True, null=True
+    )
 
     risk_category = models.CharField(
         "Рівень ризику",
@@ -130,7 +127,9 @@ class Person(models.Model, AbstractNode):
             ("medium", _("Середній")),
             ("low", _("Низький")),
         ),
-        max_length=6, default="low")
+        max_length=6,
+        default="low",
+    )
 
     title = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
@@ -141,20 +140,19 @@ class Person(models.Model, AbstractNode):
         "Причина припинення статусу ПЕП",
         choices=_reasons_of_termination,
         blank=True,
-        null=True)
+        null=True,
+    )
 
     termination_date = models.DateField(
-        "Дата припинення статусу ПЕП", blank=True, null=True,
-        help_text="Вказується реальна дата зміни без врахування 3 років (реальна дата звільнення, тощо)"
+        "Дата припинення статусу ПЕП",
+        blank=True,
+        null=True,
+        help_text="Вказується реальна дата зміни без врахування 3 років (реальна дата звільнення, тощо)",
     )
     termination_date_details = models.IntegerField(
         "Дата припинення статусу ПЕП: точність",
-        choices=(
-            (0, "Точна дата"),
-            (1, "Рік та місяць"),
-            (2, "Тільки рік"),
-        ),
-        default=0
+        choices=((0, "Точна дата"), (1, "Рік та місяць"), (2, "Тільки рік")),
+        default=0,
     )
 
     last_change = models.DateTimeField(
@@ -171,18 +169,31 @@ class Person(models.Model, AbstractNode):
 
     _last_modified = models.DateTimeField("Остання зміна", null=True, blank=True)
 
-    inn = models.CharField(_("ІПН з публічних джерел"), max_length=40, null=True, blank=True)
+    inn = models.CharField(
+        _("ІПН з публічних джерел"), max_length=40, null=True, blank=True
+    )
     inn_source = models.ForeignKey(
-        "core.Document", verbose_name="Документ з котрого було отримано ІПН",
-        default=None, blank=True, null=True, related_name="inns"
+        "core.Document",
+        verbose_name="Документ з котрого було отримано ІПН",
+        default=None,
+        blank=True,
+        null=True,
+        related_name="inns",
     )
-    passport = models.CharField(_("Паспортні дані з публічних джерел"), max_length=40, null=True, blank=True)
+    passport = models.CharField(
+        _("Паспортні дані з публічних джерел"), max_length=40, null=True, blank=True
+    )
     passport_source = models.ForeignKey(
-        "core.Document", verbose_name="Документ з котрого було отримано ІПН",
-        default=None, blank=True, null=True, related_name="passports"
+        "core.Document",
+        verbose_name="Документ з котрого було отримано ІПН",
+        default=None,
+        blank=True,
+        null=True,
+        related_name="passports",
     )
-    proofs = GenericRelation("RelationshipProof", verbose_name="Посилання, соціальні мережі та документи")
-
+    proofs = GenericRelation(
+        "RelationshipProof", verbose_name="Посилання, соціальні мережі та документи"
+    )
 
     @staticmethod
     def autocomplete_search_fields():
@@ -197,8 +208,7 @@ class Person(models.Model, AbstractNode):
 
     @property
     def termination_date_human(self):
-        return render_date(self.termination_date,
-                           self.termination_date_details)
+        return render_date(self.termination_date, self.termination_date_details)
 
     @property
     def terminated(self):
@@ -212,9 +222,15 @@ class Person(models.Model, AbstractNode):
         if self.reason_of_termination in [1, 3]:
             return True
 
-        if self.reason_of_termination in [2, 4, 5, 6] and self.termination_date is not None:
-            if (ceil_date(self.termination_date, self.termination_date_details) +
-                    datetime.timedelta(days=3 * 365) <= datetime.date.today()):
+        if (
+            self.reason_of_termination in [2, 4, 5, 6]
+            and self.termination_date is not None
+        ):
+            if (
+                ceil_date(self.termination_date, self.termination_date_details)
+                + datetime.timedelta(days=3 * 365)
+                <= datetime.date.today()
+            ):
                 return True
 
         return False
@@ -237,18 +253,25 @@ class Person(models.Model, AbstractNode):
         # you are sorting in decreasing order. So without exclude clause this
         # query will return the positions without both dates on the top of the
         # list
-        qs = self.person2company_set.order_by(
-            "-is_employee", "-date_finished", "-date_established") \
-            .exclude(
-                date_finished__isnull=True,  # AND!
-                date_established__isnull=True) \
-            .exclude(relationship_type_uk="Клієнт банку") \
-            .prefetch_related("to_company") \
+        qs = (
+            self.person2company_set.order_by(
+                "-is_employee", "-date_finished", "-date_established"
+            )
+            .exclude(date_finished__isnull=True, date_established__isnull=True)  # AND!
+            .exclude(relationship_type_uk="Клієнт банку")
+            .prefetch_related("to_company")
             .only(
-                "to_company__short_name_uk", "to_company__name_uk",
-                "to_company__short_name_en", "to_company__name_en",
-                "to_company__id", "relationship_type_uk", "relationship_type_en",
-                "date_finished", "date_finished_details")
+                "to_company__short_name_uk",
+                "to_company__name_uk",
+                "to_company__short_name_en",
+                "to_company__name_en",
+                "to_company__id",
+                "relationship_type_uk",
+                "relationship_type_en",
+                "date_finished",
+                "date_finished_details",
+            )
+        )
 
         if qs:
             return qs
@@ -257,14 +280,22 @@ class Person(models.Model, AbstractNode):
         # has finished date set to null or the most recent one.
         # In contrast with previous query it'll also return those positions
         # where date_finished and date_established == null.
-        qs = self.person2company_set.order_by(
-            "-is_employee", "-date_finished").prefetch_related("to_company") \
-            .exclude(relationship_type_uk="Клієнт банку") \
+        qs = (
+            self.person2company_set.order_by("-is_employee", "-date_finished")
+            .prefetch_related("to_company")
+            .exclude(relationship_type_uk="Клієнт банку")
             .only(
-                "to_company__short_name_uk", "to_company__name_uk",
-                "to_company__short_name_en", "to_company__name_en",
-                "to_company__id", "relationship_type_uk", "relationship_type_en",
-                "date_finished", "date_finished_details")
+                "to_company__short_name_uk",
+                "to_company__name_uk",
+                "to_company__short_name_en",
+                "to_company__name_en",
+                "to_company__id",
+                "relationship_type_uk",
+                "relationship_type_en",
+                "date_finished",
+                "date_finished_details",
+            )
+        )
 
         return qs
 
@@ -277,9 +308,14 @@ class Person(models.Model, AbstractNode):
             return False
 
     def _last_workplace_from_declaration(self):
-        return Declaration.objects.filter(person=self, confirmed="a").exclude(doc_type="Кандидата на посаду").order_by(
-            "-nacp_declaration", "-year").only(
-            "year", "office_en", "position_en", "office_uk", "position_uk", "url")[:1]
+        return (
+            Declaration.objects.filter(person=self, confirmed="a")
+            .exclude(doc_type="Кандидата на посаду")
+            .order_by("-nacp_declaration", "-year")
+            .only(
+                "year", "office_en", "position_en", "office_uk", "position_uk", "url"
+            )[:1]
+        )
 
     @property
     def last_workplace(self):
@@ -289,7 +325,7 @@ class Person(models.Model, AbstractNode):
             return {
                 "company": l.to_company.short_name_uk or l.to_company.name_uk,
                 "company_id": l.to_company.pk,
-                "position": l.relationship_type_uk
+                "position": l.relationship_type_uk,
             }
         else:
             qs = self._last_workplace_from_declaration()
@@ -298,7 +334,7 @@ class Person(models.Model, AbstractNode):
                 return {
                     "company": d.office_uk,
                     "company_id": None,
-                    "position": d.position_uk
+                    "position": d.position_uk,
                 }
 
         return ""
@@ -313,7 +349,7 @@ class Person(models.Model, AbstractNode):
             return {
                 "company": l.to_company.short_name_en or l.to_company.name_en,
                 "company_id": l.to_company.pk,
-                "position": l.relationship_type_en
+                "position": l.relationship_type_en,
             }
         else:
             qs = self._last_workplace_from_declaration()
@@ -322,7 +358,7 @@ class Person(models.Model, AbstractNode):
                 return {
                     "company": d.office_en,
                     "company_id": None,
-                    "position": d.position_en
+                    "position": d.position_en,
                 }
 
         return ""
@@ -337,17 +373,13 @@ class Person(models.Model, AbstractNode):
             return {
                 "company": l.to_company.short_name or l.to_company.name,
                 "company_id": l.to_company.pk,
-                "position": l.relationship_type
+                "position": l.relationship_type,
             }
         else:
             qs = self._last_workplace_from_declaration()
             if qs:
                 d = qs[0]
-                return {
-                    "company": d.office,
-                    "company_id": None,
-                    "position": d.position
-                }
+                return {"company": d.office, "company_id": None, "position": d.position}
 
         return ""
 
@@ -360,17 +392,24 @@ class Person(models.Model, AbstractNode):
         # djangoproject.com/en/1.8/ref/models/database-functions/#coalesce
         the_past = datetime.datetime.now() - datetime.timedelta(days=10 * 365)
 
-        timeline = self.person2company_set.prefetch_related(
-            "to_company", "proofs", "proofs__proof_document").filter(is_employee=True).annotate(
-                fixed_date_established=Coalesce(
-                    'date_established', Value(the_past))
-        ).order_by('-fixed_date_established')
+        timeline = (
+            self.person2company_set.prefetch_related(
+                "to_company", "proofs", "proofs__proof_document"
+            )
+            .filter(is_employee=True)
+            .annotate(
+                fixed_date_established=Coalesce("date_established", Value(the_past))
+            )
+            .order_by("-fixed_date_established")
+        )
 
         return timeline
 
     @property
     def assets(self):
-        return self.person2company_set.prefetch_related("to_company", "proofs", "proofs__proof_document").filter(
+        return self.person2company_set.prefetch_related(
+            "to_company", "proofs", "proofs__proof_document"
+        ).filter(
             is_employee=False,
             relationship_type_uk__in=(
                 "Член центрального статутного органу",
@@ -384,12 +423,18 @@ class Person(models.Model, AbstractNode):
                 "Секретар",
                 "Керуючий",
                 "Контролер",
-            ))
+            ),
+        )
 
     @property
     def all_related_companies(self):
-        companies = self.person2company_set.prefetch_related(
-            "to_company", "proofs", "proofs__proof_document").filter(is_employee=False)
+        companies = (
+            self.person2company_set.prefetch_related(
+                "to_company", "proofs", "proofs__proof_document"
+            )
+            .filter(is_employee=False)
+            .order_by("-pk")
+        )
 
         banks = []
         rest = []
@@ -399,16 +444,15 @@ class Person(models.Model, AbstractNode):
             else:
                 rest.append(c)
 
-        return {
-            "banks": banks,
-            "rest": rest
-        }
+        return {"banks": banks, "rest": rest}
 
     @property
     def all_related_persons(self):
         related_persons = [
             (i.to_relationship_type, i.from_relationship_type, deepcopy(i.to_person), i)
-            for i in self.to_persons.prefetch_related("to_person", "proofs", "proofs__proof_document").defer(
+            for i in self.to_persons.prefetch_related(
+                "to_person", "proofs", "proofs__proof_document"
+            ).defer(
                 "to_person__reputation_assets",
                 "to_person__reputation_sanctions",
                 "to_person__reputation_crimes",
@@ -416,12 +460,18 @@ class Person(models.Model, AbstractNode):
                 "to_person__reputation_convictions",
                 "to_person__wiki",
                 "to_person__names",
-                "to_person__hash"
+                "to_person__hash",
             )
         ] + [
-            (i.from_relationship_type, i.to_relationship_type,
-             deepcopy(i.from_person), i)
-            for i in self.from_persons.prefetch_related("from_person", "proofs", "proofs__proof_document").defer(
+            (
+                i.from_relationship_type,
+                i.to_relationship_type,
+                deepcopy(i.from_person),
+                i,
+            )
+            for i in self.from_persons.prefetch_related(
+                "from_person", "proofs", "proofs__proof_document"
+            ).defer(
                 "from_person__reputation_assets",
                 "from_person__reputation_sanctions",
                 "from_person__reputation_crimes",
@@ -429,16 +479,11 @@ class Person(models.Model, AbstractNode):
                 "from_person__reputation_convictions",
                 "from_person__wiki",
                 "from_person__names",
-                "from_person__hash"
+                "from_person__hash",
             )
         ]
 
-        res = {
-            "family": [],
-            "personal": [],
-            "business": [],
-            "all": []
-        }
+        res = {"family": [], "personal": [], "business": [], "all": []}
 
         for rtp, rrtp, p, rel in related_persons:
             p.rtype = rtp
@@ -462,52 +507,74 @@ class Person(models.Model, AbstractNode):
 
     @property
     def full_name(self):
-        return ("%s %s %s" % (self.first_name, self.patronymic,
-                              self.last_name)).replace("  ", " ")
+        return (
+            "%s %s %s" % (self.first_name, self.patronymic, self.last_name)
+        ).replace("  ", " ")
 
     @property
     def full_name_en(self):
-        return ("%s %s %s" % (self.first_name_en, self.patronymic_en,
-                              self.last_name_en)).replace("  ", " ")
+        return (
+            "%s %s %s" % (self.first_name_en, self.patronymic_en, self.last_name_en)
+        ).replace("  ", " ")
 
     def to_dict(self):
         """
         Convert Person model to an indexable presentation for ES.
         """
-        d = model_to_dict(self, fields=[
-            "id", "last_name", "first_name", "patronymic", "dob",
-            "last_name_en", "first_name_en", "patronymic_en",
-            "dob_details", "is_pep", "names",
-            "wiki_uk", "wiki_en",
-            "city_of_birth_uk", "city_of_birth_en",
-            "reputation_sanctions_uk", "reputation_sanctions_en",
-            "reputation_convictions_uk", "reputation_convictions_en",
-            "reputation_assets_uk", "reputation_assets_en",
-            "reputation_crimes_uk", "reputation_crimes_en",
-            "reputation_manhunt_uk", "reputation_manhunt_en",
-            "also_known_as_uk", "also_known_as_en", "last_change",
-            "inn", "inn_source", "passport", "passport_source",
-        ])
+        d = model_to_dict(
+            self,
+            fields=[
+                "id",
+                "last_name",
+                "first_name",
+                "patronymic",
+                "dob",
+                "last_name_en",
+                "first_name_en",
+                "patronymic_en",
+                "dob_details",
+                "is_pep",
+                "names",
+                "wiki_uk",
+                "wiki_en",
+                "city_of_birth_uk",
+                "city_of_birth_en",
+                "reputation_sanctions_uk",
+                "reputation_sanctions_en",
+                "reputation_convictions_uk",
+                "reputation_convictions_en",
+                "reputation_assets_uk",
+                "reputation_assets_en",
+                "reputation_crimes_uk",
+                "reputation_crimes_en",
+                "reputation_manhunt_uk",
+                "reputation_manhunt_en",
+                "also_known_as_uk",
+                "also_known_as_en",
+                "last_change",
+                "inn",
+                "inn_source",
+                "passport",
+                "passport_source",
+            ],
+        )
 
         d["related_persons"] = [
-            i.to_dict()
-            for i in self.to_persons.prefetch_related("to_person")] + [
+            i.to_dict() for i in self.to_persons.prefetch_related("to_person")
+        ] + [
             i.to_dict_reverse()
             for i in self.from_persons.prefetch_related("from_person")
         ]
         d["related_countries"] = [
-            i.to_dict()
-            for i in self.person2country_set.prefetch_related("to_country")]
+            i.to_dict() for i in self.person2country_set.prefetch_related("to_country")
+        ]
         d["related_companies"] = [
             i.to_company_dict()
-            for i in self.person2company_set.prefetch_related("to_company")]
+            for i in self.person2company_set.prefetch_related("to_company")
+        ]
 
         d["declarations"] = [
-            i.to_dict()
-            for i in Declaration.objects.filter(
-                person=self,
-                confirmed="a"
-            )
+            i.to_dict() for i in Declaration.objects.filter(person=self, confirmed="a")
         ]
 
         manhunt_records = self.manhunt_records
@@ -516,19 +583,23 @@ class Person(models.Model, AbstractNode):
 
             activate("uk")
             d["reputation_manhunt_uk"] = render_to_string(
-                "_manhunt_records_uk.jinja",
-                {"manhunt_records": manhunt_records}
+                "_manhunt_records_uk.jinja", {"manhunt_records": manhunt_records}
             ) + (d["reputation_manhunt_uk"] or "")
 
             activate("en")
             d["reputation_manhunt_en"] = render_to_string(
-                "_manhunt_records_en.jinja",
-                {"manhunt_records": manhunt_records}
+                "_manhunt_records_en.jinja", {"manhunt_records": manhunt_records}
             ) + (d["reputation_manhunt_en"] or "")
             activate(curr_lang)
-    
-        d["inn_source"] = settings.SITE_URL + self.inn_source.doc.url if self.inn_source else ""
-        d["passport_source"] = settings.SITE_URL + self.passport_source.doc.url if self.passport_source else ""
+
+        d["inn_source"] = (
+            settings.SITE_URL + self.inn_source.doc.url if self.inn_source else ""
+        )
+        d["passport_source"] = (
+            settings.SITE_URL + self.passport_source.doc.url
+            if self.passport_source
+            else ""
+        )
 
         d["photo"] = settings.SITE_URL + self.photo.url if self.photo else ""
         d["photo_path"] = self.photo.name if self.photo else ""
@@ -567,27 +638,18 @@ class Person(models.Model, AbstractNode):
                 return []
 
             return [
-                {
-                    "input": " ".join([last_name, first_name, patronymic]),
-                    "weight": 5,
-                },
-                {
-                    "input": " ".join([first_name, patronymic, last_name]),
-                    "weight": 2,
-                },
-                {
-                    "input": " ".join([first_name, last_name]),
-                    "weight": 2,
-                }
+                {"input": " ".join([last_name, first_name, patronymic]), "weight": 5},
+                {"input": " ".join([first_name, patronymic, last_name]), "weight": 2},
+                {"input": " ".join([first_name, last_name]), "weight": 2},
             ]
 
-        input_variants = [generate_suggestions(
-            d["last_name"], d["first_name"], d["patronymic"])]
+        input_variants = [
+            generate_suggestions(d["last_name"], d["first_name"], d["patronymic"])
+        ]
 
-        input_variants += list(map(
-            lambda x: generate_suggestions(*parse_fullname(x)),
-            self.parsed_names
-        ))
+        input_variants += list(
+            map(lambda x: generate_suggestions(*parse_fullname(x)), self.parsed_names)
+        )
 
         d["full_name_suggest"] = list(chain.from_iterable(input_variants))
 
@@ -608,12 +670,14 @@ class Person(models.Model, AbstractNode):
     @property
     def foreign_citizenship_or_registration(self):
         return self.person2country_set.prefetch_related("to_country").filter(
-            relationship_type__in=["citizenship", "registered_in"])
+            relationship_type__in=["citizenship", "registered_in"]
+        )
 
     @property
     def foreign_citizenship(self):
         return self.person2country_set.prefetch_related("to_country").filter(
-            relationship_type="citizenship")
+            relationship_type="citizenship"
+        )
 
     @property
     def url_uk(self):
@@ -642,7 +706,8 @@ class Person(models.Model, AbstractNode):
 
         if self.city_of_birth_uk and not self.city_of_birth_en:
             t = Ua2EnDictionary.objects.filter(
-                term__iexact=lookup_term(self.city_of_birth_uk)).first()
+                term__iexact=lookup_term(self.city_of_birth_uk)
+            ).first()
 
             if t and t.translation:
                 self.city_of_birth_en = t.translation
@@ -650,8 +715,9 @@ class Person(models.Model, AbstractNode):
         super(Person, self).save(*args, **kwargs)
 
     def get_declarations(self):
-        decls = Declaration.objects.filter(
-            person=self, confirmed="a").order_by("-year", "-nacp_declaration")
+        decls = Declaration.objects.filter(person=self, confirmed="a").order_by(
+            "-year", "-nacp_declaration"
+        )
 
         corrected = []
         res = []
@@ -662,9 +728,7 @@ class Person(models.Model, AbstractNode):
                 continue
 
             if d.source["intro"].get("corrected"):
-                corrected.append(
-                    (d.year, d.source["intro"].get("doc_type"))
-                )
+                corrected.append((d.year, d.source["intro"].get("doc_type")))
 
         for d in decls:
             if d.nacp_declaration and not d.source["intro"].get("corrected"):
@@ -681,10 +745,8 @@ class Person(models.Model, AbstractNode):
 
         last_workplace = self.translated_last_workplace
         if last_workplace:
-            res["description"] = "{position} @ {company}".format(
-                **last_workplace)
-        res["kind"] = unicode(
-            ugettext_lazy(self.get_type_of_official_display() or ""))
+            res["description"] = "{position} @ {company}".format(**last_workplace)
+        res["kind"] = unicode(ugettext_lazy(self.get_type_of_official_display() or ""))
 
         if with_connections:
             connections = []
@@ -692,30 +754,36 @@ class Person(models.Model, AbstractNode):
             # Because of a complicated logic here we are piggybacking on
             # existing method that handles both directions of relations
             for p in self.all_related_persons["all"]:
-                connections.append({
-                    "relation": unicode(ugettext_lazy(p.rtype)),
-                    "node": p.get_node_info(False),
-                    "model": p.connection._meta.model_name,
-                    "pk": p.connection.pk
-                })
+                connections.append(
+                    {
+                        "relation": unicode(ugettext_lazy(p.rtype)),
+                        "node": p.get_node_info(False),
+                        "model": p.connection._meta.model_name,
+                        "pk": p.connection.pk,
+                    }
+                )
 
             companies = self.person2company_set.prefetch_related("to_company")
             for c in companies:
-                connections.append({
-                    "relation": unicode(c.relationship_type),
-                    "node": c.to_company.get_node_info(False),
-                    "model": c._meta.model_name,
-                    "pk": c.pk
-                })
+                connections.append(
+                    {
+                        "relation": unicode(c.relationship_type),
+                        "node": c.to_company.get_node_info(False),
+                        "model": c._meta.model_name,
+                        "pk": c.pk,
+                    }
+                )
 
             countries = self.person2country_set.prefetch_related("to_country")
             for c in countries:
-                connections.append({
-                    "relation": unicode(c.relationship_type),
-                    "node": c.to_country.get_node_info(False),
-                    "model": c._meta.model_name,
-                    "pk": c.pk
-                })
+                connections.append(
+                    {
+                        "relation": unicode(c.relationship_type),
+                        "node": c.to_country.get_node_info(False),
+                        "model": c._meta.model_name,
+                        "pk": c.pk,
+                    }
+                )
 
             res["connections"] = connections
 
@@ -728,7 +796,10 @@ class Person(models.Model, AbstractNode):
                 "last_updated_from_dataset": rec.last_updated_from_dataset,
                 "lost_date": dt_parse(rec.matched_json["LOST_DATE"], yearfirst=True),
                 "articles_uk": rec.matched_json["ARTICLE_CRIM"],
-                "articles_en": rec.matched_json["ARTICLE_CRIM"].lower().replace("ст.", "article ").replace("ч.", "pt. ")
+                "articles_en": rec.matched_json["ARTICLE_CRIM"]
+                .lower()
+                .replace("ст.", "article ")
+                .replace("ч.", "pt. "),
             }
             for rec in self.adhoc_matches.filter(status="a", dataset_id="wanted_ia")
         ]
@@ -747,7 +818,18 @@ class Person(models.Model, AbstractNode):
             mm=Max("_last_modified")
         )["mm"]
 
-        seq = list(filter(None, [p2p_conn, p2comp_conn, p2cont_conn, self.last_change, self._last_modified]))
+        seq = list(
+            filter(
+                None,
+                [
+                    p2p_conn,
+                    p2comp_conn,
+                    p2cont_conn,
+                    self.last_change,
+                    self._last_modified,
+                ],
+            )
+        )
         if seq:
             return max(seq)
 
@@ -759,56 +841,61 @@ class Person(models.Model, AbstractNode):
             "vk.com": "Vkontakte",
             "instagram.com": "Instagram",
             "ok.ru": "Odnoklassniki",
-            "linkedin.com": "LinkedIn"
+            "linkedin.com": "LinkedIn",
         }
 
-        res = {
-            "social_networks": [],
-            "other": []
-        }
+        res = {"social_networks": [], "other": []}
 
         for proof in self.proofs.all():
             if proof.proof:
                 domain = urlparse(proof.proof).hostname.replace("www.", "").lower()
 
                 if domain in social_networks:
-                    res["social_networks"].append({
-                        "type": social_networks[domain],
-                        "title": proof.proof_title or social_networks[domain],
-                        "url": proof.proof
-                    })
+                    res["social_networks"].append(
+                        {
+                            "type": social_networks[domain],
+                            "title": proof.proof_title or social_networks[domain],
+                            "url": proof.proof,
+                        }
+                    )
                 else:
-                    res["other"].append({
-                        "type": domain,
-                        "title": proof.proof_title or domain,
-                        "url": proof.proof
-                    })
+                    res["other"].append(
+                        {
+                            "type": domain,
+                            "title": proof.proof_title or domain,
+                            "url": proof.proof,
+                        }
+                    )
 
         return res
 
     def clean(self):
         if self.inn is not None and self.inn_source is None:
-            raise ValidationError({
-                'inn': 'Не можна вказувати ІПН не надавши документальне підтвердження',
-                'inn_source': 'Не можна вказувати ІПН не надавши документальне підтвердження',
-            })
+            raise ValidationError(
+                {
+                    "inn": "Не можна вказувати ІПН не надавши документальне підтвердження",
+                    "inn_source": "Не можна вказувати ІПН не надавши документальне підтвердження",
+                }
+            )
 
         if self.passport is not None and self.passport_source is None:
-            raise ValidationError({
-                'passport': 'Не можна вказувати ІПН не надавши документальне підтвердження',
-                'passport_source': 'Не можна вказувати ІПН не надавши документальне підтвердження',
-            })
-
+            raise ValidationError(
+                {
+                    "passport": "Не можна вказувати ІПН не надавши документальне підтвердження",
+                    "passport_source": "Не можна вказувати ІПН не надавши документальне підтвердження",
+                }
+            )
 
     class Meta:
         verbose_name = "Фізична особа"
         verbose_name_plural = "Фізичні особи"
 
-        index_together = [
-            ["last_name", "first_name"],
-        ]
+        index_together = [["last_name", "first_name"]]
 
         permissions = (
             ("export_persons", "Can export the dataset"),
-            ("export_id_and_last_modified", "Can export the dataset with person id and date of last modification"),
+            (
+                "export_id_and_last_modified",
+                "Can export the dataset with person id and date of last modification",
+            ),
         )
