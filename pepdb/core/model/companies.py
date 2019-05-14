@@ -13,6 +13,7 @@ from django.utils.translation import ugettext_noop as _
 from django.utils.translation import ugettext_lazy, activate, get_language
 from django.forms.models import model_to_dict
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.contenttypes.fields import GenericRelation
 
 from core.fields import RedactorField
 
@@ -166,6 +167,7 @@ class Company(models.Model, AbstractNode):
     works_for_peps = models.BooleanField("Обслуговує PEPів", default=False)
     subject_of_monitoring = models.BooleanField("Суб'єкт фінансового моніторингу", default=False)
     _last_modified = models.DateTimeField("Остання зміна", null=True, blank=True)
+    proofs = GenericRelation("RelationshipProof", verbose_name="Посилання, соціальні мережі та документи")
 
     @staticmethod
     def autocomplete_search_fields():

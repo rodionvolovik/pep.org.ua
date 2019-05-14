@@ -104,11 +104,11 @@
                 </div>              
                 
                     <ul class="nav navbar-nav">
-                        <li><a href="/" class="home-item" title="{{ _("Домівка") }}"><i></i>{{ _("Домівка") }}</a></li>
-                        <li><a href="/countries" class="countries-item" title="{{ _("Країни") }}"><i></i>{{ _("Країни") }}</a></li>
-                        <li><a href="/pitannya-ta-vidpovid/" class="qa-item" title="{{ _("Про реєстр") }}"><i></i>{{ _("Про реєстр") }}</a></li>
-                        <li><a href="/feedback/" class="feedback-item" title="{{ _("Повідомити") }}"><i></i>{{ _("Повідомити") }}</a></li>
-                        <li><a href="/data/" class="data-item" title="{{ _("Дані") }}"><i></i>{{ _("Дані") }}</a></li>
+                        <li><a href="{{ url('wagtail_serve', '') }}" class="home-item" title="{{ _("Домівка") }}"><i></i>{{ _("Домівка") }}</a></li>
+                        <li><a href="{{ url('countries_home') }}" class="countries-item" title="{{ _("Країни") }}"><i></i>{{ _("Країни") }}</a></li>
+                        <li><a href="{{ url('wagtail_serve', 'pitannya-ta-vidpovid/') }}" class="qa-item" title="{{ _("Про реєстр") }}"><i></i>{{ _("Про реєстр") }}</a></li>
+                        <li><a href="{{ url('feedback') }}" class="feedback-item" title="{{ _("Повідомити") }}"><i></i>{{ _("Повідомити") }}</a></li>
+                        <li><a href="{{ url('wagtail_serve', 'data/') }}" class="data-item" title="{{ _("Дані") }}"><i></i>{{ _("Дані") }}</a></li>
                         {% block extra_menu %}
                         {% endblock %}
                     </ul>

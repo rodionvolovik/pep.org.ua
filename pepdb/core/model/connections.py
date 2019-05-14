@@ -454,33 +454,49 @@ class Company2Country(AbstractRelationship):
 class RelationshipProof(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
     object_id = models.PositiveIntegerField(null=True)
-    content_object = GenericForeignKey('content_type', 'object_id')
+    content_object = GenericForeignKey("content_type", "object_id")
 
     proof_title = models.TextField(
-        "Назва доказу зв'язку", blank=True,
-        help_text="Наприклад: склад ВР 7-го скликання")
+        _("Назва документа або посилання"),
+        blank=True,
+        help_text=_("Наприклад: склад ВР 7-го скликання"),
+    )
 
     proof_document = models.ForeignKey(
-        "core.Document", verbose_name="Документ-доказ зв'язку",
-        default=None, blank=True, null=True)
-    proof = models.TextField("або посилання на доказ зв'язку", blank=True)
+        "core.Document",
+        verbose_name=_("Файл документа"),
+        default=None,
+        blank=True,
+        null=True,
+    )
+    proof = models.TextField(_("або посилання"), blank=True)
 
     def clean(self):
         if self.proof_document is None and not self.proof:
-            raise ValidationError({
-                'proof_document': 'Поле документа або посилання має бути заповнено',
-                'proof': 'Поле документа або посилання має бути заповнено',
-            })
+            raise ValidationError(
+                {
+                    "proof_document": _(
+                        "Поле документа або посилання має бути заповнено"
+                    ),
+                    "proof": _("Поле документа або посилання має бути заповнено"),
+                }
+            )
 
         if self.proof_document is not None and self.proof:
-            raise ValidationError({
-                'proof_document': 'Тільки поле документа або посилання має бути заповнено',
-                'proof': 'Тільки поле документа або посилання має бути заповнено',
-            })
+            raise ValidationError(
+                {
+                    "proof_document": _(
+                        "Тільки поле документа або посилання має бути заповнено"
+                    ),
+                    "proof": _(
+                        "Тільки поле документа або посилання має бути заповнено"
+                    ),
+                }
+            )
 
     def __unicode__(self):
         return "%s: %s" % (self.proof_title, self.proof_document or self.proof)
 
     class Meta:
-        verbose_name = "Підтвердження зв'язку"
-        verbose_name_plural = "Підтвердження зв'язків"
+        verbose_name = _("Посилання або документ")
+        verbose_name_plural = _("Посилання або документи")

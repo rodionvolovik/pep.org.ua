@@ -359,6 +359,7 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
         Person2PersonBackInline,
         Person2CompanyInline,
         Person2CountryInline,
+        ProofsInline,
     )
 
     list_display = ("last_name_uk", "first_name_uk", "patronymic_uk",
@@ -417,7 +418,7 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
 
 class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     inlines = (Company2PersonInline, Company2CompanyInline,
-               Company2CompanyBackInline, Company2CountryInline)
+               Company2CompanyBackInline, Company2CountryInline, ProofsInline)
 
     list_display = ("pk", "name_uk", "short_name_uk", "edrpou",
                     "state_company", "legal_entity", "status", "management")
@@ -692,9 +693,19 @@ class DocumentAdmin(TranslationAdmin):
     link.allow_tags = True
     link.short_description = 'Завантажити'
 
-    list_display = ("pk", "name_uk", "link", "uploader", "uploaded", "doc")
+    list_display = ("pk", "name_uk", "link", "uploader", "uploaded", "doc_type", "doc")
     search_fields = ["name", "doc"]
-    list_editable = ("name_uk", "uploader", "doc")
+    list_filter = ["doc_type",]
+    list_editable = ("name_uk", "uploader", "doc_type", "doc")
+
+    def save_model(self, request, obj, form, change):
+        if change:
+            obj.doc_type_set_manually = True
+
+        if obj.doc_type != "other":
+            obj.doc_type_set_manually = True
+
+        super(DocumentAdmin, self).save_model(request, obj, form, change)
 
 
 class FeedbackAdmin(admin.ModelAdmin):

@@ -16,6 +16,7 @@ from django.db.models import Q, Value, Max
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.core.exceptions import ValidationError
+from django.contrib.contenttypes.fields import GenericRelation
 
 from translitua import translitua
 import select2.fields
@@ -180,6 +181,7 @@ class Person(models.Model, AbstractNode):
         "core.Document", verbose_name="Документ з котрого було отримано ІПН",
         default=None, blank=True, null=True, related_name="passports"
     )
+    proofs = GenericRelation("RelationshipProof", verbose_name="Посилання, соціальні мережі та документи")
 
 
     @staticmethod
@@ -749,6 +751,40 @@ class Person(models.Model, AbstractNode):
         if seq:
             return max(seq)
 
+    @property
+    def external_links(self):
+        social_networks = {
+            "facebook.com": "Facebook",
+            "twitter.com": "Twitter",
+            "vk.com": "Vkontakte",
+            "instagram.com": "Instagram",
+            "ok.ru": "Odnoklassniki",
+            "linkedin.com": "LinkedIn"
+        }
+
+        res = {
+            "social_networks": [],
+            "other": []
+        }
+
+        for proof in self.proofs.all():
+            if proof.proof:
+                domain = urlparse(proof.proof).hostname.replace("www.", "").lower()
+
+                if domain in social_networks:
+                    res["social_networks"].append({
+                        "type": social_networks[domain],
+                        "title": proof.proof_title or social_networks[domain],
+                        "url": proof.proof
+                    })
+                else:
+                    res["other"].append({
+                        "type": domain,
+                        "title": proof.proof_title or domain,
+                        "url": proof.proof
+                    })
+
+        return res
 
     def clean(self):
         if self.inn is not None and self.inn_source is None:
