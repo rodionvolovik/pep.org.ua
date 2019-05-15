@@ -729,6 +729,7 @@ class DocumentAdmin(TranslationAdmin):
                     fname, ext = os.path.splitext(dec_fname)
                     doc_san_name = fname.decode("utf-8")
                     human_name = re.sub(r"[\s_]+", " ", doc_san_name)
+                    doc_san_name = "{}.{}".format(doc_san_name, ext)
 
                     with zip_arch.open(fullname, 'r') as fp:
                         doc_content = fp.read()
