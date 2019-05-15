@@ -33,7 +33,7 @@ class Command(BaseCommand):
 
                 fname, ext = os.path.splitext(f)
 
-                human_name = re.sub("[\s_]+", " ", fname.decode("utf-8"))
+                human_name = re.sub(r"[\s_]+", " ", fname.decode("utf-8"))
 
                 doc_san_name = f.decode("utf-8")
                 with open(os.path.join(root, f), "rb") as fp:

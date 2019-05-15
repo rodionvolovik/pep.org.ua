@@ -69,3 +69,8 @@ class EDRImportForm(Form):
 
 class ForeignImportForm(Form):
     csv = FileField(required=True)
+
+
+class ZIPImportForm(Form):
+    zipfile = FileField(required=True, label="ZIP-файл")
+

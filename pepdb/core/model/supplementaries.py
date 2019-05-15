@@ -45,19 +45,19 @@ class Document(models.Model):
         outcome = "other"
         filename = self.doc.name
         PATTERNS = {
-            r"business?[-_]r?egistry": "business_registry",
-            r"court[-_]decision": "court_decision",
+            r"business?[-_\s]r?egistry": "business_registry",
+            r"court[-_\s]decision": "court_decision",
             r"declaration": "declarations",
-            r"real[-_]property": "real_estate_registry",
-            r"property[-_]registry": "real_estate_registry",
-            r"land[-_]registry": "real_estate_registry",
-            r"real[-_]estate[-_]registry": "real_estate_registry",
-            r"order[-_]to[-_]dismiss": "order_to_dismiss",
+            r"real[-_\s]property": "real_estate_registry",
+            r"property[-_\s]registry": "real_estate_registry",
+            r"land[-_\s]registry": "real_estate_registry",
+            r"real[-_\s]estate[-_\s]registry": "real_estate_registry",
+            r"order[-_\s]to[-_\s]dismiss": "order_to_dismiss",
             r"звільнення": "order_to_dismiss",
             r"decree": "decree",
             r"report": "report",
             r"raport": "report",
-            r"ownership[-_]structure": "ownership_structure",
+            r"ownership[-_\s]structure": "ownership_structure",
         }
 
         for r, dtype in PATTERNS.items():

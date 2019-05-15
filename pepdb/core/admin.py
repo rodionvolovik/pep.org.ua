@@ -1,14 +1,18 @@
 # coding: utf-8
 from __future__ import unicode_literals
 
+import re
+import os.path
 import datetime
 import json
+from zipfile import ZipFile
 from unicodecsv import DictWriter, DictReader
 from cStringIO import StringIO
 import requests
 import xlsxwriter
+from hashlib import sha1
 
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.db.models import Q
 from django.db import models
 from django.conf import settings
@@ -22,6 +26,7 @@ from django.contrib.admin.models import LogEntry
 
 from django.utils.encoding import force_str
 from django.utils.translation import ugettext_lazy as _
+from django.core.files.base import ContentFile
 
 import nested_admin
 
@@ -38,7 +43,7 @@ from core.models import (
     Ua2EnDictionary, FeedbackMessage, Declaration, DeclarationExtra,
     ActionLog, RelationshipProof, DeclarationToLink, DeclarationToWatch)
 
-from core.forms import EDRImportForm, ForeignImportForm
+from core.forms import EDRImportForm, ForeignImportForm, ZIPImportForm
 from core.importers.company import CompanyImporter
 from core.importers.company2country import Company2CountryImporter
 from core.universal_loggers import MessagesLogger
@@ -687,6 +692,72 @@ class CountryAdmin(TranslationAdmin):
 
 
 class DocumentAdmin(TranslationAdmin):
+    def zip_import(self, request):
+        if request.method == "GET":
+            return render(
+                request, "admin/core/document/zip_import.html",
+                {"form": ZIPImportForm()}
+            )
+        if request.method == "POST":
+            form = ZIPImportForm(request.POST, request.FILES)
+
+            if not form.is_valid():
+                return render(
+                    request, "admin/core/document/zip_import.html",
+                    {"form": form}
+                )
+
+            with ZipFile(request.FILES["zipfile"]) as zip_arch:
+                for finfo in zip_arch.infolist():
+                    fullname = finfo.filename
+
+                    if fullname.endswith("/"):
+                        continue
+
+                    _, fname = os.path.split(fullname)
+                    if fname.startswith("._"):
+                        continue
+
+                    if finfo.file_size < 2048:
+                        continue
+
+                    try:
+                        dec_fname = unicode(fname)
+                    except UnicodeDecodeError:
+                        dec_fname = fname.decode("cp866")
+
+                    fname, ext = os.path.splitext(dec_fname)
+                    doc_san_name = fname.decode("utf-8")
+                    human_name = re.sub(r"[\s_]+", " ", doc_san_name)
+
+                    with zip_arch.open(fullname, 'r') as fp:
+                        doc_content = fp.read()
+                        doc_hash = sha1(doc_content).hexdigest()
+
+                    try:
+                        doc_instance = Document.objects.get(hash=doc_hash)
+                        self.message_user(
+                            request,
+                            'Skipping file {} as it already exists'.format(doc_san_name), level=messages.WARNING)
+                    except Document.DoesNotExist:
+                        self.message_user(
+                            request,
+                            'Adding file {}'.format(doc_san_name))
+
+                        if doc_san_name:
+                            doc_instance = Document(
+                                name_uk=human_name,
+                                uploader=request.user,
+                                hash=doc_hash
+                            )
+
+                            doc_instance.doc.save(
+                                doc_san_name, ContentFile(doc_content))
+
+                            doc_instance.guess_doc_type()
+
+            return redirect(reverse("admin:core_document_changelist"))
+
     def link(self, obj):
         return '<a href="{0}{1}" target="_blank">Лінк</a>'.format(
             settings.MEDIA_URL, obj.doc)
@@ -697,6 +768,15 @@ class DocumentAdmin(TranslationAdmin):
     search_fields = ["name", "doc"]
     list_filter = ["doc_type",]
     list_editable = ("name_uk", "uploader", "doc_type", "doc")
+
+    def get_urls(self):
+        urls = super(DocumentAdmin, self).get_urls()
+        extra_urls = [
+            url(r'^zip_import/$', self.admin_site.admin_view(self.zip_import),
+                name="zip_import"),
+        ]
+        return extra_urls + urls
+
 
     def save_model(self, request, obj, form, change):
         if change:
@@ -1076,6 +1156,7 @@ class ActionLogAdmin(admin.ModelAdmin):
     ordering = ("-timestamp",)
 
     list_filter = ("user", "action", )
+    search_filter = ("user", )
 
     def has_add_permission(self, request):
         return False
