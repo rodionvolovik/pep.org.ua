@@ -10,6 +10,7 @@ from unicodecsv import DictWriter, DictReader
 from cStringIO import StringIO
 import requests
 import xlsxwriter
+from copy import copy
 from hashlib import sha1
 
 from django.contrib import admin, messages
@@ -22,6 +23,7 @@ from django.core.urlresolvers import reverse
 from django.utils import formats, timezone
 from django.forms import widgets
 from django.http import HttpResponse
+from django.template.loader import render_to_string
 from django.contrib.admin.models import LogEntry
 
 from django.utils.encoding import force_str
@@ -425,12 +427,13 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     inlines = (Company2PersonInline, Company2CompanyInline,
                Company2CompanyBackInline, Company2CountryInline, ProofsInline)
 
-    list_display = ("pk", "name_uk", "short_name_uk", "edrpou",
+    list_display = ("pk_link", "name_uk", "short_name_uk", "edrpou",
                     "state_company", "legal_entity", "status", "management")
     list_editable = ("name_uk", "short_name_uk", "edrpou", "state_company",
                      "legal_entity", "status")
     search_fields = ["name_uk", "short_name_uk", "edrpou"]
     readonly_fields = ('last_change', 'last_editor', '_last_modified')
+    list_display_links = None
     list_filter = ("last_editor", NoTranslationCompanyFilter)
     actions = [make_published, make_unpublished]
 
@@ -606,8 +609,27 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
         extra_context['person2company_rels'] = json.dumps(
             Person2Company._relationships_explained)
 
-        return super(CompanyAdmin, self).change_view(
+        self.inlines = list(self.inlines)
+        inlines = copy(self.inlines)
+
+        if request.GET.get("lean"):
+            self.inlines.remove(Company2PersonInline)
+
+        resp = super(CompanyAdmin, self).change_view(
             request, object_id, form_url, extra_context=extra_context)
+
+        self.inlines = inlines
+
+        return resp
+
+    def pk_link(self, obj):
+        return render_to_string(
+            "admin/core/company/pk_link.html", {
+                "obj": obj
+            }
+        )
+
+    pk_link.allow_tags = True
 
     def add_view(self, request, form_url='', extra_context=None):
         extra_context = extra_context or {}
