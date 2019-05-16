@@ -322,7 +322,7 @@
                                     <div class="tl-content panel padder b-a">
                                         <span class="arrow left pull-up"></span>
                                         <div>
-                                            <a href="{{ connection.to_company.get_absolute_url() }}" itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ connection.to_company }}</span></a>, {{ connection.relationship_type|lower }}
+                                            <a href="{{ connection.to_company.get_absolute_url() }}" itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ connection.to_company }}</span></a>, {{ connection.relationship_type }}
                                             {% if connection.has_additional_info %}
                                                 <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalWork-{{ loop.index }}">
                                                    <i class="fa fa-info-circle info-gray"></i>
