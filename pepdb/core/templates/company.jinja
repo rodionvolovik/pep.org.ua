@@ -22,6 +22,7 @@
 {% set related_persons = company.all_related_persons %}
 {% set related_countries = company.all_related_countries %}
 {% set related_companies = company.all_related_companies %}
+{% set external_links = company.proofs.all() %}
 
 <div class="container" itemscope itemtype="http://schema.org/Organization">
     <div class="row">

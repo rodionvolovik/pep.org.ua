@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from itertools import chain
 from copy import deepcopy
+from urlparse import urlparse
 
 import datetime
 from django.db import models
@@ -841,31 +842,36 @@ class Person(models.Model, AbstractNode):
             "vk.com": "Vkontakte",
             "instagram.com": "Instagram",
             "ok.ru": "Odnoklassniki",
-            "linkedin.com": "LinkedIn",
+            "linkedin.com": "LinkedIn"
+        }
+        other_networks = {
+            "ru.wikipedia.org": "Wikipedia",
+            "en.wikipedia.org": "Wikipedia",
+            "de.wikipedia.org": "Wikipedia",
+            "uk.wikipedia.org": "Wikipedia",
         }
 
-        res = {"social_networks": [], "other": []}
+        res = {
+            "social_networks": [],
+            "other": []
+        }
 
         for proof in self.proofs.all():
             if proof.proof:
                 domain = urlparse(proof.proof).hostname.replace("www.", "").lower()
 
                 if domain in social_networks:
-                    res["social_networks"].append(
-                        {
-                            "type": social_networks[domain],
-                            "title": proof.proof_title or social_networks[domain],
-                            "url": proof.proof,
-                        }
-                    )
+                    res["social_networks"].append({
+                        "type": social_networks[domain],
+                        "title": social_networks[domain],
+                        "url": proof.proof
+                    })
                 else:
-                    res["other"].append(
-                        {
-                            "type": domain,
-                            "title": proof.proof_title or domain,
-                            "url": proof.proof,
-                        }
-                    )
+                    res["other"].append({
+                        "type": domain,
+                        "title": proof.proof_title or other_networks.get(domain, domain),
+                        "url": proof.proof
+                    })
 
         return res
 
