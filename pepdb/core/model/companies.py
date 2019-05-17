@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 import re
 from copy import copy, deepcopy
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -20,6 +20,7 @@ from core.fields import RedactorField
 from core.model.base import AbstractNode
 from core.model.translations import Ua2EnDictionary
 from core.utils import render_date, lookup_term, translate_into
+from core.model.supplementaries import Document
 from core.model.connections import Company2Company, Company2Country, Person2Company
 
 
@@ -299,13 +300,16 @@ class Company(models.Model, AbstractNode):
             "founders": [],
             "sanctions": [],
             "bank_customers": [],
-            "rest": []
+            "rest": [],
+            "all": [],
         }
 
         for rtp, p, rel in related_persons:
             add_to_rest = True
             p.rtype = rtp
             p.connection = rel
+
+            res["all"].append(p)
 
             if rtp.lower() in [
                     "керівник", "перший заступник керівника",
@@ -482,6 +486,41 @@ class Company(models.Model, AbstractNode):
         seq = list(filter(None, [c2c_conn, c2p_conn, c2cont_conn, self.last_change, self._last_modified]))
         if seq:
             return max(seq)
+
+    @property
+    def all_documents(self):
+        companies = self.all_related_companies
+        persons = self.all_related_persons
+        proofs = []
+        proofs_by_cat = defaultdict(list)
+
+        for p in persons["all"]:
+            for proof in p.connection.proofs.all():
+                if not proof.proof_document:
+                    continue
+                proofs.append(proof)
+
+        for c in companies["all"]:
+            for proof in c.connection.proofs.all():
+                if not proof.proof_document:
+                    continue
+                proofs.append(proof)
+
+        seen = set()
+        for proof in proofs + list(self.proofs.all()):
+            if proof.proof_document_id not in seen:
+                proofs_by_cat[proof.proof_document.doc_type].append(
+                    proof
+                )
+
+                seen.add(proof.proof_document_id)
+
+        proofs_by_cat["misc"] += proofs_by_cat["other"]
+        del proofs_by_cat["other"]
+
+        return OrderedDict(
+            (Document.DOC_TYPE_CHOICES[k], proofs_by_cat[k]) for k in Document.DOC_TYPE_CHOICES.keys()
+        )
 
 
     objects = CompanyManager()

@@ -22,7 +22,8 @@
 {% set related_persons = company.all_related_persons %}
 {% set related_countries = company.all_related_countries %}
 {% set related_companies = company.all_related_companies %}
-{% set external_links = company.proofs.all() %}
+{% set documents = company.all_documents %}
+
 
 <div class="container" itemscope itemtype="http://schema.org/Organization">
     <div class="row">
@@ -63,6 +64,9 @@
 
                 {% if related_companies.banks or (company.bank_name_en and LANGUAGE_CODE == "en") or (company.bank_name_uk and LANGUAGE_CODE == "uk") %}
                 <li><a href="#bank" class="btn btn-transp trans"><i class="fa fa-money"></i><span>{{ _("Банківські рахунки") }}</span></a></li>
+                {% endif %}
+                {% if documents %}
+                    <li><a href="#documents" class="btn btn-transp trans"><i class="fa fa-book"></i><span>{{ _("Документи та джерела") }}</span></a></li>
                 {% endif %}
             </ul>
         </aside>
@@ -232,7 +236,15 @@
                                         <li>
                                             <span class="badge badge-success"><i class="faicon fa fa-plus-square"></i> {{ _("Клієнти банку") }}</span>
                                             <ul class="h">
-                                                {{ render_related_persons(related_persons.bank_customers, "bank_customers", for_company=True) }}
+                                                {% if request.GET.showall %}
+                                                    {% set limit=None %}
+                                                {% else %}
+                                                    {% set limit=1000 %}
+                                                {% endif %}
+                                                {{ render_related_persons(related_persons.bank_customers[:limit], "bank_customers", for_company=True) }}
+                                                {% if related_persons.bank_customers|count > limit %}
+                                                <li><a href="{{ company.get_absolute_url() }}?showall=true"><strong>{{ _("Показати всіх клієнтів банку") }}</strong></a></li>
+                                                {% endif %}
                                             </ul>
                                         </li>
                                         {% endif %}
@@ -316,6 +328,21 @@
                         {% elif company.bank_name_uk and LANGUAGE_CODE == "uk" %}
                             {{ company.bank_name_uk|richtext }}
                         {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+            {% if documents %}
+                <div id="documents" class="sub box">
+                    <h3>{{ _("Документи та джерела") }}</h3>
+                    <div class="printWrap">
+                        {% for proof_category in documents if documents[proof_category] -%}
+                            <h4>{{ proof_category }}</h4>
+                            {% for doc in documents[proof_category] %}
+                            <a href="{{ doc.proof_document.doc.url }}" target="_blank">
+                                {{ doc.proof_document.name|default(_("Посилання"), true) }}
+                            </a><br />
+                            {% endfor %}
+                        {%- endfor %}
                     </div>
                 </div>
             {% endif %}

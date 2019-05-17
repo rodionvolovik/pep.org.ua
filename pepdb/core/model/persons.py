@@ -897,7 +897,6 @@ class Person(models.Model, AbstractNode):
                 }
             )
 
-
     @property
     def all_documents(self):
         companies = self.all_related_companies
