@@ -4,8 +4,9 @@ from __future__ import unicode_literals
 from itertools import chain
 from copy import deepcopy
 from urlparse import urlparse
-
 import datetime
+from collections import defaultdict, OrderedDict
+
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_noop as _
@@ -35,6 +36,7 @@ from core.utils import (
     ceil_date,
 )
 from core.model.declarations import Declaration
+from core.model.supplementaries import Document
 from core.model.connections import Person2Person, Person2Company, Person2Country
 
 # to_*_dict methods are used to convert two main entities that we have, Person
@@ -439,13 +441,16 @@ class Person(models.Model, AbstractNode):
 
         banks = []
         rest = []
+        all_connections = []
         for c in companies:
             if c.relationship_type_uk == "Клієнт банку":
                 banks.append(c)
             else:
                 rest.append(c)
 
-        return {"banks": banks, "rest": rest}
+            all_connections.append(c)
+
+        return {"banks": banks, "rest": rest, "all": all_connections}
 
     @property
     def all_related_persons(self):
@@ -891,6 +896,43 @@ class Person(models.Model, AbstractNode):
                     "passport_source": "Не можна вказувати ІПН не надавши документальне підтвердження",
                 }
             )
+
+
+    @property
+    def all_documents(self):
+        companies = self.all_related_companies
+        persons = self.all_related_persons
+        proofs = []
+        proofs_by_cat = defaultdict(list)
+
+        for p in persons["all"]:
+            for proof in p.connection.proofs.all():
+                if not proof.proof_document:
+                    continue
+                proofs.append(proof)
+
+        for c in companies["all"]:
+            for proof in c.proofs.all():
+                if not proof.proof_document:
+                    continue
+                proofs.append(proof)
+
+        seen = set()
+        for proof in proofs + list(self.proofs.all()):
+            if proof.proof_document_id not in seen:
+                proofs_by_cat[proof.proof_document.doc_type].append(
+                    proof
+                )
+
+                seen.add(proof.proof_document_id)
+
+        proofs_by_cat["misc"] += proofs_by_cat["other"]
+        del proofs_by_cat["other"]
+
+        return OrderedDict(
+            (Document.DOC_TYPE_CHOICES[k], proofs_by_cat[k]) for k in Document.DOC_TYPE_CHOICES.keys()
+        )
+
 
     class Meta:
         verbose_name = "Фізична особа"

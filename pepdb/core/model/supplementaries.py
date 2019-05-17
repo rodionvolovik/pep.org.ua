@@ -4,23 +4,26 @@ import re
 
 from django.db import models
 from django.contrib.auth.models import User
+from collections import OrderedDict
 from django.utils.translation import ugettext_lazy
 
 
 class Document(models.Model):
-    DOC_TYPE_CHOICES = {
-        "business_registry": ugettext_lazy("Виписки з реєстру компаній"),
-        "court_decision": ugettext_lazy("Рішення суду"),
-        "declarations": ugettext_lazy("Декларації"),
-        "real_estate_registry": ugettext_lazy("Виписки з реєстру нерухомості"),
-        "order_to_dismiss": ugettext_lazy("Накази про звільнення"),
-        "media": ugettext_lazy("Публікація в медіа"),
-        "decree": ugettext_lazy("Рішення"),
-        "report": ugettext_lazy("Звіти"),
-        "ownership_structure": ugettext_lazy("Структури власності"),
-        "misc": ugettext_lazy("Інші документи"),
-        "other": ugettext_lazy("Неможливо ідентифікувати"),
-    }
+    DOC_TYPE_CHOICES = OrderedDict(
+        (
+            ("business_registry", ugettext_lazy("Виписки з реєстру компаній")),
+            ("court_decision", ugettext_lazy("Рішення суду")),
+            ("declarations", ugettext_lazy("Декларації")),
+            ("real_estate_registry", ugettext_lazy("Виписки з реєстру нерухомості")),
+            ("order_to_dismiss", ugettext_lazy("Накази про звільнення")),
+            ("media", ugettext_lazy("Публікація в медіа")),
+            ("decree", ugettext_lazy("Рішення")),
+            ("report", ugettext_lazy("Звіти")),
+            ("ownership_structure", ugettext_lazy("Структури власності")),
+            ("misc", ugettext_lazy("Інші документи")),
+            ("other", ugettext_lazy("Неможливо ідентифікувати")),
+        )
+    )
 
     doc = models.FileField("Файл", upload_to="documents", max_length=1000)
     name = models.CharField("Людська назва", max_length=255)
@@ -31,8 +34,15 @@ class Document(models.Model):
     )
     hash = models.CharField("Хеш", max_length=40, blank=True)
     comments = models.TextField("Коментарі", blank=True)
-    doc_type = models.CharField("Тип документу", max_length=25, choices=DOC_TYPE_CHOICES.items(), default="other")
-    doc_type_set_manually = models.BooleanField("Тип документу був встановлений вручну", default=False)
+    doc_type = models.CharField(
+        "Тип документу",
+        max_length=25,
+        choices=DOC_TYPE_CHOICES.items(),
+        default="other",
+    )
+    doc_type_set_manually = models.BooleanField(
+        "Тип документу був встановлений вручну", default=False
+    )
 
     @staticmethod
     def autocomplete_search_fields():
@@ -91,7 +101,9 @@ class FeedbackMessage(models.Model):
     text = models.TextField(ugettext_lazy("Інформація"), blank=False)
     link = models.URLField(ugettext_lazy("Підтвердження"), max_length=512, blank=True)
     email = models.EmailField(ugettext_lazy("e-mail"), max_length=512, blank=True)
-    contacts = models.TextField(ugettext_lazy("Ваше ім'я та контакти"), max_length=512, blank=True)
+    contacts = models.TextField(
+        ugettext_lazy("Ваше ім'я та контакти"), max_length=512, blank=True
+    )
     read = models.BooleanField(ugettext_lazy("Прочитано"), default=False)
     added = models.DateTimeField("Був надісланий", auto_now=True)
 

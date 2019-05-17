@@ -36,6 +36,8 @@
 {% set workplaces = person.workplaces %}
 {% set manhunt_records = person.manhunt_records %}
 {% set external_links = person.external_links %}
+{% set documents = person.all_documents %}
+
 
 <div class="container" itemscope itemtype="http://schema.org/Person">
     <div class="row">
@@ -91,6 +93,9 @@
                 {% endif %}
                 {% if related_companies.banks %}
                     <li><a href="#bank-accounts" class="btn btn-transp trans"><i class="fa fa-money"></i><span>{{ _("Банківські рахунки") }}</span></a></li>
+                {% endif %}
+                {% if documents %}
+                    <li><a href="#documents" class="btn btn-transp trans"><i class="fa fa-book"></i><span>{{ _("Документи та джерела") }}</span></a></li>
                 {% endif %}
             </ul>
         </aside>
@@ -445,6 +450,22 @@
                     <h3>{{ _("Банківські рахунки:") }}</h3>
                     <div class="printWrap">
                         {{ render_person_companies(related_companies.banks, "Banks") }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if documents %}
+                <div id="documents" class="sub box">
+                    <h3>{{ _("Документи та джерела") }}</h3>
+                    <div class="printWrap">
+                        {% for proof_category in documents if documents[proof_category] -%}
+                            <h4>{{ proof_category }}</h4>
+                            {% for doc in documents[proof_category] %}
+                            <a href="{{ doc.proof_document.doc.url }}" target="_blank">
+                                {{ doc.proof_document.name|default(_("Посилання"), true) }}
+                            </a><br />
+                            {% endfor %}
+                        {%- endfor %}
                     </div>
                 </div>
             {% endif %}
