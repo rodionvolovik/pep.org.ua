@@ -659,47 +659,39 @@ msgstr "Profiles of Politically Exposed Persons"
 
 #: core/model/supplementaries.py:14
 msgid "Виписки з реєстру компаній"
-msgstr ""
+msgstr "Extracts from Business Register"
 
 #: core/model/supplementaries.py:15
-#, fuzzy
-#| msgid "Остання посада"
 msgid "Рішення суду"
-msgstr "Last position"
+msgstr "Court decisions"
 
 #: core/model/supplementaries.py:16 core/templates/person.jinja:80
 msgid "Декларації"
-msgstr "Income declaration"
+msgstr "Income declarations"
 
 #: core/model/supplementaries.py:17
 msgid "Виписки з реєстру нерухомості"
-msgstr ""
+msgstr ""Extracts from Register of Immovable Property"
 
 #: core/model/supplementaries.py:18
-#, fuzzy
-#| msgid "Дата припинення"
 msgid "Накази про звільнення"
-msgstr "Date of dissolution"
+msgstr "Orders on termination of employment"
 
 #: core/model/supplementaries.py:19
 msgid "Публікація в медіа"
-msgstr ""
+msgstr "Media publications"
 
 #: core/model/supplementaries.py:20
-#, fuzzy
-#| msgid "Підтвердження"
 msgid "Рішення"
-msgstr "Confirmation"
+msgstr "Decisions"
 
 #: core/model/supplementaries.py:21
 msgid "Звіти"
-msgstr ""
+msgstr "Reports"
 
 #: core/model/supplementaries.py:22
-#, fuzzy
-#| msgid "Об'єкт правовласності"
 msgid "Структури власності"
-msgstr "Object of property rights"
+msgstr "Ownership structure"
 
 #: core/model/supplementaries.py:23
 msgid "Інші документи"
@@ -707,7 +699,7 @@ msgstr "Other documents"
 
 #: core/model/supplementaries.py:24
 msgid "Неможливо ідентифікувати"
-msgstr "Cannot identify"
+msgstr "Impossible to identify"
 
 #: core/model/supplementaries.py:100
 msgid "Про кого"
