@@ -671,7 +671,7 @@ msgstr "Income declarations"
 
 #: core/model/supplementaries.py:17
 msgid "Виписки з реєстру нерухомості"
-msgstr ""Extracts from Register of Immovable Property"
+msgstr "Extracts from Register of Immovable Property"
 
 #: core/model/supplementaries.py:18
 msgid "Накази про звільнення"
