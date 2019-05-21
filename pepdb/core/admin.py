@@ -805,7 +805,7 @@ class DocumentAdmin(TranslationAdmin):
         if change:
             obj.doc_type_set_manually = True
         else:
-            doc.guess_doc_type()
+            obj.guess_doc_type()
 
         if obj.doc_type != "other":
             obj.doc_type_set_manually = True
