@@ -804,6 +804,8 @@ class DocumentAdmin(TranslationAdmin):
     def save_model(self, request, obj, form, change):
         if change:
             obj.doc_type_set_manually = True
+        else:
+            doc.guess_doc_type()
 
         if obj.doc_type != "other":
             obj.doc_type_set_manually = True
