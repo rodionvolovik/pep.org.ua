@@ -248,11 +248,19 @@ PIPELINE = {
                 "bower_components/jquery.nicescroll/jquery.nicescroll.min.js",
                 "js/ripples.min.js",
                 "js/bootstrap-combobox.js",
-                "js/vis-network.min.js",
                 "js/pep.js",
-                "js/graph.js",
             ),
             "output_filename": "js/merged.js",
+        },
+        "graph_viz": {
+            "source_filenames": (
+                "bower_components/cytoscape/dist/cytoscape.min.js",
+                "bower_components/popper.js/dist/umd/popper.js",
+                # "bower_components/tippyjs/build/all.js",
+                "js/cytoscape-popper.js",
+                "js/cytograph_init.js",
+            ),
+            "output_filename": "js/graph.js",
         }
     },
 }

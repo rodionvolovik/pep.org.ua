@@ -16,6 +16,14 @@
     <meta property="profile:first_name" content="{{ person.first_name }} {{ person.patronymic }}" />
     <meta property="profile:last_name" content="{{ person.last_name }}" />
     <link rel="canonical" href="{{ SITE_URL }}{{ person.get_absolute_url() }}" />
+
+{#     <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+    <script src="https://unpkg.com/popper.js@1.14.7/dist/umd/popper.js"></script>
+    <script src="{{ static("js/cytoscape-popper.js") }}"></script>
+    <script src="https://unpkg.com/tippy.js@4.0.1/umd/index.all.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@4.0.1/index.css" />
+ #}
+
 {% endblock %}
 
 {% block page_title %}{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}{% if last_workplace %}, {{ last_workplace.company }}, {{ last_workplace.position }}{% endif %}{% endblock %}
@@ -36,6 +44,7 @@
 {% set workplaces = person.workplaces %}
 {% set manhunt_records = person.manhunt_records %}
 {% set external_links = person.external_links %}
+
 
 <div class="container" itemscope itemtype="http://schema.org/Person">
     <div class="row">
@@ -88,7 +97,7 @@
                 {% endif %}
             </ul>
         </aside>
-        <section id="profile" class="{%- if person.parsed_names %}col-md-8{% else %}col-md-10{% endif -%} {% if person.terminated %} not{% endif %}">
+        <section id="profile" class="{%- if person.parsed_names %}col-md-8{% else %}col-md-10{% endif -%} {% if person.terminated %} not{% endif %}" data-url="{{ url('connections', 'person', person.pk) }}">
             <link itemprop="url" href="{{ person.get_absolute_url() }}" />
             <div id="profile-wrap" class="box">
                 {% if person.died %}<div class="info-label">{{ _(person.get_reason_of_termination_display()) }}</div>{% endif %}
@@ -213,9 +222,8 @@
                     </div>
                 </div>
                 
-                {% if "graph" in request.GET %}
                 <a class="load-pep-modal-tree" data-toggle="modal" data-target="#pep-graph-tree">
-                    <img src="https://dl.dropboxusercontent.com/u/1637697/skitch.png" /><!-- TODO: somehow generate image-preview from data -->
+                    <div id="cy-preview"></div>
                     <i class="fa fa-search-plus"></i>
                 </a>
 
@@ -232,7 +240,6 @@
                         </div>
                     </div>
                 </div>
-                {% endif %}
 
                 {% set last_modified = person.last_modified %}
                 {% if last_modified %}
@@ -431,6 +438,13 @@
         {% endif %}
     </div>
 </div>
+
+{% endblock %}
+
+
+{% block javascript %}
+    {{ super() }}
+    {% javascript 'graph_viz' %}
 {% endblock %}
 
 {#

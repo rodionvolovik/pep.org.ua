@@ -680,55 +680,98 @@ class Person(models.Model, AbstractNode):
 
         return res
 
-    def get_node_info(self, with_connections=False):
-        res = super(Person, self).get_node_info(with_connections)
-        res["name"] = self.full_name
+    def get_node(self):
+        res = super(Person, self).get_node()
 
+        node = {
+            "name": self.full_name,
+            "is_pep": self.is_pep,
+            "kind": unicode(ugettext_lazy(self.get_type_of_official_display() or ""))
+        }
         last_workplace = self.translated_last_workplace
+
         if last_workplace:
-            res["description"] = "{position} @ {company}".format(**last_workplace)
-        res["kind"] = unicode(ugettext_lazy(self.get_type_of_official_display() or ""))
+            node["description"] = "{position} @ {company}".format(**last_workplace)
+
+        res["data"].update(node)
+
+        return res
+
+    def get_node_info(self, with_connections=False):
+        this_node = self.get_node()
+        nodes = [this_node]
+        edges = []
 
         if with_connections:
-            connections = []
 
             # Because of a complicated logic here we are piggybacking on
             # existing method that handles both directions of relations
             for p in self.all_related_persons["all"]:
-                connections.append(
+                sibling_node = p.get_node_info(False)
+                edges.append(
                     {
-                        "relation": unicode(ugettext_lazy(p.rtype)),
-                        "node": p.get_node_info(False),
-                        "model": p.connection._meta.model_name,
-                        "pk": p.connection.pk,
+                        "data": {
+                            "relation": unicode(ugettext_lazy(p.rtype)),
+                            "model": p.connection._meta.model_name,
+                            "pk": p.connection.pk,
+                            "id": "{}-{}".format(
+                                p.connection._meta.model_name, p.connection.pk
+                            ),
+                            "source": this_node["data"]["id"],
+                            "target": sibling_node["nodes"][0]["data"]["id"],
+                        }
                     }
                 )
+
+                nodes += sibling_node["nodes"]
+                edges += sibling_node["edges"]
 
             companies = self.person2company_set.prefetch_related("to_company")
             for c in companies:
-                connections.append(
+                sibling_node = c.to_company.get_node_info(False)
+                edges.append(
                     {
-                        "relation": unicode(c.relationship_type),
-                        "node": c.to_company.get_node_info(False),
-                        "model": c._meta.model_name,
-                        "pk": c.pk,
+                        "data": {
+                            "relation": unicode(c.relationship_type),
+                            "model": c._meta.model_name,
+                            "pk": c.pk,
+                            "id": "{}-{}".format(
+                                c._meta.model_name, c.pk
+                            ),
+                            "source": this_node["data"]["id"],
+                            "target": sibling_node["nodes"][0]["data"]["id"],
+                        }
                     }
                 )
 
-            countries = self.person2country_set.prefetch_related("to_country")
-            for c in countries:
-                connections.append(
-                    {
-                        "relation": unicode(c.relationship_type),
-                        "node": c.to_country.get_node_info(False),
-                        "model": c._meta.model_name,
-                        "pk": c.pk,
-                    }
-                )
+                nodes += sibling_node["nodes"]
+                edges += sibling_node["edges"]
 
-            res["connections"] = connections
+        #         edges.append(
+        #             {
+        #                 "relation": unicode(c.relationship_type),
+        #                 "node": c.to_company.get_node_info(False),
+        #                 "model": c._meta.model_name,
+        #                 "pk": c.pk,
+        #             }
+        #         )
 
-        return res
+        #     countries = self.person2country_set.prefetch_related("to_country")
+        #     for c in countries:
+        #         edges.append(
+        #             {
+        #                 "relation": unicode(c.relationship_type),
+        #                 "node": c.to_country.get_node_info(False),
+        #                 "model": c._meta.model_name,
+        #                 "pk": c.pk,
+        #             }
+        #         )
+
+        #     res["connections"] = connections
+
+        # res["nodes"] = nodes
+
+        return {"edges": edges, "nodes": nodes}
 
     @property
     def manhunt_records(self):
@@ -814,7 +857,6 @@ class Person(models.Model, AbstractNode):
                     })
 
         return res
-
 
     class Meta:
         verbose_name = _("Фізична особа")

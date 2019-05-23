@@ -137,8 +137,6 @@
                         </a>
                     </li>
                     {% endfor %}
-                    <!-- <li><a href="#"><i class="fa fa-rss"></i> Updates</a></li> -->
-                    {# <li>Copyright 2015</li> #}
                 </ul>
                 <div id="footerInfo" class="hidden-xs text-justify col-sm-6">
                     {{ root_page.translated_footer|richtext }}
@@ -161,7 +159,8 @@
         </div>     
         {% endblock %}
     </div>
-    {% javascript 'js_all' %}
+    {% block javascript %}
+        {% javascript 'js_all' %}
         {% if SITEHEART_ID %}
             <!-- Start SiteHeart code -->
             <script>
@@ -194,5 +193,6 @@
               ga('send', 'pageview');
             </script>
         {% endif %}
+    {% endblock %}
 </body>
 </html>

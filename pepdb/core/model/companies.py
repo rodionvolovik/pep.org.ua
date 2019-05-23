@@ -453,59 +453,83 @@ class Company(models.Model, AbstractNode):
 
         return res
 
-    def get_node_info(self, with_connections=False):
-        res = super(Company, self).get_node_info(with_connections)
-        res["name"] = self.name
-        res["description"] = self.edrpou
-        res["kind"] = unicode(
-            ugettext_lazy("Державна компанія чи установа")
-            if self.state_company
-            else ugettext_lazy("Приватна компанія")
-        )
 
-        if with_connections:
-            connections = []
+    def get_node(self):
+        res = super(Company, self).get_node()
 
-            persons = self.all_related_persons
-            for k in persons.values():
-                for p in k:
-                    connections.append(
-                        {
-                            "relation": p.connection.relationship_type,
-                            "node": p.get_node_info(False),
-                            "model": p.connection._meta.model_name,
-                            "pk": p.connection.pk,
-                        }
-                    )
+        node = {
+            "name": self.name,
+            "description": self.edrpou,
+            "state_company": self.state_company,
+            "kind": unicode(
+                ugettext_lazy("Державна компанія чи установа")
+                if self.state_company
+                else ugettext_lazy("Приватна компанія")
+            ),
+        }
 
-            # Because of a complicated logic here we are piggybacking on
-            # existing method that handles both directions of relations
-            for c in self.all_related_companies["all"]:
-                connections.append(
-                    {
-                        "relation": unicode(ugettext_lazy(c.rtype or "")),
-                        "node": c.get_node_info(False),
-                        "model": c.connection._meta.model_name,
-                        "pk": c.connection.pk,
-                    }
-                )
-
-            countries = self.from_countries.prefetch_related("to_country")
-            for c in countries:
-                connections.append(
-                    {
-                        "relation": unicode(
-                            ugettext_lazy(c.get_relationship_type_display())
-                        ),
-                        "node": c.to_country.get_node_info(False),
-                        "model": c._meta.model_name,
-                        "pk": c.pk,
-                    }
-                )
-
-            res["connections"] = connections
+        res["data"].update(node)
 
         return res
+
+
+    def get_node_info(self, with_connections=False):
+        this_node = self.get_node()
+        nodes = [this_node]
+        edges = []
+
+        # res = super(Company, self).get_node_info(with_connections)
+        # res["name"] = self.name
+        # res["description"] = self.edrpou
+        # res["kind"] = unicode(
+        #     ugettext_lazy("Державна компанія чи установа")
+        #     if self.state_company
+        #     else ugettext_lazy("Приватна компанія")
+        # )
+
+        # if with_connections:
+        #     connections = []
+
+        #     persons = self.all_related_persons
+        #     for k in persons.values():
+        #         for p in k:
+        #             connections.append(
+        #                 {
+        #                     "relation": p.connection.relationship_type,
+        #                     "node": p.get_node_info(False),
+        #                     "model": p.connection._meta.model_name,
+        #                     "pk": p.connection.pk,
+        #                 }
+        #             )
+
+        #     # Because of a complicated logic here we are piggybacking on
+        #     # existing method that handles both directions of relations
+        #     for c in self.all_related_companies["all"]:
+        #         connections.append(
+        #             {
+        #                 "relation": unicode(ugettext_lazy(c.rtype or "")),
+        #                 "node": c.get_node_info(False),
+        #                 "model": c.connection._meta.model_name,
+        #                 "pk": c.connection.pk,
+        #             }
+        #         )
+
+        #     countries = self.from_countries.prefetch_related("to_country")
+        #     for c in countries:
+        #         connections.append(
+        #             {
+        #                 "relation": unicode(
+        #                     ugettext_lazy(c.get_relationship_type_display())
+        #                 ),
+        #                 "node": c.to_country.get_node_info(False),
+        #                 "model": c._meta.model_name,
+        #                 "pk": c.pk,
+        #             }
+        #         )
+
+        #     res["connections"] = connections
+
+        return {"edges": edges, "nodes": nodes}
 
     @property
     def closed_on_human(self):
