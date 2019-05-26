@@ -117,8 +117,7 @@ urlpatterns += [
         name="encrypted_company_redirect",
         kwargs={"model": "Company"},
     ),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 try:
     from extra_urls import urlpatterns as extra_patterns

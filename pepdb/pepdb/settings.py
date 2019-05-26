@@ -257,7 +257,7 @@ PIPELINE = {
                 "bower_components/cytoscape/dist/cytoscape.min.js",
                 "bower_components/popper.js/dist/umd/popper.js",
                 # "bower_components/tippyjs/build/all.js",
-                "js/cytoscape-popper.js",
+                "bower_components/cytoscape-popper/cytoscape-popper.js",
                 "js/cytograph_init.js",
             ),
             "output_filename": "js/graph.js",
