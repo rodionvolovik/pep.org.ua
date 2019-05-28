@@ -255,6 +255,7 @@ PIPELINE = {
         "graph_viz": {
             "source_filenames": (
                 "bower_components/cytoscape/dist/cytoscape.min.js",
+                "bower_components/cytoscape-cose-bilkent/cytoscape-cose-bilkent.js",
                 "bower_components/popper.js/dist/umd/popper.js",
                 # "bower_components/tippyjs/build/all.js",
                 "bower_components/cytoscape-popper/cytoscape-popper.js",

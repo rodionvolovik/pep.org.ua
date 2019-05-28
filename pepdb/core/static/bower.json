@@ -16,6 +16,7 @@
     "cytoscape": "3.6.1",
     "popper.js": "1.15.0",
     "tippyjs": "4.3.1",
-    "cytoscape-popper": "1.0.4"
+    "cytoscape-popper": "1.0.4",
+    "cytoscape-cose-bilkent": "4.0.0"
   }
 }

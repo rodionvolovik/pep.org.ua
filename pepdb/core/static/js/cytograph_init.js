@@ -9,7 +9,7 @@ $(function() {
         selector: 'node',
         style: {
             "content": "",
-            "font-size": 18,
+            "font-size": 11,
             "ghost": "yes",
             "text-wrap": "wrap",
             "text-max-width": 100,
@@ -78,32 +78,28 @@ $(function() {
             "z-index": 90
         }
     }];
-
+    
     var full_style = preview_style.slice();
     full_style.push({
         selector: 'node',
         style: {
             "content": "data(name)",
             "color": "#666666",
-            "font-size": "10px"
+            // "font-size": 12
+            // "width": 30,
+            // "height": 30
         }
     });
 
-    $.getJSON($("#profile").data("url"), function(elements) {
-        $(".load-pep-modal-tree").on("click", function() {
-            $($(this).data("target")).on('shown.bs.modal', function(e) {
-                var cy_full = cytoscape({
-                    container: $('.cy-full'),
-                    elements: elements,
-                    layout: {
-                        name: 'cose',
-                        quality: 'default'
-                    },
-                    style: full_style
-                });
+    full_style.push({
+        selector: 'node[?is_pep]',
+        style: {
+            "width": 40,
+            "height": 40
+        }
+    })
 
-            }).modal();
-        }).find("i").removeClass("hidden");
+    function init_preview(elements) {
         var cy_preview = cytoscape({
             userPanningEnabled: false,
             autoungrabify: true,
@@ -119,5 +115,39 @@ $(function() {
         }).on('mouseout', 'node', function(event) {
             event.target.removeClass("hover");
         });
+    }
+
+    function init_full(elements) {
+        var cy_full = cytoscape({
+            container: $('.cy-full'),
+            elements: elements,
+            layout: {
+                name: 'cose'
+            },
+            style: full_style
+        });
+        // var layout = cy_full.layout({
+        //     name: 'cose-bilkent',
+        //     animate: 'end',
+        //     animationEasing: 'ease-out',
+        //     animationDuration: 1500,
+        //     randomize: true
+        // });
+        // layout.run();
+
+        cy_full.on('click', 'node', function(event) {
+            event.target.addClass("active");
+        })
+    }
+    $.getJSON($("#profile").data("url"), function(elements) {
+        $(".load-pep-modal-tree").on("click", function() {
+            var anchor = $(this).data("target");
+            $(anchor).modal().on('shown.bs.modal', function(e) {
+                init_full(elements);
+            });
+
+        }).find("i").removeClass("hidden");
+
+        init_preview(elements);
     });
 });
