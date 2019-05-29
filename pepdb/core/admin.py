@@ -1200,7 +1200,7 @@ class LogEntryAdmin(admin.ModelAdmin):
 
     list_display = ("__str__", "user", "action_time", )
     list_filter = ("user", "action_time", )
-    search_fields = ("change_message", )
+    search_fields = ("change_message", "object_repr",)
 
     def has_delete_permission(self, request, obj=None):
         return False
