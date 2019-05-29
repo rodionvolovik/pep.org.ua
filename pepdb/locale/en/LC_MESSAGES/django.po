@@ -719,7 +719,7 @@ msgstr "e-mail"
 
 #: core/model/supplementaries.py:105
 msgid "Ваше ім'я та контакти"
-msgstr ""
+msgstr "Your name and contact details"
 
 #: core/model/supplementaries.py:107
 msgid "Прочитано"
@@ -1012,8 +1012,6 @@ msgstr ""
 "vehicle. For more information, go to the full version of the declaration."
 
 #: core/templates/_feedback_form.jinja:50
-#, fuzzy
-#| msgid "Прочитано"
 msgid "Я прочитав"
 msgstr "I've read"
 
