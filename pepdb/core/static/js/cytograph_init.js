@@ -98,8 +98,33 @@ $(function() {
             "z-index": 90
         }
     }, {
+        selector: "edge",
+        style: {
+            width: "mapData(importance, 0, 100, 0.5, 10)"
+        }
+    }, {
         selector: "edge.hover",
-        style: {width: 5}
+        style: {
+            label: "data(relation)",
+            "text-wrap": "wrap",
+            "text-max-width": 100,
+            "color": "#666666",
+            "font-size": 10,
+            "text-background-color": "white",
+            "z-index": 140,
+            "text-background-opacity": 0.8,
+            "text-background-shape": "roundrectangle"
+        }
+    }, {
+        selector: "edge.active",
+        style: {
+            "line-color": "red"
+        }
+    }, {
+        selector: 'edge[model="person2person"]',
+        style: {
+            "line-style": "dashed"
+        }
     }]);
 
     function init_preview(elements) {
@@ -140,11 +165,14 @@ $(function() {
         cy_full.on('click', 'node', function(event) {
             event.target.addClass("active");
         }).on('mouseover', 'node', function(event) {
-            console.log(event.target.id());
-            cy_full.$('edge[source="' + event.target.id() + '"], edge[target="' + event.target.id() + '"]').addClass("hover");
+            cy_full.$('edge[source="' + event.target.id() + '"], edge[target="' + event.target.id() + '"]').addClass("active");
         }).on('mouseout', 'node', function(event) {
-            cy_full.$('edge[source="' + event.target.id() + '"], edge[target="' + event.target.id() + '"]').removeClass("hover");
-        })
+            cy_full.$('edge[source="' + event.target.id() + '"], edge[target="' + event.target.id() + '"]').removeClass("active");
+        }).on('mouseover', 'edge', function(event) {
+            event.target.addClass("hover");
+        }).on('mouseout', 'edge', function(event) {
+            event.target.removeClass("hover");
+        });
     }
     $.getJSON($("#profile").data("url"), function(elements) {
         $(".load-pep-modal-tree").on("click", function() {

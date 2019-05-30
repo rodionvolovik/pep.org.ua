@@ -464,6 +464,15 @@ class Person(models.Model, AbstractNode):
             )
         ).replace("  ", " ")
 
+    def localized_shortname(self, lang):
+        return (
+            "%s %s"
+            % (
+                getattr(self, localized_field("first_name", lang)),
+                getattr(self, localized_field("last_name", lang)),
+            )
+        ).replace("  ", " ")
+
     @property
     def full_name(self):
         return self.localized_full_name(get_language())
@@ -684,7 +693,7 @@ class Person(models.Model, AbstractNode):
         res = super(Person, self).get_node()
 
         node = {
-            "name": self.full_name,
+            "name": self.localized_shortname(get_language()),
             "is_pep": self.is_pep,
             "kind": unicode(ugettext_lazy(self.get_type_of_official_display() or ""))
         }
@@ -717,6 +726,7 @@ class Person(models.Model, AbstractNode):
                             "id": "{}-{}".format(
                                 p.connection._meta.model_name, p.connection.pk
                             ),
+                            "importance": 0,
                             "source": this_node["data"]["id"],
                             "target": sibling_node["nodes"][0]["data"]["id"],
                         }
@@ -739,6 +749,7 @@ class Person(models.Model, AbstractNode):
                                 c._meta.model_name, c.pk
                             ),
                             "source": this_node["data"]["id"],
+                            "importance": float(c.share or 0),
                             "target": sibling_node["nodes"][0]["data"]["id"],
                         }
                     }
