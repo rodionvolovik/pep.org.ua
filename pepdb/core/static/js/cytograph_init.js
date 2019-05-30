@@ -84,7 +84,7 @@ $(function() {
         style: {
             "content": "data(name)",
             "color": "#666666",
-            "font-size": 10
+            "font-size": 12
         }
     }, {
         selector: 'node[?is_main]',
@@ -100,7 +100,7 @@ $(function() {
     }, {
         selector: "edge",
         style: {
-            width: "mapData(importance, 0, 100, 0.5, 10)"
+            width: "mapData(importance, 0, 100, 0.5, 5)"
         }
     }, {
         selector: "edge.hover",
@@ -150,7 +150,14 @@ $(function() {
             container: $('.cy-full'),
             elements: elements,
             layout: {
-                name: 'cose'
+                name: 'fcose',
+                animate: "end",
+                quality: "proof",
+                // padding: 10,
+                // nodeOverlap: 20,
+                idealEdgeLength: 140,
+                nodeDimensionsIncludeLabels: true,
+                // randomize: true
             },
             style: full_style
         });
