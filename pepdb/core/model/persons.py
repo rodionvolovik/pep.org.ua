@@ -712,7 +712,6 @@ class Person(models.Model, AbstractNode):
         edges = []
 
         if with_connections:
-
             # Because of a complicated logic here we are piggybacking on
             # existing method that handles both directions of relations
             for p in self.all_related_persons["all"]:
@@ -758,29 +757,6 @@ class Person(models.Model, AbstractNode):
                 nodes += sibling_node["nodes"]
                 edges += sibling_node["edges"]
 
-        #         edges.append(
-        #             {
-        #                 "relation": unicode(c.relationship_type),
-        #                 "node": c.to_company.get_node_info(False),
-        #                 "model": c._meta.model_name,
-        #                 "pk": c.pk,
-        #             }
-        #         )
-
-        #     countries = self.person2country_set.prefetch_related("to_country")
-        #     for c in countries:
-        #         edges.append(
-        #             {
-        #                 "relation": unicode(c.relationship_type),
-        #                 "node": c.to_country.get_node_info(False),
-        #                 "model": c._meta.model_name,
-        #                 "pk": c.pk,
-        #             }
-        #         )
-
-        #     res["connections"] = connections
-
-        # res["nodes"] = nodes
 
         return {"edges": edges, "nodes": nodes}
 

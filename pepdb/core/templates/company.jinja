@@ -64,7 +64,7 @@
                 {% endif %}
             </ul>
         </aside>
-        <section id="profile" class="col-sm-8">
+        <section id="profile" class="col-sm-8" data-url="{{ url('connections', 'company', company.pk) }}">
             <link itemprop="url" href="{{ company.get_absolute_url() }}" />
             <div id="profile-wrap" class="box">
                 <ul class="profileActions">
@@ -163,6 +163,25 @@
                         </table>
                     </div>
                 </div>
+                <a class="load-pep-modal-tree" data-target="#pep-graph-tree">
+                    <div id="cy-preview"></div>
+                    <i class="fa fa-search-plus hidden"></i>
+                </a>
+
+                <div class="modal fade" id="pep-graph-tree" tabindex="-1" role="dialog" aria-labelledby="pep-graph-tree-label">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">{{ company.name }}</h4>
+                            </div>
+                            <div class="modal-body cy-wrapper">
+                                <div class="cy-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {% set last_modified = company.last_modified %}
                 {% if last_modified %}
                     <div class="last_modified">
@@ -326,4 +345,9 @@
         </section>
     </div>
 </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ super() }}
+    {% javascript 'graph_viz' %}
 {% endblock %}

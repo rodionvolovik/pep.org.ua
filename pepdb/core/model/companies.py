@@ -478,56 +478,51 @@ class Company(models.Model, AbstractNode):
         nodes = [this_node]
         edges = []
 
-        # res = super(Company, self).get_node_info(with_connections)
-        # res["name"] = self.name
-        # res["description"] = self.edrpou
-        # res["kind"] = unicode(
-        #     ugettext_lazy("Державна компанія чи установа")
-        #     if self.state_company
-        #     else ugettext_lazy("Приватна компанія")
-        # )
+        if with_connections:
 
-        # if with_connections:
-        #     connections = []
+            # Because of a complicated logic here we are piggybacking on
+            # existing method that handles both directions of relations
+            for p in self.all_related_persons["rest"]:
+                sibling_node = p.get_node_info(False)
+                edges.append(
+                    {
+                        "data": {
+                            "relation": unicode(ugettext_lazy(p.rtype)),
+                            "model": p.connection._meta.model_name,
+                            "pk": p.connection.pk,
+                            "id": "{}-{}".format(
+                                p.connection._meta.model_name, p.connection.pk
+                            ),
+                            "importance": 0,
+                            "source": this_node["data"]["id"],
+                            "target": sibling_node["nodes"][0]["data"]["id"],
+                        }
+                    }
+                )
 
-        #     persons = self.all_related_persons
-        #     for k in persons.values():
-        #         for p in k:
-        #             connections.append(
-        #                 {
-        #                     "relation": p.connection.relationship_type,
-        #                     "node": p.get_node_info(False),
-        #                     "model": p.connection._meta.model_name,
-        #                     "pk": p.connection.pk,
-        #                 }
-        #             )
+                nodes += sibling_node["nodes"]
+                edges += sibling_node["edges"]
 
-        #     # Because of a complicated logic here we are piggybacking on
-        #     # existing method that handles both directions of relations
-        #     for c in self.all_related_companies["all"]:
-        #         connections.append(
-        #             {
-        #                 "relation": unicode(ugettext_lazy(c.rtype or "")),
-        #                 "node": c.get_node_info(False),
-        #                 "model": c.connection._meta.model_name,
-        #                 "pk": c.connection.pk,
-        #             }
-        #         )
+            for c in self.all_related_companies["all"]:
+                sibling_node = c.get_node_info(False)
+                edges.append(
+                    {
+                        "data": {
+                            "relation": unicode(c.connection.relationship_type),
+                            "model": c.connection._meta.model_name,
+                            "pk": c.pk,
+                            "id": "{}-{}".format(
+                                c.connection._meta.model_name, c.pk
+                            ),
+                            "source": this_node["data"]["id"],
+                            "importance": float(c.connection.equity_part or 0),
+                            "target": sibling_node["nodes"][0]["data"]["id"],
+                        }
+                    }
+                )
 
-        #     countries = self.from_countries.prefetch_related("to_country")
-        #     for c in countries:
-        #         connections.append(
-        #             {
-        #                 "relation": unicode(
-        #                     ugettext_lazy(c.get_relationship_type_display())
-        #                 ),
-        #                 "node": c.to_country.get_node_info(False),
-        #                 "model": c._meta.model_name,
-        #                 "pk": c.pk,
-        #             }
-        #         )
-
-        #     res["connections"] = connections
+                nodes += sibling_node["nodes"]
+                edges += sibling_node["edges"]
 
         return {"edges": edges, "nodes": nodes}
 
