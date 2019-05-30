@@ -483,6 +483,9 @@ class Company(models.Model, AbstractNode):
             # Because of a complicated logic here we are piggybacking on
             # existing method that handles both directions of relations
             for p in self.all_related_persons["rest"]:
+                if p.rtype.lower() in [_("клієнт банку")]:
+                    continue                    
+
                 sibling_node = p.get_node_info(False)
                 edges.append(
                     {

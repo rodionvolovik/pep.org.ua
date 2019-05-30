@@ -127,6 +127,16 @@ $(function() {
         }
     }]);
 
+    var layout_options = {
+        name: 'cose',
+        animate: "end",
+        padding: 10,
+        nodeOverlap: 6,
+        idealEdgeLength: 140,
+        nodeDimensionsIncludeLabels: true,
+        randomize: true
+    }
+
     function init_preview(elements) {
         var cy_preview = cytoscape({
             userPanningEnabled: false,
@@ -149,20 +159,26 @@ $(function() {
         var cy_full = cytoscape({
             container: $('.cy-full'),
             elements: elements,
-            layout: {
-                name: 'cose',
-                animate: "end",
-                padding: 10,
-                nodeOverlap: 6,
-                idealEdgeLength: 140,
-                nodeDimensionsIncludeLabels: true,
-                randomize: true
-            },
+            // layout: layout_options,
             style: full_style
         });
 
+        cy_full.fit();
+
+        var layout = cy_full.layout(layout_options);
+        layout.run();
+
         cy_full.on('click', 'node', function(event) {
             event.target.addClass("active");
+            if (typeof(event.target.data("expanded")) == "undefined") {
+                $.getJSON(event.target.data("details"), function(new_elements) {
+                    event.target.data("expanded", true);
+                    var eles = cy_full.add(new_elements);
+                    var layout = cy_full.layout(layout_options);
+                    layout.run();
+                });
+            }
+            
         }).on('mouseover', 'node', function(event) {
             cy_full.$('edge[source="' + event.target.id() + '"], edge[target="' + event.target.id() + '"]').addClass("active");
         }).on('mouseout', 'node', function(event) {
