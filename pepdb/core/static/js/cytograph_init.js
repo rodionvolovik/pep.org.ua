@@ -150,25 +150,17 @@ $(function() {
             container: $('.cy-full'),
             elements: elements,
             layout: {
-                name: 'fcose',
+                name: 'cose',
                 animate: "end",
-                quality: "proof",
-                // padding: 10,
-                // nodeOverlap: 20,
+                padding: 10,
+                nodeOverlap: 6,
                 idealEdgeLength: 140,
                 nodeDimensionsIncludeLabels: true,
-                // randomize: true
+                randomize: true
             },
             style: full_style
         });
-        // var layout = cy_full.layout({
-        //     name: 'cose-bilkent',
-        //     animate: 'end',
-        //     animationEasing: 'ease-out',
-        //     animationDuration: 1500,
-        //     randomize: true
-        // });
-        // layout.run();
+
         cy_full.on('click', 'node', function(event) {
             event.target.addClass("active");
         }).on('mouseover', 'node', function(event) {
