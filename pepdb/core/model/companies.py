@@ -458,7 +458,7 @@ class Company(models.Model, AbstractNode):
         res = super(Company, self).get_node()
 
         node = {
-            "name": self.name,
+            "name": self.short_name or self.name,
             "description": self.edrpou,
             "state_company": self.state_company,
             "kind": unicode(

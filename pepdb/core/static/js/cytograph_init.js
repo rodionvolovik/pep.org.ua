@@ -9,7 +9,7 @@ $(function() {
         selector: 'node',
         style: {
             "content": "",
-            "font-size": 11,
+            "font-size": 20,
             "ghost": "yes",
             "text-wrap": "wrap",
             "text-max-width": 100,
@@ -78,26 +78,29 @@ $(function() {
             "z-index": 90
         }
     }];
-    
-    var full_style = preview_style.slice();
-    full_style.push({
+
+    var full_style = preview_style.concat([{
         selector: 'node',
         style: {
             "content": "data(name)",
             "color": "#666666",
-            // "font-size": 12
-            // "width": 30,
-            // "height": 30
+            "font-size": 10
         }
-    });
-
-    full_style.push({
-        selector: 'node[?is_pep]',
+    }, {
+        selector: 'node[?is_main]',
         style: {
-            "width": 40,
-            "height": 40
+            "width": 80,
+            "height": 80,
+            "color": "#444444",
+            "text-background-color": "white",
+            "text-background-opacity": 0,
+            content: "data(name)",
+            "z-index": 90
         }
-    })
+    }, {
+        selector: "edge.hover",
+        style: {width: 5}
+    }]);
 
     function init_preview(elements) {
         var cy_preview = cytoscape({
@@ -134,9 +137,13 @@ $(function() {
         //     randomize: true
         // });
         // layout.run();
-
         cy_full.on('click', 'node', function(event) {
             event.target.addClass("active");
+        }).on('mouseover', 'node', function(event) {
+            console.log(event.target.id());
+            cy_full.$('edge[source="' + event.target.id() + '"], edge[target="' + event.target.id() + '"]').addClass("hover");
+        }).on('mouseout', 'node', function(event) {
+            cy_full.$('edge[source="' + event.target.id() + '"], edge[target="' + event.target.id() + '"]').removeClass("hover");
         })
     }
     $.getJSON($("#profile").data("url"), function(elements) {
@@ -145,9 +152,7 @@ $(function() {
             $(anchor).modal().on('shown.bs.modal', function(e) {
                 init_full(elements);
             });
-
         }).find("i").removeClass("hidden");
-
         init_preview(elements);
     });
 });
