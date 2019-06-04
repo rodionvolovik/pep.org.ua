@@ -78,12 +78,12 @@ $(function() {
             "z-index": 90
         }
     }];
-
     var full_style = preview_style.concat([{
         selector: 'node',
         style: {
             "content": "data(name)",
             "color": "#666666",
+            "min-zoomed-font-size": 18,
             "font-size": 12
         }
     }, {
@@ -110,6 +110,7 @@ $(function() {
             "text-max-width": 100,
             "color": "#666666",
             "font-size": 10,
+            "min-zoomed-font-size": 10,
             "text-background-color": "white",
             "z-index": 140,
             "text-background-opacity": 0.8,
@@ -126,15 +127,14 @@ $(function() {
             "line-style": "dashed"
         }
     }]);
-
     var layout_options = {
         name: 'cose',
+        animationDuration: 1500,
         animate: "end",
         padding: 10,
         nodeOverlap: 6,
         idealEdgeLength: 140,
-        nodeDimensionsIncludeLabels: true,
-        randomize: true
+        nodeDimensionsIncludeLabels: true
     }
 
     function init_preview(elements) {
@@ -162,23 +162,48 @@ $(function() {
             // layout: layout_options,
             style: full_style
         });
-
         cy_full.fit();
-
         var layout = cy_full.layout(layout_options);
         layout.run();
-
+        var partial_layout_options = {
+            name: 'cose',
+            animate: "end",
+            fit: false,
+            padding: 10,
+            initialTemp: 50,
+            animationDuration: 1000,
+            nodeOverlap: 6,
+            idealEdgeLength: 250,
+            nodeDimensionsIncludeLabels: true,
+            stop: function() {
+                cy_full.resize();
+            }
+        }
         cy_full.on('click', 'node', function(event) {
             event.target.addClass("active");
             if (typeof(event.target.data("expanded")) == "undefined") {
                 $.getJSON(event.target.data("details"), function(new_elements) {
+                    var root_position = cy_full.$("node[?is_main]").renderedPosition(),
+                        pos = event.target.renderedPosition(),
+                        misplaced_pos = {
+                            x: pos.x + (pos.x - root_position.x) * 0.5,
+                            y: pos.y + (pos.y - root_position.y) * 0.5
+                        };
+
                     event.target.data("expanded", true);
+
+                    for (var i = new_elements["nodes"].length - 1; i >= 0; i--) {
+                        new_elements["nodes"][i]["data"]["parent_entity"] = event.target.id();
+                    }
                     var eles = cy_full.add(new_elements);
-                    var layout = cy_full.layout(layout_options);
-                    layout.run();
+                    if (eles.length > 0) {
+                        eles.renderedPosition(misplaced_pos);
+                        layout.stop();
+                        layout = cy_full.layout(partial_layout_options);
+                        layout.run();
+                    }
                 });
             }
-            
         }).on('mouseover', 'node', function(event) {
             cy_full.$('edge[source="' + event.target.id() + '"], edge[target="' + event.target.id() + '"]').addClass("active");
         }).on('mouseout', 'node', function(event) {
