@@ -127,15 +127,6 @@ $(function() {
             "line-style": "dashed"
         }
     }]);
-    var layout_options = {
-        name: 'cose',
-        animationDuration: 1500,
-        animate: "end",
-        padding: 10,
-        nodeOverlap: 6,
-        idealEdgeLength: 140,
-        nodeDimensionsIncludeLabels: true
-    }
 
     function init_preview(elements) {
         var cy_preview = cytoscape({
@@ -157,30 +148,42 @@ $(function() {
 
     function init_full(elements) {
         var cy_full = cytoscape({
-            container: $('.cy-full'),
-            elements: elements,
-            // layout: layout_options,
-            style: full_style
-        });
+                container: $('.cy-full'),
+                elements: elements,
+                style: full_style
+            }),
+            partial_layout_options = {
+                name: 'cose',
+                animate: "end",
+                fit: false,
+                padding: 10,
+                initialTemp: 50,
+                animationDuration: 1000,
+                nodeOverlap: 6,
+                idealEdgeLength: 250,
+                nodeDimensionsIncludeLabels: true,
+                stop: function() {
+                    cy_full.resize();
+                }
+            },
+            layout_options = {
+                name: 'cose',
+                animationDuration: 1500,
+                animate: "end",
+                padding: 10,
+                nodeOverlap: 6,
+                idealEdgeLength: 140,
+                nodeDimensionsIncludeLabels: true
+            },
+            layout = cy_full.layout(layout_options),
+            previousTapStamp;
+
         cy_full.fit();
-        var layout = cy_full.layout(layout_options);
         layout.run();
-        var partial_layout_options = {
-            name: 'cose',
-            animate: "end",
-            fit: false,
-            padding: 10,
-            initialTemp: 50,
-            animationDuration: 1000,
-            nodeOverlap: 6,
-            idealEdgeLength: 250,
-            nodeDimensionsIncludeLabels: true,
-            stop: function() {
-                cy_full.resize();
-            }
-        }
-        cy_full.on('click', 'node', function(event) {
+
+        cy_full.on('doubleTap', 'node', function(tap_event, event) {
             event.target.addClass("active");
+
             if (typeof(event.target.data("expanded")) == "undefined") {
                 $.getJSON(event.target.data("details"), function(new_elements) {
                     var root_position = cy_full.$("node[?is_main]").renderedPosition(),
@@ -212,6 +215,14 @@ $(function() {
             event.target.addClass("hover");
         }).on('mouseout', 'edge', function(event) {
             event.target.removeClass("hover");
+        }).on('tap', function(e) {
+            var currentTapStamp = e.timeStamp;
+            var msFromLastTap = currentTapStamp - previousTapStamp;
+
+            if (msFromLastTap < 250) {
+                e.target.trigger('doubleTap', e);
+            }
+            previousTapStamp = currentTapStamp;
         });
     }
     $.getJSON($("#profile").data("url"), function(elements) {
