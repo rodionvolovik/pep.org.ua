@@ -10,19 +10,27 @@ from core.utils import render_date
 
 
 class AbstractNode(object):
-    def get_node(self):
+    def get_model_name(self):
         t = type(self)
         if t is models.DEFERRED:
             t = t.__base__
 
+        return t._meta.model_name
+
+    def get_node_id(self):
+        return "{}-{}".format(self.get_model_name(), self.pk)
+
+    def get_node(self):
+        model_name = self.get_model_name()
+
         return {
             "data": {
-                "id": "{}-{}".format(t._meta.model_name, self.pk),
+                "id": self.get_node_id(),
                 "pk": self.pk,
-                "model": t._meta.model_name,
+                "model": model_name,
                 "details": reverse(
                     "connections",
-                    kwargs={"model": t._meta.model_name, "obj_id": self.pk},
+                    kwargs={"model": model_name, "obj_id": self.pk},
                 ),
                 "kind": "",
                 "description": "",

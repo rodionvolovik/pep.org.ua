@@ -22,6 +22,7 @@ from translitua import translitua
 import select2.fields
 import select2.models
 from dateutil.parser import parse as dt_parse
+from cacheops import cached
 
 from core.fields import RedactorField
 from core.model.base import AbstractNode
@@ -222,6 +223,7 @@ class Person(models.Model, AbstractNode):
     def died(self):
         return self.reason_of_termination == 1
 
+    @cached(timeout = 60 * 60)
     def _last_workplace(self):
         # Looking for a most recent appointment that has at least one date set
         # It'll work in following three cases:
@@ -375,6 +377,7 @@ class Person(models.Model, AbstractNode):
         )
 
     @property
+    @cached(timeout=60 * 60)
     def all_related_companies(self):
         companies = self.person2company_set.prefetch_related(
             "to_company", "proofs", "proofs__proof_document"
@@ -391,6 +394,7 @@ class Person(models.Model, AbstractNode):
         return {"banks": banks, "rest": rest}
 
     @property
+    @cached(timeout=60 * 60)
     def all_related_persons(self):
         related_persons = [
             (
@@ -710,11 +714,12 @@ class Person(models.Model, AbstractNode):
         this_node = self.get_node()
         nodes = [this_node]
         edges = []
+        all_connected = set()
 
-        if with_connections:
-            # Because of a complicated logic here we are piggybacking on
-            # existing method that handles both directions of relations
-            for p in self.all_related_persons["all"]:
+        # Because of a complicated logic here we are piggybacking on
+        # existing method that handles both directions of relations
+        for p in self.all_related_persons["all"]:
+            if with_connections:
                 sibling_node = p.get_node_info(False)
                 edges.append(
                     {
@@ -735,8 +740,12 @@ class Person(models.Model, AbstractNode):
                 nodes += sibling_node["nodes"]
                 edges += sibling_node["edges"]
 
-            companies = self.person2company_set.prefetch_related("to_company")
-            for c in companies:
+            all_connected.add(p.get_node_id())
+
+        companies = self.person2company_set.prefetch_related("to_company")
+        for c in companies:
+
+            if with_connections:
                 sibling_node = c.to_company.get_node_info(False)
                 edges.append(
                     {
@@ -757,7 +766,9 @@ class Person(models.Model, AbstractNode):
                 nodes += sibling_node["nodes"]
                 edges += sibling_node["edges"]
 
+            all_connected.add(c.to_company.get_node_id())
 
+        this_node["data"]["all_connected"] = list(all_connected)
         return {"edges": edges, "nodes": nodes}
 
     @property

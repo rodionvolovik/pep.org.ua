@@ -477,15 +477,15 @@ class Company(models.Model, AbstractNode):
         this_node = self.get_node()
         nodes = [this_node]
         edges = []
+        all_connected = set()
 
-        if with_connections:
+        # Because of a complicated logic here we are piggybacking on
+        # existing method that handles both directions of relations
+        for p in self.all_related_persons["rest"]:
+            if p.rtype.lower() in [_("клієнт банку")]:
+                continue                    
 
-            # Because of a complicated logic here we are piggybacking on
-            # existing method that handles both directions of relations
-            for p in self.all_related_persons["rest"]:
-                if p.rtype.lower() in [_("клієнт банку")]:
-                    continue                    
-
+            if with_connections:
                 sibling_node = p.get_node_info(False)
                 edges.append(
                     {
@@ -505,8 +505,10 @@ class Company(models.Model, AbstractNode):
 
                 nodes += sibling_node["nodes"]
                 edges += sibling_node["edges"]
+                all_connected.add(p.get_node_id())
 
-            for c in self.all_related_companies["all"]:
+        for c in self.all_related_companies["all"]:
+            if with_connections:
                 sibling_node = c.get_node_info(False)
                 edges.append(
                     {
@@ -527,6 +529,9 @@ class Company(models.Model, AbstractNode):
                 nodes += sibling_node["nodes"]
                 edges += sibling_node["edges"]
 
+            all_connected.add(c.get_node_id())
+
+        this_node["data"]["all_connected"] = list(all_connected)
         return {"edges": edges, "nodes": nodes}
 
     @property

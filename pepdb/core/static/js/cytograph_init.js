@@ -146,6 +146,28 @@ $(function() {
         });
     }
 
+    var makeTippy = function(node, text){
+        return tippy( node.popperRef(), {
+            content: function(){
+                var div = document.createElement('div');
+
+                div.innerHTML = text;
+
+                return div;
+            },
+            trigger: 'manual',
+            arrow: false,
+            placement: 'top',
+            hideOnClick: false,
+            multiple: true,
+            distance: 0,
+            interactive: true,
+            animateFill: false,
+            theme: "pep",
+            sticky: true
+        } );
+    };
+
     function init_full(elements) {
         var cy_full = cytoscape({
                 container: $('.cy-full'),
@@ -155,12 +177,12 @@ $(function() {
             partial_layout_options = {
                 name: 'cose',
                 animate: "end",
-                fit: false,
+                fit: true,
                 padding: 10,
-                initialTemp: 50,
-                animationDuration: 1000,
+                initialTemp: 100,
+                animationDuration: 1500,
                 nodeOverlap: 6,
-                idealEdgeLength: 250,
+                idealEdgeLength: 140,
                 nodeDimensionsIncludeLabels: true,
                 stop: function() {
                     cy_full.resize();
@@ -180,8 +202,15 @@ $(function() {
 
         cy_full.fit();
         layout.run();
+        window.cy_full = cy_full;
 
         cy_full.on('doubleTap', 'node', function(tap_event, event) {
+            var tippyA = event.target.data("tippy");
+            if (tippyA) {
+                tippyA.hide();
+                event.target.data("tippy", null);
+            }
+
             event.target.addClass("active");
 
             if (typeof(event.target.data("expanded")) == "undefined") {
@@ -208,9 +237,39 @@ $(function() {
                 });
             }
         }).on('mouseover', 'node', function(event) {
-            cy_full.$('edge[source="' + event.target.id() + '"], edge[target="' + event.target.id() + '"]').addClass("active");
+            var outbound = cy_full.$('edge[source="' + event.target.id() + '"]'),
+                inbound = cy_full.$('edge[target="' + event.target.id() + '"]'),
+                connections = event.target.data("all_connected"),
+                neighbours = [], connections_to_open = 0;
+            
+            inbound.addClass("active");
+            outbound.addClass("active");
+
+            inbound.forEach(function(edge){
+                neighbours.push(edge.data("source"));
+            });
+
+            outbound.forEach(function(edge){
+                neighbours.push(edge.data("target"));
+            });
+
+            for (var i = connections.length - 1; i >= 0; i--) {
+                if (neighbours.indexOf(connections[i]) == -1) {
+                    connections_to_open += 1;
+                }
+            }
+
+
+            var tippyA = makeTippy(event.target, connections_to_open);
+            tippyA.show();
+            event.target.data("tippy", tippyA);
         }).on('mouseout', 'node', function(event) {
             cy_full.$('edge[source="' + event.target.id() + '"], edge[target="' + event.target.id() + '"]').removeClass("active");
+            var tippyA = event.target.data("tippy");
+            if (tippyA) {
+                tippyA.hide();
+                event.target.data("tippy", null);
+            }
         }).on('mouseover', 'edge', function(event) {
             event.target.addClass("hover");
         }).on('mouseout', 'edge', function(event) {
