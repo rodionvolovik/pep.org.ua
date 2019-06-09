@@ -18,6 +18,8 @@
     "tippyjs": "4.3.1",
     "cytoscape-popper": "1.0.4",
     "cose-base": "1.0.0",
-    "cytoscape-fcose": "1.0.0"
+    "cytoscape-fcose": "1.0.0",
+    "webcola": "3.3.8",
+    "cytoscape-cola": "2.3.0"
   }
 }
