@@ -174,6 +174,7 @@ $(function() {
                 elements: elements,
                 style: full_style
             }),
+            edge_length = Math.max(50, 3 * elements["nodes"].length),
             partial_layout_options = {
                 name: 'cose',
                 animate: "end",
@@ -182,7 +183,7 @@ $(function() {
                 initialTemp: 100,
                 animationDuration: 1500,
                 nodeOverlap: 6,
-                idealEdgeLength: 140,
+                idealEdgeLength: edge_length,
                 nodeDimensionsIncludeLabels: true,
                 stop: function() {
                     cy_full.resize();
@@ -194,7 +195,9 @@ $(function() {
                 animate: "end",
                 padding: 10,
                 nodeOverlap: 6,
-                idealEdgeLength: 140,
+                initialTemp: 2500,
+                numIter: 2500,
+                idealEdgeLength: edge_length,
                 nodeDimensionsIncludeLabels: true
             },
             layout = cy_full.layout(layout_options),

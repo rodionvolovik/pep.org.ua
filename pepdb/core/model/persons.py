@@ -720,53 +720,56 @@ class Person(models.Model, AbstractNode):
         # existing method that handles both directions of relations
         for p in self.all_related_persons["all"]:
             if with_connections:
-                sibling_node = p.get_node_info(False)
-                edges.append(
-                    {
-                        "data": {
-                            "relation": unicode(ugettext_lazy(p.rtype)),
-                            "model": p.connection._meta.model_name,
-                            "pk": p.connection.pk,
-                            "id": "{}-{}".format(
-                                p.connection._meta.model_name, p.connection.pk
-                            ),
-                            "importance": 0,
-                            "source": this_node["data"]["id"],
-                            "target": sibling_node["nodes"][0]["data"]["id"],
-                        }
+                child_node = p.get_node_info(False)
+
+                nodes += child_node["nodes"]
+                edges += child_node["edges"]
+
+            child_node_id = p.get_node_id()
+            edges.append(
+                {
+                    "data": {
+                        "relation": unicode(ugettext_lazy(p.rtype)),
+                        "model": p.connection._meta.model_name,
+                        "pk": p.connection.pk,
+                        "id": "{}-{}".format(
+                            p.connection._meta.model_name, p.connection.pk
+                        ),
+                        "importance": 0,
+                        "source": this_node["data"]["id"],
+                        "target": child_node_id,
                     }
-                )
+                }
+            )
 
-                nodes += sibling_node["nodes"]
-                edges += sibling_node["edges"]
-
-            all_connected.add(p.get_node_id())
+            all_connected.add(child_node_id)
 
         companies = self.person2company_set.prefetch_related("to_company")
         for c in companies:
 
             if with_connections:
-                sibling_node = c.to_company.get_node_info(False)
-                edges.append(
-                    {
-                        "data": {
-                            "relation": unicode(c.relationship_type),
-                            "model": c._meta.model_name,
-                            "pk": c.pk,
-                            "id": "{}-{}".format(
-                                c._meta.model_name, c.pk
-                            ),
-                            "source": this_node["data"]["id"],
-                            "importance": float(c.share or 0),
-                            "target": sibling_node["nodes"][0]["data"]["id"],
-                        }
+                child_node = c.to_company.get_node_info(False)
+                nodes += child_node["nodes"]
+                edges += child_node["edges"]
+
+            child_node_id = c.to_company.get_node_id()
+            edges.append(
+                {
+                    "data": {
+                        "relation": unicode(c.relationship_type),
+                        "model": c._meta.model_name,
+                        "pk": c.pk,
+                        "id": "{}-{}".format(
+                            c._meta.model_name, c.pk
+                        ),
+                        "source": this_node["data"]["id"],
+                        "importance": float(c.share or 0),
+                        "target": child_node_id,
                     }
-                )
+                }
+            )
 
-                nodes += sibling_node["nodes"]
-                edges += sibling_node["edges"]
-
-            all_connected.add(c.to_company.get_node_id())
+            all_connected.add(child_node_id)
 
         this_node["data"]["all_connected"] = list(all_connected)
         return {"edges": edges, "nodes": nodes}
