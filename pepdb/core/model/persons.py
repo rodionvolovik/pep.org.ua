@@ -698,6 +698,7 @@ class Person(models.Model, AbstractNode):
 
         node = {
             "name": self.localized_shortname(get_language()),
+            "full_name": self.localized_full_name(get_language()),
             "is_pep": self.is_pep,
             "kind": unicode(ugettext_lazy(self.get_type_of_official_display() or ""))
         }

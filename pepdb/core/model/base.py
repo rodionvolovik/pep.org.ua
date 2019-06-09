@@ -27,6 +27,7 @@ class AbstractNode(object):
             "data": {
                 "id": self.get_node_id(),
                 "pk": self.pk,
+                "url": self.get_absolute_url(),
                 "model": model_name,
                 "details": reverse(
                     "connections",

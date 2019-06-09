@@ -459,6 +459,7 @@ class Company(models.Model, AbstractNode):
 
         node = {
             "name": self.short_name or self.name,
+            "full_name": self.name,
             "description": self.edrpou,
             "state_company": self.state_company,
             "kind": unicode(

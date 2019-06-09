@@ -145,27 +145,24 @@ $(function() {
             event.target.removeClass("hover");
         });
     }
-
-    var makeTippy = function(node, text){
-        return tippy( node.popperRef(), {
-            content: function(){
+    var makeTippy = function(node, text, theme, placement) {
+        return tippy(node.popperRef(), {
+            content: function() {
                 var div = document.createElement('div');
-
                 div.innerHTML = text;
-
                 return div;
             },
             trigger: 'manual',
             arrow: false,
-            placement: 'top',
+            placement: placement,
             hideOnClick: false,
             multiple: true,
             distance: 0,
             interactive: true,
             animateFill: false,
-            theme: "pep",
+            theme: theme,
             sticky: true
-        } );
+        });
     };
 
     function init_full(elements) {
@@ -176,7 +173,7 @@ $(function() {
             }),
             edge_length = Math.max(50, 3 * elements["nodes"].length),
             partial_layout_options = {
-                name: 'cose',
+                name: document.location.search.indexOf("cola") != -1 ? 'cola' : "cose",
                 animate: "end",
                 fit: true,
                 padding: 10,
@@ -190,7 +187,7 @@ $(function() {
                 }
             },
             layout_options = {
-                name: 'cose',
+                name: document.location.search.indexOf("cola") != -1 ? 'cola' : "cose",
                 animationDuration: 1500,
                 animate: "end",
                 padding: 10,
@@ -202,20 +199,16 @@ $(function() {
             },
             layout = cy_full.layout(layout_options),
             previousTapStamp;
-
         cy_full.fit();
         layout.run();
         window.cy_full = cy_full;
-
         cy_full.on('doubleTap', 'node', function(tap_event, event) {
             var tippyA = event.target.data("tippy");
             if (tippyA) {
                 tippyA.hide();
                 event.target.data("tippy", null);
             }
-
             event.target.addClass("active");
-
             if (typeof(event.target.data("expanded")) == "undefined") {
                 $.getJSON(event.target.data("details"), function(new_elements) {
                     var root_position = cy_full.$("node[?is_main]").renderedPosition(),
@@ -224,9 +217,7 @@ $(function() {
                             x: pos.x + (pos.x - root_position.x) * 0.5,
                             y: pos.y + (pos.y - root_position.y) * 0.5
                         };
-
                     event.target.data("expanded", true);
-
                     for (var i = new_elements["nodes"].length - 1; i >= 0; i--) {
                         new_elements["nodes"][i]["data"]["parent_entity"] = event.target.id();
                     }
@@ -243,27 +234,22 @@ $(function() {
             var outbound = cy_full.$('edge[source="' + event.target.id() + '"]'),
                 inbound = cy_full.$('edge[target="' + event.target.id() + '"]'),
                 connections = event.target.data("all_connected"),
-                neighbours = [], connections_to_open = 0;
-            
+                neighbours = [],
+                connections_to_open = 0;
             inbound.addClass("active");
             outbound.addClass("active");
-
-            inbound.forEach(function(edge){
+            inbound.forEach(function(edge) {
                 neighbours.push(edge.data("source"));
             });
-
-            outbound.forEach(function(edge){
+            outbound.forEach(function(edge) {
                 neighbours.push(edge.data("target"));
             });
-
             for (var i = connections.length - 1; i >= 0; i--) {
                 if (neighbours.indexOf(connections[i]) == -1) {
                     connections_to_open += 1;
                 }
             }
-
-
-            var tippyA = makeTippy(event.target, connections_to_open);
+            var tippyA = makeTippy(event.target, connections_to_open, "pep", "top");
             tippyA.show();
             event.target.data("tippy", tippyA);
         }).on('mouseout', 'node', function(event) {
@@ -280,9 +266,13 @@ $(function() {
         }).on('tap', function(e) {
             var currentTapStamp = e.timeStamp;
             var msFromLastTap = currentTapStamp - previousTapStamp;
-
             if (msFromLastTap < 250) {
                 e.target.trigger('doubleTap', e);
+            } else {
+                var tippyPopover = makeTippy(e.target,
+                    '<a href="' + e.target.data("url") + '" target="_blank">' + e.target.data("full_name") + '</a><br />' + e.target.data("kind") + "<br/>" + e.target.data("description"), "light", "right");
+                tippyPopover.show();
+                e.target.data("tippy_popover", tippyPopover);
             }
             previousTapStamp = currentTapStamp;
         });
