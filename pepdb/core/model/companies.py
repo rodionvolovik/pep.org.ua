@@ -453,8 +453,8 @@ class Company(models.Model, AbstractNode):
 
         return res
 
-    def get_node_info(self, with_connections=False):
-        res = super(Company, self).get_node_info(with_connections)
+    def get_node_info(self, level=0):
+        res = super(Company, self).get_node_info(level)
         res["name"] = self.name
         res["description"] = self.edrpou
         res["kind"] = unicode(
@@ -463,16 +463,24 @@ class Company(models.Model, AbstractNode):
             else ugettext_lazy("Приватна компанія")
         )
 
-        if with_connections:
+        extras = []
+        used_nodes = set()
+
+        if level:
             connections = []
 
             persons = self.all_related_persons
             for k in persons.values():
                 for p in k:
+                    node_info = p.get_node_info(level - 1)
+                    extras += node_info["connections"]
+                    used_nodes.add(node_info["details"])
+
                     connections.append(
                         {
                             "relation": p.connection.relationship_type,
-                            "node": p.get_node_info(False),
+                            "node": node_info,
+                            "level": level,
                             "model": p.connection._meta.model_name,
                             "pk": p.connection.pk,
                         }
@@ -481,27 +489,38 @@ class Company(models.Model, AbstractNode):
             # Because of a complicated logic here we are piggybacking on
             # existing method that handles both directions of relations
             for c in self.all_related_companies["all"]:
+                node_info = c.get_node_info(level - 1)
+                extras += node_info["connections"]
+                used_nodes.add(node_info["details"])
+
                 connections.append(
                     {
                         "relation": unicode(ugettext_lazy(c.rtype or "")),
-                        "node": c.get_node_info(False),
+                        "node": node_info,
+                        "level": level,
                         "model": c.connection._meta.model_name,
                         "pk": c.connection.pk,
                     }
                 )
 
-            countries = self.from_countries.prefetch_related("to_country")
-            for c in countries:
-                connections.append(
-                    {
-                        "relation": unicode(
-                            ugettext_lazy(c.get_relationship_type_display())
-                        ),
-                        "node": c.to_country.get_node_info(False),
-                        "model": c._meta.model_name,
-                        "pk": c.pk,
-                    }
-                )
+            # countries = self.from_countries.prefetch_related("to_country")
+            # for c in countries:
+            #     connections.append(
+            #         {
+            #             "relation": unicode(
+            #                 ugettext_lazy(c.get_relationship_type_display())
+            #             ),
+            #             "node": c.to_country.get_node_info(False),
+            #             "model": c._meta.model_name,
+            #             "pk": c.pk,
+            #         }
+            #     )
+
+            for connection in connections:
+                if level == 2:
+                    connection["node"]["connections"] = [second_level for second_level in connection.get("connections", []) if second_level["node"]["details"] in used_nodes]
+                else:
+                    connection["node"]["connections"] = []
 
             res["connections"] = connections
 

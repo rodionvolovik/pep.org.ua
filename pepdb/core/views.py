@@ -524,4 +524,4 @@ def connections(request, model, obj_id):
     except model.DoesNotExist:
         return HttpResponseNotFound()
 
-    return JsonResponse(obj.get_node_info(True))
+    return JsonResponse(obj.get_node_info(level=2))

@@ -10,7 +10,7 @@ from core.utils import render_date
 
 
 class AbstractNode(object):
-    def get_node_info(self, with_connections=False):
+    def get_node_info(self, level=0):
         t = type(self)
         if t is models.DEFERRED:
             t = t.__base__
