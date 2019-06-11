@@ -728,21 +728,21 @@ class Person(models.Model, AbstractNode):
                 nodes += child_node["nodes"]
                 edges += child_node["edges"]
 
-                edges.append(
-                    {
-                        "data": {
-                            "relation": unicode(ugettext_lazy(p.rtype)),
-                            "model": p.connection._meta.model_name,
-                            "pk": p.connection.pk,
-                            "id": "{}-{}".format(
-                                p.connection._meta.model_name, p.connection.pk
-                            ),
-                            "importance": 0,
-                            "source": this_node["data"]["id"],
-                            "target": child_node_id,
-                        }
+            edges.append(
+                {
+                    "data": {
+                        "relation": unicode(ugettext_lazy(p.rtype)),
+                        "model": p.connection._meta.model_name,
+                        "pk": p.connection.pk,
+                        "id": "{}-{}".format(
+                            p.connection._meta.model_name, p.connection.pk
+                        ),
+                        "importance": 0,
+                        "source": this_node["data"]["id"],
+                        "target": child_node_id,
                     }
-                )
+                }
+            )
 
             all_connected.add(child_node_id)
 
@@ -755,21 +755,21 @@ class Person(models.Model, AbstractNode):
                 nodes += child_node["nodes"]
                 edges += child_node["edges"]
 
-                edges.append(
-                    {
-                        "data": {
-                            "relation": unicode(c.relationship_type),
-                            "model": c._meta.model_name,
-                            "pk": c.pk,
-                            "id": "{}-{}".format(
-                                c._meta.model_name, c.pk
-                            ),
-                            "source": this_node["data"]["id"],
-                            "importance": float(c.share or 0),
-                            "target": child_node_id,
-                        }
+            edges.append(
+                {
+                    "data": {
+                        "relation": unicode(c.relationship_type),
+                        "model": c._meta.model_name,
+                        "pk": c.pk,
+                        "id": "{}-{}".format(
+                            c._meta.model_name, c.pk
+                        ),
+                        "source": this_node["data"]["id"],
+                        "importance": float(c.share or 0),
+                        "target": child_node_id,
                     }
-                )
+                }
+            )
 
             all_connected.add(child_node_id)
 
