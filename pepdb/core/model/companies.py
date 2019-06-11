@@ -455,7 +455,7 @@ class Company(models.Model, AbstractNode):
 
     def get_node_info(self, level=0):
         res = super(Company, self).get_node_info(level)
-        res["name"] = self.name
+        res["name"] = self.short_name or self.name
         res["description"] = self.edrpou
         res["kind"] = unicode(
             ugettext_lazy("Державна компанія чи установа")

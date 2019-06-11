@@ -464,6 +464,15 @@ class Person(models.Model, AbstractNode):
             )
         ).replace("  ", " ")
 
+    def localized_shortname(self, lang):
+        return (
+            "%s %s"
+            % (
+                getattr(self, localized_field("first_name", lang)),
+                getattr(self, localized_field("last_name", lang)),
+            )
+        ).replace("  ", " ")
+
     @property
     def full_name(self):
         return self.localized_full_name(get_language())
@@ -682,7 +691,7 @@ class Person(models.Model, AbstractNode):
 
     def get_node_info(self, level=0):
         res = super(Person, self).get_node_info(level)
-        res["name"] = self.full_name
+        res["name"] = self.localized_shortname(get_language())
 
         last_workplace = self.translated_last_workplace
         if last_workplace:
