@@ -173,7 +173,7 @@ $(function() {
             }),
             edge_length = Math.max(50, 3 * elements["nodes"].length),
             partial_layout_options = {
-                name: document.location.search.indexOf("cola") != -1 ? 'cola' : "cose",
+                name: document.location.search.indexOf("cola") != -1 ? 'cola' : "euler",
                 animate: "end",
                 fit: true,
                 padding: 10,
@@ -182,26 +182,38 @@ $(function() {
                 nodeOverlap: 6,
                 idealEdgeLength: edge_length,
                 nodeDimensionsIncludeLabels: true,
+                springLength: edge_length * 4,
+                gravity: -15,
+                theta: 1,
                 stop: function() {
                     cy_full.resize();
                 }
             },
             layout_options = {
-                name: document.location.search.indexOf("cola") != -1 ? 'cola' : "cose",
+                name: document.location.search.indexOf("cola") != -1 ? 'cola' : "euler",
                 animationDuration: 1500,
                 animate: "end",
-                padding: 10,
-                nodeOverlap: 6,
-                initialTemp: 2500,
-                numIter: 2500,
-                idealEdgeLength: edge_length,
-                nodeDimensionsIncludeLabels: true
+                springLength: edge_length * 4,
+                gravity: -15,
+                theta: 1,
+                maxIterations: 3000,
+                // padding: 10,
+                // theta: 1,
+                // dragCoeff: 0.01,
+                // pull: 0.0001,
+                // // nodeOverlap: 6,
+                // // initialTemp: 2500,
+                // numIter: 2500,
+                // idealEdgeLength: edge_length,
+                // nodeDimensionsIncludeLabels: true
             },
             layout = cy_full.layout(layout_options),
             previousTapStamp;
+
         cy_full.fit();
         layout.run();
         window.cy_full = cy_full;
+
         cy_full.on('doubleTap', 'node', function(tap_event, event) {
             var tippyA = event.target.data("tippy");
             if (tippyA) {

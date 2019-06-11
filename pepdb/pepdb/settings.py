@@ -261,6 +261,7 @@ PIPELINE = {
                 "bower_components/cytoscape-popper/cytoscape-popper.js",
                 "bower_components/webcola/WebCola/cola.min.js",
                 "bower_components/cytoscape-cola/cytoscape-cola.js",
+                "bower_components/cytoscape-euler/cytoscape-euler.js",
                 "js/tippy.js",
                 "js/cytograph_init.js",
             ),

@@ -486,52 +486,54 @@ class Company(models.Model, AbstractNode):
             if p.rtype.lower() in [_("клієнт банку")]:
                 continue                    
 
+            child_node_id = p.get_node_id()
+
             if with_connections:
                 child_node = p.get_node_info(False)
                 nodes += child_node["nodes"]
                 edges += child_node["edges"]
 
-            child_node_id = p.get_node_id()
-            edges.append(
-                {
-                    "data": {
-                        "relation": unicode(ugettext_lazy(p.rtype)),
-                        "model": p.connection._meta.model_name,
-                        "pk": p.connection.pk,
-                        "id": "{}-{}".format(
-                            p.connection._meta.model_name, p.connection.pk
-                        ),
-                        "importance": 0,
-                        "source": this_node["data"]["id"],
-                        "target": child_node_id,
+                edges.append(
+                    {
+                        "data": {
+                            "relation": unicode(ugettext_lazy(p.rtype)),
+                            "model": p.connection._meta.model_name,
+                            "pk": p.connection.pk,
+                            "id": "{}-{}".format(
+                                p.connection._meta.model_name, p.connection.pk
+                            ),
+                            "importance": 0,
+                            "source": this_node["data"]["id"],
+                            "target": child_node_id,
+                        }
                     }
-                }
-            )
+                )
 
             all_connected.add(child_node_id)
 
         for c in self.all_related_companies["all"]:
+            child_node_id = c.get_node_id()
+
             if with_connections:
                 child_node = c.get_node_info(False)
                 nodes += child_node["nodes"]
                 edges += child_node["edges"]
 
-            child_node_id = c.get_node_id()
-            edges.append(
-                {
-                    "data": {
-                        "relation": unicode(c.connection.relationship_type),
-                        "model": c.connection._meta.model_name,
-                        "pk": c.pk,
-                        "id": "{}-{}".format(
-                            c.connection._meta.model_name, c.pk
-                        ),
-                        "source": this_node["data"]["id"],
-                        "importance": float(c.connection.equity_part or 0),
-                        "target": child_node_id,
+                edges.append(
+                    {
+                        "data": {
+                            "relation": unicode(c.connection.relationship_type),
+                            "model": c.connection._meta.model_name,
+                            "pk": c.pk,
+                            "id": "{}-{}".format(
+                                c.connection._meta.model_name, c.pk
+                            ),
+                            "source": this_node["data"]["id"],
+                            "importance": float(c.connection.equity_part or 0),
+                            "target": child_node_id,
+                        }
                     }
-                }
-            )
+                )
 
             all_connected.add(child_node_id)
 
