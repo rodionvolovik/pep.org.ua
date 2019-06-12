@@ -737,7 +737,7 @@ class Person(models.Model, AbstractNode):
                             "id": "{}-{}".format(
                                 p.connection._meta.model_name, p.connection.pk
                             ),
-                            "importance": 0,
+                            "share": 0,
                             "source": this_node["data"]["id"],
                             "target": child_node_id,
                             "is_latest": True
@@ -814,7 +814,7 @@ class Person(models.Model, AbstractNode):
                                 c._meta.model_name, c.pk
                             ),
                             "source": this_node["data"]["id"],
-                            "importance": float(c.share or 0),
+                            "share": float(c.share or 0),
                             "target": child_node_id,
                             "is_latest": c.is_latest
                         }

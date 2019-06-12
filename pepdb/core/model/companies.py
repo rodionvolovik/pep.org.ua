@@ -502,7 +502,7 @@ class Company(models.Model, AbstractNode):
                             "id": "{}-{}".format(
                                 p.connection._meta.model_name, p.connection.pk
                             ),
-                            "importance": 0,
+                            "share": 0,
                             "source": this_node["data"]["id"],
                             "target": child_node_id,
                             "is_latest": True,
@@ -530,7 +530,7 @@ class Company(models.Model, AbstractNode):
                                 c.connection._meta.model_name, c.pk
                             ),
                             "source": this_node["data"]["id"],
-                            "importance": float(c.connection.equity_part or 0),
+                            "share": float(c.connection.equity_part or 0),
                             "target": child_node_id,
                             "is_latest": True,
                         }

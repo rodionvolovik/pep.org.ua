@@ -1,4 +1,13 @@
 $(function() {
+    function get_edge_description(obj) {
+        var share = obj.data("share");
+        if (share > 0) {
+            return obj.data("relation") + "\n " + share  + "%";
+        } else {
+            return obj.data("relation")
+        }
+        
+    }
     var preview_style = [{
         selector: "edge",
         style: {
@@ -110,11 +119,11 @@ $(function() {
     }, {
         selector: "edge.hover",
         style: {
-            label: "data(relation)",
+            label: get_edge_description,
             "text-wrap": "wrap",
             "text-max-width": 100,
             "color": "#666666",
-            "font-size": 10,
+            "font-size": 14,
             "min-zoomed-font-size": 10,
             "text-background-color": "white",
             "z-index": 140,
@@ -124,13 +133,18 @@ $(function() {
     }, {
         selector: "edge.active",
         style: {
+            label: get_edge_description,
             "line-color": "red",
-            width: "mapData(importance, 0, 100, 0.5, 5)"
+            "font-size": 10,
+            "text-wrap": "wrap",
+            "text-max-width": 80,
+            "color": "#666666",
+            width: "mapData(share, 0, 100, 0.5, 5)"
         }
     }, {
         selector: "edge[?is_latest]",
         style: {
-            width: "mapData(importance, 0, 100, 0.5, 5)"
+            width: "mapData(share, 0, 100, 0.5, 5)"
         }
     }, {
         selector: 'edge[model="person2person"]',
