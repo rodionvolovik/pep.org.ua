@@ -9,7 +9,7 @@ import requests
 import xlsxwriter
 
 from django.contrib import admin
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.db import models
 from django.conf import settings
 from django.conf.urls import url
@@ -1308,6 +1308,45 @@ class LogEntryAdmin(admin.ModelAdmin):
         return actions
 
 
+class RelationshipTypeFilter(admin.SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = _("Фільтр за зв'язком")
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = "rel_type"
+
+    def lookups(self, request, model_admin):
+        field = localized_field("relationship_type")
+        return [
+            (p2c[field], "{}: {}".format(p2c[field], p2c["type_count"]))
+            for p2c in Person2Company.objects.values(field)
+            .annotate(type_count=Count(field))
+            .order_by("-type_count")[:50]
+        ]
+
+    def queryset(self, request, queryset):
+        field = localized_field("relationship_type")
+        value = self.value()
+        if value:
+            return queryset.filter(
+                **{field: value}
+            )
+        else:
+            return queryset
+
+class Person2CompanyAdmin(TranslationAdmin):
+    list_display = ["from_person", "to_company"] + localized_fields(["relationship_type"]) + ["is_employee", "share"]
+    list_editable = localized_fields(["relationship_type"]) + ["is_employee", ]
+    search_fields = localized_fields(["relationship_type"], langs=settings.LANGUAGE_CODES)
+    list_filter = ("is_employee", RelationshipTypeFilter)
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request):
+        return False
+
 class RiggedTOTPDeviceAdmin(TOTPDeviceAdmin):
     def get_queryset(self, request):
         qs = super(RiggedTOTPDeviceAdmin, self).get_queryset(request)
@@ -1329,6 +1368,7 @@ admin.site.register(DeclarationToLink, DeclarationAdmin)
 admin.site.register(DeclarationToWatch, DeclarationMonitorAdmin)
 admin.site.register(ActionLog, ActionLogAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
+admin.site.register(Person2Company, Person2CompanyAdmin)
 
 admin.site.unregister(TOTPDevice)
 admin.site.register(TOTPDevice, RiggedTOTPDeviceAdmin)
