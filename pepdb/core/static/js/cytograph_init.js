@@ -3,6 +3,11 @@ $(function() {
         selector: "edge",
         style: {
             "curve-style": "bezier",
+            width: 0
+        }
+    }, {
+        selector: "edge[?is_latest]",
+        style: {
             width: 1
         }
     }, {
@@ -100,7 +105,7 @@ $(function() {
     }, {
         selector: "edge",
         style: {
-            width: "mapData(importance, 0, 100, 0.5, 5)"
+            width: 0
         }
     }, {
         selector: "edge.hover",
@@ -114,12 +119,18 @@ $(function() {
             "text-background-color": "white",
             "z-index": 140,
             "text-background-opacity": 0.8,
-            "text-background-shape": "roundrectangle"
+            "text-background-shape": "roundrectangle",
         }
     }, {
         selector: "edge.active",
         style: {
-            "line-color": "red"
+            "line-color": "red",
+            width: "mapData(importance, 0, 100, 0.5, 5)"
+        }
+    }, {
+        selector: "edge[?is_latest]",
+        style: {
+            width: "mapData(importance, 0, 100, 0.5, 5)"
         }
     }, {
         selector: 'edge[model="person2person"]',
@@ -213,7 +224,7 @@ $(function() {
 
         cy_full.fit();
         layout.run();
-        window.cy_full = cy_full;
+
 
         cy_full.on('doubleTap', 'node', function(tap_event, event) {
             var tippyA = event.target.data("tippy");

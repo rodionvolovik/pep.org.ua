@@ -505,6 +505,7 @@ class Company(models.Model, AbstractNode):
                             "importance": 0,
                             "source": this_node["data"]["id"],
                             "target": child_node_id,
+                            "is_latest": True,
                         }
                     }
                 )
@@ -531,6 +532,7 @@ class Company(models.Model, AbstractNode):
                             "source": this_node["data"]["id"],
                             "importance": float(c.connection.equity_part or 0),
                             "target": child_node_id,
+                            "is_latest": True,
                         }
                     }
                 )

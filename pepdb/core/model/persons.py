@@ -740,6 +740,7 @@ class Person(models.Model, AbstractNode):
                             "importance": 0,
                             "source": this_node["data"]["id"],
                             "target": child_node_id,
+                            "is_latest": True
                         }
                     }
                 )
@@ -747,9 +748,57 @@ class Person(models.Model, AbstractNode):
             all_connected.add(child_node_id)
 
         companies = self.person2company_set.prefetch_related("to_company")
-        for c in companies:
 
+        worked_for = {}
+        connected_to = {}
+
+        if with_connections:
+            for c in companies:
+                c.is_latest = False
+
+                child_node_id = c.to_company.get_node_id()
+
+                if c.is_employee:
+                    bucket = worked_for
+                else:
+                    bucket = connected_to
+
+                if child_node_id not in bucket:
+                    bucket[child_node_id] = c
+                else:
+                    compare_with = bucket[child_node_id]
+
+                    # When comparing two connections
+                    if c.date_finished is not None or c.date_established is not None:
+                        # Candidate with date_finished and date_established not set looses
+                        if compare_with.date_finished is None and compare_with.date_established is None:
+                            bucket[child_node_id] = c
+                        else:
+                            dt_now = datetime.datetime.now()
+
+                            a_date_established = compare_with.date_established or dt_now
+                            b_date_established = c.date_established or dt_now
+
+                            a_date_finished = compare_with.date_finished or dt_now
+                            b_date_finished = c.date_finished or dt_now
+
+                            # Candidate with later date finished or open date_finished wins
+                            if b_date_finished > a_date_finished:
+                                bucket[child_node_id] = c
+                            elif b_date_finished == a_date_finished:
+                                # if both date finished are the same (for example two connections has open end)
+                                # those with latest date_established wins
+                                if b_date_established > a_date_established:
+                                    bucket[child_node_id] = c
+
+
+            for bucket in [worked_for, connected_to]:
+                for c in bucket.values():
+                    c.is_latest = True
+
+        for c in companies:
             child_node_id = c.to_company.get_node_id()
+
             if with_connections:
                 child_node = c.to_company.get_node_info(False)
                 nodes += child_node["nodes"]
@@ -767,6 +816,7 @@ class Person(models.Model, AbstractNode):
                             "source": this_node["data"]["id"],
                             "importance": float(c.share or 0),
                             "target": child_node_id,
+                            "is_latest": c.is_latest
                         }
                     }
                 )
