@@ -774,7 +774,7 @@ class Person(models.Model, AbstractNode):
                         if compare_with.date_finished is None and compare_with.date_established is None:
                             bucket[child_node_id] = c
                         else:
-                            dt_now = datetime.datetime.now()
+                            dt_now = (datetime.datetime.now() + datetime.timedelta(days=7)).date()
 
                             a_date_established = compare_with.date_established or dt_now
                             b_date_established = c.date_established or dt_now
