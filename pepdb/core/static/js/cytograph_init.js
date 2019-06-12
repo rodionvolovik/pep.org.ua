@@ -180,6 +180,7 @@ $(function() {
                 initialTemp: 100,
                 animationDuration: 1500,
                 nodeOverlap: 6,
+                maxIterations: 3000,
                 idealEdgeLength: edge_length,
                 nodeDimensionsIncludeLabels: true,
                 springLength: edge_length * 3,
@@ -280,10 +281,26 @@ $(function() {
             var msFromLastTap = currentTapStamp - previousTapStamp;
             if (msFromLastTap < 250) {
                 e.target.trigger('doubleTap', e);
+
+                var tippyPopoverToRemove = e.target.data("tippy_popover");
+                if (tippyPopoverToRemove) {
+                    tippyPopoverToRemove.hide();
+                    e.target.data("tippy_popover", null);
+                }
             } else {
                 var tippyPopover = makeTippy(e.target,
                     '<a href="' + e.target.data("url") + '" target="_blank">' + e.target.data("full_name") + '</a><br />' + e.target.data("kind") + "<br/>" + e.target.data("description"), "light", "right");
                 tippyPopover.show();
+
+                cy_full.$(".has_popover").forEach(function(node){
+                    var tippyPopoverToRemove = node.data("tippy_popover");
+                    if (tippyPopoverToRemove) {
+                        tippyPopoverToRemove.hide();
+                        node.data("tippy_popover", null);
+                    }
+                });
+
+                e.target.addClass("has_popover");
                 e.target.data("tippy_popover", tippyPopover);
             }
             previousTapStamp = currentTapStamp;
