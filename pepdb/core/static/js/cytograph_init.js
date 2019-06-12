@@ -173,7 +173,7 @@ $(function() {
             }),
             edge_length = Math.max(50, 3 * elements["nodes"].length),
             partial_layout_options = {
-                name: document.location.search.indexOf("cola") != -1 ? 'cola' : "euler",
+                name: document.location.search.indexOf("euler") != -1 ? 'euler' : "cose",
                 animate: "end",
                 fit: true,
                 padding: 10,
@@ -182,7 +182,7 @@ $(function() {
                 nodeOverlap: 6,
                 idealEdgeLength: edge_length,
                 nodeDimensionsIncludeLabels: true,
-                springLength: edge_length * 4,
+                springLength: edge_length * 3,
                 gravity: -15,
                 theta: 1,
                 stop: function() {
@@ -190,22 +190,22 @@ $(function() {
                 }
             },
             layout_options = {
-                name: document.location.search.indexOf("cola") != -1 ? 'cola' : "euler",
+                name: document.location.search.indexOf("euler") != -1 ? 'euler' : "cose",
                 animationDuration: 1500,
                 animate: "end",
-                springLength: edge_length * 4,
+                springLength: edge_length * 3,
                 gravity: -15,
                 theta: 1,
                 maxIterations: 3000,
-                // padding: 10,
-                // theta: 1,
-                // dragCoeff: 0.01,
-                // pull: 0.0001,
-                // // nodeOverlap: 6,
-                // // initialTemp: 2500,
-                // numIter: 2500,
-                // idealEdgeLength: edge_length,
-                // nodeDimensionsIncludeLabels: true
+                padding: 10,
+                theta: 1,
+                dragCoeff: 0.01,
+                pull: 0.0001,
+                nodeOverlap: 6,
+                initialTemp: 2500,
+                numIter: 2500,
+                idealEdgeLength: edge_length,
+                nodeDimensionsIncludeLabels: true
             },
             layout = cy_full.layout(layout_options),
             previousTapStamp;
