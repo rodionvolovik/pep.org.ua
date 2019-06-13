@@ -426,8 +426,7 @@
                                         <div class="tl-content panel padder b-a">
                                             <span class="arrow left pull-up"></span>
                                             <div>
-                                                <a href="{{ connection.to_company.get_absolute_url() }}" itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ connection.to_company }}</span>{% if connection.to_company.edrpou %}, {{ _("ЄДРПОУ") }} <span itemprop="taxID">{{ connection.to_company.edrpou }}</span>{% endif %}</a>, {{ connection.relationship_type }}
-                                                {% if connection.share %}
+                                                <a href="{{ connection.to_company.get_absolute_url() }}" itemscope itemtype="http://schema.org/Organization" itemprop="worksFor"><span itemprop="name">{{ connection.to_company }}</span>{% if connection.to_company.edrpou %}, {{ _("ЄДРПОУ") }} <span itemprop="taxID">{{ connection.to_company.edrpou }}</span>{% endif %}</a>, {{ connection.relationship_type }}{% if connection.share %},
                                                 {{ _("Частка") }} {{ "{:2.3f}".format(connection.share) }}%
                                                 {% endif %}
                                                 {% set countries = connection.to_company.foreign_registration %}
@@ -435,14 +434,14 @@
                                                     <span class="flag flag-{{ country.to_country.iso3|lower }}" title="{{ country.to_country.name }}"></span>
                                                 {% endfor %}
                                                 {% if connection.has_additional_info %}
-                                                    <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#modalWork-{{ loop.index }}">
+                                                    <a href="#" class="modalConnectionShow" data-toggle="modal" data-target="#RelatedCompany-{{ loop.index }}">
                                                        <i class="fa fa-info-circle info-gray"></i>
                                                     </a>
                                                 {% endif %}
                                             </div>   
                                         </div>
                                     </div>
-                                    {{ render_connection(connection, "modalWork-{}".format(loop.index)) }}
+                                    {{ render_connection(connection, "RelatedCompany-{}".format(loop.index)) }}
                                 </li>
                                 {% endfor %}
                             </ul>
