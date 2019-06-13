@@ -249,6 +249,7 @@ def _search_company(request):
         "other_managers",
         "bank_name",
         "edrpou",
+        "ogrn_code",
         "code_chunks",
     ] + localized_fields(
         ["name", "short_name", "related_persons.person"], langs=settings.LANGUAGE_CODES
