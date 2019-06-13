@@ -185,6 +185,7 @@ class Company(models.Model, AbstractNode):
                 "id",
                 "state_company",
                 "edrpou",
+                "ogrn_code",
                 "wiki",
                 "city",
                 "street",
