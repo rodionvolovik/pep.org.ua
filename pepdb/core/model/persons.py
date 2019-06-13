@@ -340,7 +340,7 @@ class Person(models.Model, AbstractNode):
         # naturally sort behind instances of Box with a non-null last_active
         # value.
         # djangoproject.com/en/1.8/ref/models/database-functions/#coalesce
-        the_past = datetime.datetime.now() - datetime.timedelta(days=10 * 365)
+        the_past = datetime.datetime.now() - datetime.timedelta(days=30 * 365)
 
         timeline = (
             self.person2company_set.prefetch_related(
@@ -379,9 +379,13 @@ class Person(models.Model, AbstractNode):
     @property
     @cached(timeout=60 * 60)
     def all_related_companies(self):
+        the_past = datetime.datetime.now() - datetime.timedelta(days=30 * 365)
+
         companies = self.person2company_set.prefetch_related(
             "to_company", "proofs", "proofs__proof_document"
-        ).filter(is_employee=False)
+        ).filter(is_employee=False).annotate(
+            fixed_date_established=Coalesce("date_established", Value(the_past))
+        ).order_by("-fixed_date_established")
 
         banks = []
         rest = []

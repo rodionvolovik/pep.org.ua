@@ -1322,7 +1322,7 @@ class RelationshipTypeFilter(admin.SimpleListFilter):
             (p2c[field], "{}: {}".format(p2c[field], p2c["type_count"]))
             for p2c in Person2Company.objects.values(field)
             .annotate(type_count=Count(field))
-            .order_by("-type_count")[:50]
+            .order_by("-type_count")
         ]
 
     def queryset(self, request, queryset):
