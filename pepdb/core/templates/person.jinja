@@ -17,12 +17,6 @@
     <meta property="profile:last_name" content="{{ person.last_name }}" />
     <link rel="canonical" href="{{ SITE_URL }}{{ person.get_absolute_url() }}" />
 
-{#     <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
-    <script src="https://unpkg.com/popper.js@1.14.7/dist/umd/popper.js"></script>
-    <script src="{{ static("js/cytoscape-popper.js") }}"></script>
-    <script src="https://unpkg.com/tippy.js@4.0.1/umd/index.all.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/tippy.js@4.0.1/index.css" />
- #}
 
 {% endblock %}
 
@@ -232,7 +226,10 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}</h4>
+                                <h4 class="modal-title">{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}
+                                    <span class="request_took" style="width: 200px; float: right; display: block; font-size: 0.8em; padding: 0 10px"></span>
+                                    <div class="loader" style="width: 100px; float: right; height: 20px"></div>
+                                </h4>
                             </div>
                             <div class="modal-body cy-wrapper">
                                 <div class="cy-full"></div>

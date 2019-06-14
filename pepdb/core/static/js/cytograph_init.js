@@ -1,4 +1,15 @@
 $(function() {
+    var last_timer = new Date();
+    $(document).ajaxStart(function() {
+        last_timer = new Date();
+        $(".loader").addClass("progress-bar progress-bar-striped active");
+    });
+
+    $(document).ajaxComplete(function() {
+        $(".loader").removeClass("progress-bar progress-bar-striped active");
+        $(".request_took").html("Last request took " + ((new Date() - last_timer) / 1000) + "sec");
+    });
+
     function get_edge_description(obj) {
         var share = obj.data("share");
         if (share > 0) {

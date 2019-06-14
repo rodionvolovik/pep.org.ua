@@ -223,7 +223,6 @@ class Person(models.Model, AbstractNode):
     def died(self):
         return self.reason_of_termination == 1
 
-    @cached(timeout = 60 * 60)
     def _last_workplace(self):
         # Looking for a most recent appointment that has at least one date set
         # It'll work in following three cases:
@@ -296,6 +295,7 @@ class Person(models.Model, AbstractNode):
             )[:1]
         )
 
+    @cached(timeout = 24 * 60 * 60)
     def last_workplace_in_lang(self, lang):
         qs = self._last_workplace()
         if qs:
@@ -377,7 +377,6 @@ class Person(models.Model, AbstractNode):
         )
 
     @property
-    @cached(timeout=60 * 60)
     def all_related_companies(self):
         the_past = datetime.datetime.now() - datetime.timedelta(days=30 * 365)
 
@@ -398,7 +397,6 @@ class Person(models.Model, AbstractNode):
         return {"banks": banks, "rest": rest}
 
     @property
-    @cached(timeout=60 * 60)
     def all_related_persons(self):
         related_persons = [
             (

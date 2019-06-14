@@ -173,7 +173,10 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">{{ company.name }}</h4>
+                                <h4 class="modal-title">{{ company.name }}
+                                    <span class="request_took" style="width: 200px; float: right; display: block; font-size: 0.8em; padding: 0 10px"></span>
+                                    <div class="loader" style="width: 100px; float: right; height: 20px"></div>
+                                </h4>
                             </div>
                             <div class="modal-body cy-wrapper">
                                 <div class="cy-full"></div>
