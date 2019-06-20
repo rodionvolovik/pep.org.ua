@@ -11,7 +11,11 @@ from core.models import (
 
 
 class Command(BaseCommand):
-    args = '<output_dir>'
+    def add_arguments(self, parser):
+        parser.add_argument(
+            'output_dir',
+            help='Directory to export CSVs',
+        )
 
     def norm_str(self, s):
         return re.sub("\s+", " ", unicode(s).replace("\n", " ").strip())
@@ -59,10 +63,7 @@ class Command(BaseCommand):
                 )
 
     def handle(self, *args, **options):
-        try:
-            output_dir = args[0]
-        except IndexError:
-            raise CommandError('First argument must be an output dir')
+        output_dir = options["output_dir"]
 
         try:
             if not os.path.isdir(output_dir):

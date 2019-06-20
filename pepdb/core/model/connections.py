@@ -225,10 +225,10 @@ class Person2Company(AbstractRelationship):
         return {
             "relationship_type_uk": self.relationship_type_uk,
             "relationship_type_en": self.relationship_type_en,
-
             "date_established": self.date_established_human,
             "date_finished": self.date_finished_human,
             "date_confirmed": self.date_confirmed_human,
+            "share": self.share,
 
             "to_company_is_state": self.to_company.state_company,
             "to_company_edrpou": self.to_company.edrpou,
@@ -246,6 +246,7 @@ class Person2Company(AbstractRelationship):
             "date_established": self.date_established_human,
             "date_finished": self.date_finished_human,
             "date_confirmed": self.date_confirmed_human,
+            "share": self.share,
 
             "is_pep": self.from_person.is_pep,
             "person_uk": "%s %s %s" % (
