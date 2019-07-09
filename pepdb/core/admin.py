@@ -6,6 +6,7 @@ import json
 from unicodecsv import DictWriter, DictReader
 from cStringIO import StringIO
 import requests
+from copy import copy
 import xlsxwriter
 
 from django.contrib import admin
@@ -19,6 +20,7 @@ from django.utils import formats, timezone
 from django.forms import widgets
 from django.http import HttpResponse
 from django.contrib.admin.models import LogEntry
+from django.template.loader import render_to_string
 
 from django.utils.encoding import force_str
 from django.utils.translation import ugettext_lazy as _
@@ -490,7 +492,7 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     )
 
     list_display = (
-        ["pk"]
+        ["pk_link"]
         + localized_fields(["name", "short_name"])
         + ["edrpou", "website", "state_company", "legal_entity", "status", "management"]
     )
@@ -504,6 +506,7 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     search_fields = localized_fields(["name", "short_name"]) + ["edrpou"]
     readonly_fields = ("last_change", "last_editor", "_last_modified")
     list_filter = ("last_editor", NoTranslationCompanyFilter)
+    list_display_links = ("pk_link", )
     actions = [make_published, make_unpublished]
 
     class Media:
@@ -706,9 +709,19 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
             Person2Company._relationships_explained
         )
 
-        return super(CompanyAdmin, self).change_view(
-            request, object_id, form_url, extra_context=extra_context
-        )
+        self.inlines = list(self.inlines)
+        inlines = copy(self.inlines)
+
+        if request.GET.get("lean"):
+            self.inlines.remove(Company2PersonInline)
+
+        resp = super(CompanyAdmin, self).change_view(
+            request, object_id, form_url, extra_context=extra_context)
+
+        self.inlines = inlines
+
+        return resp
+
 
     def add_view(self, request, form_url="", extra_context=None):
         extra_context = extra_context or {}
@@ -719,6 +732,16 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
         return super(CompanyAdmin, self).add_view(
             request, form_url, extra_context=extra_context
         )
+
+
+    def pk_link(self, obj):
+        return render_to_string(
+            "admin/core/company/pk_link.html", {
+                "obj": obj
+            }
+        )
+
+    pk_link.allow_tags = True
 
 
 class EmptyValueFilter(admin.SimpleListFilter):

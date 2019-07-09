@@ -13,15 +13,22 @@
             function init() {
                 $(".mt-field-relationship_type-{{ DEFAULT_LANGUAGE_CODE }}").each(function(i, box) {
                     box = $(box);
-                    box.autocomplete({
-                        "source": person2company_rels
-                    });
-                })
+                    if (box.attr("name").indexOf("__prefix__") == -1) {
+                        box.autocomplete({
+                            "source": person2company_rels
+                        });
+                    }
+                });
             }
 
             init();
 
-            $(document.body).on("click", ".grp-add-handler", init);
+            $(document.body).on(
+                "mouseup",
+                ".person2company.grp-add-handler, .djn-model-core-person2company.grp-add-handler",
+                function(){
+                    window.setTimeout(init, 300)
+                });
         });
 
 		grp.jQuery(function(){
