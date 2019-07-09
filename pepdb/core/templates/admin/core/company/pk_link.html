@@ -1,1 +1,1 @@
-<a href="{% url 'admin:core_company_change' obj.pk %}">{{ obj.pk }}</a> <a href="{% url 'admin:core_company_change' obj.pk %}?lean=true" title="Без персон">*</a>
+<a href="{% url 'admin:core_company_change' obj.pk %}" data-popup-opener="{{ obj.pk }}">{{ obj.pk }}</a> <a href="{% url 'admin:core_company_change' obj.pk %}?lean=true" title="Без персон" data-popup-opener="{{ obj.pk }}">*</a>

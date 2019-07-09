@@ -4,6 +4,7 @@ import os
 import re
 import os.path
 from django.core.management.base import BaseCommand, CommandError
+import csv
 from unicodecsv import writer
 from core.models import (
     Person, Company, Country, Person2Person, Company2Company,
@@ -22,7 +23,7 @@ class Command(BaseCommand):
 
     def export_nodes(self, fname, qs, fields, labels=[]):
         with open(fname, "w") as fp:
-            w = writer(fp)
+            w = writer(fp, quoting=csv.QUOTE_ALL)
             id_fields = "%sId:ID(%s)" % (
                 qs.model.__name__.lower(), qs.model.__name__)
 
@@ -37,7 +38,7 @@ class Command(BaseCommand):
 
     def export_relations(self, fname, qs, src, dst, fields):
         with open(fname, "w") as fp:
-            w = writer(fp)
+            w = writer(fp, quoting=csv.QUOTE_ALL)
             if_fld_from = getattr(qs.model, src).field.related_model.__name__
             if_fld_to = getattr(qs.model, dst).field.related_model.__name__
 

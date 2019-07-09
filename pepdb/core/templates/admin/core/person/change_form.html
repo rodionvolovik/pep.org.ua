@@ -4,7 +4,7 @@
     {{ block.super }}
 
     <script type="text/javascript" charset="utf-8">
-    	var person2person_rels = {{ person2person_rels|safe }};
+        var person2person_rels = {{ person2person_rels|safe }};
         var person2company_rels = {{ person2company_rels|safe }};
 
         django.jQuery(function(){
@@ -13,82 +13,89 @@
             function init() {
                 $(".mt-field-relationship_type-uk").each(function(i, box) {
                     box = $(box);
-                    box.autocomplete({
-                        "source": person2company_rels
-                    });
-                })
+                    if (box.attr("name").indexOf("__prefix__") == -1) {
+                        box.autocomplete({
+                            "source": person2company_rels
+                        });
+                    }
+                });
             }
 
             init();
 
-            $(document.body).on("click", ".grp-add-handler", init);
+            $(document.body).on(
+                "mouseup",
+                ".person2company.grp-add-handler, .djn-model-core-person2company.grp-add-handler",
+                function(){
+                    window.setTimeout(init, 300)
+                });
         });
 
-		grp.jQuery(function(){
-			var $ = grp.jQuery;
+        grp.jQuery(function(){
+            var $ = grp.jQuery;
 
-			function apply_restrictions(el,
-				switch_to_first_elem) {
-				var name = el.attr("name"),
-					trgt = $("select[name=" + name.replace("from_relationship_type",
-						"to_relationship_type") + "]"),
-					permitted_values = person2person_rels[el.val()];
+            function apply_restrictions(el,
+                switch_to_first_elem) {
+                var name = el.attr("name"),
+                    trgt = $("select[name=" + name.replace("from_relationship_type",
+                        "to_relationship_type") + "]"),
+                    permitted_values = person2person_rels[el.val()];
 
-				trgt.find("option:not(:first-child)").each(function() {
-					var opt = $(this);
+                trgt.find("option:not(:first-child)").each(function() {
+                    var opt = $(this);
 
-					if (typeof(permitted_values) !== "undefined" && permitted_values.indexOf(opt.val()) == -1) {
-						opt.attr("disabled", "");
-					} else {
-						opt.removeAttr("disabled");
-					}
-				});
+                    if (typeof(permitted_values) !== "undefined" && permitted_values.indexOf(opt.val()) == -1) {
+                        opt.attr("disabled", "");
+                    } else {
+                        opt.removeAttr("disabled");
+                    }
+                });
 
-				if (switch_to_first_elem) {
-					trgt.val("");
-				}
+                if (switch_to_first_elem) {
+                    trgt.val("");
+                }
 
-				var details_block = el
-					.closest("fieldset")
-					.find("[name$=relationship_details_uk]")
-					.closest(".mt-switcher-container");
+                var details_block = el
+                    .closest("fieldset")
+                    .find("[name$=relationship_details_uk]")
+                    .closest(".mt-switcher-container");
 
-				details_block.toggle(el.val() == "ділові зв'язки");
-			}
+                details_block.toggle(el.val() == "ділові зв'язки");
+            }
 
-			$(document.body).on("change", "select[name^=to_persons-][name$=from_relationship_type]", function() {
-				apply_restrictions($(this), true);
-			});
+            $(document.body).on("change", "select[name^=to_persons-][name$=from_relationship_type]", function() {
+                apply_restrictions($(this), true);
+            });
 
-			$("select[name^=to_persons-][name$=from_relationship_type]").each(function() {
-				apply_restrictions($(this), false);
-			});
+            $("select[name^=to_persons-][name$=from_relationship_type]").each(function() {
+                apply_restrictions($(this), false);
+            });
 
-			$(document.body).on("change", "select[name^=from_persons-][name$=from_relationship_type]", function() {
-				apply_restrictions($(this), true);
-			});
+            $(document.body).on("change", "select[name^=from_persons-][name$=from_relationship_type]", function() {
+                apply_restrictions($(this), true);
+            });
 
-			$("select[name^=from_persons-][name$=from_relationship_type]").each(function() {
-				apply_restrictions($(this), false);
-			});
-		});
-	</script>
+            $("select[name^=from_persons-][name$=from_relationship_type]").each(function() {
+                apply_restrictions($(this), false);
+            });
+        });
+    </script>
 {% endblock %}
 
 {% block stylesheets %}
-	{{ block.super }}
-	<style type="text/css">
-		.grp-open .grp-row input[type="url"],
-		.grp-open .grp-row input[type="email"],
-		.grp-open .grp-row .vTextField,
-		.grp-open .grp-row .vURLField,
-		.grp-open .grp-row .vFileBrowseField,
-		.grp-open .grp-row textarea,
-		.grp-open .grp-row .vLargeTextField,
-		.grp-open .grp-row .vXMLLargeTextField,
-		.grp-open .grp-autocomplete-wrapper-m2m {
-			width: 450px;
-		}
+    {{ block.super }}
+    <style type="text/css">
+        .grp-open .grp-row input[type="url"],
+        .grp-open .grp-row input[type="email"],
+        .grp-open .grp-row .vTextField,
+        .grp-open .grp-row .vURLField,
+        .grp-open .grp-row .vFileBrowseField,
+        .grp-open .grp-row textarea,
+        .grp-open .grp-row .vLargeTextField,
+        .grp-open .grp-row .vXMLLargeTextField,
+        .grp-open .grp-autocomplete-wrapper-m2m {
+            width: 450px;
+        }
 
         .redactor-editor ul {
             list-style-type: disc;
@@ -96,5 +103,5 @@
         .redactor-editor ol {
             list-style-type: decimal;
         }
-	</style>
+    </style>
 {% endblock %}

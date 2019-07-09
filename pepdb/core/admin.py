@@ -427,7 +427,7 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     inlines = (Company2PersonInline, Company2CompanyInline,
                Company2CompanyBackInline, Company2CountryInline, ProofsInline)
 
-    list_display = ("pk_link", "name_uk", "short_name_uk", "edrpou",
+    list_display = ("pk", "pk_link", "name_uk", "short_name_uk", "edrpou",
                     "state_company", "legal_entity", "status", "management")
     list_editable = ("name_uk", "short_name_uk", "edrpou", "state_company",
                      "legal_entity", "status")

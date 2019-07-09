@@ -1,5 +1,5 @@
 import json
-from core.models import Declaration, Company
+from core.models import Declaration, Company, Person2Company
 from unicodecsv import DictWriter
 
 if __name__ == "__main__":
