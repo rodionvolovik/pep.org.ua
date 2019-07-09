@@ -427,13 +427,13 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     inlines = (Company2PersonInline, Company2CompanyInline,
                Company2CompanyBackInline, Company2CountryInline, ProofsInline)
 
-    list_display = ("pk", "pk_link", "name_uk", "short_name_uk", "edrpou",
+    list_display = ("pk_link", "name_uk", "short_name_uk", "edrpou",
                     "state_company", "legal_entity", "status", "management")
     list_editable = ("name_uk", "short_name_uk", "edrpou", "state_company",
                      "legal_entity", "status")
     search_fields = ["name_uk", "short_name_uk", "edrpou"]
     readonly_fields = ('last_change', 'last_editor', '_last_modified')
-    list_display_links = None
+    list_display_links = ('pk_link',)
     list_filter = ("last_editor", NoTranslationCompanyFilter)
     actions = [make_published, make_unpublished]
 
