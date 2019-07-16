@@ -83,7 +83,7 @@ def suggest(request):
         # TODO: Investigate, completion doesn't work with numbers
 
         res = search.execute()
-        if res.success:
+        if res.success and hasattr(res, "suggest"):
             results += res.suggest["name"][0]["options"]
 
         results = sorted(results, key=itemgetter("_score"), reverse=True)
