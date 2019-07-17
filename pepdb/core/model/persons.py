@@ -919,6 +919,9 @@ class Person(models.Model, AbstractNode):
         seen = set()
         for proof in proofs + list(self.proofs.all()):
             if proof.proof_document_id not in seen:
+                if not proof.proof_document:
+                    continue
+
                 proofs_by_cat[proof.proof_document.doc_type].append(
                     proof
                 )
