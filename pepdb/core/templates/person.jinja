@@ -37,6 +37,7 @@
 {% set manhunt_records = person.manhunt_records %}
 {% set external_links = person.external_links %}
 {% set documents = person.all_documents %}
+{% set any_documents = documents.values()|map("length")|sum %}
 
 
 <div class="container" itemscope itemtype="http://schema.org/Person">
@@ -94,7 +95,7 @@
                 {% if related_companies.banks %}
                     <li><a href="#bank-accounts" class="btn btn-transp trans"><i class="fa fa-money"></i><span>{{ _("Банківські рахунки") }}</span></a></li>
                 {% endif %}
-                {% if documents %}
+                {% if any_documents %}
                     <li><a href="#documents" class="btn btn-transp trans"><i class="fa fa-book"></i><span>{{ _("Документи та джерела") }}</span></a></li>
                 {% endif %}
             </ul>
@@ -454,7 +455,7 @@
                 </div>
             {% endif %}
 
-            {% if documents %}
+            {% if any_documents %}
                 <div id="documents" class="sub box">
                     <h3>{{ _("Документи та джерела") }}</h3>
                     <div class="printWrap">
