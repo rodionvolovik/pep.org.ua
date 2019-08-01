@@ -374,7 +374,7 @@ class PersonAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
                     "terminated", "publish")
     readonly_fields = ('names', 'last_change', 'last_editor', '_last_modified')
     search_fields = ['last_name_uk', "first_name_uk", "patronymic_uk", "names"]
-    list_editable = ("dob", "dob_details")
+    list_editable = ("dob", "dob_details", "publish")
     list_filter = ("last_editor", HasSanctionsListFilter, NoTranslationPersonFilter)
 
 
@@ -427,10 +427,10 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
     inlines = (Company2PersonInline, Company2CompanyInline,
                Company2CompanyBackInline, Company2CountryInline, ProofsInline)
 
-    list_display = ("pk_link", "name_uk", "short_name_uk", "edrpou",
+    list_display = ("pk_link", "name_uk", "short_name_uk", "edrpou", "publish",
                     "state_company", "legal_entity", "status", "management")
     list_editable = ("name_uk", "short_name_uk", "edrpou", "state_company",
-                     "legal_entity", "status")
+                     "legal_entity", "status", "publish")
     search_fields = ["name_uk", "short_name_uk", "edrpou"]
     readonly_fields = ('last_change', 'last_editor', '_last_modified')
     list_display_links = ('pk_link',)

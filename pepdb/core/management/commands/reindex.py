@@ -36,7 +36,7 @@ class Command(BaseCommand):
 
         docs_to_index = [
             ElasticPerson(**p.to_dict())
-            for p in Person.objects.all().nocache().iterator()
+            for p in Person.objects.filter(publish=True).nocache().iterator()
         ]
 
         if options["drop_indices"]:
@@ -63,7 +63,7 @@ class Command(BaseCommand):
 
         docs_to_index = [
             ElasticCompany(**p.to_dict())
-            for p in Company.objects.all().nocache().iterator()]
+            for p in Company.objects.filter(publish=True).nocache().iterator()]
 
         if options["drop_indices"]:
             Index(ElasticCompany._doc_type.index).delete(ignore=404)

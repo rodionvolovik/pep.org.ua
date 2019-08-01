@@ -63,6 +63,6 @@ def touch_last_editor(sender, **kwargs):
     obj = instance.get_edited_object()
 
     if isinstance(obj, (Person, Company)):
-        obj.last_change = datetime.utcnow()
+        obj.last_change = timezone.now()
         obj.last_editor = instance.user
         obj.save()

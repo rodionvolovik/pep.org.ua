@@ -82,7 +82,7 @@ class Company(models.Model, AbstractNode):
 
     also_known_as = models.TextField("Назви іншими мовами або варіації", blank=True)
 
-    publish = models.BooleanField("Опублікувати", default=False)
+    publish = models.BooleanField("Опублікувати", default=True)
     founded = models.DateField("Дата створення", blank=True, null=True)
     founded_details = models.IntegerField(
         "Дата створення: точність",

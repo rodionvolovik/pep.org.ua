@@ -71,7 +71,7 @@ class Person(models.Model, AbstractNode):
     first_name = models.CharField("Ім'я", max_length=40)
     patronymic = models.CharField("По батькові", max_length=40, blank=True)
 
-    publish = models.BooleanField("Опублікувати", default=False)
+    publish = models.BooleanField("Опублікувати", default=True)
     is_pep = models.BooleanField("Є PEPом", default=True)
     imported = models.BooleanField("Був імпортований з гугл-таблиці", default=False)
 
