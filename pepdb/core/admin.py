@@ -25,7 +25,6 @@ from django.forms import widgets
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.contrib.admin.models import LogEntry
-from django import forms
 
 from django.utils.encoding import force_str
 from django.utils.translation import ugettext_lazy as _
