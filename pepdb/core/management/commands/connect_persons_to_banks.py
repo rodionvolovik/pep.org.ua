@@ -149,6 +149,8 @@ class Command(BaseCommand):
                             continue
 
                         for bank in bank_matches:
+                            bank.bank = True
+                            bank.save()
                             conn, created = importer.get_or_create_from_declaration(
                                 person, bank, "Клієнт банку", d, options["real_run"])
 

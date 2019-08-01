@@ -25,6 +25,7 @@ from django.forms import widgets
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.contrib.admin.models import LogEntry
+from django import forms
 
 from django.utils.encoding import force_str
 from django.utils.translation import ugettext_lazy as _
@@ -43,7 +44,7 @@ from core.models import (
     Country, Person, Company, Person2Person, Document, Person2Country,
     Person2Company, Company2Company, Company2Country, Ua2RuDictionary,
     Ua2EnDictionary, FeedbackMessage, Declaration, DeclarationExtra,
-    ActionLog, RelationshipProof, DeclarationToLink, DeclarationToWatch)
+    ActionLog, RelationshipProof, DeclarationToLink, DeclarationToWatch, CompanyCategories)
 
 from core.forms import EDRImportForm, ForeignImportForm, ZIPImportForm
 from core.importers.company import CompanyImporter
@@ -638,6 +639,47 @@ class CompanyAdmin(nested_admin.NestedModelAdminMixin, TranslationAdmin):
 
         return super(CompanyAdmin, self).add_view(
             request, form_url, extra_context=extra_context)
+
+
+class CompanyCategoriesAdmin(CompanyAdmin):
+    list_display = (
+        "name_uk",
+        "edrpou",
+        "state_company",
+        "legal_entity",
+        "status",
+        "public_office",
+        "political_party",
+        "state_enterprise",
+        "affiliated_with_pep",
+        "bank",
+        "service_provider",
+    )
+    list_editable = (
+        "state_company",
+        "legal_entity",
+        "status",
+        "public_office",
+        "political_party",
+        "state_enterprise",
+        "affiliated_with_pep",
+        "bank",
+        "service_provider",
+    )
+    search_fields = ["name_uk", "short_name_uk", "edrpou"]
+    readonly_fields = ("last_change", "last_editor", "_last_modified")
+    list_filter = (
+        "state_company",
+        "legal_entity",
+        "status",
+        "public_office",
+        "political_party",
+        "state_enterprise",
+        "affiliated_with_pep",
+        "bank",
+        "service_provider",
+    )
+    list_display_links = ("name_uk",)
 
 
 class EmptyValueFilter(admin.SimpleListFilter):
@@ -1281,6 +1323,7 @@ admin.site.register(DeclarationToWatch, DeclarationMonitorAdmin)
 admin.site.register(ActionLog, ActionLogAdmin)
 admin.site.register(LogEntry, LogEntryAdmin)
 admin.site.register(Person2Company, Person2CompanyAdmin)
+admin.site.register(CompanyCategories, CompanyCategoriesAdmin)
 
 admin.site.unregister(TOTPDevice)
 admin.site.register(TOTPDevice, RiggedTOTPDeviceAdmin)

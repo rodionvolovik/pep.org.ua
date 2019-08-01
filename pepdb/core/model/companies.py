@@ -165,8 +165,12 @@ class Company(models.Model, AbstractNode):
         null=True,
     )
 
-    works_for_peps = models.BooleanField("Обслуговує PEPів", default=False)
-    subject_of_monitoring = models.BooleanField("Суб'єкт фінансового моніторингу", default=False)
+    public_office = models.BooleanField("Держ.орган", default=False)
+    political_party = models.BooleanField("Партія", default=False)
+    state_enterprise = models.BooleanField("Держ. власність", default=False)
+    affiliated_with_pep = models.BooleanField("Пов'язана з ПЕП", default=False)
+    bank = models.BooleanField("Банк", default=False)
+    service_provider = models.BooleanField("Надавач послуг", default=False)
     _last_modified = models.DateTimeField("Остання зміна", null=True, blank=True)
     proofs = GenericRelation("RelationshipProof", verbose_name="Посилання, соціальні мережі та документи")
 
@@ -533,3 +537,9 @@ class Company(models.Model, AbstractNode):
             ("export_companies", "Can export the dataset of companies"),
         )
 
+
+class CompanyCategories(Company):
+    class Meta:
+        proxy = True
+        verbose_name = "Категорізація юр. осіб"
+        verbose_name_plural = "Категорізація юр. осіб"

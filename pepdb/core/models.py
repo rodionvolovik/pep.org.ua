@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.contrib.admin.models import LogEntry
 
 from core.model.persons import Person
-from core.model.companies import Company
+from core.model.companies import Company, CompanyCategories
 from core.model.countries import Country
 from core.model.declarations import (
     Declaration,
@@ -48,6 +48,7 @@ __all__ = [
     RelationshipProof,
     DeclarationToLink,
     DeclarationToWatch,
+    CompanyCategories,
 ]
 
 
