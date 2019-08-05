@@ -814,6 +814,32 @@ class CompanyCategoriesAdmin(CompanyAdmin):
     )
     list_display_links = ("name_uk",)
 
+    def set_public_office(self, request, queryset):
+        queryset.update(public_office=True)
+    set_public_office.short_description = "Відмитити, як держ.орган"
+
+    def set_political_party(self, request, queryset):
+        queryset.update(political_party=True)
+    set_political_party.short_description = "Відмитити, як партію"
+
+    def set_state_enterprise(self, request, queryset):
+        queryset.update(state_enterprise=True)
+    set_state_enterprise.short_description = "Відмитити, як держ. власність"
+
+    def set_affiliated_with_pep(self, request, queryset):
+        queryset.update(affiliated_with_pep=True)
+    set_affiliated_with_pep.short_description = "Відмитити, як пов'язану з ПЕП"
+
+    def set_bank(self, request, queryset):
+        queryset.update(bank=True)
+    set_bank.short_description = "Відмитити, як банк"
+
+    def set_service_provider(self, request, queryset):
+        queryset.update(service_provider=True)
+    set_service_provider.short_description = "Відмитити, як надавача професійних послуг"
+
+    actions = [set_public_office, set_political_party, set_state_enterprise, set_affiliated_with_pep, set_bank, set_service_provider]
+
 
 class EmptyValueFilter(admin.SimpleListFilter):
     title = _("Наявність перекладу")
