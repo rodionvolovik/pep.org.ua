@@ -20,6 +20,19 @@ from core.universal_loggers import PythonLogger
 
 
 class Command(BaseCommand):
+    EXCLUDE_PATTERNS = (
+        re.compile(r"РАЙОН", flags=re.I),
+        re.compile(r"ДЕРЖАВНОЇ АДМІНІСТРАЦІЇ", flags=re.I),
+        re.compile(r"ЄДНАНЕ УПРАВЛІННЯ ПЕНСІЙНОГО ФОНДУ УКРАЇНИ", flags=re.I),
+        re.compile(r"МІСЬКИЙ"),
+        re.compile(r"У М\.", flags=re.I),
+        re.compile(r"У МІСТІ", flags=re.I),
+        re.compile(r"У МIСТI", flags=re.I),
+        re.compile(r"ДЕРЖАВНОГО КАЗНАЧЕЙСТВА", flags=re.I),
+        re.compile(r"МІСЬКОЇ РАДИ", flags=re.I),
+        re.compile(r"СЕЛИЩНОЇ РАДИ", flags=re.I),
+    )
+
     def add_arguments(self, parser):
         parser.add_argument(
             "--real_run",
@@ -48,7 +61,6 @@ class Command(BaseCommand):
         self.company_info = {}
 
     def _iter_xml(self, fp):
-        # with TextIOWrapper(fp_raw, encoding="cp1251") as fp:
         mapping = {
             "Організаційно-правова_форма": "form",
             "Найменування": "name",
@@ -130,10 +142,30 @@ class Command(BaseCommand):
 
                 if kwargs["set_flag"]:
                     setattr(company, kwargs["set_flag"], True)
-                    if kwargs["real_run"]:
-                        company.save()
 
-                if created:
+                if created and company_rec["status"].lower() not in [
+                    "припинено",
+                    "ліквідація",
+                    "розпорядження майном",
+                    "зареєстровано, свідоцтво про державну реєстрацію недійсне",
+                ]:
+                    if kwargs["set_flag"] == "public_office":
+                        if any(
+                            map(
+                                lambda x: x.search(company_rec["name"])
+                                or x.search(company_rec.get("short_name", "")),
+                                self.EXCLUDE_PATTERNS,
+                            )
+                        ):
+                            logger.warning(
+                                "Skipping company {} with edrpou {} added and status {}".format(
+                                    company_rec["name"],
+                                    company_rec["edrpou"],
+                                    company_rec["status"],
+                                )
+                            )
+
+                            continue
                     logger.warning(
                         "New company {} with edrpou {} added and status {} created".format(
                             company_rec["name"],
@@ -141,3 +173,9 @@ class Command(BaseCommand):
                             company_rec["status"],
                         )
                     )
+
+                    if kwargs["real_run"]:
+                        company.save()
+                else:
+                    if kwargs["real_run"]:
+                        company.save()
