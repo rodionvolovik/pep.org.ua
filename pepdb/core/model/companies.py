@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 import re
 from copy import copy, deepcopy
+from datetime import date
 from collections import defaultdict, OrderedDict
 
 from django.db import models
@@ -19,7 +20,7 @@ from core.fields import RedactorField
 
 from core.model.base import AbstractNode
 from core.model.translations import Ua2EnDictionary
-from core.utils import render_date, lookup_term, translate_into
+from core.utils import render_date, lookup_term, translate_into, ceil_date
 from core.model.supplementaries import Document
 from core.model.connections import Company2Company, Company2Country, Person2Company
 
@@ -360,9 +361,16 @@ class Company(models.Model, AbstractNode):
             res["all"].append(p)
 
             if any(map(lambda x: x.search(rtp.lower()), self.HEADS_CLASSIFIERS)):
-                res["managers"].append(p)
+                if (
+                    rel.date_finished
+                    and ceil_date(rel.date_finished, rel.date_finished_details)
+                    <= date.today()
+                ):
+                    add_to_rest = True
+                else:
+                    res["managers"].append(p)
+                    add_to_rest = False
 
-                add_to_rest = False
             elif rtp.lower() in [
                 "засновник",
                 "учасник",
