@@ -64,6 +64,33 @@ class CompanyManager(models.Manager):
 
 
 class Company(models.Model, AbstractNode):
+    HEADS_CLASSIFIERS = (
+        re.compile(r"^керівник$"),
+        re.compile(r"^в\.о\. керівника$"),
+        re.compile(r"^директор$"),
+        re.compile(r"^в.о директора$"),
+        re.compile(r"^генеральний директор$"),
+        re.compile(r"^в\.о\. генерального директора$"),
+        re.compile(r"^начальник$"),
+        re.compile(r"^в\.о\. начальника$"),
+        re.compile(r"^ліквідатор$"),
+        re.compile(r"^прокурор області$"),
+        re.compile(r"^військовий прокурор$"),
+        re.compile(r"^генеральний прокурор$"),
+        re.compile(r"^надзвичайний і повноважний посол$"),
+        re.compile(r"^прем’єр-міністр$"),
+        re.compile(r"^президент$"),
+        re.compile(r"^підписант$"),
+        re.compile(r"^номінальний директор$"),
+        re.compile(r"^министр"),
+        re.compile(r"^в\.о\. министра"),
+        re.compile(r"^голова"),
+        re.compile(r"^в\.о\. голови"),
+        re.compile(r"^керуючий"),
+        re.compile(r"^голова$"),
+        re.compile(r"^керуючий$"),
+    )
+
     _status_choices = {
         0: _("інформація відсутня"),
         1: _("зареєстровано"),
@@ -77,8 +104,7 @@ class Company(models.Model, AbstractNode):
     }
 
     name = models.CharField("Повна назва", max_length=512)
-    short_name = models.CharField("Скорочена назва", max_length=200,
-                                  blank=True)
+    short_name = models.CharField("Скорочена назва", max_length=200, blank=True)
 
     also_known_as = models.TextField("Назви іншими мовами або варіації", blank=True)
 
@@ -86,41 +112,29 @@ class Company(models.Model, AbstractNode):
     founded = models.DateField("Дата створення", blank=True, null=True)
     founded_details = models.IntegerField(
         "Дата створення: точність",
-        choices=(
-            (0, "Точна дата"),
-            (1, "Рік та місяць"),
-            (2, "Тільки рік"),
-        ),
-        default=0)
+        choices=((0, "Точна дата"), (1, "Рік та місяць"), (2, "Тільки рік")),
+        default=0,
+    )
 
     status = models.IntegerField(
-        "Поточний стан",
-        choices=_status_choices.items(),
-        default=0
+        "Поточний стан", choices=_status_choices.items(), default=0
     )
     closed_on = models.DateField("Дата припинення", blank=True, null=True)
     closed_on_details = models.IntegerField(
         "Дата припинення: точність",
-        choices=(
-            (0, "Точна дата"),
-            (1, "Рік та місяць"),
-            (2, "Тільки рік"),
-        ),
-        default=0)
+        choices=((0, "Точна дата"), (1, "Рік та місяць"), (2, "Тільки рік")),
+        default=0,
+    )
 
     @property
     def founded_human(self):
-        return render_date(self.founded,
-                           self.founded_details)
+        return render_date(self.founded, self.founded_details)
 
-    state_company = models.BooleanField(
-        "Керівник — ПЕП", default=False)
+    state_company = models.BooleanField("Керівник — ПЕП", default=False)
 
-    legal_entity = models.BooleanField(
-        "Юрособа", default=True)
+    legal_entity = models.BooleanField("Юрособа", default=True)
 
-    edrpou = models.CharField(
-        "ЄДРПОУ", max_length=50, blank=True)
+    edrpou = models.CharField("ЄДРПОУ", max_length=50, blank=True)
 
     zip_code = models.CharField("Індекс", max_length=20, blank=True)
     city = models.CharField("Місто", max_length=255, blank=True)
@@ -131,27 +145,28 @@ class Company(models.Model, AbstractNode):
     wiki = RedactorField("Вікі-стаття", blank=True)
 
     other_founders = RedactorField(
-        "Інші засновники",
-        help_text="Через кому, не PEP", blank=True)
+        "Інші засновники", help_text="Через кому, не PEP", blank=True
+    )
 
     other_recipient = models.CharField(
-        "Бенефіціарій", help_text="Якщо не є PEPом", blank=True,
-        max_length=200)
+        "Бенефіціарій", help_text="Якщо не є PEPом", blank=True, max_length=200
+    )
 
     other_owners = RedactorField(
-        "Інші власники",
-        help_text="Через кому, не PEP", blank=True)
+        "Інші власники", help_text="Через кому, не PEP", blank=True
+    )
 
     other_managers = RedactorField(
-        "Інші керуючі",
-        help_text="Через кому, не PEP", blank=True)
+        "Інші керуючі", help_text="Через кому, не PEP", blank=True
+    )
 
     bank_name = RedactorField("Фінансова інформація", blank=True)
 
     sanctions = RedactorField("Санкції", blank=True)
 
     related_companies = models.ManyToManyField(
-        "self", through="Company2Company", symmetrical=False)
+        "self", through="Company2Company", symmetrical=False
+    )
 
     last_change = models.DateTimeField(
         "Дата останньої зміни сторінки профіля", blank=True, null=True
@@ -172,7 +187,9 @@ class Company(models.Model, AbstractNode):
     bank = models.BooleanField("Банк", default=False)
     service_provider = models.BooleanField("Надавач послуг", default=False)
     _last_modified = models.DateTimeField("Остання зміна", null=True, blank=True)
-    proofs = GenericRelation("RelationshipProof", verbose_name="Посилання, соціальні мережі та документи")
+    proofs = GenericRelation(
+        "RelationshipProof", verbose_name="Посилання, соціальні мережі та документи"
+    )
 
     @staticmethod
     def autocomplete_search_fields():
@@ -182,23 +199,40 @@ class Company(models.Model, AbstractNode):
         return self.short_name or self.name
 
     def to_dict(self):
-        d = model_to_dict(self, fields=[
-            "id", "name_uk", "short_name_uk", "name_en", "short_name_en",
-            "state_company", "edrpou", "wiki", "city", "street",
-            "other_founders", "other_recipient", "other_owners",
-            "other_managers", "bank_name", "also_known_as"])
+        d = model_to_dict(
+            self,
+            fields=[
+                "id",
+                "name_uk",
+                "short_name_uk",
+                "name_en",
+                "short_name_en",
+                "state_company",
+                "edrpou",
+                "wiki",
+                "city",
+                "street",
+                "other_founders",
+                "other_recipient",
+                "other_owners",
+                "other_managers",
+                "bank_name",
+                "also_known_as",
+            ],
+        )
 
         d["related_persons"] = [
             i.to_person_dict()
-            for i in self.from_persons.prefetch_related("from_person")]
+            for i in self.from_persons.prefetch_related("from_person")
+        ]
 
         d["related_countries"] = [
-            i.to_dict()
-            for i in self.from_countries.prefetch_related("to_country")]
+            i.to_dict() for i in self.from_countries.prefetch_related("to_country")
+        ]
 
         d["related_companies"] = [
-            i.to_dict()
-            for i in self.to_companies.prefetch_related("to_company")] + [
+            i.to_dict() for i in self.to_companies.prefetch_related("to_company")
+        ] + [
             i.to_dict_reverse()
             for i in self.from_companies.prefetch_related("from_company")
         ]
@@ -211,24 +245,32 @@ class Company(models.Model, AbstractNode):
 
         suggestions = []
 
-        for field in (d["name_uk"], d["short_name_uk"],
-                      d["name_en"], d["short_name_en"]):
+        for field in (
+            d["name_uk"],
+            d["short_name_uk"],
+            d["name_en"],
+            d["short_name_en"],
+        ):
             if not field:
                 continue
 
-            chunks = list(
-                map(lambda x: x.strip("'\",.-“”«»"), field.split(" ")))
+            chunks = list(map(lambda x: x.strip("'\",.-“”«»"), field.split(" ")))
 
             for i in xrange(len(chunks)):
                 variant = copy(chunks)
-                variant = [variant[i]] + variant[:i] + variant[i + 1:]
+                variant = [variant[i]] + variant[:i] + variant[i + 1 :]
                 suggestions.append(" ".join(variant))
 
         if self.edrpou:
-            edrpou_chunks = list(filter(
-                None,
-                map(unicode.strip, re.split('([a-z]+)', self.edrpou, flags=re.IGNORECASE))
-            ))
+            edrpou_chunks = list(
+                filter(
+                    None,
+                    map(
+                        unicode.strip,
+                        re.split("([a-z]+)", self.edrpou, flags=re.IGNORECASE),
+                    ),
+                )
+            )
 
             suggestions += edrpou_chunks
             suggestions.append(self.edrpou.lstrip("0"))
@@ -238,9 +280,7 @@ class Company(models.Model, AbstractNode):
 
             d["code_chunks"] = edrpou_chunks
 
-        d["name_suggest"] = [
-            {"input": x} for x in set(suggestions)
-        ]
+        d["name_suggest"] = [{"input": x} for x in set(suggestions)]
 
         d["name_suggest_output"] = d["short_name_uk"] or d["name_uk"]
         d["name_suggest_output_en"] = d["short_name_en"] or d["name_en"]
@@ -252,14 +292,16 @@ class Company(models.Model, AbstractNode):
     def save(self, *args, **kwargs):
         if not self.name_en:
             t = Ua2EnDictionary.objects.filter(
-                term__iexact=lookup_term(self.name_uk)).first()
+                term__iexact=lookup_term(self.name_uk)
+            ).first()
 
             if t and t.translation:
                 self.name_en = t.translation
 
         if not self.short_name_en:
             t = Ua2EnDictionary.objects.filter(
-                term__iexact=lookup_term(self.short_name_uk)).first()
+                term__iexact=lookup_term(self.short_name_uk)
+            ).first()
 
             if t and t.translation:
                 self.short_name_en = t.translation
@@ -288,15 +330,17 @@ class Company(models.Model, AbstractNode):
     def all_related_persons(self):
         related_persons = [
             (i.relationship_type_uk, deepcopy(i.from_person), i)
-            for i in self.from_persons.prefetch_related("from_person").defer(
+            for i in self.from_persons.prefetch_related("from_person")
+            .defer(
                 "from_person__reputation_assets",
                 "from_person__reputation_crimes",
                 "from_person__reputation_manhunt",
                 "from_person__reputation_convictions",
                 "from_person__wiki",
                 "from_person__names",
-                "from_person__hash"
-            ).order_by("from_person__last_name_uk", "from_person__first_name_uk")
+                "from_person__hash",
+            )
+            .order_by("from_person__last_name_uk", "from_person__first_name_uk")
         ]
 
         res = {
@@ -315,19 +359,18 @@ class Company(models.Model, AbstractNode):
 
             res["all"].append(p)
 
-            if rtp.lower() in [
-                    "керівник", "перший заступник керівника",
-                    "заступник керівника", "голова", "заступник голови",
-                    "перший заступник голови", "член правління", "член ради",
-                    "член", "директор", "підписант", "номінальний директор",
-                    "керуючий"]:
+            if any(map(lambda x: x.search(rtp.lower()), self.HEADS_CLASSIFIERS)):
                 res["managers"].append(p)
 
                 add_to_rest = False
             elif rtp.lower() in [
-                    "засновники", "засновник/учасник",
-                    "колишній засновник/учасник", "бенефіціарний власник",
-                    "номінальний власник"]:
+                "засновник",
+                "учасник",
+                "власник",
+                "бенефіціарний власник",
+                "номінальний власник",
+                "колишній засновник/учасник",
+            ]:
                 res["founders"].append(p)
                 add_to_rest = False
 
@@ -368,7 +411,8 @@ class Company(models.Model, AbstractNode):
     @property
     def foreign_registration(self):
         return self.from_countries.prefetch_related("to_country").filter(
-            relationship_type="registered_in")
+            relationship_type="registered_in"
+        )
 
     @property
     def all_related_companies(self):
@@ -396,20 +440,18 @@ class Company(models.Model, AbstractNode):
             )
         ]
 
-        res = {
-            "founders": [],
-            "rest": [],
-            "banks": [],
-            "all": []
-        }
+        res = {"founders": [], "rest": [], "banks": [], "all": []}
 
         for rtp, p, rel in sorted(related_companies, key=lambda x: x[1].name_uk):
             p.rtype = rtp
             p.connection = rel
 
-            if rtp in ["Засновник", "Співзасновник",
-                       "Колишній власник/засновник",
-                       "Колишній співвласник/співзасновник"]:
+            if rtp in [
+                "Засновник",
+                "Співзасновник",
+                "Колишній власник/засновник",
+                "Колишній співвласник/співзасновник",
+            ]:
                 res["founders"].append(p)
             elif rtp == "Клієнт банку":
                 res["banks"].append(p)
@@ -426,8 +468,8 @@ class Company(models.Model, AbstractNode):
         res["description"] = self.edrpou
         res["kind"] = unicode(
             ugettext_lazy("Державна компанія чи установа")
-            if self.state_company else
-            ugettext_lazy("Приватна компанія")
+            if self.state_company
+            else ugettext_lazy("Приватна компанія")
         )
 
         if with_connections:
@@ -436,32 +478,39 @@ class Company(models.Model, AbstractNode):
             persons = self.all_related_persons
             for k in persons.values():
                 for p in k:
-                    connections.append({
-                        "relation": p.connection.relationship_type,
-                        "node": p.get_node_info(False),
-                        "model": p.connection._meta.model_name,
-                        "pk": p.connection.pk
-                    })
+                    connections.append(
+                        {
+                            "relation": p.connection.relationship_type,
+                            "node": p.get_node_info(False),
+                            "model": p.connection._meta.model_name,
+                            "pk": p.connection.pk,
+                        }
+                    )
 
             # Because of a complicated logic here we are piggybacking on
             # existing method that handles both directions of relations
             for c in self.all_related_companies["all"]:
-                connections.append({
-                    "relation": unicode(ugettext_lazy(c.rtype or "")),
-                    "node": c.get_node_info(False),
-                    "model": c.connection._meta.model_name,
-                    "pk": c.connection.pk
-                })
+                connections.append(
+                    {
+                        "relation": unicode(ugettext_lazy(c.rtype or "")),
+                        "node": c.get_node_info(False),
+                        "model": c.connection._meta.model_name,
+                        "pk": c.connection.pk,
+                    }
+                )
 
             countries = self.from_countries.prefetch_related("to_country")
             for c in countries:
-                connections.append({
-                    "relation": unicode(
-                        ugettext_lazy(c.get_relationship_type_display())),
-                    "node": c.to_country.get_node_info(False),
-                    "model": c._meta.model_name,
-                    "pk": c.pk
-                })
+                connections.append(
+                    {
+                        "relation": unicode(
+                            ugettext_lazy(c.get_relationship_type_display())
+                        ),
+                        "node": c.to_country.get_node_info(False),
+                        "model": c._meta.model_name,
+                        "pk": c.pk,
+                    }
+                )
 
             res["connections"] = connections
 
@@ -469,9 +518,7 @@ class Company(models.Model, AbstractNode):
 
     @property
     def closed_on_human(self):
-        return render_date(self.closed_on,
-                           self.closed_on_details)
-
+        return render_date(self.closed_on, self.closed_on_details)
 
     @property
     def last_modified(self):
@@ -487,7 +534,18 @@ class Company(models.Model, AbstractNode):
             mm=Max("_last_modified")
         )["mm"]
 
-        seq = list(filter(None, [c2c_conn, c2p_conn, c2cont_conn, self.last_change, self._last_modified]))
+        seq = list(
+            filter(
+                None,
+                [
+                    c2c_conn,
+                    c2p_conn,
+                    c2cont_conn,
+                    self.last_change,
+                    self._last_modified,
+                ],
+            )
+        )
         if seq:
             return max(seq)
 
@@ -513,9 +571,7 @@ class Company(models.Model, AbstractNode):
         seen = set()
         for proof in proofs + list(self.proofs.all()):
             if proof.proof_document_id not in seen:
-                proofs_by_cat[proof.proof_document.doc_type].append(
-                    proof
-                )
+                proofs_by_cat[proof.proof_document.doc_type].append(proof)
 
                 seen.add(proof.proof_document_id)
 
@@ -523,9 +579,9 @@ class Company(models.Model, AbstractNode):
         del proofs_by_cat["other"]
 
         return OrderedDict(
-            (Document.DOC_TYPE_CHOICES[k], proofs_by_cat[k]) for k in Document.DOC_TYPE_CHOICES.keys()
+            (Document.DOC_TYPE_CHOICES[k], proofs_by_cat[k])
+            for k in Document.DOC_TYPE_CHOICES.keys()
         )
-
 
     objects = CompanyManager()
 
@@ -533,9 +589,7 @@ class Company(models.Model, AbstractNode):
         verbose_name = "Юридична особа"
         verbose_name_plural = "Юридичні особи"
 
-        permissions = (
-            ("export_companies", "Can export the dataset of companies"),
-        )
+        permissions = (("export_companies", "Can export the dataset of companies"),)
 
 
 class CompanyCategories(Company):

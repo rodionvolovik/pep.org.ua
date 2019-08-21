@@ -91,6 +91,11 @@ class CompanyImporter(object):
                 "raw_address": obj_dict["location"]
             }
 
+        if "founded" in obj_dict:            
+            update_dict = {
+                "founded": obj_dict["founded"]
+            }
+
         for k, v in company._status_choices.items():
             if obj_dict["status"].lower() == v:
                 update_dict["status"] = k
