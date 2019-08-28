@@ -21,16 +21,27 @@ from core.universal_loggers import PythonLogger
 
 class Command(BaseCommand):
     EXCLUDE_PATTERNS = (
-        re.compile(r"РАЙОН", flags=re.I),
-        re.compile(r"ДЕРЖАВНОЇ АДМІНІСТРАЦІЇ", flags=re.I),
-        re.compile(r"ЄДНАНЕ УПРАВЛІННЯ ПЕНСІЙНОГО ФОНДУ УКРАЇНИ", flags=re.I),
-        re.compile(r"МІСЬКИЙ"),
-        re.compile(r"У М\.", flags=re.I),
-        re.compile(r"У МІСТІ", flags=re.I),
-        re.compile(r"У МIСТI", flags=re.I),
-        re.compile(r"ДЕРЖАВНОГО КАЗНАЧЕЙСТВА", flags=re.I),
-        re.compile(r"МІСЬКОЇ РАДИ", flags=re.I),
-        re.compile(r"СЕЛИЩНОЇ РАДИ", flags=re.I),
+        re.compile(u"РАЙОН", flags=re.I),
+        re.compile(u"ДЕРЖАВНОЇ АДМ[iіIІ]Н[iіIІ]СТРАЦ[iіIІ]Ї", flags=re.I),
+        re.compile(u"ЄДНАНЕ УПРАВЛ[iіIІ]ННЯ ПЕНС[iіIІ]ЙНОГО ФОНДУ УКРАЇНИ", flags=re.I),
+        re.compile(u"М[iіIІ]СЬКИЙ"),
+        re.compile(u"У М\.", flags=re.I),
+        re.compile(u"У М[iіIІ]СТ[iіIІ]", flags=re.I),
+        re.compile(u"ДЕРЖАВНОГО КАЗНАЧЕЙСТВА", flags=re.I),
+        re.compile(u"М[iіIІ]СЬКОЇ РАДИ", flags=re.I),
+        re.compile(u"СЕЛИЩНОЇ РАДИ", flags=re.I),
+        re.compile(u"РАЙДЕРЖАДМ[iіIІ]Н[iіIІ]СТРАЦ[iіIІ]Ї", flags=re.I),
+        re.compile(u"м[iіIІ]ста", flags=re.I),
+        re.compile(u"РЕСПУБЛ[iіIІ]Ц[iіIІ] КРИМ", flags=re.I),
+        re.compile(u"РЕСПУБЛ[iіIІ]КИ КРИМ", flags=re.I),
+        re.compile(u"АРХ[iіIІ]В", flags=re.I),
+        re.compile(u"М[iіIІ]СТА", flags=re.I),
+        re.compile(u"В[iіIІ]ДД[iіIІ]Л", flags=re.I),
+        re.compile(u"ТЕРИТОР[iіIІ]АЛЬНОГО УПРАВЛ[iіIІ]ННЯ ЮСТИЦ[iіIІ]Ї", flags=re.I),
+        re.compile(u"ДЕРЖАВНА НОТАР[iіIІ]АЛЬНА", flags=re.I),
+        re.compile(u"ПОЛ[iіIІ]Ц[iіIІ]Ї ОХОРОНИ", flags=re.I),
+        re.compile(u"ОКРУЖНИЙ СУД", flags=re.I),
+        re.compile(u"ОБЛДЕРЖАДМ[iіIІ]Н[iіIІ]СТРАЦ[iіIІ]Ї", flags=re.I),
     )
 
     def add_arguments(self, parser):
@@ -133,6 +144,16 @@ class Command(BaseCommand):
         logger = PythonLogger("cli_commands")
         self.importer = CompanyImporter(logger=logger)
 
+        filter_statuses = [
+            "припинено",
+            "ліквідація",
+            "розпорядження майном",
+            "зареєстровано, свідоцтво про державну реєстрацію недійсне",
+        ]
+
+        if kwargs["set_flag"] == "public_office":
+            filter_statuses.append("в стані припинення")
+
         with open(kwargs["infile"], encoding="cp1251") as fp:
             for company_rec in self._iter_xml(fp):
 
@@ -143,12 +164,7 @@ class Command(BaseCommand):
                 if kwargs["set_flag"]:
                     setattr(company, kwargs["set_flag"], True)
 
-                if created and company_rec["status"].lower() not in [
-                    "припинено",
-                    "ліквідація",
-                    "розпорядження майном",
-                    "зареєстровано, свідоцтво про державну реєстрацію недійсне",
-                ]:
+                if created and company_rec["status"].lower() not in filter_statuses:
                     if kwargs["set_flag"] == "public_office":
                         if any(
                             map(
