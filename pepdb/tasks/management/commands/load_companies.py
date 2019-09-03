@@ -220,6 +220,13 @@ class Command(BaseCommand):
 
         GUID = options["guid"]
         fp = None
+        if not options["revision"]:
+            latest = EDRPOU.search().aggs.metric("max_last_update", "max", field="last_update")[:1].execute()
+            if latest:
+                update_after = latest[0].last_update
+                self.stdout.write("Only loading dumps after {}".format(update_after))
+            else:
+                update_after = None
 
         if not options["filename"]:
             data_url = None
@@ -241,8 +248,10 @@ class Command(BaseCommand):
 
                     if not options["revision"]:
                         timestamp = parse(rev["resource_created"])
-                        data_url = rev["url"]
-                        break
+                        
+                        if update_after is None or update_after < timestamp:
+                            data_url = rev["url"]
+                            break
 
                     if revision == options["revision"]:
                         timestamp = parse(rev["resource_created"])
