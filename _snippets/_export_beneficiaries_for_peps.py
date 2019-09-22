@@ -1,14 +1,15 @@
 import json
 from core.models import Declaration, Company, Person2Company
+from django.db.models import Q
 from unicodecsv import DictWriter
 
 if __name__ == "__main__":
     fp = open("beneficiary.csv", "w")
-    w = DictWriter(fp, fieldnames=["pep", "url", "company_name", "edrpou", "years", "from_declaration"], dialect="excel")
+    w = DictWriter(fp, fieldnames=["pep", "url", "company_name", "edrpou", "years", "from_declaration", "person_type"], dialect="excel")
     w.writeheader()
 
     for p2c in (
-        Person2Company.objects.filter(relationship_type_uk__icontains="Бенеф")
+        Person2Company.objects.filter(Q(relationship_type_uk__icontains=u"Бенеф") | Q(relationship_type_uk__icontains=u"власн"))
         .select_related("to_company", "from_person")
         .exclude(to_company__edrpou="")
     ):
@@ -34,4 +35,5 @@ if __name__ == "__main__":
             "edrpou": p2c.to_company.edrpou,
             "years": ", ".join(sorted(years)),
             "from_declaration": from_declaration,
+            "person_type": "owner" if u"бенеф" in p2c.relationship_type_uk.lower() else "founder"
         })

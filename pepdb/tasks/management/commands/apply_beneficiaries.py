@@ -107,6 +107,9 @@ class Command(BaseCommand):
 
                     self.failed += 1
                     continue
+                else:
+                    company.affiliated_with_pep = True
+                    company.save()
 
                 if created:
                     self.companies_created += 1
