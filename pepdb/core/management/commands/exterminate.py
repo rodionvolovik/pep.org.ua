@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from datetime import timedelta
+from datetime import timedelta, date
+
+from dateutil.parser import parse as dt_parse
+from dateutil.relativedelta import relativedelta
 
 import django.db.utils
 from django.core.management.base import BaseCommand
@@ -14,6 +17,14 @@ from core.utils import ceil_date, render_date
 
 class Command(BaseCommand):
     help = "Layered checks to find all PEPs who is not PEP anymore"
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--on_date',
+            nargs="?",
+            default=str(date.today().replace(day=1) + relativedelta(months=1, days=-1)),
+            help='Date (-3 years) after which termination notices should be removed (default: end of month)',
+        )
 
     def handle(self, *args, **options):
         # One day I'll offload that to Neo4J and nail it down with 3 simple queries
@@ -484,3 +495,8 @@ class Command(BaseCommand):
                     ),
                 },
             )
+
+        if options["on_date"]:
+            on_date = dt_parse(options["on_date"], yearfirst=True)
+
+            TerminationNotice.objects.filter(termination_date_ceiled__gte=on_date-timedelta(days=365 * 3), status="p").delete()
