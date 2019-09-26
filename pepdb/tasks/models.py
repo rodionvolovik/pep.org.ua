@@ -7,6 +7,7 @@ from core.models import Person
 from django.contrib.postgres.fields import JSONField as DjangoJSONField
 from jsonfield import JSONField
 from jsonfield.encoder import JSONEncoder
+from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.postgres.fields import ArrayField
 
 
@@ -457,3 +458,41 @@ class SMIDACandidate(AbstractTask):
     class Meta:
         verbose_name = "Матчінг зі звітами SMIDA"
         verbose_name_plural = "Матчінги зі звітами SMIDA"
+
+
+class NAISCompany(AbstractTask):
+    company_id = models.IntegerField("ЄДРПОУ", primary_key=True)
+
+    STATUS_CHOICES = (
+        ("p", "Не перевірено"),
+        ("a", "Застосовано"),
+        ("i", "Ігнорувати"),
+        ("r", "Потребує додаткової перевірки"),
+    )
+
+    COMPANY_TYPES = {
+        "public_office": "Держ.орган",
+        "political_party": "Партія",
+        "state_enterprise": "Держ. власність",
+        "affiliated_with_pep": "Пов'язана з ПЕП",
+        "bank": "Банк",
+        "service_provider": "Надавач послуг",
+    }
+
+    status = models.CharField(
+        "Статус",
+        max_length=1,
+        choices=STATUS_CHOICES,
+        default="p",
+        db_index=True
+    )
+
+    created = models.BooleanField("Компанії нема в нашій базі")
+    matched_json = DjangoJSONField(verbose_name="Запис на створення", null=True, encoder=DjangoJSONEncoder)
+    company_name = models.CharField("Назва компанії", max_length=255)
+    company_status = models.CharField("Поточний стан", max_length=100)
+    company_type = models.CharField("Тип компанії", choices=COMPANY_TYPES.items(), max_length=20, db_index=True)
+
+    class Meta:
+        verbose_name = "Завдання на створення компаній з НАІС"
+        verbose_name_plural = "Завдання на створення компаній з НАІС"

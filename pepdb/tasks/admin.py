@@ -18,6 +18,7 @@ from tasks.models import (
     AdHocMatch,
     WikiMatch,
     SMIDACandidate,
+    NAISCompany,
 )
 
 
@@ -654,6 +655,61 @@ class SMIDACandidateAdmin(admin.ModelAdmin):
         super(SMIDACandidateAdmin, self).save_model(request, obj, form, change)
 
 
+class NAISCompanyAdmin(admin.ModelAdmin):
+    list_display = (
+        "pk",
+        "company_readable",
+        "company_status",
+        "company_type",
+        "created",
+        "status",
+    )
+
+    list_editable = (
+        "status",
+    )
+    list_filter = ("status", "company_status", "company_type", "created",)
+
+    search_fields = ("company_name", "matched_json")
+
+    def company_readable(self, obj):
+        return (
+            '<a href="https://ring.org.ua/edr/uk/company/{}" target="_blank">{} ({})</a>'
+        ).format(
+            obj.pk,
+            obj.company_name,
+            obj.pk,
+        )
+
+    company_readable.short_description = "Компанія"
+    company_readable.allow_tags = True
+    company_readable.admin_order_field = "company_name"
+
+    def mark_for_application(self, request, queryset):
+        queryset.update(status="a")
+
+    mark_for_application.short_description = "Статус: Застосовано"
+
+    def ignore(self, request, queryset):
+        queryset.update(status="i")
+
+    ignore.short_description = "Статус: Ігнорувати"
+
+    def doublecheck(self, request, queryset):
+        queryset.update(status="r")
+
+    doublecheck.short_description = "Статус: Потребує додаткової перевірки"
+
+    actions = [mark_for_application, ignore, doublecheck]
+
+    def has_add_permission(self, request):
+        return False
+
+    def save_model(self, request, obj, form, change):
+        obj.user = request.user
+        super(NAISCompanyAdmin, self).save_model(request, obj, form, change)
+
+
 admin.site.register(PersonDeduplication, PersonDeduplicationAdmin)
 admin.site.register(CompanyMatching, CompanyMatchingAdmin)
 admin.site.register(BeneficiariesMatching, BeneficiariesMatchingAdmin)
@@ -663,3 +719,5 @@ admin.site.register(TerminationNotice, TerminationNoticeAdmin)
 admin.site.register(AdHocMatch, AdHocMatchAdmin)
 admin.site.register(WikiMatch, WikiMatchAdmin)
 admin.site.register(SMIDACandidate, SMIDACandidateAdmin)
+admin.site.register(NAISCompany, NAISCompanyAdmin)
+

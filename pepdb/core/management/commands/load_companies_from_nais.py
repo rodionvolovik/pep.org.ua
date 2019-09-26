@@ -17,41 +17,42 @@ from django.conf import settings
 
 from core.importers.company import CompanyImporter
 from core.universal_loggers import PythonLogger
+from tasks.models import NAISCompany
 
 
 class Command(BaseCommand):
     EXCLUDE_PATTERNS = (
-        re.compile(u"РАЙОН", flags=re.I),
-        re.compile(u"ДЕРЖАВНОЇ АДМ[iіIІ]Н[iіIІ]СТРАЦ[iіIІ]Ї", flags=re.I),
-        re.compile(u"ЄДНАНЕ УПРАВЛ[iіIІ]ННЯ ПЕНС[iіIІ]ЙНОГО ФОНДУ УКРАЇНИ", flags=re.I),
-        re.compile(u"М[iіIІ]СЬКИЙ"),
-        re.compile(u"У М\.", flags=re.I),
-        re.compile(u"У М[iіIІ]СТ[iіIІ]", flags=re.I),
-        re.compile(u"ДЕРЖАВНОГО КАЗНАЧЕЙСТВА", flags=re.I),
-        re.compile(u"М[iіIІ]СЬКОЇ РАДИ", flags=re.I),
-        re.compile(u"СЕЛИЩНОЇ РАДИ", flags=re.I),
-        re.compile(u"РАЙДЕРЖАДМ[iіIІ]Н[iіIІ]СТРАЦ[iіIІ]Ї", flags=re.I),
-        re.compile(u"м[iіIІ]ста", flags=re.I),
-        re.compile(u"РЕСПУБЛ[iіIІ]Ц[iіIІ] КРИМ", flags=re.I),
-        re.compile(u"РЕСПУБЛ[iіIІ]КИ КРИМ", flags=re.I),
-        re.compile(u"АРХ[iіIІ]В", flags=re.I),
-        re.compile(u"М[iіIІ]СТА", flags=re.I),
-        re.compile(u"В[iіIІ]ДД[iіIІ]Л", flags=re.I),
-        re.compile(u"ТЕРИТОР[iіIІ]АЛЬНОГО УПРАВЛ[iіIІ]ННЯ ЮСТИЦ[iіIІ]Ї", flags=re.I),
-        re.compile(u"ДЕРЖАВНА НОТАР[iіIІ]АЛЬНА", flags=re.I),
-        re.compile(u"ПОЛ[iіIІ]Ц[iіIІ]Ї ОХОРОНИ", flags=re.I),
-        re.compile(u"ОКРУЖНИЙ СУД", flags=re.I),
-        re.compile(u"ОБЛДЕРЖАДМ[iіIІ]Н[iіIІ]СТРАЦ[iіIІ]Ї", flags=re.I),
+        re.compile("РАЙОН", flags=re.I),
+        re.compile("ДЕРЖАВНОЇ АДМ[iіIІ]Н[iіIІ]СТРАЦ[iіIІ]Ї", flags=re.I),
+        re.compile("ЄДНАНЕ УПРАВЛ[iіIІ]ННЯ ПЕНС[iіIІ]ЙНОГО ФОНДУ УКРАЇНИ", flags=re.I),
+        re.compile("М[iіIІ]СЬКИЙ"),
+        re.compile("У М\.", flags=re.I),
+        re.compile("У М[iіIІ]СТ[iіIІ]", flags=re.I),
+        re.compile("ДЕРЖАВНОГО КАЗНАЧЕЙСТВА", flags=re.I),
+        re.compile("М[iіIІ]СЬКОЇ РАДИ", flags=re.I),
+        re.compile("СЕЛИЩНОЇ РАДИ", flags=re.I),
+        re.compile("РАЙДЕРЖАДМ[iіIІ]Н[iіIІ]СТРАЦ[iіIІ]Ї", flags=re.I),
+        re.compile("м[iіIІ]ста", flags=re.I),
+        re.compile("РЕСПУБЛ[iіIІ]Ц[iіIІ] КРИМ", flags=re.I),
+        re.compile("РЕСПУБЛ[iіIІ]КИ КРИМ", flags=re.I),
+        re.compile("АРХ[iіIІ]В", flags=re.I),
+        re.compile("М[iіIІ]СТА", flags=re.I),
+        re.compile("В[iіIІ]ДД[iіIІ]Л", flags=re.I),
+        re.compile("ТЕРИТОР[iіIІ]АЛЬНОГО УПРАВЛ[iіIІ]ННЯ ЮСТИЦ[iіIІ]Ї", flags=re.I),
+        re.compile("ДЕРЖАВНА НОТАР[iіIІ]АЛЬНА", flags=re.I),
+        re.compile("ПОЛ[iіIІ]Ц[iіIІ]Ї ОХОРОНИ", flags=re.I),
+        re.compile("ОКРУЖНИЙ СУД", flags=re.I),
+        re.compile("ОБЛДЕРЖАДМ[iіIІ]Н[iіIІ]СТРАЦ[iіIІ]Ї", flags=re.I),
     )
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            "--real_run",
-            action="store_true",
-            dest="real_run",
-            default=False,
-            help="Create and update companies",
-        )
+        # parser.add_argument(
+        #     "--real_run",
+        #     action="store_true",
+        #     dest="real_run",
+        #     default=False,
+        #     help="Create and update companies",
+        # )
 
         parser.add_argument(
             "--set_flag",
@@ -156,15 +157,14 @@ class Command(BaseCommand):
 
         with open(kwargs["infile"], encoding="cp1251") as fp:
             for company_rec in self._iter_xml(fp):
-
                 company, created = self.importer.get_or_create_from_edr_record(
-                    company_rec, kwargs["real_run"]
+                    company_rec, save=False
                 )
 
-                if kwargs["set_flag"]:
-                    setattr(company, kwargs["set_flag"], True)
+                if created:
+                    if company_rec["status"].lower() in filter_statuses:
+                        continue
 
-                if created and company_rec["status"].lower() not in filter_statuses:
                     if kwargs["set_flag"] == "public_office":
                         if any(
                             map(
@@ -174,7 +174,7 @@ class Command(BaseCommand):
                             )
                         ):
                             logger.warning(
-                                "Skipping company {} with edrpou {} added and status {}".format(
+                                "Skipping company {} with edrpou {} and status {}".format(
                                     company_rec["name"],
                                     company_rec["edrpou"],
                                     company_rec["status"],
@@ -182,6 +182,7 @@ class Command(BaseCommand):
                             )
 
                             continue
+
                     logger.warning(
                         "New company {} with edrpou {} added and status {} created".format(
                             company_rec["name"],
@@ -190,8 +191,23 @@ class Command(BaseCommand):
                         )
                     )
 
-                    if kwargs["real_run"]:
-                        company.save()
-                else:
-                    if kwargs["real_run"]:
-                        company.save()
+                edrpou = int(company_rec["edrpou"])
+                if NAISCompany.objects.filter(pk=edrpou).exclude(status="p").count():
+                    logger.warning(
+                        "Task for company {} with edrpou {} was already processed".format(
+                            company_rec["name"], company_rec["edrpou"]
+                        )
+                    )
+                    continue
+
+                task, _ = NAISCompany.objects.update_or_create(
+                    pk=edrpou,
+                    defaults={
+                        "status": "p",
+                        "created": created,
+                        "matched_json": company_rec,
+                        "company_name": company_rec.get("short_name", company_rec["name"]),
+                        "company_status": company_rec["status"],
+                        "company_type": kwargs["set_flag"],
+                    },
+                )
