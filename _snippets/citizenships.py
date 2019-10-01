@@ -1,4 +1,5 @@
 from unicodecsv import DictWriter
+from tasks.constants import COUNTRIES as countries
 
 res = []
 from core.models import Declaration
