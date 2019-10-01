@@ -1,3 +1,4 @@
+from unicodecsv import DictWriter
 from core.models import Declaration
 
 changes = []
@@ -31,3 +32,7 @@ for d in Declaration.objects.filter(confirmed="a", nacp_declaration=True).nocach
             "prev_last_name": step_1.get("previous_lastname", ""),
         })
 
+with open("/tmp/changed_names.csv", "w") as fp:
+    w = DictWriter(fp, fieldnames=changes[0].keys())
+    w.writeheader()
+    w.writerows(changes)

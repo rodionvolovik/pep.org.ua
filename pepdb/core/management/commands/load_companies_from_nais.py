@@ -46,14 +46,6 @@ class Command(BaseCommand):
     )
 
     def add_arguments(self, parser):
-        # parser.add_argument(
-        #     "--real_run",
-        #     action="store_true",
-        #     dest="real_run",
-        #     default=False,
-        #     help="Create and update companies",
-        # )
-
         parser.add_argument(
             "--set_flag",
             choices=[

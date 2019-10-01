@@ -1,3 +1,5 @@
+from unicodecsv import DictWriter
+
 res = []
 from core.models import Declaration
 
@@ -18,3 +20,8 @@ for d in Declaration.objects.filter(confirmed="a", nacp_declaration=True).nocach
                 "relative_last_name": s2.get("lastname", ""),
                 "citizenship": countries.get(s2.get("citizenship")),
             })
+
+with open("/tmp/foreigners.csv", "w") as fp:
+    w = DictWriter(fp, fieldnames=res[0].keys())
+    w.writeheader()
+    w.writerows(res)
