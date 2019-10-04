@@ -96,7 +96,7 @@
 
             {% set countries = first_person.foreign_citizenship_or_registration %}
             {% for country in countries %}
-                <span class="flag flag-{{ country.to_country.iso3 }}" title="{{ country.to_country.name }}"></span>
+                <span class="flag flag-{{ country.to_country.iso3|lower }}" title="{{ country.to_country.name }}"></span>
             {% endfor %}
             {% if first_person.dob %}<meta itemprop="birthDate" content="{{ first_person.dob }} "/>{% endif %}
 
