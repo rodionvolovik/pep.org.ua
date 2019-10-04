@@ -1,15 +1,15 @@
-<a href="{{ url("company_details", company_id=company.id) }}" target="_blank">{% if company.edrpou %}{{ company.edrpou }} {% endif %}{{ company.name_uk }}</a> {% if company.short_name_uk %}, {{ company.short_name_uk }} {% endif %}<br />
+<a href="{{ url("company_details", company_id=company.id) }}" target="_blank">{% if company.edrpou %}{{ company.edrpou }} {% endif %}{{ company.name_ru }}</a> {% if company.short_name_ru %}, {{ company.short_name_ru }} {% endif %}<br />
 
 {% if company.related_persons %}
 <strong>{{ _("Керівництво та пов'язані особи:") }}</strong> <br/>
 {% for rp in company.related_persons[:10] %}
-    {{ rp.person_uk }}, {{ rp.relationship_type_uk }} <br/>
+    {{ rp.person_ru }}, {{ rp.relationship_type_ru }} <br/>
 {% endfor %}
 {% endif %}
 
 {% if company.related_companies %}
 <strong>{{ _("Юр. особи:") }}</strong> <br/>
 {% for rc in company.related_companies[:10] %}
-    {{ rc.company }}, {{ rc.relationship_type }} <br/>
+    {{ rc.company_ru }}, {{ rc.relationship_type_ru }} <br/>
 {% endfor %}
 {% endif %}

@@ -1,99 +1,69 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from collections import defaultdict
+from itertools import combinations
+
 from django.core.management.base import BaseCommand
 from django.utils.translation import activate
 from django.db.utils import IntegrityError
 from django.conf import settings
 
-from collections import defaultdict
+from Levenshtein import jaro
+from tqdm import tqdm
+
 from core.models import Person
 from core.utils import is_initial, parse_fullname
 from tasks.models import PersonDeduplication
-from Levenshtein import jaro
-from itertools import combinations
 
 
 class Command(BaseCommand):
-    help = (
-        "Finds potential duplicates in DB and stores them as tasks for "
-        "manual resolution"
-    )
+    help = ('Finds potential duplicates in DB and stores them as tasks for '
+            'manual resolution')
 
     def handle(self, *args, **options):
         activate(settings.LANGUAGE_CODE)
         all_persons = []
 
-        keys = [
-            "pk",
-            "key",
-            "fullname",
-            "has_initials",
-            "last_name",
-            "first_name",
-            "patronymic",
-        ]
+        keys = ["pk", "key", "fullname", "has_initials", "last_name",
+                "first_name", "patronymic"]
 
-        for p in Person.objects.all():
-            all_persons.append(
-                dict(
-                    zip(
-                        keys,
-                        [
-                            p.pk,
-                            (
-                                "%s %s %s"
-                                % (p.last_name, p.first_name[:1], p.patronymic[:1])
-                            ).lower(),
-                            (
-                                "%s %s %s" % (p.last_name, p.first_name, p.patronymic)
-                            ).lower(),
-                            is_initial(p.first_name) or is_initial(p.patronymic),
-                            p.last_name,
-                            p.first_name,
-                            p.patronymic,
-                        ],
-                    )
-                )
-            )
+        for p in Person.objects.all().nocache().iterator():
+            all_persons.append(dict(zip(keys, [
+                p.pk,
+                ("%s %s %s" % (
+                    p.last_name, p.first_name[:1], p.patronymic[:1])).lower(),
+                ("%s %s %s" % (
+                    p.last_name, p.first_name, p.patronymic)).lower(),
+                is_initial(p.first_name) or is_initial(p.patronymic),
+                p.last_name,
+                p.first_name,
+                p.patronymic])))
 
-            for aka in map(
-                unicode.strip, (p.also_known_as_uk or "").replace(",", "\n").split("\n")
-            ):
+            for aka in map(unicode.strip, (p.also_known_as_ru or "").replace(",", "\n").split("\n")):
                 if not aka:
                     continue
 
                 last_name, first_name, patronymic, _ = parse_fullname(aka)
-                if not (all([last_name, first_name, patronymic])):
+                if not(all([last_name, first_name, patronymic])):
                     continue
 
-                all_persons.append(
-                    dict(
-                        zip(
-                            keys,
-                            [
-                                p.pk,
-                                (
-                                    "%s %s %s"
-                                    % (last_name, first_name[:1], patronymic[:1])
-                                ).lower(),
-                                (
-                                    "%s %s %s" % (last_name, first_name, patronymic)
-                                ).lower(),
-                                is_initial(first_name) or is_initial(patronymic),
-                                last_name,
-                                first_name,
-                                patronymic,
-                            ],
-                        )
-                    )
-                )
+                all_persons.append(dict(zip(keys, [
+                    p.pk,
+                    ("%s %s %s" % (
+                        last_name, first_name[:1], patronymic[:1])).lower(),
+                    ("%s %s %s" % (
+                        last_name, first_name, patronymic)).lower(),
+                    is_initial(first_name) or is_initial(patronymic),
+                    last_name,
+                    first_name,
+                    patronymic])))
 
         grouped_by_fullname = defaultdict(list)
         grouped_by_shortenedname = defaultdict(list)
 
         # First pass: exact matches by full name (even if those are given with initials)
-        for l in all_persons:
+        for l in tqdm(all_persons):
             if l["has_initials"]:
                 grouped_by_shortenedname[l["key"]].append(l["pk"])
             else:
@@ -115,19 +85,15 @@ class Command(BaseCommand):
         mixed_grouping = defaultdict(list)
 
         # Second pass: initials vs full names
-        for l in all_persons:
+        for l in tqdm(all_persons):
             if l["pk"] not in spoiled_ids and l["has_initials"]:
                 mixed_grouping[l["key"]].append(l["pk"])
 
-        for l in all_persons:
-            if (
-                l["pk"] not in spoiled_ids
-                and not l["has_initials"]
-                and l["key"] in mixed_grouping
-            ):
+        for l in tqdm(all_persons):
+            if l["pk"] not in spoiled_ids and not l["has_initials"] and l["key"] in mixed_grouping:
                 mixed_grouping[l["key"]].append(l["pk"])
 
-        for k, v in mixed_grouping.items():
+        for k, v in tqdm(mixed_grouping.items()):
             if len(v) > 1:
                 spoiled_ids |= set(v)
                 chunks_to_review.append(v)
@@ -144,12 +110,11 @@ class Command(BaseCommand):
                 pass
 
         candidates_for_fuzzy = [
-            l
-            for l in all_persons
+            l for l in all_persons
             if l["pk"] not in spoiled_ids and not l["has_initials"]
         ]
 
-        for a, b in combinations(candidates_for_fuzzy, 2):
+        for a, b in tqdm(combinations(candidates_for_fuzzy, 2)):
             score = jaro(a["fullname"], b["fullname"])
             if score > 0.93:
                 try:

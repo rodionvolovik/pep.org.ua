@@ -12,16 +12,15 @@ from collections import defaultdict
 from core.models import Company
 from tasks.models import CompanyDeduplication
 from Levenshtein import jaro
+from tqdm import tqdm
 from itertools import combinations, product
 
 
 class Command(BaseCommand):
-    help = (
-        "Finds potential duplicates of companies in DB and "
-        "stores them as tasks for manual resolution"
-    )
+    help = ('Finds potential duplicates of companies in DB and '
+            'stores them as tasks for manual resolution')
 
-    ignore_chars = re.escape(":-.)(\",'№«»")
+    ignore_chars = re.escape(':-.)(",\'№«»')
 
     def cleanup(self, s):
         return re.sub("[\s%s]" % self.ignore_chars, "", s or "")
@@ -33,24 +32,18 @@ class Command(BaseCommand):
         activate(settings.LANGUAGE_CODE)
         all_companies = []
 
-        keys = ["pk", "code", "name", "name_en", "short_name", "short_name_en"]
+        keys = ["pk", "code", "ogrn_code", "name", "name_en", "short_name", "short_name_en"]
 
-        for p in Company.objects.all():
-            all_companies.append(
-                dict(
-                    zip(
-                        keys,
-                        [
-                            p.pk,
-                            p.edrpou,
-                            p.name_uk,
-                            p.name_en,
-                            p.short_name_uk,
-                            p.short_name_en,
-                        ],
-                    )
-                )
-            )
+        for p in Company.objects.all().nocache().iterator():
+            all_companies.append(dict(zip(keys, [
+                p.pk,
+                p.edrpou,
+                p.ogrn_code,
+                p.name_ru,
+                p.name_en,
+                p.short_name_ru,
+                p.short_name_en,
+            ])))
 
         grouped_by_code = defaultdict(list)
         grouped_by_name = defaultdict(list)
@@ -61,6 +54,10 @@ class Command(BaseCommand):
             if len(code) > 2:
                 grouped_by_code[code].append(l["pk"])
 
+            ogrn_code = self.cleanup(l["ogrn_code"])
+            if len(ogrn_code) > 2:
+                grouped_by_code[ogrn_code].append(l["pk"])
+
             for k in ["name", "name_en", "short_name", "short_name_en"]:
                 name = self.cleanup(l[k])
 
@@ -70,12 +67,12 @@ class Command(BaseCommand):
         spoiled_ids = set()
         chunks_to_review = list()
 
-        for k, v in grouped_by_code.items():
+        for k, v in tqdm(grouped_by_code.items()):
             if len(set(v)) > 1:
                 spoiled_ids |= set(v)
                 chunks_to_review.append(v)
 
-        for k, v in grouped_by_name.items():
+        for k, v in tqdm(grouped_by_name.items()):
             if len(set(v)) > 1:
                 spoiled_ids |= set(v)
                 chunks_to_review.append(v)
@@ -91,9 +88,12 @@ class Command(BaseCommand):
             except IntegrityError:
                 pass
 
-        candidates_for_fuzzy = [l for l in all_companies if l["pk"] not in spoiled_ids]
+        candidates_for_fuzzy = [
+            l for l in all_companies
+            if l["pk"] not in spoiled_ids
+        ]
 
-        for a, b in combinations(candidates_for_fuzzy, 2):
+        for a, b in tqdm(combinations(candidates_for_fuzzy, 2)):
             for field_a, field_b in product(["name", "short_name"], repeat=2):
                 val_a = self.cleanup(a[field_a])
                 val_b = self.cleanup(b[field_b])
