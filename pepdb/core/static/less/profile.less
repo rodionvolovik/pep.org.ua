@@ -153,18 +153,23 @@
 
     &.not {
         #profile-wrap {
-            opacity: 0.6;
-        }
-        #profile-wrap .non-pep-info {
-            background: black;
-            color: white;
-        }
-        #profile-wrap .dead-pep-info {
-            background: #f42d33;
-            color: white;
-        }
-        #profile-wrap .non-pep-info strong {
-            color: white;
+            &> * {
+                opacity: 0.6;
+            }
+            .load-pep-modal-tree, #pep-graph-tree {
+                opacity: 1;
+            }
+            .non-pep-info {
+                background: black;
+                color: white;
+            }
+            .dead-pep-info {
+                background: #f42d33;
+                color: white;
+            }
+            .non-pep-info strong {
+                color: white;
+            }
         }
     }
 }
