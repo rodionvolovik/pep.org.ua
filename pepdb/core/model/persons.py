@@ -18,7 +18,6 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericRelation
 from django.template.loader import render_to_string
 
-from translitua import translitua
 import select2.fields
 import select2.models
 from dateutil.parser import parse as dt_parse
