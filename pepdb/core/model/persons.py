@@ -701,6 +701,9 @@ class Person(models.Model, AbstractNode):
             "name": self.localized_shortname(get_language()),
             "full_name": self.localized_full_name(get_language()),
             "is_pep": self.is_pep,
+            "type_of_official": self.type_of_official,
+            "reason_of_termination": self.reason_of_termination,
+            "is_dead": self.reason_of_termination in [1, 3],
             "kind": unicode(ugettext_lazy(self.get_type_of_official_display() or ""))
         }
         last_workplace = self.translated_last_workplace

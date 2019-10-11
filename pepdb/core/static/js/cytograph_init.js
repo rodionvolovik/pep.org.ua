@@ -81,6 +81,18 @@ $(function() {
             "background-image": "/static/images/cytoscape/pep_person.png"
         }
     }, {
+        // (4, _("Пов'язана особа")),
+        selector: 'node[type_of_official=4]',
+        style: {
+            "background-image": "/static/images/cytoscape/affiliated_person.png"
+        }
+    }, {
+        // (5, _("Член сім'ї")),
+        selector: 'node[type_of_official=5]',
+        style: {
+            "background-image": "/static/images/cytoscape/relative_person.png"
+        }
+    }, {
         selector: 'node[?state_company]',
         style: {
             "width": 70,
@@ -91,7 +103,39 @@ $(function() {
             "background-image": "/static/images/cytoscape/state_company.png"
         }
     }, {
-        selector: 'node[?is_main]',
+        selector: 'node[model="person"][?is_dead]',
+        style: {
+            "background-image": "/static/images/cytoscape/dead/person.png",
+        }
+    }, {
+        selector: 'node[model="company"][?is_closed]',
+        style: {
+            "background-image": "/static/images/cytoscape/dead/company.png",
+        }
+    }, {
+        selector: 'node[?is_pep][?is_dead]',
+        style: {
+            "background-image": "/static/images/cytoscape/dead/pep_person.png"
+        }
+    }, {
+        // (4, _("Пов'язана особа")),
+        selector: 'node[type_of_official=4][?is_dead]',
+        style: {
+            "background-image": "/static/images/cytoscape/dead/affiliated_person.png"
+        }
+    }, {
+        // (5, _("Член сім'ї")),
+        selector: 'node[type_of_official=5][?is_dead]',
+        style: {
+            "background-image": "/static/images/cytoscape/dead/relative_person.png"
+        }
+    }, {
+        selector: 'node[?state_company][?is_closed]',
+        style: {
+            "background-image": "/static/images/cytoscape/dead/state_company.png"
+        }
+    }, {
+            selector: 'node[?is_main]',
         style: {
             "width": 80,
             "height": 80,
