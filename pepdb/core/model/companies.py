@@ -419,7 +419,7 @@ class Company(models.Model, AbstractNode):
     @property
     def all_related_companies(self):
         related_companies = [
-            (i.relationship_type, deepcopy(i.to_company), i)
+            (i.relationship_type, deepcopy(i.to_company), i, True)
             for i in self.to_companies.prefetch_related("to_company").defer(
                 "to_company__wiki",
                 "to_company__other_founders",
@@ -430,7 +430,7 @@ class Company(models.Model, AbstractNode):
                 "to_company__sanctions",
             )
         ] + [
-            (i.reverse_relationship_type, deepcopy(i.from_company), i)
+            (i.reverse_relationship_type, deepcopy(i.from_company), i, False)
             for i in self.from_companies.prefetch_related("from_company").defer(
                 "from_company__wiki",
                 "from_company__other_founders",
@@ -444,10 +444,11 @@ class Company(models.Model, AbstractNode):
 
         res = {"founders": [], "rest": [], "banks": [], "all": []}
 
-        for rtp, p, rel in sorted(
+        for rtp, p, rel, direction in sorted(
             related_companies, key=lambda x: get_localized_field(x[1], "name")
         ):
             p.rtype = rtp
+            p.direction = direction
             p.connection = rel
 
             if rtp in [
@@ -517,8 +518,8 @@ class Company(models.Model, AbstractNode):
                                 p.connection._meta.model_name, p.connection.pk
                             ),
                             "share": 0,
-                            "source": this_node["data"]["id"],
-                            "target": child_node_id,
+                            "target": this_node["data"]["id"],
+                            "source": child_node_id,
                             "is_latest": True,
                         }
                     }
@@ -533,19 +534,25 @@ class Company(models.Model, AbstractNode):
                 child_node = c.get_node_info(False)
                 nodes += child_node["nodes"]
                 edges += child_node["edges"]
+                if c.direction:
+                    source = this_node["data"]["id"]
+                    target = child_node_id
+                else:
+                    source = child_node_id
+                    target = this_node["data"]["id"]
 
                 edges.append(
                     {
                         "data": {
-                            "relation": unicode(c.connection.relationship_type),
+                            "relation": unicode(c.rtype),
                             "model": c.connection._meta.model_name,
-                            "pk": c.pk,
+                            "pk": c.connection.pk,
                             "id": "{}-{}".format(
-                                c.connection._meta.model_name, c.pk
+                                c.connection._meta.model_name, c.connection.pk
                             ),
-                            "source": this_node["data"]["id"],
+                            "source": source,
                             "share": float(c.connection.equity_part or 0),
-                            "target": child_node_id,
+                            "target": target,
                             "is_latest": True,
                         }
                     }
