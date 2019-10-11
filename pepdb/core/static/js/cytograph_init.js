@@ -23,6 +23,7 @@ $(function() {
         selector: "edge",
         style: {
             "curve-style": "bezier",
+            "target-arrow-shape": "triangle",
             width: 0
         }
     }, {
