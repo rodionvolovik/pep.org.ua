@@ -94,17 +94,18 @@
         <section id="profile" class="{%- if person.parsed_names %}col-md-8{% else %}col-md-10{% endif -%} {% if person.terminated %} not{% endif %}" data-url="{{ url('connections', 'person', person.pk) }}">
             <link itemprop="url" href="{{ person.get_absolute_url() }}" />
             <div id="profile-wrap" class="box">
+                {% if person.photo %}
+                    <div class="avatar">
+                        <img src="{{ person.photo|thumbnail_url("avatar") }}" itemprop="image" alt="{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}"/>
+                    </div>
+                {% endif %}
+
                 {% if person.died %}<div class="info-label">{{ _(person.get_reason_of_termination_display()) }}</div>{% endif %}
                 <ul class="profileActions">
                     <li><a href="?format=pdf" class="tooltip-anchor" data-toggle="tooltip" data-placement="top" title="{{ _("Скачати PDF") }}" target="_blank"><i class="fa fa-file-pdf-o"></i></a></li>
                     <li><a href="#" class="tooltip-anchor print-me" data-toggle="tooltip" data-placement="top" title="{{ _("Роздрукувати профайл") }}"><i class="fa fa-print"></i></a></li>
                 </ul>
                 <header class="profile-header">
-                    {% if person.photo %}
-                    <div class="avatar">
-                    <img src="{{ person.photo|thumbnail_url("avatar") }}" itemprop="image" alt="{{ person.last_name }} {{ person.first_name }} {{ person.patronymic }}"/>
-                    </div>
-                    {% endif %}
                     <h1 class="pep-name" itemprop="name"><span itemprop="familyName">{{ person.last_name }}</span> <span class="pep-pib"><span itemprop="givenName">{{ person.first_name }}</span> <span itemprop="additionalName">{{ person.patronymic }}</span></h1>
                 </header>
                 <div id="personal" class="sub">
