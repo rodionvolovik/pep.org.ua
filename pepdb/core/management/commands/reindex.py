@@ -7,6 +7,7 @@ from django.conf import settings
 from elasticsearch_dsl import Index
 from elasticsearch.helpers import streaming_bulk
 from elasticsearch_dsl.connections import connections
+from tqdm import tqdm
 
 from core.models import Company, Person
 from core.elastic_models import Person as ElasticPerson, Company as ElasticCompany
@@ -30,9 +31,10 @@ class Command(BaseCommand):
         activate(settings.LANGUAGE_CODE)
         conn = connections.get_connection("default")
 
+        person_qs = Person.objects.filter(publish=True)
         docs_to_index = [
             ElasticPerson(**p.to_dict())
-            for p in Person.objects.all().nocache().iterator()
+            for p in tqdm(person_qs.nocache().iterator(), total=person_qs.count())
         ]
 
         if options["drop_indices"]:
@@ -55,9 +57,10 @@ class Command(BaseCommand):
             "Loaded {} persons to persistence storage".format(len(docs_to_index))
         )
 
+        company_qs = Company.objects.filter(publish=True)
         docs_to_index = [
             ElasticCompany(**p.to_dict())
-            for p in Company.objects.all().nocache().iterator()
+            for p in tqdm(company_qs.nocache().iterator(), total=company_qs.count())
         ]
 
         if options["drop_indices"]:
