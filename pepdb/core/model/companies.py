@@ -535,11 +535,11 @@ class Company(models.Model, AbstractNode):
                 nodes += child_node["nodes"]
                 edges += child_node["edges"]
                 if c.direction:
-                    source = this_node["data"]["id"]
-                    target = child_node_id
-                else:
                     source = child_node_id
                     target = this_node["data"]["id"]
+                else:
+                    source = this_node["data"]["id"]
+                    target = child_node_id
 
                 edges.append(
                     {

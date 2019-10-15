@@ -50,9 +50,7 @@ $(function() {
         style: {
             "background-image": "/static/images/cytoscape/person.png",
             "background-fit": "contain",
-            "background-color": "white",
-            "border-width": "1px",
-            "border-color": "silver"
+            "background-color": "white"
         }
     }, {
         selector: 'node[model="company"]',
@@ -76,8 +74,6 @@ $(function() {
         style: {
             "width": 70,
             "height": 70,
-            "border-width": "3px",
-            "border-color": "red",
             "background-color": "#76d7c4",
             "background-image": "/static/images/cytoscape/pep_person.png"
         }
@@ -98,8 +94,6 @@ $(function() {
         style: {
             "width": 70,
             "height": 70,
-            "border-width": "3px",
-            "border-color": "green",
             "background-color": "yellow",
             "background-image": "/static/images/cytoscape/state_company.png"
         }
