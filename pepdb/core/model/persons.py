@@ -467,7 +467,17 @@ class Person(models.Model, AbstractNode):
                 getattr(self, localized_field("patronymic", lang)),
                 getattr(self, localized_field("last_name", lang)),
             )
-        ).replace("  ", " ")
+        ).replace("  ", " ").strip()
+
+    def localized_inversed_full_name(self, lang):
+        return (
+            "%s %s %s"
+            % (
+                getattr(self, localized_field("last_name", lang)),
+                getattr(self, localized_field("first_name", lang)),
+                getattr(self, localized_field("patronymic", lang)),
+            )
+        ).replace("  ", " ").strip()
 
     def localized_shortname(self, lang):
         return (
@@ -579,6 +589,7 @@ class Person(models.Model, AbstractNode):
             )
 
             d[localized_field("full_name", lang)] = self.localized_full_name(lang)
+            d[localized_field("inversed_full_name", lang)] = self.localized_inversed_full_name(lang)
 
         def generate_suggestions(last_name, first_name, patronymic, *args):
             if not last_name:

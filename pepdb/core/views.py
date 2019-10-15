@@ -46,7 +46,7 @@ from core.elastic_models import Person as ElasticPerson, Company as ElasticCompa
 
 def suggest(request):
     lang = translation.get_language()
-    field = localized_field("full_name", lang)
+    field = localized_field("inversed_full_name", lang)
     company_field = localized_field("name_suggest_output", lang)
 
     def assume(q, fuzziness):
