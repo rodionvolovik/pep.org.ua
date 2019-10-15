@@ -863,7 +863,11 @@ class Person(models.Model, AbstractNode):
 
         for proof in self.proofs.all():
             if proof.proof:
-                domain = urlparse(proof.proof).hostname.replace("www.", "").lower()
+                domain = urlparse(proof.proof).hostname
+                if domain is None:
+                    continue
+                
+                domain = domain.replace("www.", "").lower()
 
                 if domain in social_networks:
                     res["social_networks"].append({
