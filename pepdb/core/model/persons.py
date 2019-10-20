@@ -502,7 +502,7 @@ class Person(models.Model, AbstractNode):
         """
         d = model_to_dict(
             self,
-            fields=["id", "dob", "dob_details", "is_pep", "names", "last_change"]
+            fields=["id", "dob", "dob_details", "is_pep", "names", "last_change", "inn"]
             + localized_fields(
                 [
                     "last_name",
